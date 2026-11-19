@@ -1,0 +1,200 @@
+{
+"unit": 5, "title": "Securing Applications and Data", "periods": 30,
+"topics": [
+{
+"id": "5.1", "title": "Application and Data Vulnerabilities and Attacks",
+"hook": "A login form takes a username. Someone types characters that aren't a name at all, and the app hands back every user record. What went wrong in the code, conceptually?",
+"concept": [
+"Applications fail when they trust input. In SQL injection, input is treated as part of a database command, letting an attacker read or change data they shouldn't. In cross-site scripting (XSS), an application includes user-supplied script in a page, so it runs in other users' browsers and can steal sessions or deface content.",
+"Directory traversal abuses file paths (for example, sequences like ../) to read files outside the intended folder, such as configuration or password files. A buffer overflow writes more data into a memory buffer than it can hold, overwriting adjacent memory, which can crash the program or let an attacker run their own code.",
+"All four share a root cause: the application doesn't properly validate or separate data from instructions."
+],
+"terms": [
+["SQL injection", "Input interpreted as database commands."],
+["Cross-site scripting (XSS)", "Injected script running in other users' browsers."],
+["Directory traversal", "Manipulating file paths to access files outside allowed directories."],
+["Buffer overflow", "Writing past a buffer's bounds, corrupting memory."],
+["Input validation", "Checking input matches expected type, length, and format."]
+],
+"compare": {"title": "Where each attack lands", "cols": ["Attack", "Target"], "rows": [["SQL injection", "The database"], ["XSS", "Other users' browsers"], ["Directory traversal", "The server's file system"], ["Buffer overflow", "Program memory"]]},
+"traps": [
+"XSS runs in the victim's browser, not on the server's database. That's SQL injection.",
+"Directory traversal is about file paths; SQL injection is about queries."
+],
+"items": [
+{"id": "5.1-1", "skill": "1.A", "d": 2, "exit": true, "stem": "Input typed into a search box is executed as part of a database query, returning all customer records. Which attack is this?", "opts": ["SQL injection", "XSS", "Directory traversal", "Buffer overflow"], "a": 0, "why": "Input becoming database commands is SQL injection."},
+{"id": "5.1-2", "skill": "1.A", "d": 2, "exit": true, "stem": "A forum comment contains script that runs in every visitor's browser and steals their session cookie. Which attack is this?", "opts": ["Cross-site scripting (XSS)", "SQL injection", "ARP poisoning", "Logic bomb"], "a": 0, "why": "Injected script executing in other users' browsers is XSS."},
+{"id": "5.1-3", "skill": "1.A", "d": 2, "exit": true, "stem": "A web request includes a file path with repeated ../ segments and returns the server's configuration file. This is:", "opts": ["Directory traversal", "XSS", "Smurf attack", "Card cloning"], "a": 0, "why": "Escaping the intended folder via path manipulation is directory traversal."},
+{"id": "5.1-4", "skill": "1.B", "d": 3, "stem": "A program copies a 500-character input into a space reserved for 64 characters, overwriting nearby memory. This creates a risk of:", "opts": ["Buffer overflow leading to crashes or code execution", "DNS poisoning", "Password spraying", "Tailgating"], "a": 0, "why": "Exceeding buffer bounds is a buffer overflow."},
+{"id": "5.1-5", "skill": "1.B", "d": 2, "stem": "What root weakness do SQL injection, XSS, and directory traversal share?", "opts": ["Trusting user input without proper validation or separation", "Weak Wi-Fi encryption", "Missing bollards", "Short passwords"], "a": 0, "why": "All exploit unvalidated input."},
+{"id": "5.1-6", "skill": "1.C", "d": 3, "stem": "Which application flaw has the HIGHEST impact on confidentiality of an entire customer database?", "opts": ["SQL injection in the login form", "A typo on the About page", "A slow-loading image", "A broken footer link"], "a": 0, "why": "SQL injection can expose all database contents."},
+{"id": "5.1-7", "skill": "1.A", "d": 1, "stem": "Which attack MOST directly targets other users of a website rather than the server's data?", "opts": ["XSS", "SQL injection", "Directory traversal", "Brute force on admin"], "a": 0, "why": "XSS executes in visitors' browsers."},
+{"id": "5.1-8", "skill": "1.D", "d": 2, "stem": "A code review finds user comments are displayed on pages without any filtering. How should this be documented?", "opts": ["Vulnerability: stored XSS risk in the comments feature", "Asset: the comments page", "Corrective control", "Residual risk accepted"], "a": 0, "why": "Unfiltered user content rendered in pages is an XSS vulnerability."}
+]
+},
+{
+"id": "5.2", "title": "Protecting Applications and Data: Managerial Controls and Access Controls",
+"hook": "A file shows permissions rwxr-x---. Who can read it, who can change it, and what single command would make it private to its owner?",
+"concept": [
+"Access control decides who can do what. Role-based access control (RBAC) grants permissions by job role (all nurses can read charts). Rule-based access control (RuBAC) applies conditions (no access outside 7 a.m.–7 p.m.). Discretionary access control (DAC) lets the owner decide who gets access, like sharing your own file. Mandatory access control (MAC) uses labels (Secret, Top Secret) set by the system or administrators that owners can't override.",
+"Linux permissions show read (r=4), write (w=2), execute (x=1) for three groups: owner (user), group, and others. rwxr-x--- means owner 7, group 5, others 0, numeric mode 750. chmod changes them: numeric (chmod 640 file) or symbolic (chmod g-w file, chmod o+r file, chmod u=rwx,go= file).",
+"Managerial controls include data classification policies, least privilege (grant only what's needed), separation of duties, and regular access reviews."
+],
+"terms": [
+["RBAC", "Permissions assigned by role."],
+["RuBAC", "Access governed by rules/conditions such as time or location."],
+["DAC", "Resource owner decides access."],
+["MAC", "System-enforced labels and clearances; owners can't change."],
+["Least privilege", "Grant the minimum access needed."],
+["chmod", "Linux command to change file permissions."],
+["Numeric mode", "r=4, w=2, x=1 summed per owner/group/others, e.g., 754."],
+["Symbolic mode", "u/g/o/a with +, -, = and r/w/x, e.g., g+w."]
+],
+"compare": {"title": "Numeric ↔ symbolic", "cols": ["Numeric", "Symbolic"], "rows": [["777", "rwxrwxrwx"], ["755", "rwxr-xr-x"], ["750", "rwxr-x---"], ["644", "rw-r--r--"], ["600", "rw-------"]]},
+"traps": [
+"In chmod, 'o' means others, not owner. Owner is 'u' (user).",
+"777 gives everyone write access. It's almost never the right fix."
+],
+"items": [
+{"id": "5.2-1", "skill": "2.A", "d": 2, "exit": true, "stem": "In a hospital, all users with the 'Pharmacist' role can view prescriptions; doctors can also write them. Which model is this?", "opts": ["RBAC", "DAC", "MAC", "RuBAC"], "a": 0, "why": "Permissions tied to job roles is role-based access control."},
+{"id": "5.2-2", "skill": "2.D", "d": 2, "exit": true, "stem": "What numeric mode corresponds to rw-r-----?", "opts": ["640", "644", "660", "750"], "a": 0, "why": "Owner rw=6, group r=4, others none=0 → 640."},
+{"id": "5.2-3", "skill": "2.D", "d": 2, "exit": true, "stem": "Which command removes write permission for the group, without changing anything else?", "opts": ["chmod g-w file", "chmod o-w file", "chmod 000 file", "chmod u+w file"], "a": 0, "why": "g = group, - removes, w = write."},
+{"id": "5.2-4", "skill": "2.A", "d": 2, "stem": "Documents labeled 'Top Secret' can be read only by users with matching clearance, and owners cannot change this. Which model applies?", "opts": ["MAC", "DAC", "RBAC", "Open access"], "a": 0, "why": "System-enforced labels and clearances define MAC."},
+{"id": "5.2-5", "skill": "2.A", "d": 2, "stem": "Contractors can access the network only Monday–Friday, 8 a.m.–6 p.m. This is an example of:", "opts": ["Rule-based access control", "DAC", "MAC", "Defense in depth"], "a": 0, "why": "Condition-based rules define RuBAC."},
+{"id": "5.2-6", "skill": "2.D", "d": 3, "stem": "A script file should be readable and executable by everyone but writable only by its owner. Which command is correct?", "opts": ["chmod 755 script.sh", "chmod 777 script.sh", "chmod 644 script.sh", "chmod 700 script.sh"], "a": 0, "why": "7 (rwx) owner, 5 (r-x) group and others."},
+{"id": "5.2-7", "skill": "2.C", "d": 2, "stem": "A file holding private keys has permissions 644. What is the MAIN problem?", "opts": ["Group and others can read it", "No one can read it", "It is executable by everyone", "The owner cannot write it"], "a": 0, "why": "644 grants read to group and others; secrets should be 600."},
+{"id": "5.2-8", "skill": "2.B", "d": 2, "stem": "A user shares their own document with two classmates through the file's sharing settings. Which model is this?", "opts": ["DAC", "MAC", "RuBAC", "RBAC"], "a": 0, "why": "The owner deciding access is discretionary access control."}
+]
+},
+{
+"id": "5.3", "title": "Protecting Stored Data with Cryptography",
+"hook": "A laptop with 10,000 student records is stolen from a car. The disk is encrypted with AES-256. How worried should the school be, and what's the one thing that would change your answer?",
+"concept": [
+"Encryption transforms plaintext into ciphertext using an algorithm and a key; decryption reverses it with the right key. Without the key, ciphertext should be useless. The keyspace is the number of possible keys; each extra bit doubles it, which is why longer keys resist brute force.",
+"Symmetric encryption uses one shared secret key to encrypt and decrypt. It's fast and ideal for large amounts of stored data, such as full-disk or database encryption. AES (128, 192, or 256-bit keys) is the standard.",
+"Block ciphers encrypt fixed-size chunks (AES uses 128-bit blocks); stream ciphers encrypt data a bit or byte at a time and suit real-time streams. The weak point of symmetric encryption is key management: anyone with the key can decrypt, so keys must be stored and shared securely."
+],
+"terms": [
+["Plaintext / ciphertext", "Readable data / encrypted data."],
+["Key", "Secret value controlling encryption and decryption."],
+["Keyspace", "Total number of possible keys; 2^n for an n-bit key."],
+["Symmetric encryption", "The same key encrypts and decrypts."],
+["AES", "Advanced Encryption Standard, a symmetric block cipher."],
+["Block cipher", "Encrypts fixed-size blocks of data."],
+["Stream cipher", "Encrypts data continuously, bit or byte at a time."]
+],
+"compare": {"title": "Block vs. stream", "cols": ["Block cipher", "Stream cipher"], "rows": [["Fixed-size chunks", "Bit/byte at a time"], ["Files, disks, databases", "Real-time streams"], ["Example: AES", "Example: ChaCha20"]]},
+"traps": [
+"Encryption protects confidentiality, not availability: encrypted data can still be deleted.",
+"A strong algorithm with a key taped to the laptop gives no protection."
+],
+"items": [
+{"id": "5.3-1", "skill": "2.A", "d": 1, "exit": true, "stem": "Which encryption type uses the SAME key to encrypt and decrypt?", "opts": ["Symmetric", "Asymmetric", "Hashing", "Digital signature"], "a": 0, "why": "Symmetric uses one shared key."},
+{"id": "5.3-2", "skill": "2.C", "d": 2, "exit": true, "stem": "Increasing a key from 128 bits to 129 bits has what effect on the keyspace?", "opts": ["Doubles it", "Adds one key", "Halves it", "No effect"], "a": 0, "why": "Each added bit doubles the number of possible keys."},
+{"id": "5.3-3", "skill": "2.A", "d": 2, "exit": true, "stem": "Which algorithm is the standard choice for encrypting a laptop's entire disk?", "opts": ["AES", "MD5", "SHA-1", "RSA for every block"], "a": 0, "why": "AES is a fast symmetric cipher suited to bulk data."},
+{"id": "5.3-4", "skill": "2.C", "d": 2, "stem": "An encrypted laptop is stolen, but its decryption key was stored in a text file on the desktop. What is the result?", "opts": ["The data is effectively unprotected", "The data is safe because AES is strong", "The laptop cannot boot", "Only availability is affected"], "a": 0, "why": "Encryption is only as strong as its key protection."},
+{"id": "5.3-5", "skill": "2.A", "d": 2, "stem": "Which cipher type is BEST suited for encrypting a live voice call one byte at a time?", "opts": ["Stream cipher", "Block cipher with large blocks", "Hash function", "Caesar cipher"], "a": 0, "why": "Stream ciphers encrypt continuous data as it flows."},
+{"id": "5.3-6", "skill": "1.B", "d": 3, "stem": "Why does a larger keyspace defend against brute force?", "opts": ["The attacker must try vastly more possible keys", "It makes ciphertext shorter", "It removes the need for a key", "It blocks phishing"], "a": 0, "why": "Brute force time grows with the number of keys."},
+{"id": "5.3-7", "skill": "2.B", "d": 2, "stem": "What is the MAIN challenge of symmetric encryption when two parties are far apart?", "opts": ["Sharing the secret key securely", "It is too slow for files", "It cannot encrypt text", "It needs two keys"], "a": 0, "why": "Key distribution is symmetric encryption's core problem."},
+{"id": "5.3-8", "skill": "1.C", "d": 2, "stem": "Which CIA property does disk encryption MOST directly protect if a laptop is stolen?", "opts": ["Confidentiality", "Availability", "Integrity only", "None"], "a": 0, "why": "Encryption prevents unauthorized reading."}
+]
+},
+{
+"id": "5.4", "title": "Asymmetric Cryptography",
+"hook": "You want a stranger to send you a secret, but you've never met and can't share a password. You publish one key to the whole world. How is the message still private?",
+"concept": [
+"Asymmetric (public-key) cryptography uses a mathematically linked key pair. The public key can be shared with anyone; the private key is kept secret by its owner. Data encrypted with the public key can only be decrypted with the matching private key, so anyone can send the owner a confidential message.",
+"The reverse direction proves identity: something encrypted (signed) with the private key can be verified with the public key, which is the basis of digital signatures. RSA relies on the difficulty of factoring large numbers; ECC (elliptic curve cryptography) achieves similar strength with much shorter keys, useful for phones and IoT.",
+"Asymmetric encryption is slow, so real systems combine both: asymmetric cryptography securely exchanges a symmetric session key, then fast symmetric encryption (AES) protects the bulk data. HTTPS works this way."
+],
+"terms": [
+["Key pair", "Linked public and private keys."],
+["Public key", "Shared openly; used to encrypt to the owner or verify their signature."],
+["Private key", "Kept secret; used to decrypt or sign."],
+["RSA", "Asymmetric algorithm based on factoring large numbers."],
+["ECC", "Asymmetric algorithm using elliptic curves; strong with short keys."],
+["Digital signature", "Proof of origin and integrity created with a private key."]
+],
+"compare": {"title": "Which key?", "cols": ["Goal", "Key used"], "rows": [["Send Alice a secret", "Encrypt with Alice's PUBLIC key"], ["Alice reads it", "Decrypt with Alice's PRIVATE key"], ["Alice signs a message", "Alice's PRIVATE key"], ["Anyone verifies it", "Alice's PUBLIC key"]]},
+"traps": [
+"To send someone a secret, use THEIR public key, not your own.",
+"If a private key leaks, the whole pair must be replaced."
+],
+"items": [
+{"id": "5.4-1", "skill": "2.A", "d": 2, "exit": true, "stem": "Bob wants to send Alice a confidential message using asymmetric encryption. Which key should he use to encrypt it?", "opts": ["Alice's public key", "Alice's private key", "Bob's public key", "Bob's private key"], "a": 0, "why": "Only Alice's private key can decrypt what's encrypted with her public key."},
+{"id": "5.4-2", "skill": "2.A", "d": 2, "exit": true, "stem": "Which key must NEVER be shared?", "opts": ["The private key", "The public key", "Both keys", "Neither key"], "a": 0, "why": "The private key's secrecy is what makes the system secure."},
+{"id": "5.4-3", "skill": "2.C", "d": 2, "exit": true, "stem": "Why do smartphones and IoT devices often use ECC instead of RSA?", "opts": ["ECC gives comparable security with much shorter keys and less computation", "ECC is symmetric", "RSA cannot encrypt", "ECC has no private key"], "a": 0, "why": "Shorter keys mean less processing and power."},
+{"id": "5.4-4", "skill": "2.B", "d": 3, "stem": "HTTPS uses asymmetric cryptography at the start of a session and symmetric encryption after. Why?", "opts": ["Asymmetric securely exchanges a session key; symmetric is faster for bulk data", "Symmetric is more secure for key exchange", "Asymmetric is faster for large files", "To use two passwords"], "a": 0, "why": "Combining both gets secure key exchange and speed."},
+{"id": "5.4-5", "skill": "2.A", "d": 2, "stem": "Alice signs a document with her private key. How does Carol verify it came from Alice?", "opts": ["Using Alice's public key", "Using Carol's private key", "Using Alice's private key", "Using a hash only"], "a": 0, "why": "A signature made with a private key is verified with the matching public key."},
+{"id": "5.4-6", "skill": "1.C", "d": 3, "stem": "A web server's private key is stolen. What is the MOST serious consequence?", "opts": ["Attackers could impersonate the server or decrypt protected traffic", "Only the website's font changes", "Public keys stop working everywhere", "Nothing; public keys protect it"], "a": 0, "why": "Possession of the private key undermines confidentiality and identity."},
+{"id": "5.4-7", "skill": "1.B", "d": 2, "stem": "RSA's security depends on the difficulty of:", "opts": ["Factoring very large numbers", "Guessing short PINs", "Reading ciphertext", "Breaking AES"], "a": 0, "why": "RSA relies on the hardness of integer factorization."},
+{"id": "5.4-8", "skill": "2.C", "d": 2, "stem": "What is the PRIMARY advantage of asymmetric over symmetric encryption?", "opts": ["It solves the problem of sharing a secret key with strangers", "It is faster", "It needs no keys", "It produces shorter ciphertext"], "a": 0, "why": "Public keys can be shared openly, removing the key-distribution problem."}
+]
+},
+{
+"id": "5.5", "title": "Protecting Applications",
+"hook": "Two developers build the same sign-up form. One adds security at the end, before launch. The other designs it in from day one. Whose app ships safer, and why?",
+"concept": [
+"Secure by design means security is built into requirements and architecture from the start, not bolted on later. Secure by default means the product ships in its safest configuration: strong settings on, unnecessary features off, no default passwords.",
+"Input sanitization and validation are the main defenses against injection attacks: check type, length, and format against an allow list; reject or escape control characters (special characters that change how input is interpreted, such as quotes, angle brackets, semicolons, and path separators); and use parameterized queries so input is always treated as data, never as commands.",
+"Other practices: output encoding to stop XSS, safe memory handling and bounds checking to prevent buffer overflows, least privilege for the application's own accounts, keeping libraries patched, and code review and testing before release."
+],
+"terms": [
+["Secure by design", "Security built in from initial design."],
+["Secure by default", "Shipped in the most secure configuration."],
+["Input sanitization", "Cleaning or rejecting dangerous characters in input."],
+["Input validation", "Checking input matches expected type, length, format."],
+["Control characters", "Characters that alter interpretation, such as ' \" < > ; /"],
+["Parameterized query", "Query where input is bound as data, preventing SQL injection."],
+["Output encoding", "Escaping data before displaying it in a page."]
+],
+"compare": {"title": "Attack vs. coding defense", "cols": ["Attack", "Defense"], "rows": [["SQL injection", "Parameterized queries, validation"], ["XSS", "Output encoding, sanitization"], ["Directory traversal", "Validate paths, allow list"], ["Buffer overflow", "Bounds checking, safe functions"]]},
+"traps": [
+"Client-side (browser) validation alone isn't security; attackers can bypass it. Validate on the server.",
+"Allow lists (accept only known-good) beat block lists (reject known-bad)."
+],
+"items": [
+{"id": "5.5-1", "skill": "2.A", "d": 2, "exit": true, "stem": "Which coding practice MOST directly prevents SQL injection?", "opts": ["Parameterized queries", "Longer passwords", "Bigger servers", "Hiding the SSID"], "a": 0, "why": "Binding input as data stops it being executed as SQL."},
+{"id": "5.5-2", "skill": "2.A", "d": 2, "exit": true, "stem": "A router ships with remote admin disabled, no default password, and automatic updates on. This BEST illustrates:", "opts": ["Secure by default", "Secure by obscurity", "Defense in depth only", "Residual risk"], "a": 0, "why": "Shipping in the safest configuration is secure by default."},
+{"id": "5.5-3", "skill": "2.C", "d": 2, "exit": true, "stem": "Why is validating input only in the browser insufficient?", "opts": ["Attackers can bypass the browser and send requests directly", "Browsers can't run validation", "It makes forms slower", "Servers can't read input"], "a": 0, "why": "Client-side checks are easily skipped; the server must validate."},
+{"id": "5.5-4", "skill": "2.B", "d": 2, "stem": "An application should accept only 5-digit ZIP codes. Which approach is STRONGEST?", "opts": ["Allow list: accept exactly five digits, reject anything else", "Block a few known-bad characters", "Accept anything and fix later", "Hide the field"], "a": 0, "why": "Allow-list validation accepts only known-good input."},
+{"id": "5.5-5", "skill": "2.A", "d": 2, "stem": "Escaping characters like < and > before displaying user comments MOST directly prevents:", "opts": ["XSS", "DNS poisoning", "Tailgating", "Rainbow tables"], "a": 0, "why": "Output encoding keeps injected script from executing."},
+{"id": "5.5-6", "skill": "2.C", "d": 3, "stem": "A team adds security testing only in the final week before launch and finds a design flaw requiring a rewrite. What principle would have prevented this?", "opts": ["Secure by design", "Secure by default", "Accept the risk", "Transfer the risk"], "a": 0, "why": "Building security in from the start catches design flaws early."},
+{"id": "5.5-7", "skill": "2.A", "d": 2, "stem": "A web app's database account has full admin rights though it only needs to read product data. Which principle is violated?", "opts": ["Least privilege", "Defense in depth", "Availability", "Secure by default"], "a": 0, "why": "The app should have only the access it needs."},
+{"id": "5.5-8", "skill": "2.B", "d": 3, "stem": "Which pair of controls BEST protects a file-download feature from directory traversal?", "opts": ["Validate requested filenames against an allow list and block path separators", "Use HTTPS and a bigger disk", "Add CAPTCHA and a logo", "Enable WPS and disable logs"], "a": 0, "why": "Restricting names and path characters keeps requests in the intended folder."}
+]
+},
+{
+"id": "5.6", "title": "Detecting Attacks on Data and Applications",
+"hook": "A file's SHA-256 digest yesterday was 9f2c…; today it's 41ab…. Nobody approved a change. And a fake 'payroll' server nobody should touch just logged a login. What do these two clues tell you?",
+"concept": [
+"Accounting means logging who did what and when: queries run, files accessed, records exported. These logs are the trail investigators follow.",
+"Cryptographic hashes detect tampering: store a file's digest when it's known-good, recompute later, and any change, even one bit, produces a completely different digest. File integrity monitoring automates this.",
+"A honeypot is a decoy system or file with no legitimate use; any interaction is suspicious by definition, giving high-confidence alerts and insight into attacker methods. Data loss prevention (DLP) tools inspect data leaving the organization (email, uploads, USB) and block or alert on sensitive content such as card numbers. Detection still has gaps: false negatives happen when an attack looks like normal use or slips past rules."
+],
+"terms": [
+["Accounting", "Logging user actions for audit and investigation."],
+["Hash digest", "Fixed-length fingerprint of data; changes if the data changes."],
+["File integrity monitoring", "Comparing current file hashes to known-good baselines."],
+["Honeypot", "Decoy system that attracts and records attackers."],
+["DLP", "Data loss prevention: detects or blocks sensitive data leaving."],
+["False negative", "A real attack that goes undetected."]
+],
+"compare": {"title": "Tool vs. what it catches", "cols": ["Tool", "Catches"], "rows": [["Hash comparison", "Unauthorized file changes (integrity)"], ["Honeypot", "Attackers probing where no one should be"], ["DLP", "Sensitive data leaving (exfiltration)"], ["Accounting logs", "Who accessed or changed what"]]},
+"traps": [
+"Hashing detects changes; it doesn't prevent them or tell you who made them.",
+"A honeypot isn't production. Real users should never touch it, which is why any touch matters."
+],
+"items": [
+{"id": "5.6-1", "skill": "3.D", "d": 2, "exit": true, "stem": "A configuration file's hash no longer matches its recorded baseline, and no change was approved. What does this MOST likely indicate?", "opts": ["The file was modified without authorization", "The hash algorithm expired", "The file was encrypted", "Normal operation"], "a": 0, "why": "Any change to a file changes its hash."},
+{"id": "5.6-2", "skill": "3.A", "d": 2, "exit": true, "stem": "A decoy database server with no legitimate users records a login attempt. What is it?", "opts": ["A honeypot", "A DMZ", "A VPN", "A load balancer"], "a": 0, "why": "A decoy built to attract attackers is a honeypot."},
+{"id": "5.6-3", "skill": "3.A", "d": 2, "exit": true, "stem": "Which tool would BEST detect an employee emailing a spreadsheet of customer card numbers to a personal account?", "opts": ["DLP", "Honeypot", "Bollard", "WPA3"], "a": 0, "why": "DLP inspects outbound data for sensitive content."},
+{"id": "5.6-4", "skill": "3.C", "d": 3, "stem": "Why do honeypot alerts usually have very few false positives?", "opts": ["No legitimate user should ever interact with them", "They block all traffic", "They encrypt data", "They are hidden from attackers"], "a": 0, "why": "Since there's no normal use, nearly any activity is suspicious."},
+{"id": "5.6-5", "skill": "3.D", "d": 2, "stem": "Database accounting logs show a help-desk account exported 50,000 records at 02:00, far beyond its normal use. What should the analyst conclude?", "opts": ["Possible compromised account or insider exfiltration", "Routine backup by design", "A firewall misconfiguration", "Normal help-desk work"], "a": 0, "why": "Abnormal volume and timing indicate likely exfiltration."},
+{"id": "5.6-6", "skill": "3.C", "d": 3, "stem": "An attacker slowly exfiltrates data by hiding it in normal-looking web traffic, and no alert fires. This is a:", "opts": ["False negative", "False positive", "True positive", "Baseline"], "a": 0, "why": "A missed real attack is a false negative."},
+{"id": "5.6-7", "skill": "3.B", "d": 2, "stem": "To detect unauthorized changes to critical system files, which method is BEST?", "opts": ["Regularly compare file hashes to known-good baselines", "Increase password length", "Use a stream cipher", "Add more RAM"], "a": 0, "why": "File integrity monitoring uses hash comparison."},
+{"id": "5.6-8", "skill": "3.A", "d": 1, "stem": "Recording which user accessed which records and when is called:", "opts": ["Accounting", "Encryption", "Segmentation", "Quarantine"], "a": 0, "why": "Logging user actions is accounting (the third A in AAA)."}
+]
+}
+]
+}

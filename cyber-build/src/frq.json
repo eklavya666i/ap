@@ -1,0 +1,1229 @@
+[
+ {
+  "id": "frq-1",
+  "title": "Clinic reception workstation",
+  "scenario": "A small medical clinic's reception workstation, RECEP-01 (IP 10.20.1.15), is used by front-desk staff to schedule patients and access the patient database. The IT contractor has provided the sources below after staff reported the PC 'running slowly in the mornings.'",
+  "sources": [
+   {
+    "title": "Source A: Workstation security policy (excerpt)",
+    "kind": "text",
+    "body": "1. Remote access to workstations is permitted only from the IT subnet 10.20.9.0/24 using SSH.\n2. Workstations may not run file-transfer services.\n3. Patient export files must be readable only by their owner.\n4. Accounts lock after 5 failed login attempts."
+   },
+   {
+    "title": "Source B: Host firewall rules on RECEP-01 (evaluated top to bottom, first match wins)",
+    "kind": "table",
+    "cols": [
+     "#",
+     "Action",
+     "Direction",
+     "Protocol",
+     "Port",
+     "Source"
+    ],
+    "rows": [
+     [
+      "1",
+      "Allow",
+      "Inbound",
+      "TCP",
+      "22",
+      "ANY"
+     ],
+     [
+      "2",
+      "Allow",
+      "Inbound",
+      "TCP",
+      "21",
+      "ANY"
+     ],
+     [
+      "3",
+      "Deny",
+      "Inbound",
+      "TCP",
+      "22",
+      "203.0.113.0/24"
+     ],
+     [
+      "4",
+      "Allow",
+      "Inbound",
+      "TCP",
+      "443",
+      "10.20.0.0/16"
+     ],
+     [
+      "5",
+      "Deny",
+      "Inbound",
+      "ANY",
+      "ANY",
+      "ANY"
+     ]
+    ]
+   },
+   {
+    "title": "Source C: File listing",
+    "kind": "code",
+    "body": "-rw-r--r--  1 frontdesk staff  2.1M  patients_export.csv\n-rwxr-xr-x  1 root      root   48K   backup.sh"
+   },
+   {
+    "title": "Source D: Authentication log (excerpt)",
+    "kind": "code",
+    "body": "06:58:01 sshd FAIL user=admin    src=203.0.113.44\n06:58:01 sshd FAIL user=frontdesk src=203.0.113.44\n06:58:02 sshd FAIL user=billing  src=203.0.113.44\n06:58:02 sshd FAIL user=nurse1   src=203.0.113.44\n06:58:03 sshd FAIL user=manager  src=203.0.113.44\n06:58:03 sshd OK   user=nurse1   src=203.0.113.44\n06:58:40 ftpd OUT  file=patients_export.csv dst=203.0.113.44"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify ONE firewall rule in Source B that violates the security policy in Source A.",
+    "rubric": "1 pt: Names Rule 1 (SSH allowed from ANY, policy says only 10.20.9.0/24) OR Rule 2 (FTP/port 21 allowed; policy forbids file-transfer services)."
+   },
+   {
+    "id": "b",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why Rule 3 does not block SSH traffic from 203.0.113.44, citing evidence from Source B.",
+    "rubric": "1 pt: States rules are processed top to bottom / first match wins. 1 pt: Notes Rule 1 allows TCP 22 from ANY and is evaluated before Rule 3, so the deny is never reached."
+   },
+   {
+    "id": "c",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Using Source D, determine which type of password attack occurred and state the evidence.",
+    "rubric": "1 pt: Password spraying, with evidence of one attempt per many different usernames from a single IP within seconds (must include both the attack name and evidence)."
+   },
+   {
+    "id": "d",
+    "verb": "Describe",
+    "points": 1,
+    "prompt": "Describe what happened after the successful login, using Sources C and D.",
+    "rubric": "1 pt: The attacker (logged in as nurse1) exfiltrated patients_export.csv via FTP to 203.0.113.44; possible because the file is world-readable (r-- for others in Source C)."
+   },
+   {
+    "id": "e",
+    "verb": "Write",
+    "points": 1,
+    "prompt": "Write a chmod command that makes patients_export.csv comply with policy item 3.",
+    "rubric": "1 pt: chmod 600 patients_export.csv, OR chmod 400, OR equivalent symbolic (e.g., chmod go-r patients_export.csv / chmod go= patients_export.csv)."
+   },
+   {
+    "id": "f",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why policy item 4 (account lockout) did not stop this attack.",
+    "rubric": "1 pt: Each account received only one failed attempt. 1 pt: Lockout triggers after 5 failures per account, so spraying stays under the threshold."
+   }
+  ]
+ },
+ {
+  "id": "frq-2",
+  "title": "School library kiosk",
+  "scenario": "A high school library has a public kiosk, LIB-K3 (IP 172.16.40.22), that students use to search the catalog. The district security team runs automated monitoring and has pulled the sources below after an alert.",
+  "sources": [
+   {
+    "title": "Source A: Kiosk configuration policy",
+    "kind": "text",
+    "body": "1. Kiosks may only browse the catalog server at 172.16.10.5 over HTTPS (TCP 443).\n2. All other outbound traffic from kiosks must be blocked.\n3. Only IT may modify files in /opt/kiosk/.\n4. File integrity of /opt/kiosk/launcher.sh is checked nightly with SHA-256."
+   },
+   {
+    "title": "Source B: Host firewall outbound rules on LIB-K3 (first match wins)",
+    "kind": "table",
+    "cols": [
+     "#",
+     "Action",
+     "Direction",
+     "Protocol",
+     "Port",
+     "Destination"
+    ],
+    "rows": [
+     [
+      "1",
+      "Allow",
+      "Outbound",
+      "TCP",
+      "443",
+      "172.16.10.5"
+     ],
+     [
+      "2",
+      "Allow",
+      "Outbound",
+      "TCP",
+      "ANY",
+      "ANY"
+     ],
+     [
+      "3",
+      "Deny",
+      "Outbound",
+      "ANY",
+      "ANY",
+      "ANY"
+     ]
+    ]
+   },
+   {
+    "title": "Source C: Permissions and integrity check",
+    "kind": "code",
+    "body": "-rwxrwxrwx 1 it it 3.2K /opt/kiosk/launcher.sh\n\nNightly SHA-256 check:\n  baseline: 7c1e9a...d42f\n  tonight : b830f2...19ac   MISMATCH"
+   },
+   {
+    "title": "Source D: Network monitor log",
+    "kind": "code",
+    "body": "13:02:11 LIB-K3 -> 172.16.10.5:443   TCP  2.1 KB\n13:05:47 LIB-K3 -> 198.51.100.9:4444 TCP  open session\n13:05:48 LIB-K3 <- 198.51.100.9:4444 TCP  commands\n13:20:02 LIB-K3 -> 198.51.100.9:4444 TCP  open session"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the firewall rule in Source B that violates policy item 2.",
+    "rubric": "1 pt: Rule 2 (allows outbound TCP to ANY destination/port)."
+   },
+   {
+    "id": "b",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Using Sources C and D, determine what type of malware is most likely present. Cite evidence.",
+    "rubric": "1 pt: A remote access trojan (RAT)/backdoor providing command and control, citing the repeated outbound sessions to 198.51.100.9:4444 receiving commands AND/OR the modified launcher.sh."
+   },
+   {
+    "id": "c",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain how the permissions in Source C allowed the attack to persist, and why this violates policy.",
+    "rubric": "1 pt: 777 / rwxrwxrwx lets any user (others) write and modify launcher.sh. 1 pt: Policy says only IT may modify; a modified launcher runs at each start, giving persistence."
+   },
+   {
+    "id": "d",
+    "verb": "Write",
+    "points": 1,
+    "prompt": "Write a chmod command so only the owner (IT) can modify launcher.sh while others can still run it.",
+    "rubric": "1 pt: chmod 755 /opt/kiosk/launcher.sh, or chmod go-w (with execute retained), or equivalent."
+   },
+   {
+    "id": "e",
+    "verb": "Describe",
+    "points": 1,
+    "prompt": "Describe how the integrity check in Source C detected the compromise.",
+    "rubric": "1 pt: The nightly SHA-256 hash of launcher.sh no longer matched the known-good baseline, showing the file was altered."
+   },
+   {
+    "id": "f",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain ONE change to Source B that would have prevented the communication in Source D, and why it works.",
+    "rubric": "1 pt: Remove Rule 2 (or move Rule 3 above it / replace with a deny). 1 pt: Then only Rule 1's HTTPS to 172.16.10.5 is allowed, and traffic to 198.51.100.9:4444 hits the deny rule."
+   }
+  ]
+ },
+ {
+  "id": "frq-3",
+  "title": "Student portal web server",
+  "scenario": "A district hosts its student grade portal on WEB-01 (203.0.113.10) in a screened subnet. After parents reported seeing other students' grades, the security team pulled the sources below.",
+  "sources": [
+   {
+    "title": "Source A: Application security policy (excerpt)",
+    "kind": "text",
+    "body": "1. All user input must be validated on the server using allow lists.\n2. Database queries must use parameterized statements.\n3. The web application's database account may only read the grades table.\n4. Configuration files must be readable only by the web service owner."
+   },
+   {
+    "title": "Source B: Web access log (excerpt)",
+    "kind": "code",
+    "body": "10:14:02 GET /grades?student=10442                       200\n10:14:40 GET /grades?student=10442'                      500 (SQL syntax error)\n10:15:05 GET /grades?student=10442' OR '1'='1            200 (4,812 rows)\n10:16:30 GET /download?file=../../app/config.ini          200"
+   },
+   {
+    "title": "Source C: Database account settings",
+    "kind": "table",
+    "cols": [
+     "Account",
+     "Privileges"
+    ],
+    "rows": [
+     [
+      "webapp",
+      "SELECT, INSERT, UPDATE, DELETE on ALL tables"
+     ]
+    ]
+   },
+   {
+    "title": "Source D: File listing on WEB-01",
+    "kind": "code",
+    "body": "-rw-r--r-- 1 websvc websvc 1.1K /app/config.ini   (contains DB password)"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the attack shown in the third line of Source B.",
+    "rubric": "1 pt: SQL injection (input ' OR '1'='1 altered the query to return all rows)."
+   },
+   {
+    "id": "b",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain how the second line of Source B helped the attacker, using evidence.",
+    "rubric": "1 pt: The single quote produced a 500 SQL syntax error. 1 pt: This showed input was placed directly into the query (not parameterized), confirming the field was injectable."
+   },
+   {
+    "id": "c",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Determine which policy item in Source A is violated by the account settings in Source C.",
+    "rubric": "1 pt: Item 3: the webapp account has SELECT/INSERT/UPDATE/DELETE on all tables instead of read-only on grades."
+   },
+   {
+    "id": "d",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the attack in the fourth line of Source B.",
+    "rubric": "1 pt: Directory traversal (../ sequences used to reach config.ini outside the download folder)."
+   },
+   {
+    "id": "e",
+    "verb": "Write",
+    "points": 1,
+    "prompt": "Write a chmod command that brings config.ini into compliance with policy item 4.",
+    "rubric": "1 pt: chmod 600 /app/config.ini (or 400, or chmod go-r / go= equivalent)."
+   },
+   {
+    "id": "f",
+    "verb": "Describe",
+    "points": 2,
+    "prompt": "Describe ONE change to the application that would prevent the attack in the third line of Source B, and why it works.",
+    "rubric": "1 pt: Use parameterized queries (or server-side allow-list validation that accepts only digits for student). 1 pt: Input is treated as data, so ' OR '1'='1 cannot change the query logic."
+   }
+  ]
+ },
+ {
+  "id": "frq-4",
+  "title": "Teacher laptop",
+  "scenario": "A teacher's laptop, T-LAP-22 (10.30.2.22), began showing a ransom note on Monday morning. The incident team collected the sources below.",
+  "sources": [
+   {
+    "title": "Source A: Endpoint policy",
+    "kind": "text",
+    "body": "1. Standard users must not have local administrator rights.\n2. Operating system patches must be installed within 14 days of release.\n3. Workstations may not accept inbound remote desktop (RDP) connections.\n4. EDR must be running on every laptop."
+   },
+   {
+    "title": "Source B: Device inventory record",
+    "kind": "table",
+    "cols": [
+     "Field",
+     "Value"
+    ],
+    "rows": [
+     [
+      "User account type",
+      "Local administrator"
+     ],
+     [
+      "Last OS patch",
+      "61 days ago"
+     ],
+     [
+      "EDR status",
+      "Stopped (Sat 23:41)"
+     ],
+     [
+      "Antivirus signatures",
+      "Current"
+     ]
+    ]
+   },
+   {
+    "title": "Source C: Host firewall inbound rules (first match wins)",
+    "kind": "table",
+    "cols": [
+     "#",
+     "Action",
+     "Protocol",
+     "Port",
+     "Source"
+    ],
+    "rows": [
+     [
+      "1",
+      "Allow",
+      "TCP",
+      "3389",
+      "ANY"
+     ],
+     [
+      "2",
+      "Allow",
+      "TCP",
+      "445",
+      "10.30.0.0/16"
+     ],
+     [
+      "3",
+      "Deny",
+      "ANY",
+      "ANY",
+      "ANY"
+     ]
+    ]
+   },
+   {
+    "title": "Source D: Security log (excerpt)",
+    "kind": "code",
+    "body": "Sat 23:30 RDP LOGIN OK   user=tparker  src=198.51.100.40\nSat 23:41 SERVICE STOP name=EDR-Agent by=tparker\nSun 02:10 PROCESS      encryptor.exe  files_modified=18,204\nSun 02:55 SMB WRITE    \\\\FS-01\\shared  by=T-LAP-22"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the rule in Source C that violates the policy in Source A.",
+    "rubric": "1 pt: Rule 1 (allows inbound RDP TCP 3389 from ANY), violating item 3."
+   },
+   {
+    "id": "b",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain how the attacker was able to stop the EDR agent, citing Sources B and D.",
+    "rubric": "1 pt: The attacker logged in as tparker via RDP. 1 pt: tparker is a local administrator (violating item 1), which gave the rights to stop the EDR service."
+   },
+   {
+    "id": "c",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Determine the type of malware involved and cite evidence.",
+    "rubric": "1 pt: Ransomware, citing encryptor.exe modifying 18,204 files and/or the ransom note."
+   },
+   {
+    "id": "d",
+    "verb": "Describe",
+    "points": 1,
+    "prompt": "Describe the attack phase shown in the last line of Source D.",
+    "rubric": "1 pt: Lateral movement / spreading: the infected laptop writing to the shared file server FS-01."
+   },
+   {
+    "id": "e",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why current antivirus signatures (Source B) may not have stopped this attack.",
+    "rubric": "1 pt: Signatures only detect known malware. 1 pt: A new or modified encryptor (or misuse of legitimate admin access) would have no signature, and EDR's behavior detection was stopped."
+   },
+   {
+    "id": "f",
+    "verb": "Write",
+    "points": 1,
+    "prompt": "Write a replacement for Rule 1 that complies with policy item 3.",
+    "rubric": "1 pt: Deny inbound TCP 3389 from ANY (or simply removing Rule 1 so implicit/explicit deny applies, stated as a rule)."
+   }
+  ]
+ },
+ {
+  "id": "frq-5",
+  "title": "Library security camera (IoT)",
+  "scenario": "A library installed network cameras, including CAM-07 (172.16.60.7). The district's monitoring flagged unusual traffic from it. Analysts pulled the sources below.",
+  "sources": [
+   {
+    "title": "Source A: IoT device policy",
+    "kind": "text",
+    "body": "1. IoT devices must be on the IoT VLAN (VLAN 60) and may only send video to the recorder at 172.16.10.20 on TCP 554.\n2. Default credentials must be changed before deployment.\n3. Firmware must be updated quarterly."
+   },
+   {
+    "title": "Source B: Device configuration",
+    "kind": "table",
+    "cols": [
+     "Setting",
+     "Value"
+    ],
+    "rows": [
+     [
+      "Admin user / password",
+      "admin / admin"
+     ],
+     [
+      "Firmware date",
+      "March 2023"
+     ],
+     [
+      "VLAN",
+      "60"
+     ],
+     [
+      "Telnet service",
+      "Enabled"
+     ]
+    ]
+   },
+   {
+    "title": "Source C: IoT VLAN outbound firewall rules (first match wins)",
+    "kind": "table",
+    "cols": [
+     "#",
+     "Action",
+     "Protocol",
+     "Port",
+     "Destination"
+    ],
+    "rows": [
+     [
+      "1",
+      "Allow",
+      "TCP",
+      "554",
+      "172.16.10.20"
+     ],
+     [
+      "2",
+      "Allow",
+      "ANY",
+      "ANY",
+      "ANY"
+     ]
+    ]
+   },
+   {
+    "title": "Source D: Flow log",
+    "kind": "code",
+    "body": "03:00:01 172.16.60.7 -> 203.0.113.99:6667  TCP  session open\n03:00:05 203.0.113.99 -> 172.16.60.7      'flood 198.51.100.5'\n03:00:06 172.16.60.7 -> 198.51.100.5:80   TCP  9,800 pkts/sec"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify TWO settings in Source B that violate Source A.",
+    "rubric": "1 pt: Any two of: default credentials admin/admin (item 2); firmware from March 2023 not updated quarterly (item 3). (Telnet enabled also acceptable as an insecure setting.) Both must be named for the point."
+   },
+   {
+    "id": "b",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Determine what role CAM-07 is playing based on Source D.",
+    "rubric": "1 pt: It is a compromised bot in a botnet, receiving commands (C2) from 203.0.113.99 and participating in a DDoS against 198.51.100.5."
+   },
+   {
+    "id": "c",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why the firewall in Source C did not stop the traffic in Source D.",
+    "rubric": "1 pt: Rule 2 allows ANY outbound to ANY. 1 pt: The traffic to 203.0.113.99 and 198.51.100.5 does not match Rule 1 but matches Rule 2 and is allowed (first match wins)."
+   },
+   {
+    "id": "d",
+    "verb": "Write",
+    "points": 1,
+    "prompt": "Write a replacement for Rule 2 that enforces policy item 1.",
+    "rubric": "1 pt: Deny outbound ANY ANY to ANY (or equivalent catch-all deny)."
+   },
+   {
+    "id": "e",
+    "verb": "Describe",
+    "points": 1,
+    "prompt": "Describe the evidence in Source D that indicates a denial-of-service attack.",
+    "rubric": "1 pt: CAM-07 sends about 9,800 packets per second to 198.51.100.5 port 80 after receiving a 'flood' command."
+   },
+   {
+    "id": "f",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain how the VLAN placement in Source B limited the impact of this compromise.",
+    "rubric": "1 pt: The camera is isolated on IoT VLAN 60. 1 pt: Segmentation limits its ability to reach internal systems (e.g., student records), containing lateral movement even though outbound rules were too open."
+   }
+  ]
+ },
+ {
+  "id": "frq-6",
+  "title": "Finance file server",
+  "scenario": "The district finance office file server, FS-FIN (10.40.1.5), stores payroll spreadsheets. The nightly integrity scan and DLP system generated alerts. Analysts pulled the sources below.",
+  "sources": [
+   {
+    "title": "Source A: Data protection policy",
+    "kind": "text",
+    "body": "1. Payroll files are Restricted: only the Payroll role may read or write them.\n2. Restricted data may not leave the network by email or web upload.\n3. File integrity of /payroll/rates.xlsx is verified nightly with SHA-256."
+   },
+   {
+    "title": "Source B: Permissions",
+    "kind": "code",
+    "body": "-rw-rw-r-- 1 payroll payroll 88K /payroll/rates.xlsx\n-rw-rw-r-- 1 payroll payroll 2.3M /payroll/salaries_2027.xlsx"
+   },
+   {
+    "title": "Source C: Integrity and DLP alerts",
+    "kind": "code",
+    "body": "02:00 FIM  /payroll/rates.xlsx  baseline 4be1...9a0c  now 77d2...e115  MISMATCH\n14:22 DLP  BLOCKED upload salaries_2027.xlsx -> personal-drive.example  user=kwong (Facilities)"
+   },
+   {
+    "title": "Source D: Access log",
+    "kind": "code",
+    "body": "Account kwong: role=Facilities  groups=facilities, payroll (added 2025 for a temporary project; never removed)\n\nTue 21:47 OPEN  /payroll/rates.xlsx         user=kwong  WRITE\nWed 14:21 OPEN  /payroll/salaries_2027.xlsx user=kwong  READ"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain how user kwong was able to read and modify payroll files, citing Sources B and D.",
+    "rubric": "1 pt: kwong is still a member of the payroll group (never removed), and the files give the group read/write (rw- in 664), allowing the WRITE. 1 pt: This violates item 1 because kwong's role is Facilities, not Payroll; access should have been removed in an access review (others also have read via r-- in 664)."
+   },
+   {
+    "id": "b",
+    "verb": "Describe",
+    "points": 1,
+    "prompt": "Describe how the change to rates.xlsx was detected.",
+    "rubric": "1 pt: The nightly SHA-256 hash no longer matched the known-good baseline (file integrity monitoring)."
+   },
+   {
+    "id": "c",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Determine what the DLP alert in Source C indicates.",
+    "rubric": "1 pt: Attempted exfiltration of Restricted payroll data to a personal cloud drive, blocked per policy item 2."
+   },
+   {
+    "id": "d",
+    "verb": "Write",
+    "points": 1,
+    "prompt": "Write a chmod command so only the owner and group can read and write salaries_2027.xlsx.",
+    "rubric": "1 pt: chmod 660 /payroll/salaries_2027.xlsx (or chmod o-r / o= equivalent)."
+   },
+   {
+    "id": "e",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the access control model that policy item 1 describes.",
+    "rubric": "1 pt: Role-based access control (RBAC)."
+   },
+   {
+    "id": "f",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why the hash mismatch alone does not tell investigators who changed the file, and which source fills the gap.",
+    "rubric": "1 pt: A hash only shows that content changed, not who changed it. 1 pt: The access/accounting log (Source D) shows kwong opened rates.xlsx with WRITE at 21:47."
+   }
+  ]
+ },
+ {
+  "id": "frq-7",
+  "title": "Front office Wi-Fi router",
+  "scenario": "A middle school's front office uses router RTR-FO (192.168.50.1) for staff Wi-Fi. A parent in the parking lot noticed they could see the network. The IT technician gathered the sources below.",
+  "sources": [
+   {
+    "title": "Source A: Wireless security standard",
+    "kind": "text",
+    "body": "1. Staff Wi-Fi must use WPA3 (or WPA2 at minimum) with AES.\n2. WPS must be disabled.\n3. The admin interface may only be reached from the IT subnet 192.168.99.0/24.\n4. Signal should not extend meaningfully beyond the building."
+   },
+   {
+    "title": "Source B: Router configuration",
+    "kind": "table",
+    "cols": [
+     "Setting",
+     "Value"
+    ],
+    "rows": [
+     [
+      "Security mode",
+      "WEP"
+     ],
+     [
+      "WPS",
+      "Enabled"
+     ],
+     [
+      "Transmit power",
+      "100%"
+     ],
+     [
+      "Admin password",
+      "Changed (complex)"
+     ]
+    ]
+   },
+   {
+    "title": "Source C: Router admin access rules (first match wins)",
+    "kind": "table",
+    "cols": [
+     "#",
+     "Action",
+     "Protocol",
+     "Port",
+     "Source"
+    ],
+    "rows": [
+     [
+      "1",
+      "Allow",
+      "TCP",
+      "443",
+      "192.168.99.0/24"
+     ],
+     [
+      "2",
+      "Allow",
+      "TCP",
+      "443",
+      "ANY"
+     ],
+     [
+      "3",
+      "Deny",
+      "ANY",
+      "ANY",
+      "ANY"
+     ]
+    ]
+   },
+   {
+    "title": "Source D: Router log",
+    "kind": "code",
+    "body": "16:02 WPS PIN attempt FAIL  mac=AA:BB:CC:10:20:30\n16:02 WPS PIN attempt FAIL  mac=AA:BB:CC:10:20:30\n   ... 11,400 more attempts ...\n19:48 WPS PIN attempt OK    mac=AA:BB:CC:10:20:30\n19:49 DHCP lease 192.168.50.77 mac=AA:BB:CC:10:20:30"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify ONE setting in Source B that violates Source A item 1 or 2.",
+    "rubric": "1 pt: Security mode WEP (item 1) OR WPS enabled (item 2)."
+   },
+   {
+    "id": "b",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Determine what attack Source D shows and whether it succeeded.",
+    "rubric": "1 pt: A brute-force attack on the WPS PIN that succeeded at 19:48, after which the device joined the network (DHCP lease)."
+   },
+   {
+    "id": "c",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why Rule 1 in Source C does not restrict admin access as the standard requires.",
+    "rubric": "1 pt: Rule 2 allows TCP 443 from ANY. 1 pt: Traffic from outside the IT subnet doesn't match Rule 1 but matches Rule 2 and is allowed; Rule 2 should be removed or changed to deny."
+   },
+   {
+    "id": "d",
+    "verb": "Describe",
+    "points": 1,
+    "prompt": "Describe ONE configuration change that addresses Source A item 4.",
+    "rubric": "1 pt: Lower transmit power and/or reposition or redirect antennas so coverage stays inside the building."
+   },
+   {
+    "id": "e",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why changing the admin password did not protect the Wi-Fi network from the attack in Source D.",
+    "rubric": "1 pt: The attack targeted WPS, not the admin login. 1 pt: A successful WPS PIN gives network access/the Wi-Fi key regardless of the admin password; WPS must be disabled."
+   },
+   {
+    "id": "f",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the IP address assigned to the attacker's device.",
+    "rubric": "1 pt: 192.168.50.77."
+   }
+  ]
+ },
+ {
+  "id": "frq-8",
+  "title": "Cafeteria point-of-sale terminal",
+  "scenario": "The school cafeteria uses a point-of-sale terminal, POS-02 (10.70.3.2), to take card payments for lunch accounts. The payment processor reported possible card fraud traced to the school. Analysts collected the sources below.",
+  "sources": [
+   {
+    "title": "Source A: Payment device policy",
+    "kind": "text",
+    "body": "1. Card data must be encrypted from the card reader to the processor.\n2. POS terminals may send traffic only to the processor at 198.51.100.200 on TCP 443.\n3. Only approved, signed software may be installed on POS terminals.\n4. Stored card numbers are prohibited."
+   },
+   {
+    "title": "Source B: POS-02 outbound firewall rules (first match wins)",
+    "kind": "table",
+    "cols": [
+     "#",
+     "Action",
+     "Protocol",
+     "Port",
+     "Destination"
+    ],
+    "rows": [
+     [
+      "1",
+      "Allow",
+      "TCP",
+      "443",
+      "198.51.100.200"
+     ],
+     [
+      "2",
+      "Allow",
+      "TCP",
+      "21",
+      "ANY"
+     ],
+     [
+      "3",
+      "Deny",
+      "ANY",
+      "ANY",
+      "ANY"
+     ]
+    ]
+   },
+   {
+    "title": "Source C: Installed software check",
+    "kind": "table",
+    "cols": [
+     "Program",
+     "Signed by vendor?",
+     "SHA-256 matches approved list?"
+    ],
+    "rows": [
+     [
+      "pos_client.exe",
+      "Yes",
+      "Yes"
+     ],
+     [
+      "printer_helper.exe",
+      "No",
+      "No (not on list)"
+     ]
+    ]
+   },
+   {
+    "title": "Source D: Host log (excerpt)",
+    "kind": "code",
+    "body": "Mon 07:02 PROCESS printer_helper.exe reading memory of pos_client.exe\nMon 11:30 FILE    C:\\temp\\cards.txt  size=48 KB  (16-digit numbers)\nMon 23:00 FTP OUT  cards.txt -> 203.0.113.61:21  OK"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the program in Source C that violates policy item 3, and the evidence.",
+    "rubric": "1 pt: printer_helper.exe: not signed by the vendor and its hash is not on the approved list."
+   },
+   {
+    "id": "b",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Determine what printer_helper.exe is doing, using Source D.",
+    "rubric": "1 pt: It is malware (memory scraper/trojan) reading card data from pos_client.exe memory and saving card numbers to cards.txt."
+   },
+   {
+    "id": "c",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain how the card data left the terminal, citing Sources B and D.",
+    "rubric": "1 pt: cards.txt was sent by FTP (port 21) to 203.0.113.61. 1 pt: Rule 2 allows outbound TCP 21 to ANY, so it matched before the deny in Rule 3."
+   },
+   {
+    "id": "d",
+    "verb": "Write",
+    "points": 1,
+    "prompt": "Write a firewall change that enforces policy item 2.",
+    "rubric": "1 pt: Remove Rule 2 or change it to Deny outbound TCP 21 to ANY (so only Rule 1 traffic is allowed)."
+   },
+   {
+    "id": "e",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why encrypting card data in transit (policy item 1) did not prevent this theft.",
+    "rubric": "1 pt: The malware read card data from memory on the terminal, where it was decrypted/in use. 1 pt: Encryption in transit protects data on the network, not data being processed on a compromised device."
+   },
+   {
+    "id": "f",
+    "verb": "Describe",
+    "points": 1,
+    "prompt": "Describe ONE detection method that could have caught printer_helper.exe earlier.",
+    "rubric": "1 pt: Application allow-listing/hash checks against the approved list, EDR alerting on a process reading another process's memory, or DLP/file monitoring for files of card numbers."
+   }
+  ]
+ },
+ {
+  "id": "frq-9",
+  "title": "District email login",
+  "scenario": "Several teachers reported their accounts locked out, and one account sent phishing emails to parents. The district's email login service, MAIL-01, produced the sources below.",
+  "sources": [
+   {
+    "title": "Source A: Account security policy",
+    "kind": "text",
+    "body": "1. Passwords must be at least 14 characters.\n2. Accounts lock for 15 minutes after 5 failed attempts.\n3. MFA is required for all staff accounts.\n4. Logins from outside the U.S. must be reviewed."
+   },
+   {
+    "title": "Source B: Login settings",
+    "kind": "table",
+    "cols": [
+     "Setting",
+     "Value"
+    ],
+    "rows": [
+     [
+      "Minimum length",
+      "8"
+     ],
+     [
+      "Lockout threshold",
+      "5 failures"
+     ],
+     [
+      "MFA",
+      "Required for admins only"
+     ],
+     [
+      "Geo alerts",
+      "Enabled"
+     ]
+    ]
+   },
+   {
+    "title": "Source C: Authentication log (excerpt)",
+    "kind": "code",
+    "body": "09:00:01 FAIL user=abaker   src=185.220.101.9\n09:00:01 FAIL user=bchen    src=185.220.101.9\n09:00:02 FAIL user=cdiaz    src=185.220.101.9\n   ... one attempt each for 1,940 users ...\n09:00:44 OK   user=mfoster  src=185.220.101.9 (country: outside U.S.)\n09:05:12 SEND user=mfoster  to=412 parent addresses"
+   },
+   {
+    "title": "Source D: Helpdesk tickets",
+    "kind": "code",
+    "body": "09:10 abaker: 'locked out'   (abaker had 4 earlier typos this morning)\n09:12 cdiaz:  'locked out'   (cdiaz had 4 earlier typos this morning)"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the password attack in Source C.",
+    "rubric": "1 pt: Password spraying (one attempt each across many accounts from one IP)."
+   },
+   {
+    "id": "b",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Determine which TWO settings in Source B violate Source A.",
+    "rubric": "1 pt: Minimum length 8 (item 1 requires 14) AND MFA required only for admins (item 3 requires all staff). Both needed."
+   },
+   {
+    "id": "c",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why the attacker could log in as mfoster even though lockout was set to 5 failures.",
+    "rubric": "1 pt: Spraying made only one attempt against mfoster, staying under the lockout threshold. 1 pt: The common password guessed was correct and, with no MFA for staff, the password alone was enough."
+   },
+   {
+    "id": "d",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why abaker and cdiaz were locked out while most accounts were not, using Sources C and D.",
+    "rubric": "1 pt: They already had 4 failed attempts from their own typos. 1 pt: The single spraying attempt was their 5th failure, triggering lockout."
+   },
+   {
+    "id": "e",
+    "verb": "Describe",
+    "points": 1,
+    "prompt": "Describe what happened after the successful login.",
+    "rubric": "1 pt: The attacker used mfoster's account to send emails (phishing) to 412 parent addresses."
+   },
+   {
+    "id": "f",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify ONE indicator in Source C that should have triggered policy item 4.",
+    "rubric": "1 pt: The successful login for mfoster came from an IP outside the U.S. (185.220.101.9)."
+   }
+  ]
+ },
+ {
+  "id": "frq-10",
+  "title": "Research lab Linux workstation",
+  "scenario": "A high school robotics lab workstation, LAB-LX3 (10.80.4.3), allows SSH logins with keys. After the team's code repository was changed without permission, the lab advisor collected the sources below.",
+  "sources": [
+   {
+    "title": "Source A: Lab access policy",
+    "kind": "text",
+    "body": "1. SSH logins must use key pairs; password logins are disabled.\n2. Private keys must be readable only by their owner.\n3. SSH is allowed only from the lab subnet 10.80.4.0/24.\n4. Commits to the main repository must be signed."
+   },
+   {
+    "title": "Source B: File listing in /home/team/.ssh",
+    "kind": "code",
+    "body": "-rw-r--r-- 1 team team  411 id_ed25519        (private key)\n-rw-r--r-- 1 team team   98 id_ed25519.pub    (public key)\n-rw-rw-rw- 1 team team  198 authorized_keys"
+   },
+   {
+    "title": "Source C: Inbound firewall rules (first match wins)",
+    "kind": "table",
+    "cols": [
+     "#",
+     "Action",
+     "Protocol",
+     "Port",
+     "Source"
+    ],
+    "rows": [
+     [
+      "1",
+      "Allow",
+      "TCP",
+      "22",
+      "10.80.4.0/24"
+     ],
+     [
+      "2",
+      "Deny",
+      "ANY",
+      "ANY",
+      "ANY"
+     ]
+    ]
+   },
+   {
+    "title": "Source D: SSH and repository log",
+    "kind": "code",
+    "body": "Thu 15:40 authorized_keys modified by user=guest01\nThu 22:13 SSH OK user=team key=unknown-key-7f3a src=10.80.4.51\nThu 22:20 COMMIT main  by=team  signature=NONE"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the file in Source B whose permissions violate policy item 2.",
+    "rubric": "1 pt: id_ed25519 (the private key) is rw-r--r--, readable by group and others."
+   },
+   {
+    "id": "b",
+    "verb": "Write",
+    "points": 1,
+    "prompt": "Write a chmod command to fix the private key's permissions.",
+    "rubric": "1 pt: chmod 600 /home/team/.ssh/id_ed25519 (or 400, or go= / go-r equivalent)."
+   },
+   {
+    "id": "c",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain how guest01 was able to add access for an unknown key, citing Sources B and D.",
+    "rubric": "1 pt: authorized_keys is rw-rw-rw- (666), writable by others. 1 pt: guest01 modified it at 15:40 to add their own public key, which was then used to log in as team at 22:13."
+   },
+   {
+    "id": "d",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Determine why the firewall in Source C did not block the 22:13 login.",
+    "rubric": "1 pt: The source 10.80.4.51 is inside the allowed lab subnet 10.80.4.0/24, so Rule 1 permitted it (an insider on the lab network)."
+   },
+   {
+    "id": "e",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain how requiring signed commits (policy item 4) would help detect the unauthorized change.",
+    "rubric": "1 pt: A signature is made with the developer's private key and verified with their public key. 1 pt: The 22:20 commit has signature=NONE, so it can't be verified as coming from an authorized team member and should be rejected/flagged."
+   },
+   {
+    "id": "f",
+    "verb": "Describe",
+    "points": 1,
+    "prompt": "Describe what someone could do if they copied the readable private key in Source B.",
+    "rubric": "1 pt: Use it to authenticate as the team account (to LAB-LX3 or any system trusting the matching public key), impersonating the owner."
+   }
+  ]
+ },
+ {
+  "id": "frq-11",
+  "title": "District website under attack",
+  "scenario": "On the morning of course registration, the district's public web server, WWW-01 (203.0.113.80), became unreachable. The network team pulled the sources below.",
+  "sources": [
+   {
+    "title": "Source A: Network security standard",
+    "kind": "text",
+    "body": "1. Directed broadcasts must be blocked at all routers.\n2. Inbound ICMP to servers must be rate-limited.\n3. The web server accepts only TCP 80 and 443 from the internet.\n4. The IDS must alert analysts within 5 minutes of an attack."
+   },
+   {
+    "title": "Source B: Edge firewall inbound rules (first match wins)",
+    "kind": "table",
+    "cols": [
+     "#",
+     "Action",
+     "Protocol",
+     "Port",
+     "Destination"
+    ],
+    "rows": [
+     [
+      "1",
+      "Allow",
+      "ICMP",
+      "ANY",
+      "ANY"
+     ],
+     [
+      "2",
+      "Allow",
+      "TCP",
+      "80",
+      "203.0.113.80"
+     ],
+     [
+      "3",
+      "Allow",
+      "TCP",
+      "443",
+      "203.0.113.80"
+     ],
+     [
+      "4",
+      "Deny",
+      "ANY",
+      "ANY",
+      "ANY"
+     ]
+    ]
+   },
+   {
+    "title": "Source C: NIDS / SIEM alerts",
+    "kind": "code",
+    "body": "07:58 NIDS anomaly  ICMP echo-reply to 203.0.113.80  rate=420,000/s (baseline 40/s)\n07:58 NIDS anomaly  sources: 3,700 hosts on subnet 192.0.2.0/24\n08:41 SIEM ticket created for analyst review"
+   },
+   {
+    "title": "Source D: Router log at partner network 192.0.2.1",
+    "kind": "code",
+    "body": "07:57 ICMP echo-request  src=203.0.113.80 (spoofed)  dst=192.0.2.255 (broadcast)  forwarded"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the attack, using Sources C and D.",
+    "rubric": "1 pt: A smurf attack (ICMP requests sent to a broadcast address with the victim's spoofed IP, so many hosts reply to the victim)."
+   },
+   {
+    "id": "b",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why so many hosts sent traffic to WWW-01.",
+    "rubric": "1 pt: The attacker sent echo requests to the broadcast address 192.0.2.255 with WWW-01's IP as the spoofed source. 1 pt: The router forwarded the directed broadcast, so every host on that subnet replied to WWW-01."
+   },
+   {
+    "id": "c",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Determine which rule in Source B allowed the flood to reach the server.",
+    "rubric": "1 pt: Rule 1 (Allow ICMP ANY to ANY)."
+   },
+   {
+    "id": "d",
+    "verb": "Write",
+    "points": 1,
+    "prompt": "Write a rule change for Source B that complies with standard item 3.",
+    "rubric": "1 pt: Change Rule 1 to Deny inbound ICMP to 203.0.113.80 (or remove Rule 1 so implicit/explicit deny applies, or rate-limit per item 2), stated as a concrete rule."
+   },
+   {
+    "id": "e",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain whether the detection in Source C met standard item 4, citing evidence.",
+    "rubric": "1 pt: No. 1 pt: The NIDS detected the anomaly at 07:58 but the SIEM ticket for analysts was created at 08:41, 43 minutes later, exceeding 5 minutes."
+   },
+   {
+    "id": "f",
+    "verb": "Describe",
+    "points": 1,
+    "prompt": "Describe which CIA property this attack affected and how.",
+    "rubric": "1 pt: Availability: the flood made the website unreachable during registration."
+   }
+  ]
+ },
+ {
+  "id": "frq-12",
+  "title": "Principal's laptop on travel",
+  "scenario": "The principal used a laptop, ADM-LAP1, at a conference hotel. Days later the principal's cloud account was accessed from abroad. The IT team reviewed the sources below.",
+  "sources": [
+   {
+    "title": "Source A: Mobile device policy",
+    "kind": "text",
+    "body": "1. All traffic must go through the district VPN when off campus (no split tunneling).\n2. The host firewall must block all inbound connections on untrusted networks.\n3. Users must not bypass browser certificate warnings.\n4. Cloud accounts require MFA."
+   },
+   {
+    "title": "Source B: Laptop configuration",
+    "kind": "table",
+    "cols": [
+     "Setting",
+     "Value"
+    ],
+    "rows": [
+     [
+      "VPN",
+      "Installed; split tunneling ON"
+     ],
+     [
+      "Host firewall profile on hotel Wi-Fi",
+      "Private (inbound file sharing allowed)"
+     ],
+     [
+      "Wi-Fi auto-join",
+      "On for open networks"
+     ]
+    ]
+   },
+   {
+    "title": "Source C: Wi-Fi and browser history",
+    "kind": "code",
+    "body": "Tue 19:02 Joined SSID 'Grand_Hotel_Guest'  (BSSID 02:1A:7C:..., unknown vendor)\nTue 19:05 Browser WARNING: certificate not valid for cloud.example.edu  -> user clicked 'Proceed anyway'\nTue 19:06 Signed in to cloud.example.edu"
+   },
+   {
+    "title": "Source D: Cloud account log",
+    "kind": "code",
+    "body": "Tue 19:06 LOGIN OK  user=principal  src=hotel IP   MFA=not enrolled\nFri 03:30 LOGIN OK  user=principal  src=91.198.4.17 (abroad)  MFA=not enrolled\nFri 03:34 DOWNLOAD  /staff/evaluations/*  (220 files)"
+   }
+  ],
+  "parts": [
+   {
+    "id": "a",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the wireless attack most likely used at the hotel, citing Source C.",
+    "rubric": "1 pt: An evil twin / rogue access point: the laptop auto-joined 'Grand_Hotel_Guest' from an unknown vendor BSSID."
+   },
+   {
+    "id": "b",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain how the attacker obtained the principal's cloud password, using Source C.",
+    "rubric": "1 pt: The attacker was on-path through the fake AP and presented a fake certificate for cloud.example.edu. 1 pt: The user bypassed the certificate warning (violating item 3) and entered credentials into the attacker-controlled connection."
+   },
+   {
+    "id": "c",
+    "verb": "Determine",
+    "points": 1,
+    "prompt": "Determine ONE setting in Source B that violates Source A.",
+    "rubric": "1 pt: Split tunneling ON (item 1) OR firewall profile allowing inbound file sharing on hotel Wi-Fi (item 2)."
+   },
+   {
+    "id": "d",
+    "verb": "Explain",
+    "points": 2,
+    "prompt": "Explain why the VPN did not protect this login.",
+    "rubric": "1 pt: With split tunneling on, traffic to cloud.example.edu went directly over the hotel network instead of through the VPN. 1 pt: It was therefore exposed to the on-path evil twin."
+   },
+   {
+    "id": "e",
+    "verb": "Describe",
+    "points": 1,
+    "prompt": "Describe what policy item 4 would have prevented on Friday, citing Source D.",
+    "rubric": "1 pt: With MFA, the stolen password alone would not allow the 03:30 login from abroad, preventing the download of 220 evaluation files."
+   },
+   {
+    "id": "f",
+    "verb": "Identify",
+    "points": 1,
+    "prompt": "Identify the indicator of compromise in Source D.",
+    "rubric": "1 pt: A successful login at 03:30 from an IP abroad (91.198.4.17) followed by bulk download of 220 files."
+   }
+  ]
+ }
+]
