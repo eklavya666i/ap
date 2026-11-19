@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SAT Daily</title>
+<!--__HEAD__-->
+<!--__FONTS__-->
+<style>
+/* VOICE everyday study tool: calm, exact, no fuss
+   IDEA the SAT answer sheet and a #2 pencil: bubbles to fill in, a teacher's pen for the marks
+   PICTURE the live question card itself; an 8-week bubble calendar as the consistency record
+   COLOUR paper white, graphite ink, pencil-yellow band, red-pen misses, green checks
+   TYPE Archivo (form lettering, numbers) + Source Serif 4 (passages and math)
+   LAYOUT laptop: question card left, record column right; phone: band, card, record */
+:root{color-scheme:light;--bg:#fff;--ink:#1c1d20;--soft:#5b5e66;--line:#dcdcdf;--panel:#f4f4f1;--fill:#26272b;--onfill:#fff;--band:#ffc72c;--pen:#c8102e;--penbg:#fcebee;--ok:#127a45;--okbg:#e8f5ee}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#121316;--ink:#ecebe6;--soft:#a6a9b0;--line:#30323a;--panel:#1b1d22;--fill:#e8e6df;--onfill:#121316;--band:#f0b91c;--pen:#ff6b6b;--penbg:#2b1518;--ok:#4cc685;--okbg:#13261b}}
+:root[data-theme=dark]{color-scheme:dark;--bg:#121316;--ink:#ecebe6;--soft:#a6a9b0;--line:#30323a;--panel:#1b1d22;--fill:#e8e6df;--onfill:#121316;--band:#f0b91c;--pen:#ff6b6b;--penbg:#2b1518;--ok:#4cc685;--okbg:#13261b}
+*{box-sizing:border-box;min-width:0}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Archivo,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:clip}
+.band{background:var(--band);color:#1c1d20;border-bottom:2px solid #1c1d20;padding:calc(18px + env(safe-area-inset-top)) max(5vw,16px,env(safe-area-inset-right)) 16px max(5vw,16px,env(safe-area-inset-left))}
+.band .in{max-width:1240px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+h1{font:800 clamp(32px,5vw,46px)/1.02 Archivo,system-ui,sans-serif;font-stretch:80%;letter-spacing:-.02em;margin:0}
+.band .sub{margin:6px 0 0;font-size:15px;max-width:44ch}
+.stk{text-align:right}
+.stk .num{display:flex;align-items:baseline;justify-content:flex-end;gap:8px}
+.stk b{font:800 clamp(38px,6vw,56px)/1 Archivo,system-ui,sans-serif;font-stretch:78%;font-variant-numeric:tabular-nums}
+.stk span{font-size:15px;font-weight:600}
+.stk p{margin:2px 0 0;font-size:14px}
+.wrap{max-width:1240px;margin:0 auto;padding:24px max(5vw,16px,env(safe-area-inset-right)) 36px max(5vw,16px,env(safe-area-inset-left));display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start}
+.card{border:1.5px solid var(--ink);border-radius:14px;padding:clamp(16px,3vw,28px);container-type:inline-size}
+.qh{display:flex;justify-content:space-between;align-items:center;gap:10px 16px;flex-wrap:wrap}
+.qn{font:700 15px Archivo,system-ui,sans-serif;margin:0;outline:none}
+.qn b{font-size:20px}
+.dots{display:flex;gap:6px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.dots li{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font:700 12px/1 Archivo,system-ui,sans-serif;color:var(--soft)}
+.dots li.at{border-color:var(--ink);border-width:2.5px;color:var(--ink)}
+.dots li.ok{background:var(--fill);border-color:var(--fill);color:var(--onfill)}
+.dots li.no{border-color:var(--pen);color:var(--pen)}
+.qm{margin:10px 0 20px;font-size:14px;color:var(--soft)}
+.qm b{color:var(--ink)}
+.tag{display:inline-block;border:1.5px solid var(--pen);color:var(--pen);border-radius:99px;padding:0 9px;margin-left:8px;font-size:13px;font-weight:700}
+.qg{display:grid;gap:20px}
+@container (min-width:700px){.qg.two{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:32px}.qg.two .src{border-right:1px solid var(--line);padding-right:32px}}
+.src{font:17px/1.62 "Source Serif 4",Georgia,serif}
+.src p{margin:0 0 12px}
+.src .tl{font:700 14px Archivo,system-ui,sans-serif;margin:0 0 2px}
+.notes{margin:0 0 12px;padding-left:20px}
+.notes li{margin:0 0 6px}
+.blank{display:inline-block;width:5em;border-bottom:1.5px solid currentColor;margin:0 3px;vertical-align:-2px}
+u{text-decoration-thickness:1.5px;text-underline-offset:3px}
+.stem{font:600 17px/1.5 Archivo,system-ui,sans-serif;margin:0 0 14px}
+.src .stem{font:17px/1.62 "Source Serif 4",Georgia,serif}
+.eqs{margin:6px 0 14px;padding:12px 16px;background:var(--panel);border-radius:10px;font:19px/1.75 "Source Serif 4",Georgia,serif;text-align:center}
+.scroll{overflow-x:auto;margin:4px 0 12px}
+.dt{border-collapse:collapse;font:15px/1.4 Archivo,system-ui,sans-serif}
+.dt caption{caption-side:top;text-align:left;font-weight:700;font-size:14px;padding-bottom:6px}
+.dt th,.dt td{border:1px solid var(--line);padding:6px 12px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dt th:first-child{text-align:left}
+.dt thead th{background:var(--panel)}
+.dt tbody th{font-weight:600}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;line-height:1.15;margin:0 2px;font-size:.92em}
+.fr>span:first-child{border-bottom:1.3px solid currentColor;padding:0 3px}
+.fr>span:last-child{padding:0 3px}
+.chs{display:grid;gap:10px}
+.ch{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;font:16px/1.45 Archivo,system-ui,sans-serif;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;min-height:50px;cursor:pointer}
+.chs.m .ct{font:18px/1.45 "Source Serif 4",Georgia,serif}
+@media (hover:hover){.ch:hover:not(:disabled){border-color:var(--ink)}.rows button:hover{background:var(--panel)}}
+.ch:focus-visible,.btn:focus-visible,.rows button:focus-visible,.spr input:focus-visible{outline:3px solid var(--band);outline-offset:2px}
+.bub{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;font:700 14px/1 Archivo,system-ui,sans-serif;transition:background-color .16s,color .16s,transform .16s}
+.ct{flex:1;padding-top:3px;overflow-wrap:anywhere}
+.ch[aria-pressed=true]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.ch[aria-pressed=true] .bub{background:var(--fill);border-color:var(--fill);color:var(--onfill);transform:scale(1.06)}
+.ch:disabled{cursor:default}
+.ch.right{border-color:var(--ok);background:var(--okbg);box-shadow:none}
+.ch.right .bub{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.ch.wrong{border-color:var(--pen);background:var(--penbg);box-shadow:none}
+.ch.wrong .bub{background:var(--pen);border-color:var(--pen);color:var(--bg)}
+.ch.dim{opacity:.55}
+.mk{flex:none;font:800 18px/1.4 Archivo,system-ui,sans-serif}
+.ch.right .mk{color:var(--ok)}.ch.wrong .mk{color:var(--pen)}
+.spr{display:flex;gap:10px 14px;align-items:center;flex-wrap:wrap}
+.lab{font-weight:700;font-size:15px}
+.spr input{font:20px/1.2 Archivo,system-ui,sans-serif;width:10em;max-width:100%;padding:11px 12px;border:1.5px solid var(--ink);border-radius:10px;background:var(--bg);color:var(--ink)}
+.spr input.right{border-color:var(--ok);background:var(--okbg)}.spr input.wrong{border-color:var(--pen);background:var(--penbg)}
+.hint{font-size:14px;color:var(--soft);margin:8px 0 0}
+.hint.err{color:var(--pen);font-weight:600}
+.act{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+.btn{font:700 16px Archivo,system-ui,sans-serif;min-height:48px;padding:0 24px;border-radius:999px;border:1.5px solid var(--fill);background:var(--fill);color:var(--onfill);cursor:pointer}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.fb{margin-top:22px;border-top:1.5px solid var(--line);padding-top:16px;animation:rise .22s ease-out}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.vd{font:800 24px/1.2 Archivo,system-ui,sans-serif;margin:0 0 2px}
+.vd.ok{color:var(--ok)}.vd.no{color:var(--pen)}
+.pace{font-size:14px;color:var(--soft);margin:0 0 6px}
+.fb h3{font:700 16px Archivo,system-ui,sans-serif;margin:14px 0 4px}
+.fb p{margin:0 0 8px;max-width:70ch}
+.fb details{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.fb summary{cursor:pointer;font-weight:700;min-height:26px}
+.fb details p{margin:8px 0 0}
+.back{font-size:14px;color:var(--soft);margin-top:14px!important}
+.res .big{font:800 clamp(64px,11vw,92px)/1 Archivo,system-ui,sans-serif;font-stretch:78%;letter-spacing:-.02em;margin:8px 0 0}
+.res .big span{font-size:.42em;color:var(--soft);margin-left:4px}
+.res .sub{color:var(--soft);margin:6px 0 18px}
+.rows{list-style:none;margin:6px 0 0;padding:0;border-top:1px solid var(--line)}
+.rows button{display:grid;grid-template-columns:22px 24px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:9px 4px;font:15px/1.3 Archivo,system-ui,sans-serif;color:var(--ink);cursor:pointer;min-height:52px}
+.rows .n{color:var(--soft);font-variant-numeric:tabular-nums}
+.rows .k{font-weight:800;font-size:18px}.rows .k.ok{color:var(--ok)}.rows .k.no{color:var(--pen)}
+.rows .s b{display:block;font-weight:700}.rows .s small{color:var(--soft);font-size:13px}
+.rows .t{color:var(--soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+.note{font-size:15px;margin:14px 0 0}
+.rec section{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:18px}
+.rec h2{font:800 19px/1.2 Archivo,system-ui,sans-serif;margin:0 0 12px}
+.cal{display:grid;grid-template-columns:auto repeat(7,minmax(0,1fr));gap:6px;align-items:center}
+.cal .hd{font-size:13px;color:var(--soft);text-align:center;font-weight:600}
+.cal .wk{font-size:13px;color:var(--soft);white-space:nowrap;padding-right:4px}
+.cal i{display:block;width:100%;max-width:26px;aspect-ratio:1;justify-self:center;border-radius:50%;border:1.5px solid var(--line)}
+.cal i.d{background:var(--fill);border-color:var(--fill)}
+.cal i.t{border:2.5px solid var(--pen)}
+.cal i.t.d{border-color:var(--fill);box-shadow:0 0 0 2.5px var(--band)}
+.cal i.f{border-style:dashed;opacity:.55}
+.meta{font-size:14px;color:var(--soft);margin:12px 0 0}
+.grp{font-size:13px;font-weight:700;color:var(--soft);margin:12px 0 2px}
+.ar{display:grid;grid-template-columns:minmax(0,1fr) 64px 40px;gap:10px;align-items:center;font-size:14px;line-height:1.25;padding:5px 0}
+.ar .bar{height:8px;border-radius:4px;background:var(--panel);border:1px solid var(--line);overflow:hidden}
+.ar .bar i{display:block;height:100%;background:var(--fill)}
+.ar .pc{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.sync{font-size:14px;color:var(--soft);margin:0}
+.bk{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn.sm{min-height:44px;padding:0 16px;font-size:15px;display:inline-flex;align-items:center}
+.bk label.btn:focus-within{outline:3px solid var(--band);outline-offset:2px}
+footer{max-width:1240px;margin:0 auto;padding:0 max(5vw,16px,env(safe-area-inset-right)) calc(36px + env(safe-area-inset-bottom)) max(5vw,16px,env(safe-area-inset-left));font-size:14px;color:var(--soft)}
+footer p{margin:0;max-width:80ch}
+footer a{color:var(--ink)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.rec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 28px}.rec .sync,.rec .bk,.rec #bkm{grid-column:1/-1}}
+@media (max-width:640px){.rec{display:block}.band{padding-top:calc(14px + env(safe-area-inset-top))}.stk{text-align:left}.stk .num{justify-content:flex-start}.wrap{padding-top:16px;gap:22px}.src,.src .stem{font-size:16.5px}.dt th,.dt td{padding:5px 8px;font-size:14px}.act .btn{flex:1}}
+button,.btn,.ch{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.ch:active:not(:disabled){border-color:var(--ink)}
+.rows button:active{background:var(--panel)}
+.btn:active:not(:disabled){transform:scale(.98)}
+.inst-wrap{max-width:1240px;margin:0 auto;padding:16px max(5vw,16px,env(safe-area-inset-right)) 0 max(5vw,16px,env(safe-area-inset-left))}
+.inst{display:flex;gap:10px 18px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1.5px solid var(--ink);border-radius:14px;padding:12px 16px;background:var(--panel)}
+.inst b{display:block;font-size:16px}
+.inst span{display:block;font-size:14px;color:var(--soft);max-width:72ch}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--fill);color:var(--onfill);padding:10px 18px;border-radius:999px;font:600 15px/1.3 Archivo,system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.2);z-index:10;max-width:calc(100vw - 32px);text-align:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="in">
+    <div>
+      <h1>SAT Daily</h1>
+      <p class="sub">Two questions from each of the eight SAT skill areas, every day. About 30 minutes.</p>
+    </div>
+    <div class="stk" aria-live="polite">
+      <div class="num"><b id="stk">0</b><span>day streak</span></div>
+      <p id="tod">Today: not started</p>
+    </div>
+  </div>
+</header>
+<div id="inst" class="inst-wrap" hidden></div>
+<main class="wrap">
+  <section id="card" class="card" aria-label="Today’s questions"><p class="qn">Loading today’s set…</p></section>
+  <aside id="rec" class="rec" aria-label="Your record"></aside>
+</main>
+<footer><p>Practice questions written in the style of the digital SAT. They are not official College Board questions. SAT is a trademark of the College Board, which was not involved in making this app. For full-length adaptive practice tests, use College Board’s <a href="https://satsuite.collegeboard.org/practice/practice-tests" target="_blank" rel="noopener">Bluebook app</a>.</p></footer>
+<script>
+{
+/*__RW__*/
+/*__RW2__*/
+/*__GEN__*/
+/*__MATH__*/
+RW.push(...RW_MORE, ...RW_GEN);
+const OFFLINE = /*__OFFLINE__*/false, PWA = /*__PWA__*/false, PER = 2;
+const ON_WEB = /^https?:$/.test(location.protocol);
+const STANDALONE = !!((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true);
+const IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+let swState = "none", pendingReload = false;
+
+const DN = {CS:"Craft and Structure",II:"Information and Ideas",SEC:"Standard English Conventions",EOI:"Expression of Ideas",ALG:"Algebra",ADV:"Advanced Math",PSD:"Problem-Solving and Data Analysis",GEO:"Geometry and Trigonometry"};
+const SN = {WIC:"Words in Context",TSP:"Text Structure and Purpose",CTC:"Cross-Text Connections",CID:"Central Ideas and Details",CET:"Command of Evidence: Textual",CEQ:"Command of Evidence: Quantitative",INF:"Inferences",BOU:"Boundaries",FSS:"Form, Structure, and Sense",TRA:"Transitions",RS:"Rhetorical Synthesis"};
+const QS = {wic:"Which choice completes the text with the most logical and precise word or phrase?",conv:"Which choice completes the text so that it conforms to the conventions of Standard English?",tra:"Which choice completes the text with the most logical transition?",inf:"Which choice most logically completes the text?",rs:"Which choice most effectively uses relevant information from the notes to accomplish this goal?"};
+const ORDER = ["CS","II","SEC","EOI","ALG","ADV","PSD","GEO"], RWD = ["CS","II","SEC","EOI"], MD = ["ALG","ADV","PSD","GEO"];
+const LET = "ABCD", MI = "−", LS = "satDaily8.v1";
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+const fmt = s => s.replace(/\[\[(.+?)\]\]/g,"<u>$1</u>").replace(/\*(.+?)\*/g,"<i>$1</i>").replace(/_{4,}/g,'<span class="blank" role="img" aria-label="blank"></span>');
+const sN = v => (v < 0 ? MI : "") + Math.abs(v);
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Reading & Writing: place each right answer so positions stay balanced (3 per letter in each area).
+const POS = [2,0,3,1,1,3,0,2,3,1,2,0], RWI = {}, nIn = {};
+RW.forEach(it => {
+  const k = (nIn[it.d] = (nIn[it.d] || 0) + 1) - 1, pos = POS[k % 12];
+  const ch = it.w.slice(); ch.splice(pos, 0, it.a);
+  const no = it.no.slice(); no.splice(pos, 0, null);
+  RWI[it.id] = Object.assign({}, it, {type:"mc", choices:ch, ans:pos, no, rw:true});
+});
+
+// Dates are local calendar days.
+const pad = n => String(n).padStart(2, "0");
+const dk = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const dn = k => { const [y, m, d] = k.split("-").map(Number); return Math.round(Date.UTC(y, m - 1, d) / 864e5); };
+const fromN = n => { const d = new Date(n * 864e5); return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`; };
+const addD = (k, n) => fromN(dn(k) + n);
+const dateOf = k => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
+const nice = k => dateOf(k).toLocaleDateString("en-US", {weekday:"long", month:"short", day:"numeric"});
+const mmss = s => `${Math.floor(s / 60)}:${pad(s % 60)}`;
+const today = () => dk();
+
+const fresh = () => ({v:1, upd:0, days:{}, dm:{}, sk:{}, seen:{}, ms:{}, due:{}, cur:null, last:null});
+let S = fresh();
+try { const j = JSON.parse(localStorage.getItem(LS) || "null"); if (j && j.v === 1) S = Object.assign(fresh(), j); } catch (e) {}
+let view = "q", rev = 0, sel = null, tStart = 0, hiddenAt = 0, mode = "local", dbRef = null, busy = false, again = false;
+
+const cache = new Map();
+function itemOf(ref) {
+  const key = ref.k === "r" ? ref.id : ref.g + ":" + ref.s;
+  if (!cache.has(key)) cache.set(key, ref.k === "r" ? RWI[ref.id] : Object.assign(MATH.make(ref.g, ref.s), {rw:false}));
+  return cache.get(key);
+}
+const skillOf = it => it.rw ? SN[it.s] : it.s;
+
+// Two questions per area. Retries due today come first; then new Reading & Writing items
+// (a different skill for the second one where possible), or the two math templates used least recently.
+function pickSet() {
+  const T = dn(today()), items = [];
+  for (const d of ORDER) {
+    if (RWD.includes(d)) {
+      const pool = RW.filter(x => x.d === d), dueOf = x => S.due["r:" + x.id], got = [];
+      const due = pool.filter(x => dueOf(x) && dn(dueOf(x)) <= T).sort((a, b) => dn(dueOf(a)) - dn(dueOf(b)));
+      const fresh_ = pool.filter(x => S.seen[x.id] == null);
+      const old = pool.filter(x => S.seen[x.id] != null).sort((a, b) => S.seen[a.id] - S.seen[b.id]);
+      for (let n = 0; n < PER; n++) {
+        const used = new Set(got.map(g => g.it.id)), skills = new Set(got.map(g => g.it.s));
+        const free = a => a.filter(x => !used.has(x.id)), pref = a => a.find(x => !skills.has(x.s)) || a[0];
+        let it = free(due)[0], re = !!it;
+        if (!it) it = pref(free(fresh_)) || pref(free(old));
+        got.push({it, re});
+      }
+      got.forEach(g => items.push({k:"r", id:g.it.id, re:g.re}));
+    } else {
+      const keys = MATH.DOM[d], dueOf = k => S.due["m:" + k];
+      const due = keys.filter(k => dueOf(k) && dn(dueOf(k)) <= T).sort((a, b) => dn(dueOf(a)) - dn(dueOf(b)));
+      const lru = keys.slice().sort((a, b) => (S.ms[a] ?? -1) - (S.ms[b] ?? -1));
+      const order = [...new Set(due.concat(lru))], got = [order[0]], sk = k => MATH.G[k].s;
+      got.push(due.find(k => k !== got[0]) || order.find(k => k !== got[0] && sk(k) !== sk(got[0])) || order.find(k => k !== got[0]));
+      got.forEach(g => items.push({k:"m", g, s:1 + Math.floor(Math.random() * 2e9), re:due.includes(g)}));
+    }
+  }
+  return {day:today(), items, i:0, res:[]};
+}
+
+function parseNum(raw) {
+  const s = String(raw).trim().replace(/[−–]/g, "-").replace(/[\s,]/g, "");
+  const m = s.match(/^(-?)(\d+)\/(\d+)$/);
+  const v = m ? (m[1] ? -1 : 1) * (+m[2] / +m[3]) : (/^-?(\d+\.?\d*|\.\d+)$/.test(s) ? +s : NaN);
+  return isFinite(v) ? v : NaN;
+}
+
+function record(ref, it, r) {
+  const T = today(), bump = (o, k) => { const a = o[k] || (o[k] = [0, 0]); a[1]++; if (r.ok) a[0]++; };
+  bump(S.dm, it.d); bump(S.sk, skillOf(it));
+  const key = ref.k === "r" ? "r:" + ref.id : "m:" + ref.g;
+  if (ref.k === "r") S.seen[ref.id] = dn(T); else S.ms[ref.g] = dn(T);
+  if (r.ok) delete S.due[key]; else S.due[key] = addD(T, ref.k === "r" ? 3 : 1);
+}
+
+function check() {
+  const c = S.cur; if (!c || c.res[c.i]) return;
+  const ref = c.items[c.i], it = itemOf(ref);
+  let r;
+  if (it.type === "mc") { if (sel == null) return; r = {p:sel, ok:sel === it.ans}; }
+  else {
+    const raw = $("#spr").value, v = parseNum(raw);
+    if (!isFinite(v)) { const h = $("#hint"); h.textContent = "Enter a number, like 12, −3, 2.5, or 3/4."; h.className = "hint err"; $("#spr").focus(); return; }
+    r = {p:raw.trim(), v, ok:Math.abs(v - it.ans) < 1e-6};
+  }
+  r.t = Math.min(900, Math.max(1, Math.round((performance.now() - tStart) / 1000)));
+  record(ref, it, r);
+  c.res[c.i] = r;
+  save(); render();
+  const nx = $("#nx"); if (nx) nx.focus({preventScroll:true});
+  const fb = $("#fb");
+  // Bring the verdict into view but keep the marked choices just above it on screen.
+  if (fb) { const top = fb.getBoundingClientRect().top; if (top > innerHeight * 0.6) scrollTo({top:scrollY + top - Math.max(96, Math.round(innerHeight * 0.4)), behavior:reduce ? "auto" : "smooth"}); }
+}
+
+function next() {
+  const c = S.cur; if (!c) return;
+  c.i++; sel = null;
+  if (c.i >= c.items.length) finish(); else { save(); render(); }
+  if (pendingReload) { location.reload(); return; }
+  toTop();
+}
+
+function finish() {
+  const c = S.cur, ok = c.res.filter(x => x && x.ok).length, secs = c.res.reduce((a, x) => a + (x ? x.t : 0), 0);
+  const d = S.days[c.day] || [0, 0, 0];
+  S.days[c.day] = [d[0] + ok, d[1] + c.items.length, d[2] + secs];
+  S.last = {day:c.day, items:c.items, res:c.res};
+  S.cur = null; view = "res";
+  save(); render();
+}
+
+function toTop() {
+  const card = $("#card"), top = card.getBoundingClientRect().top;
+  if (top < 0) scrollTo({top:scrollY + top - 12, behavior:"auto"});
+  const q = $("#qn"); if (q) q.focus({preventScroll:true});
+}
+
+function streak() {
+  const T = dn(today()), has = n => !!S.days[fromN(n)];
+  let cur = 0; for (let d = has(T) ? T : T - 1; has(d); d--) cur++;
+  const ks = Object.keys(S.days).map(dn).sort((a, b) => a - b);
+  let best = 0, run = 0, prev = null;
+  for (const d of ks) { run = prev !== null && d === prev + 1 ? run + 1 : 1; if (run > best) best = run; prev = d; }
+  return {cur, best, total:ks.length, qs:Object.values(S.days).reduce((a, x) => a + x[1], 0)};
+}
+
+function tableHTML(tb) {
+  return `<div class="scroll"><table class="dt">${tb.cap ? `<caption>${tb.cap}</caption>` : ""}<thead><tr>${tb.h.map(h => `<th scope="col">${h}</th>`).join("")}</tr></thead><tbody>${tb.r.map(r => `<tr>${r.map((c, j) => j ? `<td>${c}</td>` : `<th scope="row">${c}</th>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+function choicesHTML(it, r) {
+  return `<div class="chs${it.rw ? "" : " m"}" role="group" aria-label="Answer choices">` + it.choices.map((c, j) => {
+    let cls = "", mk = "";
+    if (r) { if (j === it.ans) { cls = "right"; mk = "✓"; } else if (j === r.p) { cls = "wrong"; mk = "✗"; } else cls = "dim"; }
+    const pressed = r ? j === r.p : sel === j;
+    return `<button type="button" class="ch ${cls}" data-i="${j}" aria-pressed="${pressed}"${r ? " disabled" : ""}><span class="bub" aria-hidden="true">${LET[j]}</span><span class="ct"><span class="sr">Choice ${LET[j]}: </span>${it.rw ? fmt(c) : c}</span>${mk ? `<span class="mk" aria-hidden="true">${mk}</span>` : ""}</button>`;
+  }).join("") + "</div>";
+}
+
+function sprHTML(r) {
+  return `<div class="spr"><label class="lab" for="spr">Your answer</label><input id="spr" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" value="${r ? esc(r.p) : ""}"${r ? ` disabled class="${r.ok ? "right" : "wrong"}"` : ""}></div>` +
+    (r ? "" : `<p class="hint" id="hint">Type a number. Negatives (−3) and fractions (3/4) work.</p>`);
+}
+
+function fbHTML(ref, it, r, day) {
+  const pace = it.rw ? 71 : 95;
+  let h = "";
+  if (it.type === "mc") {
+    h += r.ok ? `<p class="vd ok">✓ Correct</p>` : `<p class="vd no">✗ Not quite. The answer is ${LET[it.ans]}.</p>`;
+  } else {
+    h += r.ok ? `<p class="vd ok">✓ Correct</p>` : `<p class="vd no">✗ Not quite. The answer is ${sN(it.ans)}.</p>`;
+  }
+  h += `<p class="pace">You took ${r.t} ${r.t === 1 ? "second" : "seconds"}. SAT pace is about ${pace} seconds per question.</p>`;
+  if (it.type === "mc") {
+    h += `<h3>Choice ${LET[it.ans]} is the best answer.</h3><p>${it.why}</p>`;
+    if (!r.ok) h += `<h3>Choice ${LET[r.p]} is incorrect.</h3><p>${it.no[r.p]}</p>`;
+    const rest = [0, 1, 2, 3].filter(j => j !== it.ans && j !== r.p);
+    h += `<details><summary>Why the other choices are wrong</summary>${rest.map(j => `<p><b>Choice ${LET[j]}.</b> ${it.no[j]}</p>`).join("")}</details>`;
+  } else {
+    if (!r.ok) {
+      const tr = (it.traps || []).find(t => Math.abs(t.v - r.v) < (Number.isInteger(t.v) ? 1e-6 : 0.05));
+      h += `<p>You entered ${esc(r.p)}.${tr ? " " + tr.m : ""}</p>`;
+    }
+    h += `<h3>How to get ${sN(it.ans)}</h3><p>${it.why}</p>`;
+  }
+  if (!r.ok) h += `<p class="back">${ref.k === "r" ? `This question comes back for a retry on ${nice(addD(day, 3))}.` : "This skill comes back tomorrow with new numbers."}</p>`;
+  else if (ref.re) h += `<p class="back">Retry cleared.</p>`;
+  return h;
+}
+
+function qHTML(set, i, review) {
+  const ref = set.items[i], r = set.res[i], it = itemOf(ref), n = set.items.length;
+  const dots = set.items.map((_, j) => { const x = set.res[j]; return `<li class="${x ? (x.ok ? "ok" : "no") : ""}${j === i ? " at" : ""}" aria-label="Question ${j + 1}${x ? (x.ok ? ", correct" : ", missed") : ""}">${j + 1}</li>`; }).join("");
+  let src, ask;
+  if (it.rw) {
+    if (it.s === "RS") src = `<p>While researching a topic, a student has taken the following notes:</p><ul class="notes">${it.notes.map(x => `<li>${fmt(x)}</li>`).join("")}</ul>`;
+    else if (it.t2) src = `<p class="tl">Text 1</p><p>${fmt(it.p)}</p><p class="tl">Text 2</p><p>${fmt(it.t2)}</p>`;
+    else src = `<p>${fmt(it.p)}</p>`;
+    if (it.tb) src += tableHTML(it.tb);
+    ask = `<p class="stem">${it.s === "RS" ? it.goal + " " + QS.rs : (QS[it.q] || it.q)}</p>`;
+  } else {
+    src = `<p class="stem">${it.stem}</p>${it.eqs ? `<div class="eqs">${it.eqs.join("<br>")}</div>` : ""}${it.tb ? tableHTML(it.tb) : ""}`;
+    ask = "";
+  }
+  ask += it.type === "mc" ? choicesHTML(it, r) : sprHTML(r);
+  let act;
+  if (review) act = `<button id="bk" type="button" class="btn ghost">Back to results</button>`;
+  else if (r) act = `<button id="nx" type="button" class="btn">${i === n - 1 ? "See results" : "Next question"}</button>`;
+  else act = `<button id="go" type="button" class="btn"${it.type === "mc" && sel == null ? " disabled" : ""}>Check answer</button>`;
+  return `<div class="qh"><p class="qn" id="qn" tabindex="-1">${review ? "Review · " : ""}Question <b>${i + 1}</b> of ${n}</p><ol class="dots" aria-label="Progress">${dots}</ol></div>
+<p class="qm">${it.rw ? "Reading and Writing" : "Math"} · ${DN[it.d]} · <b>${skillOf(it)}</b>${ref.re ? '<span class="tag">Retry</span>' : ""}</p>
+<div class="qg${it.rw ? " two" : ""}"><div class="src">${src}</div><div class="ask">${ask}</div></div>
+${r ? `<div class="fb" id="fb">${fbHTML(ref, it, r, set.day)}</div>` : ""}<div class="act">${act}</div>`;
+}
+
+function resHTML() {
+  const L = S.last, n = L.items.length, ok = L.res.filter(x => x && x.ok).length;
+  const secs = L.res.reduce((a, x) => a + (x ? x.t : 0), 0), pace = L.items.reduce((a, x) => a + (x.k === "r" ? 71 : 95), 0);
+  const miss = n - ok;
+  const rows = L.items.map((ref, j) => { const it = itemOf(ref), x = L.res[j] || {ok:false, t:0};
+    return `<li><button type="button" data-rev="${j}"><span class="n">${j + 1}</span><span class="k ${x.ok ? "ok" : "no"}" aria-label="${x.ok ? "Correct" : "Missed"}">${x.ok ? "✓" : "✗"}</span><span class="s"><b>${skillOf(it)}</b><small>${DN[it.d]}</small></span><span class="t">${mmss(x.t)}</span></button></li>`; }).join("");
+  return `<div class="res"><p class="qn" id="qn" tabindex="-1">Done for today</p>
+<p class="big">${ok}<span>/ ${n} correct</span></p>
+<p class="sub">${mmss(secs)} total. SAT pace for these ${n} is about ${mmss(pace)}.</p>
+<p class="lab">Tap a question to review it</p>
+<ol class="rows">${rows}</ol>
+<p class="note">${miss ? `${miss} ${miss === 1 ? "miss comes" : "misses come"} back as ${miss === 1 ? "a retry" : "retries"}: math tomorrow with new numbers, reading and writing in 3 days.` : "No misses. Nothing to retry."}</p>
+<div class="act"><button id="again" type="button" class="btn ghost">Do another set</button></div></div>`;
+}
+
+function renderBand() {
+  const st = streak(), T = today();
+  $("#stk").textContent = st.cur;
+  const c = S.cur, done = c && c.day === T ? c.res.filter(Boolean).length : 0;
+  $("#tod").textContent = S.days[T] ? `Today’s ${S.days[T][1]} done` : done ? `Today: ${done} of ${c.items.length}` : "Today: not started";
+}
+
+function renderRec() {
+  const st = streak(), T = dn(today()), dow = (new Date().getDay() + 6) % 7, start = T - dow - 49;
+  let cal = "<span></span>" + ["M","T","W","T","F","S","S"].map(x => `<span class="hd">${x}</span>`).join("");
+  for (let w = 0; w < 8; w++) {
+    const ws = start + w * 7;
+    cal += `<span class="wk">${dateOf(fromN(ws)).toLocaleDateString("en-US", {month:"short", day:"numeric"})}</span>`;
+    for (let k = 0; k < 7; k++) {
+      const n = ws + k, key = fromN(n), done = !!S.days[key];
+      cal += `<i class="${done ? "d" : ""}${n === T ? " t" : ""}${n > T ? " f" : ""}" title="${nice(key)}${done ? ": done" : ""}"></i>`;
+    }
+  }
+  const dueN = Object.values(S.due).filter(x => dn(x) <= T).length;
+  const left = RWD.map(d => RW.filter(x => x.d === d && S.seen[x.id] == null).length), leftN = left.reduce((a, b) => a + b, 0), leftD = Math.floor(Math.min(...left) / PER);
+  const rows = g => g.map(d => { const a = S.dm[d] || [0, 0], p = a[1] ? Math.round(100 * a[0] / a[1]) : null;
+    return `<div class="ar" title="${a[0]} of ${a[1]} correct"><span>${DN[d]}</span><span class="bar"><i style="width:${p || 0}%"></i></span><span class="pc">${p == null ? "–" : p + "%"}</span></div>`; }).join("");
+  $("#rec").innerHTML = `<section><h2>Consistency</h2><div class="cal" role="img" aria-label="Practice calendar for the last 8 weeks: ${st.total} days practiced">${cal}</div>
+<p class="meta">${st.total} ${st.total === 1 ? "day" : "days"} practiced · ${st.qs} questions · best streak ${st.best}</p>
+<p class="meta">${leftN} new Reading and Writing questions left, about ${leftD} days’ worth. Math is generated fresh every day.</p>${dueN ? `<p class="meta">${dueN} ${dueN === 1 ? "retry is" : "retries are"} due</p>` : ""}</section>
+<section><h2>Accuracy by area</h2><p class="grp">Reading and Writing</p>${rows(RWD)}<p class="grp">Math</p>${rows(MD)}</section>
+<p class="sync" id="sync"></p>${OFFLINE ? `<div class="bk"><button id="bkup" type="button" class="btn ghost sm">Back up progress</button><label class="btn ghost sm" for="rst">Restore</label><input id="rst" type="file" accept=".json,application/json,text/plain" class="sr"></div><p class="meta" id="bkm">Last backup: ${S.bk ? nice(S.bk) : "never"}</p>` : ""}`;
+  setSync();
+  if (OFFLINE) {
+    $("#bkup").addEventListener("click", backup);
+    $("#rst").addEventListener("change", e => { const f = e.target.files[0]; if (f) restore(f); e.target.value = ""; });
+  }
+}
+
+// On iPad and iPhone the backup goes through the share sheet (Save to Files, AirDrop, Mail);
+// elsewhere it downloads as a file.
+async function backup() {
+  const day = today(), name = `sat-daily-backup-${day}.json`, data = JSON.stringify(Object.assign({}, S, {bk:day}));
+  if (IOS && navigator.share && navigator.canShare) {
+    for (const type of ["application/json", "text/plain"]) {
+      let f; try { f = new File([data], name, {type}); } catch (e) { break; }
+      if (!navigator.canShare({files:[f]})) continue;
+      try { await navigator.share({files:[f]}); S.bk = day; save(); renderRec(); }
+      catch (e) { if (!e || e.name !== "AbortError") download(name, data, day); }
+      return;
+    }
+  }
+  download(name, data, day);
+}
+
+function download(name, data, day) {
+  S.bk = day; save();
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([data], {type:"application/json"}));
+  a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+  renderRec();
+}
+
+function restore(file) {
+  const rd = new FileReader();
+  rd.onload = () => {
+    let j = null; try { j = JSON.parse(rd.result); } catch (e) {}
+    if (!j || j.v !== 1 || typeof j.days !== "object") { $("#bkm").textContent = "That file isn’t a SAT Daily backup."; return; }
+    if (!confirm(`Replace the progress on this ${PWA ? "device" : "computer"} with this backup?`)) return;
+    S = Object.assign(fresh(), j); cache.clear(); save(); boot();
+    $("#bkm").textContent = "Progress restored.";
+  };
+  rd.readAsText(file);
+}
+
+function setSync() {
+  const el = $("#sync"); if (!el) return;
+  el.textContent = PWA
+    ? (swState === "ready" ? "Saved on this device, so it works offline. Progress stays on this device; back up once a week."
+      : swState === "saving" ? "Saving a copy on this device for offline use…" : "Progress saves on this device. Back up once a week.")
+    : OFFLINE ? "Progress saves in this browser on this computer. Back up once a week."
+    : mode === "account" ? "Progress saves to your Claude account." : "Progress saves in this browser.";
+}
+
+// Shown in the browser until the app is installed (or dismissed).
+function renderInst() {
+  const el = $("#inst"); if (!el) return;
+  const show = PWA && ON_WEB && !STANDALONE && !S.hideInst;
+  el.hidden = !show;
+  if (!show) { el.innerHTML = ""; return; }
+  const head = IOS ? "Put SAT Daily on your Home Screen" : "Install SAT Daily as an app";
+  const how = IOS
+    ? "In Safari, tap Share, then Add to Home Screen. Open it once from the new icon while online; after that it works offline. Progress stays inside the app, so use the icon from then on."
+    : "Use your browser’s Install option (or Add to Home Screen) so it opens in its own window and works offline.";
+  el.innerHTML = `<div class="inst"><div><b>${head}</b><span>${how}</span></div><button type="button" class="btn ghost sm" id="hideinst">Got it</button></div>`;
+  $("#hideinst").addEventListener("click", () => { S.hideInst = 1; save(); renderInst(); });
+}
+
+function toast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast"; t.setAttribute("role", "status"); t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2600);
+}
+
+function render() {
+  renderBand(); renderRec(); renderInst();
+  const card = $("#card");
+  if (view === "res" && S.last) card.innerHTML = resHTML();
+  else if (view === "rev" && S.last) card.innerHTML = qHTML(S.last, rev, true);
+  else { view = "q"; card.innerHTML = qHTML(S.cur, S.cur.i, false); if (!S.cur.res[S.cur.i]) tStart = performance.now(); }
+  bind();
+}
+
+function bind() {
+  $$(".ch:not([disabled])").forEach(b => b.addEventListener("click", () => {
+    sel = +b.dataset.i;
+    $$(".ch").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.i === sel)));
+    const g = $("#go"); if (g) g.disabled = false;
+  }));
+  const go = $("#go"); if (go) go.addEventListener("click", check);
+  const nx = $("#nx"); if (nx) nx.addEventListener("click", next);
+  const sp = $("#spr"); if (sp && !sp.disabled) sp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); check(); } });
+  $$("[data-rev]").forEach(b => b.addEventListener("click", () => { rev = +b.dataset.rev; view = "rev"; render(); toTop(); }));
+  const bk = $("#bk"); if (bk) bk.addEventListener("click", () => { view = "res"; render(); toTop(); });
+  const ag = $("#again"); if (ag) ag.addEventListener("click", () => { S.cur = pickSet(); view = "q"; sel = null; render(); toTop(); });
+}
+
+document.addEventListener("keydown", e => {
+  if (view !== "q" || !S.cur || e.metaKey || e.ctrlKey || e.altKey) return;
+  const t = e.target, inInput = t && t.tagName === "INPUT", onBtn = t && t.closest && t.closest("button");
+  const it = itemOf(S.cur.items[S.cur.i]), r = S.cur.res[S.cur.i], k = e.key.toLowerCase();
+  if (!r && !inInput && it.type === "mc" && k.length === 1 && "abcd".includes(k)) { const b = $(`.ch[data-i="${"abcd".indexOf(k)}"]`); if (b) b.click(); }
+  else if (k === "enter" && !inInput && !onBtn) { e.preventDefault(); if (r) next(); else check(); }
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) { hiddenAt = performance.now(); return; }
+  if (hiddenAt) { tStart += performance.now() - hiddenAt; hiddenAt = 0; }
+  if (view !== "q" && S.last && S.last.day !== today()) boot();
+});
+
+function save() {
+  S.upd = Date.now();
+  try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {}
+  push();
+}
+
+async function push() {
+  if (!dbRef) return;
+  if (busy) { again = true; return; }
+  busy = true;
+  try { await dbRef.set(JSON.parse(JSON.stringify(S))); mode = "account"; }
+  catch (e) { if (e && e.code !== "unavailable" && e.code !== "resource_exhausted") { dbRef = null; mode = "local"; } }
+  busy = false; setSync();
+  if (again) { again = false; push(); }
+}
+
+async function connect() {
+  try {
+    const c = window.claude; if (!c || typeof c.use !== "function") return;
+    const [db, user] = await Promise.all([c.use("db"), c.use("user")]);
+    if (!db || !user) return;
+    const uid = await user.id(); if (!uid) return;
+    const canW = typeof user.can === "function" ? await user.can("data.write") : null;
+    if (canW === false) return;
+    const ref = db.doc("progress/" + uid);
+    const snap = await Promise.race([ref.get(), new Promise(res => setTimeout(() => res(null), 10000))]);
+    if (!snap) return;
+    dbRef = ref; if (canW) mode = "account";
+    const remote = snap.exists ? JSON.parse(JSON.stringify(snap.data())) : null;
+    if (remote && remote.v === 1 && (remote.upd || 0) > (S.upd || 0)) {
+      S = Object.assign(fresh(), remote);
+      try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {}
+      cache.clear(); boot();
+    } else if (S.upd > 0) push();
+    setSync();
+  } catch (e) {}
+}
+
+function boot() {
+  const T = today();
+  if (S.cur && S.cur.day !== T) S.cur = null;
+  if (S.cur) view = "q";
+  else if (S.days[T] && S.last && S.last.day === T) view = "res";
+  else { S.cur = pickSet(); view = "q"; }
+  sel = null; render();
+}
+
+// Offline copy. A new version takes over between questions, never mid-answer.
+const canReload = () => view !== "q" || !S.cur || !!S.cur.res[S.cur.i] || (sel == null && !($("#spr") && $("#spr").value.trim()));
+if (PWA && ON_WEB && "serviceWorker" in navigator) {
+  const had = !!navigator.serviceWorker.controller;
+  swState = had ? "ready" : "saving";
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!had && swState !== "ready") { swState = "ready"; setSync(); toast("Saved for offline use"); return; }
+    if (canReload()) location.reload(); else pendingReload = true;
+  });
+  navigator.serviceWorker.register("sw.js").then(reg => {
+    let checked = Date.now();
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && Date.now() - checked > 36e5) { checked = Date.now(); reg.update().catch(() => {}); }
+    });
+  }).catch(() => { swState = "none"; setSync(); });
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (e) {}
+}
+
+const hot = window.claude && window.claude.hot;
+const start = data => {
+  if (data && data.v === 1 && (data.upd || 0) >= (S.upd || 0)) S = Object.assign(fresh(), data);
+  boot(); connect();
+};
+if (hot && typeof hot.snapshot === "function") hot.snapshot(() => S);
+if (hot && typeof hot.ready === "function") hot.ready(start); else start((hot && hot.data) || {});
+}
+</script>
+</body>
+</html>

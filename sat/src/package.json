@@ -1,0 +1,14 @@
+{
+  "name": "sat-daily-src",
+  "private": true,
+  "description": "Builds SAT Daily and checks every question.",
+  "scripts": {
+    "build": "node build.js",
+    "test": "node test.js",
+    "sim": "node sim.js"
+  },
+  "devDependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/source-serif-4": "^5.3.1"
+  }
+}

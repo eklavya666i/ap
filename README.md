@@ -1,11 +1,12 @@
 # AP Practice Apps
 
-Two offline iPad apps. Each saves its own progress and works without a connection once installed.
+Three offline iPad apps. Each saves its own progress and works without a connection once installed.
 
 | App | Open it |
 |---|---|
 | AP World History: Modern | https://eklavya666i.github.io/ap/ |
 | AP Cybersecurity | https://eklavya666i.github.io/ap/cyber/ |
+| SAT Daily | https://eklavya666i.github.io/ap/sat/ |
 
 **AP World History: Modern.** 954 AP-style questions across all nine units, with an explanation for every answer choice. It has 45 mock quizzes (5 per unit), topic drills, a mixed mock weighted like the exam, practice and timed exam modes, and saved progress.
 
@@ -18,6 +19,8 @@ Two offline iPad apps. Each saves its own progress and works without a connectio
 
 [AP_Cybersecurity_Tap_to_Check.pdf](cyber/AP_Cybersecurity_Tap_to_Check.pdf) is a printable or tablet version: tap an answer to jump to its explanation.
 
+**SAT Daily.** Two questions from each of the eight SAT skill areas every day: 16 questions, about 30 minutes. Every answer choice has an explanation. It has 901 Reading and Writing questions, about four months of new ones, and the math is generated fresh every day. Missed questions come back as retries. It tracks a streak calendar and accuracy by area. Back up progress and Restore move progress between devices. Source and build scripts are in [sat/src](sat/src).
+
 ## Put an app on an iPad
 
 1. Open the app's link in Safari.
@@ -26,10 +29,10 @@ Two offline iPad apps. Each saves its own progress and works without a connectio
 
 Each app gets its own icon. Progress is saved on each device, inside the app. Deleting the icon deletes that device's progress.
 
-If the cyber link shows World History the first time on an iPad that already has World History installed, reload the page once.
+If the Cyber or SAT link shows World History the first time on an iPad that already has World History installed, wait a few seconds and reload the page once.
 
 ## Updating
 
 Changing any file here republishes the site. Installed copies pick up the new version the next time they open online.
 
-AP is a registered trademark of College Board, which was not involved in making these apps.
+AP and SAT are registered trademarks of College Board, which was not involved in making these apps.
