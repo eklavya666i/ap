@@ -8,7 +8,7 @@ Rule: commit + push after each completed step so progress is never lost. Tick wh
 
 ## Steps
 - [x] 1. Per-choice explanations Unit 1 (expl/u1.json: id -> 3 wrong-choice explanations in original option order)
-- [ ] 2. Per-choice explanations Unit 2
+- [x] 2. Per-choice explanations Unit 2
 - [ ] 3. Per-choice explanations Unit 3
 - [ ] 4. Per-choice explanations Unit 4
 - [ ] 5. Per-choice explanations Unit 5
