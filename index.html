@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="954 AP-style World History questions with an explanation for every choice, 45 mock quizzes and timed exam mode. Works offline.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AP World">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111315" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<title>AP World History Practice</title>
+<style>
+/* VOICE   everyday study tool: calm, exam-serious, built for fingers on an iPad
+   IDEA    an AP exam booklet and its bubble answer sheet
+   COLOUR  paper white and ink black; one accent per unit; green and crimson only for marking
+   TYPE    New York / Georgia serif for sources, stems and titles; San Francisco for controls
+   LAYOUT  iPad landscape: source beside question with a fixed answer bar; portrait and phone: source above question */
+:root{--bg:#ffffff;--paper:#f7f5ef;--ink:#15171b;--mute:#5c6067;--line:#e2dfd6;--focus:#08656e;--mid:#9a5a05;--ok:#13763a;--okbg:#e5f4ea;--bad:#b3261e;--badbg:#fbe9e7;--sel:#15171b;--selbg:#efeee8;--serif:ui-serif,"New York","Iowan Old Style",Georgia,"Times New Roman",serif;--sans:-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color-scheme:light}
+.u1{--uc:#7a3f91;--us:#f3e9f7}.u2{--uc:#4b45a6;--us:#ecebf9}.u3{--uc:#9a5a05;--us:#fbefdc}.u4{--uc:#08656e;--us:#e0f1f2}.u5{--uc:#a3305a;--us:#fbe8ef}.u6{--uc:#9b4416;--us:#fbeadf}.u7{--uc:#46586b;--us:#e9eef3}.u8{--uc:#2a58a8;--us:#e6edfa}.u9{--uc:#56660b;--us:#eef2d9}
+@media (prefers-color-scheme:dark){
+:root{--bg:#111315;--paper:#1a1d20;--ink:#ecebe5;--mute:#a3a7ac;--line:#2d3136;--focus:#4fc5ce;--mid:#e7a64b;--ok:#5bd48f;--okbg:#11301f;--bad:#ff8379;--badbg:#3b1715;--sel:#ecebe5;--selbg:#24282c;color-scheme:dark}
+.u1{--uc:#d1a3e6;--us:#2a1d31}.u2{--uc:#aba5f2;--us:#1f1d36}.u3{--uc:#e7a64b;--us:#2c2213}.u4{--uc:#4fc5ce;--us:#0f292c}.u5{--uc:#f08bb0;--us:#341823}.u6{--uc:#f0a274;--us:#33200f}.u7{--uc:#a9bccf;--us:#1e252d}.u8{--uc:#8fb0f0;--us:#16213a}.u9{--uc:#c3d25a;--us:#262b10}}
+*{box-sizing:border-box;min-width:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 var(--sans);overflow-x:hidden}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;text-align:left;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button:disabled{cursor:default}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+h1,h2,h3{margin:0}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+.mute{color:var(--mute)}
+.lnk{min-height:44px;padding:0 6px;font-weight:600;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 20px;border:1.5px solid var(--ink);border-radius:999px;font-weight:600;background:var(--bg);white-space:nowrap;text-align:center}
+.btn.pri{background:var(--ink);color:var(--bg)}
+.btn:disabled{opacity:.35}
+.btn.on{background:var(--selbg)}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btn.wide{width:100%}
+.home{padding-top:max(28px,env(safe-area-inset-top));padding-bottom:max(40px,env(safe-area-inset-bottom))}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;padding-bottom:20px;border-bottom:2px solid var(--ink)}
+.hero h1{font:700 clamp(34px,5vw,52px)/1.04 var(--serif);letter-spacing:-.02em}
+.hero p{margin:10px 0 0;max-width:60ch;color:var(--mute)}
+.stats{display:flex;gap:26px}
+.stats div{display:flex;flex-direction:column}
+.stats b{font:700 32px/1 var(--serif);white-space:nowrap}
+.stats small{font-size:16px;color:var(--mute);font-weight:500}
+.stats span{font-size:14px;color:var(--mute);margin-top:6px}
+.inst{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-top:18px;padding:14px 16px;border-radius:14px;border:1.5px dashed var(--mute);background:var(--paper)}
+.inst div{flex:1 1 320px;display:flex;flex-direction:column}
+.inst span{color:var(--mute);font-size:15px}
+.resume{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:20px;padding:14px 16px;border-radius:14px;background:var(--selbg)}
+.resume div{flex:1 1 260px;display:flex;flex-direction:column}
+.resume span{color:var(--mute);font-size:15px}
+.modes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:22px 0 4px}
+.mode{position:relative;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px 14px 50px;min-height:78px}
+.mode::before{content:"";position:absolute;left:16px;top:17px;width:20px;height:20px;border-radius:50%;border:2px solid var(--ink)}
+.mode.on{border-color:var(--ink);background:var(--selbg)}
+.mode.on::before{background:var(--ink);box-shadow:inset 0 0 0 3px var(--selbg)}
+.mode b{display:block;font-size:18px}
+.mode span{display:block;color:var(--mute);font-size:15px;line-height:1.35}
+.sw{grid-column:1/-1;display:flex;align-items:center;gap:12px;min-height:44px;font-weight:600;font-size:15px}
+.knob{width:48px;height:28px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.knob::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.35);transition:transform .2s}
+.sw.on .knob{background:var(--ok)}
+.sw.on .knob::after{transform:translateX(20px)}
+.sech{font:700 15px/1.2 var(--sans);color:var(--mute);margin:26px 0 0}
+.ugrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:10px}
+.ucard{display:flex;flex-direction:column;gap:4px;width:100%;min-height:178px;padding:16px 18px;border-radius:16px;background:var(--paper);border-top:6px solid var(--uc)}
+.ucard .k{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:700;color:var(--uc);letter-spacing:.04em;text-transform:uppercase}
+.ucard .k span+span{color:var(--mute);font-weight:600;letter-spacing:0;text-transform:none}
+.ucard .nm{display:block;font:700 22px/1.15 var(--serif);letter-spacing:-.01em;margin-top:2px}
+.ucard .m{font-size:14px;color:var(--mute)}
+.pbar{display:flex;height:8px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:auto}
+.pbar i{display:block;height:100%}
+.pbar i.r{background:var(--ok)}
+.pbar i.w{background:var(--bad)}
+.ucard .p{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 10px;font-size:13px;color:var(--mute);margin-top:8px}
+.upage{padding-top:max(10px,env(safe-area-inset-top));padding-bottom:max(48px,env(safe-area-inset-bottom))}
+.uptop{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:54px}
+.uhero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:end;padding:4px 0 18px;border-bottom:2px solid var(--ink)}
+.uhero .k{font-size:14px;font-weight:700;color:var(--uc);letter-spacing:.04em;text-transform:uppercase}
+.uhero h1{font:700 clamp(32px,4.6vw,48px)/1.05 var(--serif);letter-spacing:-.02em;margin-top:6px}
+.uhero p{margin:8px 0 0;color:var(--mute)}
+.ucols{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:28px;align-items:start}
+.sec h3{font-size:15px;margin:22px 0 10px;color:var(--mute)}
+.sheetmap{padding:12px 14px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
+.dt{display:grid;grid-template-columns:42px minmax(0,1fr);gap:8px;align-items:center;padding:3px 0}
+.dt>span{font-size:13px;font-weight:700;color:var(--mute)}
+.dd{display:flex;flex-wrap:wrap;gap:4px}
+.dd i,.key i{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--mute);display:inline-block;opacity:.75}
+.dd i.d1,.key i.d1{background:var(--ok);border-color:var(--ok);opacity:1}
+.dd i.d2,.key i.d2{background:var(--bad);border-color:var(--bad);opacity:1}
+.key{margin:8px 0 0;font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.tile{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:12px;background:var(--paper);border:1.5px solid var(--line);border-top:4px solid var(--uc);min-height:96px}
+.tile b{font-size:17px}
+.tile span{font-size:13px;color:var(--mute)}
+.tile em{font-style:normal;font-size:13px;font-weight:700;color:var(--uc);margin-top:auto}
+.chips{display:flex;flex-direction:column;gap:6px}
+.chip{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 14px;min-height:52px;border-radius:12px;background:var(--paper);border:1.5px solid var(--line)}
+.chip b{color:var(--uc)}
+.chip em{font-style:normal;font-size:14px;color:var(--mute);white-space:nowrap}
+.ubtns{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.ubtns .btn{background:transparent}
+.unav{display:flex;justify-content:space-between;gap:10px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+.ucard:active,.tile:active,.chip:active,.big:active,.opt:active,.mode:active,.utog:active{transform:scale(.985)}
+.mix{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:22px}
+.big{padding:18px 20px;border-radius:16px;border:2px solid var(--ink);min-height:92px}
+.big b{display:block;font:700 22px/1.2 var(--serif)}
+.big span{display:block;color:var(--mute);font-size:15px;margin-top:4px}
+.big:disabled{opacity:.45}
+.hist{margin-top:26px}
+.hist h3{font-size:15px;color:var(--mute);margin-bottom:4px}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) auto 64px;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.hrow span:nth-child(2){color:var(--mute)}
+.hrow b{text-align:right;font-variant-numeric:tabular-nums}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-top:26px;color:var(--mute);font-size:14px}
+.fine{margin:6px 0 0;color:var(--mute);font-size:13px;max-width:80ch}
+.qbar{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:env(safe-area-inset-top)}
+.qbar-in{display:flex;align-items:center;gap:12px;min-height:60px}
+.qt{flex:1;display:flex;flex-direction:column;line-height:1.25}
+.qt b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qt span{font-size:14px;color:var(--mute)}
+.clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:16px;padding:6px 12px;border-radius:999px;background:var(--selbg);white-space:nowrap}
+.clock.warn{background:var(--badbg);color:var(--bad)}
+.prog{height:4px;background:var(--line)}
+.prog i{display:block;height:100%;width:0;background:var(--uc,var(--ink));transition:width .25s}
+.qwrap{padding-top:22px;padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+.qwrap.has-stim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start}
+.qwrap:not(.has-stim) .qcard{max-width:800px;margin:0 auto}
+.stim{background:var(--paper);border-radius:14px;border:1px solid var(--line)}
+.has-stim .stim{position:sticky;top:84px}
+.stim summary{list-style:none;display:flex;flex-direction:column;gap:2px;padding:14px 18px;cursor:pointer;min-height:44px}
+.stim summary::-webkit-details-marker{display:none}
+.stim summary span{font-size:13px;font-weight:700;color:var(--mute)}
+.stim summary b{font:700 18px/1.3 var(--serif)}
+.stim:not([open]) summary::after{content:"Tap to show the source";font-size:14px;color:var(--mute)}
+.sb{padding:0 18px 16px;font:17px/1.6 var(--serif)}
+.has-stim .sb{max-height:calc(100vh - 230px);overflow:auto;-webkit-overflow-scrolling:touch}
+.sb p{margin:0 0 12px}
+.sb .note{font:15px/1.5 var(--sans);color:var(--mute)}
+.sb .src{font:italic 15px/1.45 var(--serif);color:var(--mute);margin:14px 0 0;padding-top:10px;border-top:1px solid var(--line)}
+.scroll{overflow-x:auto;margin:0 0 12px}
+.sb table{border-collapse:collapse;width:100%;font:15px/1.35 var(--sans);font-variant-numeric:tabular-nums}
+.sb th,.sb td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+.sb th:first-child,.sb td:first-child{text-align:left}
+.sb th{font-weight:700;border-bottom:2px solid var(--ink)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:0 0 10px;font-size:14px;color:var(--mute);font-weight:600}
+.tag{padding:3px 10px;border-radius:999px;background:var(--us);color:var(--uc);font-weight:700}
+.fl-t{color:var(--bad)}
+.stem{font:600 21px/1.42 var(--serif);margin:0 0 16px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:start;width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;min-height:62px;background:var(--bg);transition:border-color .15s,background-color .15s}
+.bub{width:36px;height:36px;border-radius:50%;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.otx{display:flex;flex-direction:column;gap:6px;padding-top:6px}
+.opt.sel{border-color:var(--ink);background:var(--selbg)}
+.opt.sel .bub{background:var(--sel);color:var(--bg)}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.ok .bub,.ro.ok .bub{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.opt.bad .bub,.ro.bad .bub{background:var(--bad);border-color:var(--bad);color:var(--bg)}
+.opt.dim .ot{color:var(--mute)}
+.mk{font-style:normal;font-size:13px;font-weight:700}
+.ok .mk{color:var(--ok)}
+.bad .mk{color:var(--bad)}
+.why{font-size:15px;line-height:1.45}
+.verdict{margin:0 0 14px;padding:12px 16px;border-radius:12px;font-size:16px}
+.v-ok{background:var(--okbg);color:var(--ok)}
+.v-bad{background:var(--badbg);color:var(--bad)}
+.qfoot{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--bg);border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom))}
+.qfoot-in{display:flex;gap:10px;align-items:center}
+.sp{flex:1}
+.scrim{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.42);z-index:20}
+.sheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(640px,100%);max-height:88vh;overflow:auto;-webkit-overflow-scrolling:touch;z-index:21;background:var(--bg);border-radius:20px 20px 0 0;padding:18px 20px calc(22px + env(safe-area-inset-bottom))}
+.sh-h{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.sh-h b{font:700 22px/1.2 var(--serif)}
+.sh-sub{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700;color:var(--mute);margin:14px 0 6px}
+.utogs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.utog{display:flex;flex-direction:column;gap:1px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);min-height:64px}
+.utog b{font-size:15px;color:var(--uc)}
+.utog span{font-size:13px;line-height:1.25;color:var(--mute)}
+.utog.on{border-color:var(--uc);background:var(--us);box-shadow:inset 0 0 0 1px var(--uc)}
+.cells{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:8px;margin:12px 0 18px}
+.cell{position:relative;height:48px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.cell.done{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cell.cur{box-shadow:0 0 0 3px var(--focus)}
+.cell.fl::after{content:"";position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:var(--bad);border:2px solid var(--bg)}
+.sh-btns{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.res{padding-top:24px;padding-bottom:max(60px,env(safe-area-inset-bottom))}
+.score{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:28px;align-items:start;padding-bottom:22px;border-bottom:2px solid var(--ink)}
+.tot b{display:block;font:700 clamp(64px,10vw,96px)/1 var(--serif);letter-spacing:-.03em;white-space:nowrap}
+.tot small{font-size:.38em;color:var(--mute)}
+.tot span{display:block;font-size:18px;color:var(--mute);margin-top:6px}
+.bars h3{font-size:15px;color:var(--mute);margin:0 0 4px}
+.bars .row+h3{margin-top:14px}
+.row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) 52px;gap:10px;align-items:center;padding:5px 0;font-size:15px}
+.bar{height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px}
+.bar i.hi{background:var(--ok)}
+.bar i.md{background:var(--mid)}
+.bar i.lo{background:var(--bad)}
+.rv{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 6px}
+.review{margin-top:20px}
+.rv-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.rv-h h2{font:700 24px/1.2 var(--serif)}
+.seg{display:flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden}
+.seg button{padding:0 16px;min-height:44px;font-weight:600}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.seg.lens button{flex:1;text-align:center}
+.ri{border:1.5px solid var(--line);border-radius:14px;margin-bottom:10px;background:var(--bg)}
+.ri.bad{border-left:6px solid var(--bad)}
+.ri.ok{border-left:6px solid var(--ok)}
+.ri summary{list-style:none;display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 10px;padding:14px 16px;cursor:pointer}
+.ri summary::-webkit-details-marker{display:none}
+.rn{font-weight:700;color:var(--mute);grid-row:span 2;font-variant-numeric:tabular-nums}
+.rs{font:600 17px/1.4 var(--serif)}
+.rt{font-size:14px;font-weight:700;color:var(--mute)}
+.ri.bad .rt{color:var(--bad)}
+.ri.ok .rt{color:var(--ok)}
+.ri-b{padding:0 16px 16px}
+.ri-b .stim{margin-bottom:12px}
+.ro{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.ro p{margin:0}
+.ro .ot{font-weight:600}
+.ro .bub{width:32px;height:32px;font-size:14px}
+.ro .why{margin-top:4px}
+#toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translate(-50%,16px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:1000px){.ugrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.qwrap.has-stim{display:block}.has-stim .stim{position:static;margin-bottom:18px}.has-stim .sb{max-height:none}.ucols{grid-template-columns:minmax(0,1fr);gap:0}}
+@media (max-width:700px){.hero,.uhero{grid-template-columns:minmax(0,1fr)}.modes,.mix,.score{grid-template-columns:minmax(0,1fr)}.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.stem{font-size:19px}.btn{padding:0 16px}.utogs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.ugrid{grid-template-columns:minmax(0,1fr)}.ucard{min-height:0}}
+@media (max-width:430px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{gap:18px}.qfoot-in .btn{padding:0 12px}.qfoot-in{gap:8px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<noscript><p style="padding:24px;font:16px/1.5 -apple-system,system-ui,sans-serif">This app needs scripts, which file previews in Files, Mail and Messages switch off. On iPad, open its web link in Safari and add it to your Home Screen. On a computer, open index.html in Chrome, Safari or Edge.</p></noscript>
+<script src="bank.js"></script>
+<script>
+(function () {
+'use strict';
+const B = window.BANK;
+const app = document.getElementById('app');
+if (!B || !B.qs) { app.innerHTML = '<p style="padding:24px">The question bank did not load. Close the app and open it again while you are online.</p>'; return; }
+
+const QI = {}, BYU = {}, BYT = {};
+B.qs.forEach(function (q) {
+  QI[q.id] = q;
+  (BYU[q.u] || (BYU[q.u] = [])).push(q.id);
+  (BYT[q.t] || (BYT[q.t] = [])).push(q.id);
+});
+const UNITS = Object.keys(B.units).map(Number).sort(function (a, b) { return a - b; });
+const SK = {CAU: 'Causation', CMP: 'Comparison', CCOT: 'Continuity and change', CTX: 'Contextualization', SRC: 'Sourcing and evidence'};
+const L = ['A', 'B', 'C', 'D'];
+const KEY = 'apworld-all-v1';
+const LENS = [20, 40, 55];
+const ON_WEB = /^https?:$/.test(location.protocol);
+const STANDALONE = !!((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true);
+const IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+let st = load();
+let S = validSession(st.session) ? st.session : null;
+let view = 'home', curU = 0, sheet = null, timerId = null, toastT = null;
+let swState = location.protocol === 'file:' ? 'file' : 'none';
+
+function blank() { return {mode: 'practice', timer: true, best: {}, seen: {}, missed: {}, hist: [], session: null, mixU: UNITS.slice(), mixN: 55, hideInstall: false}; }
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && typeof s === 'object') {
+        const o = Object.assign(blank(), s);
+        o.mixU = (Array.isArray(o.mixU) ? o.mixU : UNITS.slice()).filter(function (u) { return UNITS.indexOf(u) >= 0; });
+        if (LENS.indexOf(o.mixN) < 0) o.mixN = 55;
+        return o;
+      }
+    }
+  } catch (e) {}
+  return blank();
+}
+function validSession(s) { return !!(s && s.ids && s.ids.length && !s.done && s.ids.every(function (id) { return QI[id]; })); }
+function save() { st.session = (S && !S.done) ? S : null; try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function groups(ids) { const m = {}, out = []; ids.forEach(function (id) { const k = QI[id].st || id; if (!m[k]) { m[k] = {k: k, ids: []}; out.push(m[k]); } m[k].ids.push(id); }); return out; }
+function flat(gs) { let a = []; gs.forEach(function (g) { a = a.concat(g.ids); }); return a; }
+function byUnit(u) { return (BYU[u] || []).slice(); }
+function byTopic(t) { return (BYT[t] || []).slice(); }
+function unitOf(t) { return +String(t).split('.')[0]; }
+function topicName(t) { const U = B.units[unitOf(t)]; return U && U.topics[t] ? U.topics[t] : t; }
+function fmt(sec) { sec = Math.max(0, Math.floor(sec)); const m = Math.floor(sec / 60), s = sec % 60; return m + ':' + (s < 10 ? '0' : '') + s; }
+function missedIds(u) { return Object.keys(st.missed).filter(function (id) { return QI[id] && (!u || QI[id].u === u); }); }
+function answered() { let c = 0; S.ids.forEach(function (id) { if (S.mode === 'exam' ? S.ans[id] != null : S.chk[id]) c++; }); return c; }
+function cmpKey(a, b) {
+  const x = String(a).split('.'), y = String(b).split('.');
+  for (let i = 0; i < Math.max(x.length, y.length); i++) {
+    const p = Number(x[i] || 0), q = Number(y[i] || 0);
+    if (isNaN(p) || isNaN(q)) return String(a) < String(b) ? -1 : (String(a) > String(b) ? 1 : 0);
+    if (p !== q) return p - q;
+  }
+  return 0;
+}
+function unitsLabel(us) {
+  if (us.length === UNITS.length) return 'all ' + us.length + ' units';
+  if (us.length === 1) return 'Unit ' + us[0];
+  let run = true;
+  for (let i = 1; i < us.length; i++) if (us[i] !== us[i - 1] + 1) run = false;
+  return run ? 'Units ' + us[0] + '–' + us[us.length - 1] : 'Units ' + us.join(', ');
+}
+function goBack(from) {
+  const u = from && from.charAt(0) === 'u' ? +from.slice(1) : 0;
+  if (u && B.units[u]) { curU = u; view = 'unit'; } else view = 'home';
+}
+
+/* ---------- building a quiz ---------- */
+function mixed(units, n) {
+  const wt = function (u) { return B.units[u].w || 1; };
+  const tw = units.reduce(function (s, u) { return s + wt(u); }, 0);
+  const tgt = {};
+  let got = 0;
+  const parts = units.map(function (u) { const x = n * wt(u) / tw; tgt[u] = Math.floor(x); got += tgt[u]; return {u: u, f: x - Math.floor(x)}; });
+  parts.sort(function (a, b) { return b.f - a.f; });
+  for (let i = 0; got < n && parts.length; i = (i + 1) % parts.length) { tgt[parts[i].u]++; got++; }
+  const pick = [];
+  units.forEach(function (u) {
+    const gs = shuffle(groups(byUnit(u))), used = {}, covered = {};
+    let tot = 0;
+    function take(g, t) {
+      const room = tgt[u] - tot;
+      if (room <= 0) return;
+      let ids = g.ids.slice();
+      if (t) ids.sort(function (a, b) { return (QI[b].t === t) - (QI[a].t === t); });
+      ids = ids.slice(0, Math.min(room, 3));
+      used[g.k] = 1; pick.push({k: g.k, ids: ids}); tot += ids.length;
+      ids.forEach(function (id) { covered[QI[id].t] = 1; });
+    }
+    shuffle(Object.keys(B.units[u].topics)).forEach(function (t) {
+      if (covered[t] || tot >= tgt[u]) return;
+      for (let i = 0; i < gs.length; i++) {
+        if (!used[gs[i].k] && gs[i].ids.some(function (id) { return QI[id].t === t; })) { take(gs[i], t); return; }
+      }
+    });
+    for (let i = 0; i < gs.length && tot < tgt[u]; i++) if (!used[gs[i].k]) take(gs[i]);
+  });
+  return flat(shuffle(pick));
+}
+function build(kind, a, b) {
+  if (kind === 'mock') { const u = +a, i = +b; return {key: 'm' + u + '-' + i, title: 'Unit ' + u + ' · Mock quiz ' + (i + 1), ids: B.mocks[u][i].slice(), u: u}; }
+  if (kind === 'topic') return {key: 't' + a, title: 'Topic ' + a + ' · ' + topicName(a), ids: flat(shuffle(groups(byTopic(a)))), u: unitOf(a)};
+  if (kind === 'unit') { const u = +a; return {key: 'u' + u, title: 'Unit ' + u + ' · All questions', ids: flat(shuffle(groups(byUnit(u)))), u: u}; }
+  if (kind === 'mix') {
+    const us = st.mixU.slice().sort(function (x, y) { return x - y; });
+    if (!us.length) return null;
+    return {key: 'mix', title: 'Mixed mock · ' + unitsLabel(us), ids: mixed(us, st.mixN), u: us.length === 1 ? us[0] : 0};
+  }
+  if (kind === 'missed') { const u = a ? +a : 0; return {key: 'missed', title: (u ? 'Unit ' + u + ' · ' : '') + 'Missed questions', ids: flat(groups(missedIds(u))), u: u}; }
+  if (kind === 'retry') return {key: 'retry', title: 'Retry: ' + S.title.replace(/^Retry: /, ''), ids: a.slice(), u: S.u};
+  return null;
+}
+function start(kind, a, b) {
+  const d = build(kind, a, b);
+  if (!d || !d.ids.length) return;
+  const from = view === 'unit' ? 'u' + curU : (view === 'results' && S && S.done ? S.from : 'home');
+  const replaced = S && !S.done;
+  const exam = st.mode === 'exam';
+  S = {key: d.key, title: d.title, u: d.u, ids: d.ids, total: d.ids.length, i: 0, ans: {}, chk: {}, flag: {}, mode: st.mode, used: 0, limit: (exam && st.timer) ? d.ids.length * 60 : 0, done: false, rf: 'all', from: from || 'home'};
+  sheet = null; view = 'quiz'; save(); show(false);
+  if (replaced) toast('Your unfinished quiz was replaced');
+}
+function record(id) {
+  const q = QI[id], a = S.ans[id];
+  if (a == null) { st.missed[id] = 1; return; }
+  const s = st.seen[id] || (st.seen[id] = {c: 0, w: 0, l: 0});
+  if (a === q.a) { s.c++; s.l = 1; delete st.missed[id]; } else { s.w++; s.l = 2; st.missed[id] = 1; }
+}
+function score() {
+  let c = 0;
+  const t = {}, k = {}, uu = {};
+  S.ids.forEach(function (id) {
+    const q = QI[id], ok = S.ans[id] === q.a;
+    if (ok) c++;
+    if (!t[q.t]) t[q.t] = [0, 0]; t[q.t][1]++; if (ok) t[q.t][0]++;
+    if (!k[q.s]) k[q.s] = [0, 0]; k[q.s][1]++; if (ok) k[q.s][0]++;
+    if (!uu[q.u]) uu[q.u] = [0, 0]; uu[q.u][1]++; if (ok) uu[q.u][0]++;
+  });
+  return {c: c, n: S.ids.length, t: t, k: k, uu: uu};
+}
+function finish(timeUp) {
+  if (!S || S.done) return;
+  if (S.mode === 'practice') {
+    const done = S.ids.filter(function (id) { return S.chk[id]; });
+    if (!done.length) { const f = S.from; S = null; sheet = null; goBack(f); save(); show(false); return; }
+    S.ids = done;
+  } else {
+    S.ids.forEach(function (id) { record(id); });
+  }
+  S.done = true; S.timeUp = !!timeUp; S.rf = 'all'; sheet = null;
+  const r = score();
+  if (S.key !== 'retry' && S.key !== 'missed' && S.key !== 'mix' && r.n === S.total) {
+    const b = st.best[S.key];
+    if (!b || r.c / r.n > b.c / b.n) st.best[S.key] = {c: r.c, n: r.n};
+  }
+  st.hist.push({t: S.title, c: r.c, n: r.n, m: S.mode, d: Date.now()});
+  if (st.hist.length > 80) st.hist = st.hist.slice(-80);
+  view = 'results'; save(); show(false);
+  if (timeUp) toast('Time is up. Your answers were submitted.');
+}
+
+/* ---------- views ---------- */
+function show(keep) {
+  const y = window.pageYOffset || 0;
+  const sb = app.querySelector('.qwrap .sb');
+  const prevSt = sb ? sb.getAttribute('data-st') : null, prevTop = sb ? sb.scrollTop : 0;
+  const det = app.querySelector('.qwrap details.stim');
+  const prevOpen = det ? det.open : null;
+  if (view === 'quiz' && S && !S.done) quiz(prevSt, prevOpen);
+  else if (view === 'results' && S && S.done) results();
+  else if (view === 'unit' && B.units[curU]) unitPage(curU);
+  else { view = 'home'; home(); }
+  window.scrollTo(0, keep ? y : 0);
+  const sb2 = app.querySelector('.qwrap .sb');
+  if (sb2 && prevSt && sb2.getAttribute('data-st') === prevSt) sb2.scrollTop = prevTop;
+  if (view === 'quiz') startTick(); else stopTick();
+}
+function modeBtn(v, t, d) {
+  const on = st.mode === v;
+  return '<button class="mode' + (on ? ' on' : '') + '" data-act="mode" data-v="' + v + '" role="radio" aria-checked="' + on + '"><b>' + t + '</b><span>' + d + '</span></button>';
+}
+function modesHTML() {
+  return '<div class="modes" role="radiogroup" aria-label="Quiz mode">'
+    + modeBtn('practice', 'Practice', 'Check each answer as you go and read why every choice is right or wrong.')
+    + modeBtn('exam', 'Exam', 'No feedback until you submit. Flag questions and jump around, like the real test.')
+    + '<button class="sw' + (st.timer ? ' on' : '') + '" data-act="timer" aria-pressed="' + st.timer + '"' + (st.mode === 'exam' ? '' : ' hidden') + '><span class="knob"></span>AP-pace timer: 1 minute per question</button></div>';
+}
+function resumeHTML() {
+  if (!S || S.done) return '';
+  return '<div class="resume"><div><b>Unfinished: ' + esc(S.title) + '</b><span>' + answered() + ' of ' + S.ids.length + ' done · ' + (S.mode === 'exam' ? 'Exam' : 'Practice') + ' mode</span></div>'
+    + '<button class="btn pri" data-act="resume">Resume</button><button class="btn" data-act="discard">Discard</button></div>';
+}
+function installHTML() {
+  if (!ON_WEB || STANDALONE || st.hideInstall) return '';
+  const how = IOS
+    ? 'In Safari, tap Share (or ••• and then Share), then Add to Home Screen. Open it once from the new icon while online; after that it works offline.'
+    : 'Use your browser’s Install or Add to Home Screen option so it opens in its own window and works offline.';
+  return '<div class="inst"><div><b>Put this app on your Home Screen</b><span>' + how + '</span></div><button class="btn" data-act="hideinst">Got it</button></div>';
+}
+function offlText() {
+  if (swState === 'ready') return 'Saved on this device, so it works offline. Progress stays on this device.';
+  if (swState === 'saving') return 'Saving a copy on this device for offline use…';
+  if (swState === 'file') return 'Opened as a file, so progress saves in this browser. For an app icon, open it from its web link.';
+  return 'Progress is saved on this device.';
+}
+function paintOffl() { const e = document.getElementById('offl'); if (e) e.textContent = offlText(); }
+function unitStats(u) {
+  const ids = byUnit(u);
+  let r = 0, w = 0, c = 0, n = 0, taken = 0, best = null;
+  ids.forEach(function (id) { const s = st.seen[id]; if (s) { if (s.l === 1) r++; else w++; c += s.c; n += s.c + s.w; } });
+  (B.mocks[u] || []).forEach(function (m, i) {
+    const b = st.best['m' + u + '-' + i];
+    if (b) { taken++; if (!best || b.c / b.n > best.c / best.n) best = b; }
+  });
+  return {n: ids.length, r: r, w: w, tried: r + w, acc: n ? Math.round(c / n * 100) : null, taken: taken, best: best};
+}
+function unitCard(u) {
+  const U = B.units[u], s = unitStats(u);
+  const pr = s.r / s.n * 100, pw = s.w / s.n * 100;
+  return '<button class="ucard u' + u + '" data-act="unit" data-a="' + u + '" aria-label="Unit ' + u + ': ' + esc(U.name) + '">'
+    + '<span class="k"><span>Unit ' + u + '</span><span>' + esc(U.period) + '</span></span>'
+    + '<span class="nm">' + esc(U.name) + '</span>'
+    + '<span class="m">' + s.n + ' questions · ' + Object.keys(U.topics).length + ' topics · ' + esc(U.weight) + ' of exam</span>'
+    + '<span class="pbar" aria-hidden="true"><i class="r" style="width:' + pr.toFixed(1) + '%"></i><i class="w" style="width:' + pw.toFixed(1) + '%"></i></span>'
+    + '<span class="p"><span>' + (s.tried ? s.tried + ' tried · ' + s.acc + '% right' : 'Not started') + '</span><span>'
+    + (s.taken ? 'Mocks ' + s.taken + '/' + B.mocks[u].length + ' · best ' + s.best.c + '/' + s.best.n : B.mocks[u].length + ' mock quizzes') + '</span></span></button>';
+}
+function home() {
+  const tried = Object.keys(st.seen).filter(function (id) { return QI[id]; });
+  let c = 0, w = 0;
+  tried.forEach(function (id) { c += st.seen[id].c; w += st.seen[id].w; });
+  const acc = c + w ? Math.round(c / (c + w) * 100) + '%' : '–';
+  const mN = missedIds().length;
+  let h = '<main class="wrap home">';
+  h += '<header class="hero"><div><h1>AP World History:<br>Modern</h1><p>' + B.qs.length + ' hard, AP-style questions across all nine units, c. 1200 to the present. Every answer choice comes with an explanation of why it is right or wrong.</p></div>'
+    + '<div class="stats"><div><b>' + tried.length + '<small> / ' + B.qs.length + '</small></b><span>questions tried</span></div><div><b>' + acc + '</b><span>accuracy</span></div><div><b>' + mN + '</b><span>to review</span></div></div></header>';
+  h += installHTML() + resumeHTML() + modesHTML();
+  h += '<h2 class="sech">Units</h2><div class="ugrid">' + UNITS.map(unitCard).join('') + '</div>';
+  h += '<section class="mix"><button class="big" data-act="mixopen"><b>Mixed mock</b><span>Up to 55 questions from the units you choose, weighted like the AP exam. A new draw every time.</span></button>'
+    + '<button class="big" data-act="start" data-kind="missed"' + (mN ? '' : ' disabled') + '><b>Review missed questions</b><span>' + (mN ? mN + ' question' + (mN === 1 ? '' : 's') + ' you got wrong last time' : 'Questions you miss will collect here') + '</span></button></section>';
+  if (st.hist.length) {
+    h += '<section class="hist"><h3>Recent attempts</h3>' + st.hist.slice(-6).reverse().map(function (x) {
+      return '<div class="hrow"><span>' + esc(x.t) + '</span><span>' + (x.m === 'exam' ? 'Exam' : 'Practice') + '</span><b>' + x.c + '/' + x.n + '</b></div>';
+    }).join('') + '</section>';
+  }
+  h += '<footer class="foot"><span id="offl">' + offlText() + '</span><button class="lnk" data-act="reset">Reset progress</button></footer>'
+    + '<p class="fine">Version ' + esc(B.meta.version) + '. Questions, sources and explanations were written for this practice set. AP is a registered trademark of College Board, which was not involved in making this app.</p></main>';
+  if (sheet === 'reset') h += resetSheet();
+  if (sheet === 'mix') h += mixSheet();
+  app.innerHTML = h;
+}
+function unitPage(u) {
+  const U = B.units[u], ids = byUnit(u), topics = Object.keys(U.topics), s = unitStats(u), mN = missedIds(u).length;
+  const dots = topics.map(function (t) {
+    return '<div class="dt"><span>' + t + '</span><div class="dd">' + byTopic(t).map(function (id) {
+      const x = st.seen[id]; return '<i class="' + (x ? (x.l === 1 ? 'd1' : 'd2') : '') + '"></i>';
+    }).join('') + '</div></div>';
+  }).join('');
+  const mocks = B.mocks[u].map(function (m, i) {
+    const b = st.best['m' + u + '-' + i];
+    return '<button class="tile" data-act="start" data-kind="mock" data-a="' + u + '" data-b="' + i + '"><b>Mock ' + (i + 1) + '</b><span>' + m.length + ' questions</span><em>' + (b ? 'Best ' + b.c + '/' + b.n : 'Not taken') + '</em></button>';
+  }).join('');
+  const chips = topics.map(function (t) {
+    const tids = byTopic(t);
+    let tr = 0, ok = 0;
+    tids.forEach(function (id) { const x = st.seen[id]; if (x) { tr++; if (x.l === 1) ok++; } });
+    return '<button class="chip" data-act="start" data-kind="topic" data-a="' + t + '"><b>' + t + '</b><span>' + esc(U.topics[t]) + '</span><em>' + tids.length + ' Q' + (tr ? ' · ' + Math.round(ok / tr * 100) + '%' : '') + '</em></button>';
+  }).join('');
+  let h = '<main class="wrap upage u' + u + '">';
+  h += '<div class="uptop"><button class="lnk" data-act="home">‹ All units</button></div>';
+  h += '<header class="uhero"><div><span class="k">Unit ' + u + ' · ' + esc(U.period) + '</span><h1>' + esc(U.name) + '</h1><p>' + ids.length + ' questions across ' + topics.length + ' topics · ' + esc(U.weight) + ' of the AP exam</p></div>'
+    + '<div class="stats"><div><b>' + s.tried + '<small> / ' + s.n + '</small></b><span>tried</span></div><div><b>' + (s.acc == null ? '–' : s.acc + '%') + '</b><span>accuracy</span></div><div><b>' + (s.best ? s.best.c + '/' + s.best.n : '–') + '</b><span>best mock</span></div></div></header>';
+  h += resumeHTML() + modesHTML();
+  h += '<div class="ucols"><div>'
+    + '<section class="sec"><h3>Mock quizzes</h3><div class="tiles">' + mocks + '</div></section>'
+    + '<section class="sec"><h3>Answer sheet</h3><div class="sheetmap" role="img" aria-label="Answer sheet for Unit ' + u + '">' + dots
+    + '<p class="key"><span><i class="d1"></i>right last time</span><span><i class="d2"></i>missed</span><span><i></i>not tried</span></p></div></section>'
+    + '<div class="ubtns"><button class="btn wide" data-act="start" data-kind="unit" data-a="' + u + '">All ' + ids.length + ' questions, shuffled</button>'
+    + '<button class="btn wide" data-act="start" data-kind="missed" data-a="' + u + '"' + (mN ? '' : ' disabled') + '>' + (mN ? 'Review ' + mN + ' missed in this unit' : 'No missed questions in this unit yet') + '</button></div>'
+    + '</div><section class="sec"><h3>Topic drills</h3><div class="chips">' + chips + '</div></section></div>';
+  h += '<nav class="unav" aria-label="Other units">' + (B.units[u - 1] ? '<button class="btn" data-act="unit" data-a="' + (u - 1) + '">‹ Unit ' + (u - 1) + '</button>' : '<span></span>')
+    + (B.units[u + 1] ? '<button class="btn" data-act="unit" data-a="' + (u + 1) + '">Unit ' + (u + 1) + ' ›</button>' : '<span></span>') + '</nav></main>';
+  app.innerHTML = h;
+}
+function mixSheet() {
+  const sel = st.mixU, ex = st.mode === 'exam';
+  const togs = UNITS.map(function (u) {
+    const on = sel.indexOf(u) >= 0;
+    return '<button class="utog u' + u + (on ? ' on' : '') + '" data-act="mixu" data-a="' + u + '" aria-pressed="' + on + '"><b>Unit ' + u + '</b><span>' + esc(B.units[u].name) + '</span></button>';
+  }).join('');
+  const lens = LENS.map(function (n) { return '<button class="' + (st.mixN === n ? 'on' : '') + '" data-act="mixn" data-v="' + n + '" aria-pressed="' + (st.mixN === n) + '">' + n + ' questions</button>'; }).join('');
+  return '<div class="scrim" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Mixed mock"><div class="sh-h"><b>Mixed mock</b><button class="lnk" data-act="close">Cancel</button></div>'
+    + '<p class="mute">Questions come from the units you pick, weighted like the AP exam, with a new draw every time. The real exam has 55 multiple-choice questions in 55 minutes.</p>'
+    + '<div class="sh-sub"><span>Units</span><span><button class="lnk" data-act="mixall">All</button><button class="lnk" data-act="mixnone">None</button></span></div><div class="utogs">' + togs + '</div>'
+    + '<div class="sh-sub"><span>Length</span></div><div class="seg lens" role="group" aria-label="Number of questions">' + lens + '</div>'
+    + '<div class="sh-btns"><button class="btn pri wide" data-act="mixgo"' + (sel.length ? '' : ' disabled') + '>' + (sel.length ? 'Start ' + (ex ? 'exam' : 'practice') + ': ' + st.mixN + ' questions' + (ex && st.timer ? ' in ' + st.mixN + ' minutes' : '') : 'Pick at least one unit') + '</button></div></div>';
+}
+
+function quiz(prevSt, prevOpen) {
+  const n = S.ids.length, id = S.ids[S.i], q = QI[id], a = S.ans[id];
+  const exam = S.mode === 'exam', checked = !exam && !!S.chk[id];
+  let open = true;
+  if (q.st) {
+    if (prevSt === q.st && prevOpen !== null) open = prevOpen;
+    else { const pq = S.i > 0 ? QI[S.ids[S.i - 1]] : null; open = window.innerWidth >= 900 || !(pq && pq.st === q.st); }
+  }
+  let h = '<header class="qbar"><div class="wrap qbar-in"><button class="lnk" data-act="quit">Menu</button>'
+    + '<div class="qt"><b>' + esc(S.title) + '</b><span>Question ' + (S.i + 1) + ' of ' + n + '</span></div>'
+    + '<span id="clock" class="clock"></span>'
+    + (exam ? '<button class="lnk" data-act="nav">All questions</button>' : '')
+    + '</div><div class="prog"><i class="u' + q.u + '" style="width:' + (answered() / n * 100).toFixed(1) + '%"></i></div></header>';
+  h += '<main class="wrap qwrap' + (q.st ? ' has-stim' : '') + '">';
+  if (q.st) h += stimHTML(q.st, open);
+  h += '<section class="qcard"><p class="meta"><span class="tag u' + q.u + '">Topic ' + q.t + '</span><span>' + SK[q.s] + '</span>'
+    + (exam && S.flag[id] ? '<span class="fl-t">Flagged</span>' : '') + '</p>'
+    + '<h2 class="stem">' + esc(q.q) + '</h2>'
+    + (checked ? verdict(q, a) : '')
+    + '<div class="opts" role="radiogroup" aria-label="Answer choices">' + q.c.map(function (c, k) { return opt(q, k, a, checked); }).join('') + '</div>'
+    + '</section></main>';
+  h += foot(q, a, checked, exam, n);
+  if (sheet === 'nav') h += navSheet();
+  if (sheet === 'quit') h += quitSheet();
+  app.innerHTML = h;
+  paintTime();
+}
+function stimHTML(sid, open) {
+  const s = B.stims[sid];
+  let body = (s.text || []).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
+  if (s.table && s.table.length) {
+    body += '<div class="scroll"><table><thead><tr>' + s.table[0].map(function (c) { return '<th scope="col">' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>'
+      + s.table.slice(1).map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('')
+      + '</tbody></table></div>';
+  }
+  body += (s.note || []).map(function (p) { return '<p class="note">' + esc(p) + '</p>'; }).join('');
+  body += '<p class="src">' + esc(s.source) + '</p>';
+  return '<details class="stim"' + (open ? ' open' : '') + '><summary><span>Source</span><b>' + esc(s.title) + '</b></summary><div class="sb" data-st="' + esc(sid) + '">' + body + '</div></details>';
+}
+function opt(q, k, a, checked) {
+  let cls = 'opt', mk = '';
+  if (a === k) cls += ' sel';
+  if (checked) {
+    if (k === q.a) { cls += ' ok'; mk = '<em class="mk">Correct answer</em>'; }
+    else if (a === k) { cls += ' bad'; mk = '<em class="mk">Your answer</em>'; }
+    else cls += ' dim';
+  }
+  return '<button class="' + cls + '" data-act="pick" data-k="' + k + '" role="radio" aria-checked="' + (a === k) + '"' + (checked ? ' aria-disabled="true"' : '') + '>'
+    + '<span class="bub">' + L[k] + '</span><span class="otx"><span class="ot">' + esc(q.c[k]) + '</span>' + mk
+    + (checked ? '<span class="why">' + esc(q.r[k]) + '</span>' : '') + '</span></button>';
+}
+function verdict(q, a) {
+  const ok = a === q.a;
+  return '<div class="verdict ' + (ok ? 'v-ok' : 'v-bad') + '" role="status"><b>' + (ok ? 'Correct.' : 'Not quite.') + '</b> '
+    + (ok ? 'Read why the other three fail.' : 'The answer is ' + L[q.a] + '. Every choice is explained below.') + '</div>';
+}
+function foot(q, a, checked, exam, n) {
+  const last = S.i === n - 1;
+  let h = '<footer class="qfoot"><div class="wrap qfoot-in">';
+  h += '<button class="btn" data-act="prev"' + (S.i === 0 ? ' disabled' : '') + '>Back</button>';
+  if (exam) h += '<button class="btn' + (S.flag[q.id] ? ' on' : '') + '" data-act="flag" aria-pressed="' + !!S.flag[q.id] + '">' + (S.flag[q.id] ? 'Flagged' : 'Flag') + '</button>';
+  h += '<span class="sp"></span>';
+  if (exam) h += last ? '<button class="btn pri" data-act="nav">Review and submit</button>' : '<button class="btn pri" data-act="next">Next</button>';
+  else if (!checked) h += '<button class="btn pri" data-act="check"' + (a == null ? ' disabled' : '') + '>Check answer</button>';
+  else h += last ? '<button class="btn pri" data-act="finish">See results</button>' : '<button class="btn pri" data-act="next">Next question</button>';
+  return h + '</div></footer>';
+}
+function navSheet() {
+  const un = S.ids.filter(function (id) { return S.ans[id] == null; }).length;
+  const fl = S.ids.filter(function (id) { return S.flag[id]; }).length;
+  const cells = S.ids.map(function (id, k) {
+    return '<button class="cell' + (S.ans[id] != null ? ' done' : '') + (S.flag[id] ? ' fl' : '') + (k === S.i ? ' cur' : '') + '" data-act="jump" data-k="' + k + '" aria-label="Question ' + (k + 1) + '">' + (k + 1) + '</button>';
+  }).join('');
+  return '<div class="scrim" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="All questions"><div class="sh-h"><b>All questions</b><button class="lnk" data-act="close">Close</button></div>'
+    + '<p class="mute">' + (S.ids.length - un) + ' answered · ' + un + ' blank · ' + fl + ' flagged. Tap a number to jump to it.</p><div class="cells">' + cells + '</div>'
+    + '<button class="btn pri wide" data-act="submit">' + (un ? 'Submit with ' + un + ' blank' : 'Submit quiz') + '</button></div>';
+}
+function quitSheet() {
+  return '<div class="scrim" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Leave quiz"><div class="sh-h"><b>Leave this quiz?</b><button class="lnk" data-act="close">Keep going</button></div>'
+    + '<p class="mute">Your place is saved, so you can resume it later.</p>'
+    + '<div class="sh-btns"><button class="btn pri" data-act="leave">Save and leave</button><button class="btn" data-act="finish">End now and score it</button><button class="btn danger" data-act="discard">Discard this attempt</button></div></div>';
+}
+function resetSheet() {
+  return '<div class="scrim" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Reset progress"><div class="sh-h"><b>Reset all progress?</b><button class="lnk" data-act="close">Cancel</button></div>'
+    + '<p class="mute">This clears best scores, the answer sheets, missed questions and history on this device.</p><div class="sh-btns"><button class="btn danger" data-act="doreset">Reset everything</button></div></div>';
+}
+
+function results() {
+  const r = score(), pct = Math.round(r.c / r.n * 100);
+  const wrong = S.ids.filter(function (id) { return S.ans[id] !== QI[id].a; });
+  const list = S.ids.map(function (id, k) { return {id: id, k: k}; }).filter(function (x) { return S.rf === 'all' || S.ans[x.id] !== QI[x.id].a; });
+  const multi = Object.keys(r.uu).length > 1;
+  const backU = S.from && S.from.charAt(0) === 'u' ? +S.from.slice(1) : 0;
+  const back = backU ? '<button class="btn" data-act="tounit">Back to Unit ' + backU + '</button>' : '<button class="btn" data-act="home">Back to menu</button>';
+  const m = /^m(\d+)-(\d+)$/.exec(S.key);
+  const next = m && B.mocks[+m[1]][+m[2] + 1] ? '<button class="btn" data-act="start" data-kind="mock" data-a="' + m[1] + '" data-b="' + (+m[2] + 1) + '">Next: Mock ' + (+m[2] + 2) + '</button>' : '';
+  let h = '<header class="qbar"><div class="wrap qbar-in"><button class="lnk" data-act="' + (backU ? 'tounit' : 'home') + '">' + (backU ? '‹ Unit ' + backU : 'Menu') + '</button><div class="qt"><b>' + esc(S.title) + '</b><span>'
+    + (S.mode === 'exam' ? 'Exam mode' : 'Practice mode') + ' · ' + fmt(S.used) + (S.timeUp ? ' · time ran out' : '') + '</span></div></div></header>';
+  h += '<main class="wrap res"><section class="score"><div class="tot"><b>' + r.c + '<small> / ' + r.n + '</small></b><span>' + pct + '% correct</span></div>'
+    + '<div class="bars">' + (multi
+      ? '<h3>By unit</h3>' + bars(r.uu, function (u) { return 'Unit ' + u + ' · ' + B.units[u].name; })
+      : '<h3>By topic</h3>' + bars(r.t, function (t) { return t + ' ' + topicName(t); }))
+    + '<h3>By skill</h3>' + bars(r.k, function (s) { return SK[s]; }) + '</div></section>';
+  h += '<div class="actions">' + (wrong.length ? '<button class="btn pri" data-act="retry">Retry the ' + wrong.length + ' missed</button>' : '') + next
+    + '<button class="btn" data-act="copy">Copy score summary</button>' + back + '</div>';
+  h += '<section class="review"><div class="rv-h"><h2>Review every question</h2><div class="seg" role="group" aria-label="Filter review">'
+    + '<button class="' + (S.rf === 'all' ? 'on' : '') + '" data-act="rf" data-v="all">All ' + r.n + '</button>'
+    + '<button class="' + (S.rf === 'wrong' ? 'on' : '') + '" data-act="rf" data-v="wrong">Missed ' + wrong.length + '</button></div></div>'
+    + (list.length ? list.map(function (x) { return revItem(x.id, x.k); }).join('') : '<p class="mute">Nothing missed. A clean sheet.</p>')
+    + '</section></main>';
+  app.innerHTML = h;
+}
+function bars(obj, label) {
+  return Object.keys(obj).sort(cmpKey).map(function (k) {
+    const v = obj[k], p = Math.round(v[0] / v[1] * 100);
+    return '<div class="row"><span>' + esc(label(k)) + '</span><span class="bar"><i class="' + (p >= 80 ? 'hi' : p >= 60 ? 'md' : 'lo') + '" style="width:' + Math.max(p, 2) + '%"></i></span><span class="rv">' + v[0] + '/' + v[1] + '</span></div>';
+  }).join('');
+}
+function revItem(id, k) {
+  const q = QI[id], a = S.ans[id], ok = a === q.a;
+  const tag = ok ? 'Correct' : (a == null ? 'Left blank' : 'You chose ' + L[a]);
+  return '<details class="ri ' + (ok ? 'ok' : 'bad') + '"><summary><span class="rn">' + (k + 1) + '</span><span class="rs">' + esc(q.q) + '</span><span class="rt">' + tag + ' · Answer ' + L[q.a] + '</span></summary><div class="ri-b">'
+    + '<p class="meta"><span class="tag u' + q.u + '">Topic ' + q.t + '</span><span>' + SK[q.s] + '</span></p>'
+    + (q.st ? stimHTML(q.st, true) : '')
+    + q.c.map(function (c, j) {
+      return '<div class="ro' + (j === q.a ? ' ok' : '') + (j === a && !ok ? ' bad' : '') + '"><span class="bub">' + L[j] + '</span><div><p class="ot">' + esc(c)
+        + (j === q.a ? ' <em class="mk">Correct answer</em>' : (j === a ? ' <em class="mk">Your answer</em>' : '')) + '</p><p class="why">' + esc(q.r[j]) + '</p></div></div>';
+    }).join('') + '</div></details>';
+}
+
+/* ---------- small helpers ---------- */
+function paintPick() {
+  const a = S.ans[S.ids[S.i]];
+  const bs = app.querySelectorAll('.opt');
+  for (let k = 0; k < bs.length; k++) { bs[k].classList.toggle('sel', k === a); bs[k].setAttribute('aria-checked', k === a ? 'true' : 'false'); }
+  const ck = app.querySelector('[data-act="check"]'); if (ck) ck.disabled = a == null;
+  const pg = app.querySelector('.prog i'); if (pg) pg.style.width = (answered() / S.ids.length * 100).toFixed(1) + '%';
+}
+function startTick() {
+  if (timerId) return;
+  timerId = setInterval(function () {
+    if (view !== 'quiz' || !S || S.done) { stopTick(); return; }
+    if (document.hidden || sheet === 'quit') return;
+    S.used++; paintTime();
+    if (S.limit && S.used >= S.limit) { finish(true); return; }
+    if (S.used % 15 === 0) save();
+  }, 1000);
+}
+function stopTick() { if (timerId) { clearInterval(timerId); timerId = null; } }
+function paintTime() {
+  const c = document.getElementById('clock');
+  if (!c || !S) return;
+  if (S.limit) { const left = S.limit - S.used; c.textContent = fmt(left) + ' left'; c.className = 'clock' + (left <= 60 ? ' warn' : ''); }
+  else { c.textContent = fmt(S.used); c.className = 'clock'; }
+}
+function toast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+  t.textContent = msg; t.className = 'show';
+  clearTimeout(toastT); toastT = setTimeout(function () { t.className = ''; }, 2400);
+}
+function copyText(txt) {
+  function fallback() {
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, txt.length);
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta); toast(ok ? 'Copied' : 'Copying is blocked here');
+  }
+  try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt).then(function () { toast('Copied'); }, fallback); return; } } catch (e) {}
+  fallback();
+}
+function summary() {
+  const r = score();
+  const multi = Object.keys(r.uu).length > 1;
+  const src = multi ? r.uu : r.t;
+  const parts = Object.keys(src).sort(cmpKey).map(function (k) { return (multi ? 'Unit ' : '') + k + ' ' + src[k][0] + '/' + src[k][1]; });
+  return 'AP World History: ' + S.title + '\nScore ' + r.c + '/' + r.n + ' (' + Math.round(r.c / r.n * 100) + '%), ' + (S.mode === 'exam' ? 'exam' : 'practice') + ' mode, ' + fmt(S.used) + '\nBy ' + (multi ? 'unit' : 'topic') + ': ' + parts.join(', ');
+}
+
+/* ---------- events ---------- */
+app.addEventListener('click', function (e) {
+  const el = e.target && e.target.closest ? e.target.closest('[data-act]') : null;
+  if (!el || el.disabled) return;
+  const act = el.getAttribute('data-act'), v = el.getAttribute('data-v');
+  switch (act) {
+    case 'mode': st.mode = v; save(); show(true); return;
+    case 'timer': st.timer = !st.timer; save(); show(true); return;
+    case 'start': start(el.getAttribute('data-kind'), el.getAttribute('data-a'), el.getAttribute('data-b')); return;
+    case 'unit': curU = +el.getAttribute('data-a'); sheet = null; if (S && S.done) S = null; view = 'unit'; save(); show(false); return;
+    case 'resume': if (S && !S.done) { sheet = null; view = 'quiz'; show(false); } return;
+    case 'discard': { const f = S ? S.from : null, inQuiz = view === 'quiz'; S = null; sheet = null; if (inQuiz) goBack(f); save(); show(!inQuiz); return; }
+    case 'reset': sheet = 'reset'; show(true); return;
+    case 'doreset': st = blank(); S = null; sheet = null; view = 'home'; save(); show(false); toast('Progress cleared'); return;
+    case 'close': sheet = null; show(true); return;
+    case 'home': if (S && S.done) S = null; sheet = null; view = 'home'; save(); show(false); return;
+    case 'tounit': { const f = S ? S.from : null; if (S && S.done) S = null; sheet = null; goBack(f); save(); show(false); return; }
+    case 'hideinst': st.hideInstall = true; save(); show(true); return;
+    case 'mixopen': sheet = 'mix'; show(true); return;
+    case 'mixu': { const u = +el.getAttribute('data-a'), i = st.mixU.indexOf(u); if (i >= 0) st.mixU.splice(i, 1); else st.mixU.push(u); st.mixU.sort(function (x, y) { return x - y; }); save(); show(true); return; }
+    case 'mixall': st.mixU = UNITS.slice(); save(); show(true); return;
+    case 'mixnone': st.mixU = []; save(); show(true); return;
+    case 'mixn': st.mixN = +v; save(); show(true); return;
+    case 'mixgo': if (st.mixU.length) start('mix'); return;
+  }
+  if (!S) return;
+  const id = S.ids[S.i];
+  switch (act) {
+    case 'pick':
+      if (view !== 'quiz' || S.done || (S.mode === 'practice' && S.chk[id])) return;
+      S.ans[id] = +el.getAttribute('data-k'); save(); paintPick(); return;
+    case 'check': if (S.ans[id] == null) return; S.chk[id] = 1; record(id); save(); show(true); return;
+    case 'next': if (S.i < S.ids.length - 1) { S.i++; save(); show(false); } return;
+    case 'prev': if (S.i > 0) { S.i--; save(); show(false); } return;
+    case 'flag': if (S.flag[id]) delete S.flag[id]; else S.flag[id] = 1; save(); show(true); return;
+    case 'nav': sheet = 'nav'; show(true); return;
+    case 'jump': S.i = +el.getAttribute('data-k'); sheet = null; save(); show(false); return;
+    case 'submit': case 'finish': finish(false); return;
+    case 'quit': sheet = 'quit'; show(true); return;
+    case 'leave': sheet = null; goBack(S.from); save(); show(false); return;
+    case 'rf': S.rf = v; show(true); return;
+    case 'retry': { const wrong = S.ids.filter(function (x) { return S.ans[x] !== QI[x].a; }); if (wrong.length) start('retry', wrong); return; }
+    case 'copy': copyText(summary()); return;
+  }
+});
+document.addEventListener('keydown', function (e) {
+  if (sheet) { if (e.key === 'Escape') { sheet = null; show(true); } return; }
+  if (view !== 'quiz' || !S || S.done || e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = (e.key || '').toUpperCase();
+  let idx = -1;
+  if (k.length === 1) { idx = 'ABCD'.indexOf(k); if (idx < 0) idx = '1234'.indexOf(k); }
+  if (idx >= 0) { const b = app.querySelectorAll('.opt')[idx]; if (b) b.click(); e.preventDefault(); return; }
+  if (e.target && e.target.tagName === 'BUTTON') return;
+  if (e.key === 'Enter') { const p = app.querySelector('.qfoot .pri'); if (p && !p.disabled) { p.click(); e.preventDefault(); } return; }
+  if (e.key === 'ArrowRight') { const n = app.querySelector('.qfoot [data-act="next"]'); if (n) n.click(); return; }
+  if (e.key === 'ArrowLeft') { const p = app.querySelector('.qfoot [data-act="prev"]'); if (p && !p.disabled) p.click(); }
+});
+window.addEventListener('resize', function () {
+  if (view === 'quiz' && window.innerWidth >= 900) { const d = app.querySelector('.qwrap details.stim'); if (d) d.open = true; }
+});
+document.addEventListener('visibilitychange', function () { if (document.hidden) save(); });
+window.addEventListener('pagehide', save);
+
+show(false);
+
+/* ---------- offline copy ---------- */
+if (ON_WEB && 'serviceWorker' in navigator) {
+  swState = navigator.serviceWorker.controller ? 'ready' : 'saving';
+  paintOffl();
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    const first = swState !== 'ready';
+    swState = 'ready'; paintOffl();
+    if (first) toast('Saved for offline use');
+  });
+  navigator.serviceWorker.register('sw.js').catch(function () { swState = 'none'; paintOffl(); });
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().then(function () {}, function () {}); } catch (e) {}
+}
+})();
+</script>
+</body>
+</html>
