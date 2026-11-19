@@ -12,7 +12,7 @@ Rule: commit + push after each completed step so progress is never lost. Tick wh
 - [x] 3. Per-choice explanations Unit 3
 - [x] 4. Per-choice explanations Unit 4
 - [x] 5. Per-choice explanations Unit 5
-- [ ] 6. Source-based sets: 4 stimuli x 3 questions per unit (stims/u1-5.json)
+- [x] 6. Source-based sets: 4 stimuli x 3 questions per unit (stims/u1-5.json)
 - [ ] 7. build.py -> cyber/bank.js (balanced answer positions, 5 mocks/unit) + engine cyber/index.html (WHAP engine + lessons, FRQs, labs) + sw.js, manifest, icons
 - [ ] 8. Fix root sw.js to ignore /cyber/ ; README; browser tests; push; verify live URL
 - [ ] 9. Tap-to-check PDF (cyber/AP_Cybersecurity_Tap_to_Check.pdf) + project doc + final report; cancel resume tasks
