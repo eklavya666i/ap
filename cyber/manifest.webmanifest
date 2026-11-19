@@ -1,0 +1,31 @@
+{
+ "name": "AP Cybersecurity Practice",
+ "short_name": "AP Cyber",
+ "description": "666 AP-style Cybersecurity questions with explanations, lessons, written practice, labs and a timed exam mode. Works offline.",
+ "id": "./",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#ffffff",
+ "theme_color": "#ffffff",
+ "lang": "en",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

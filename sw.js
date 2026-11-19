@@ -34,6 +34,8 @@ self.addEventListener('fetch', function (e) {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+  /* The AP Cybersecurity app in /cyber/ has its own offline copy; leave its pages alone. */
+  if (url.pathname.indexOf('/cyber/') !== -1) return;
   if (req.mode === 'navigate') {
     e.respondWith(caches.open(CACHE).then(function (cache) {
       return cache.match('./').then(function (hit) {

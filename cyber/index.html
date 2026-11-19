@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="666 AP-style Cybersecurity questions with an explanation for every choice, lessons for all 24 topics, written-response practice, labs, mock quizzes and timed exam mode. Works offline.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AP Cyber">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111315" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<title>AP Cybersecurity Practice</title>
+<style>
+/* VOICE   everyday study tool: calm, exam-serious, built for fingers on an iPad
+   IDEA    an AP exam booklet and its bubble answer sheet
+   COLOUR  paper white and ink black; one accent per unit; green and crimson only for marking
+   TYPE    New York / Georgia serif for sources, stems and titles; San Francisco for controls
+   LAYOUT  iPad landscape: source beside question with a fixed answer bar; portrait and phone: source above question */
+:root{--bg:#ffffff;--paper:#f7f5ef;--ink:#15171b;--mute:#5c6067;--line:#e2dfd6;--focus:#08656e;--mid:#9a5a05;--ok:#13763a;--okbg:#e5f4ea;--bad:#b3261e;--badbg:#fbe9e7;--sel:#15171b;--selbg:#efeee8;--serif:ui-serif,"New York","Iowan Old Style",Georgia,"Times New Roman",serif;--sans:-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color-scheme:light}
+.u1{--uc:#7a3f91;--us:#f3e9f7}.u2{--uc:#4b45a6;--us:#ecebf9}.u3{--uc:#9a5a05;--us:#fbefdc}.u4{--uc:#08656e;--us:#e0f1f2}.u5{--uc:#a3305a;--us:#fbe8ef}.u6{--uc:#9b4416;--us:#fbeadf}.u7{--uc:#46586b;--us:#e9eef3}.u8{--uc:#2a58a8;--us:#e6edfa}.u9{--uc:#56660b;--us:#eef2d9}
+@media (prefers-color-scheme:dark){
+:root{--bg:#111315;--paper:#1a1d20;--ink:#ecebe5;--mute:#a3a7ac;--line:#2d3136;--focus:#4fc5ce;--mid:#e7a64b;--ok:#5bd48f;--okbg:#11301f;--bad:#ff8379;--badbg:#3b1715;--sel:#ecebe5;--selbg:#24282c;color-scheme:dark}
+.u1{--uc:#d1a3e6;--us:#2a1d31}.u2{--uc:#aba5f2;--us:#1f1d36}.u3{--uc:#e7a64b;--us:#2c2213}.u4{--uc:#4fc5ce;--us:#0f292c}.u5{--uc:#f08bb0;--us:#341823}.u6{--uc:#f0a274;--us:#33200f}.u7{--uc:#a9bccf;--us:#1e252d}.u8{--uc:#8fb0f0;--us:#16213a}.u9{--uc:#c3d25a;--us:#262b10}}
+*{box-sizing:border-box;min-width:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 var(--sans);overflow-x:hidden}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;text-align:left;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button:disabled{cursor:default}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+h1,h2,h3{margin:0}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+.mute{color:var(--mute)}
+.lnk{min-height:44px;padding:0 6px;font-weight:600;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 20px;border:1.5px solid var(--ink);border-radius:999px;font-weight:600;background:var(--bg);white-space:nowrap;text-align:center}
+.btn.pri{background:var(--ink);color:var(--bg)}
+.btn:disabled{opacity:.35}
+.btn.on{background:var(--selbg)}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btn.wide{width:100%}
+.home{padding-top:max(28px,env(safe-area-inset-top));padding-bottom:max(40px,env(safe-area-inset-bottom))}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;padding-bottom:20px;border-bottom:2px solid var(--ink)}
+.hero h1{font:700 clamp(34px,5vw,52px)/1.04 var(--serif);letter-spacing:-.02em}
+.hero p{margin:10px 0 0;max-width:60ch;color:var(--mute)}
+.stats{display:flex;gap:26px}
+.stats div{display:flex;flex-direction:column}
+.stats b{font:700 32px/1 var(--serif);white-space:nowrap}
+.stats small{font-size:16px;color:var(--mute);font-weight:500}
+.stats span{font-size:14px;color:var(--mute);margin-top:6px}
+.inst{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-top:18px;padding:14px 16px;border-radius:14px;border:1.5px dashed var(--mute);background:var(--paper)}
+.inst div{flex:1 1 320px;display:flex;flex-direction:column}
+.inst span{color:var(--mute);font-size:15px}
+.resume{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:20px;padding:14px 16px;border-radius:14px;background:var(--selbg)}
+.resume div{flex:1 1 260px;display:flex;flex-direction:column}
+.resume span{color:var(--mute);font-size:15px}
+.modes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:22px 0 4px}
+.mode{position:relative;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px 14px 50px;min-height:78px}
+.mode::before{content:"";position:absolute;left:16px;top:17px;width:20px;height:20px;border-radius:50%;border:2px solid var(--ink)}
+.mode.on{border-color:var(--ink);background:var(--selbg)}
+.mode.on::before{background:var(--ink);box-shadow:inset 0 0 0 3px var(--selbg)}
+.mode b{display:block;font-size:18px}
+.mode span{display:block;color:var(--mute);font-size:15px;line-height:1.35}
+.sw{grid-column:1/-1;display:flex;align-items:center;gap:12px;min-height:44px;font-weight:600;font-size:15px}
+.knob{width:48px;height:28px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.knob::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.35);transition:transform .2s}
+.sw.on .knob{background:var(--ok)}
+.sw.on .knob::after{transform:translateX(20px)}
+.sech{font:700 15px/1.2 var(--sans);color:var(--mute);margin:26px 0 0}
+.ugrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:10px}
+.ucard{display:flex;flex-direction:column;gap:4px;width:100%;min-height:178px;padding:16px 18px;border-radius:16px;background:var(--paper);border-top:6px solid var(--uc)}
+.ucard .k{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:700;color:var(--uc);letter-spacing:.04em;text-transform:uppercase}
+.ucard .k span+span{color:var(--mute);font-weight:600;letter-spacing:0;text-transform:none}
+.ucard .nm{display:block;font:700 22px/1.15 var(--serif);letter-spacing:-.01em;margin-top:2px}
+.ucard .m{font-size:14px;color:var(--mute)}
+.pbar{display:flex;height:8px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:auto}
+.pbar i{display:block;height:100%}
+.pbar i.r{background:var(--ok)}
+.pbar i.w{background:var(--bad)}
+.ucard .p{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 10px;font-size:13px;color:var(--mute);margin-top:8px}
+.upage{padding-top:max(10px,env(safe-area-inset-top));padding-bottom:max(48px,env(safe-area-inset-bottom))}
+.uptop{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:54px}
+.uhero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:end;padding:4px 0 18px;border-bottom:2px solid var(--ink)}
+.uhero .k{font-size:14px;font-weight:700;color:var(--uc);letter-spacing:.04em;text-transform:uppercase}
+.uhero h1{font:700 clamp(32px,4.6vw,48px)/1.05 var(--serif);letter-spacing:-.02em;margin-top:6px}
+.uhero p{margin:8px 0 0;color:var(--mute)}
+.ucols{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:28px;align-items:start}
+.sec h3{font-size:15px;margin:22px 0 10px;color:var(--mute)}
+.sheetmap{padding:12px 14px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
+.dt{display:grid;grid-template-columns:42px minmax(0,1fr);gap:8px;align-items:center;padding:3px 0}
+.dt>span{font-size:13px;font-weight:700;color:var(--mute)}
+.dd{display:flex;flex-wrap:wrap;gap:4px}
+.dd i,.key i{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--mute);display:inline-block;opacity:.75}
+.dd i.d1,.key i.d1{background:var(--ok);border-color:var(--ok);opacity:1}
+.dd i.d2,.key i.d2{background:var(--bad);border-color:var(--bad);opacity:1}
+.key{margin:8px 0 0;font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.tile{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:12px;background:var(--paper);border:1.5px solid var(--line);border-top:4px solid var(--uc);min-height:96px}
+.tile b{font-size:17px}
+.tile span{font-size:13px;color:var(--mute)}
+.tile em{font-style:normal;font-size:13px;font-weight:700;color:var(--uc);margin-top:auto}
+.chips{display:flex;flex-direction:column;gap:6px}
+.chip{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 14px;min-height:52px;border-radius:12px;background:var(--paper);border:1.5px solid var(--line)}
+.chip b{color:var(--uc)}
+.chip em{font-style:normal;font-size:14px;color:var(--mute);white-space:nowrap}
+.ubtns{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.ubtns .btn{background:transparent}
+.unav{display:flex;justify-content:space-between;gap:10px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+.ucard:active,.tile:active,.chip:active,.big:active,.opt:active,.mode:active,.utog:active{transform:scale(.985)}
+.mix{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:22px}
+.big{padding:18px 20px;border-radius:16px;border:2px solid var(--ink);min-height:92px}
+.big b{display:block;font:700 22px/1.2 var(--serif)}
+.big span{display:block;color:var(--mute);font-size:15px;margin-top:4px}
+.big:disabled{opacity:.45}
+.hist{margin-top:26px}
+.hist h3{font-size:15px;color:var(--mute);margin-bottom:4px}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) auto 64px;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.hrow span:nth-child(2){color:var(--mute)}
+.hrow b{text-align:right;font-variant-numeric:tabular-nums}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-top:26px;color:var(--mute);font-size:14px}
+.fine{margin:6px 0 0;color:var(--mute);font-size:13px;max-width:80ch}
+.qbar{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:env(safe-area-inset-top)}
+.qbar-in{display:flex;align-items:center;gap:12px;min-height:60px}
+.qt{flex:1;display:flex;flex-direction:column;line-height:1.25}
+.qt b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qt span{font-size:14px;color:var(--mute)}
+.clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:16px;padding:6px 12px;border-radius:999px;background:var(--selbg);white-space:nowrap}
+.clock.warn{background:var(--badbg);color:var(--bad)}
+.prog{height:4px;background:var(--line)}
+.prog i{display:block;height:100%;width:0;background:var(--uc,var(--ink));transition:width .25s}
+.qwrap{padding-top:22px;padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+.qwrap.has-stim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start}
+.qwrap:not(.has-stim) .qcard{max-width:800px;margin:0 auto}
+.stim{background:var(--paper);border-radius:14px;border:1px solid var(--line)}
+.has-stim .stim{position:sticky;top:84px}
+.stim summary{list-style:none;display:flex;flex-direction:column;gap:2px;padding:14px 18px;cursor:pointer;min-height:44px}
+.stim summary::-webkit-details-marker{display:none}
+.stim summary span{font-size:13px;font-weight:700;color:var(--mute)}
+.stim summary b{font:700 18px/1.3 var(--serif)}
+.stim:not([open]) summary::after{content:"Tap to show the source";font-size:14px;color:var(--mute)}
+.sb{padding:0 18px 16px;font:17px/1.6 var(--serif)}
+.has-stim .sb{max-height:calc(100vh - 230px);overflow:auto;-webkit-overflow-scrolling:touch}
+.sb p{margin:0 0 12px}
+.sb .note{font:15px/1.5 var(--sans);color:var(--mute)}
+.sb .src{font:italic 15px/1.45 var(--serif);color:var(--mute);margin:14px 0 0;padding-top:10px;border-top:1px solid var(--line)}
+.scroll{overflow-x:auto;margin:0 0 12px}
+.sb table{border-collapse:collapse;width:100%;font:15px/1.35 var(--sans);font-variant-numeric:tabular-nums}
+.sb th,.sb td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+.sb th:first-child,.sb td:first-child{text-align:left}
+.sb th{font-weight:700;border-bottom:2px solid var(--ink)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:0 0 10px;font-size:14px;color:var(--mute);font-weight:600}
+.tag{padding:3px 10px;border-radius:999px;background:var(--us);color:var(--uc);font-weight:700}
+.fl-t{color:var(--bad)}
+.stem{font:600 21px/1.42 var(--serif);margin:0 0 16px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:start;width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;min-height:62px;background:var(--bg);transition:border-color .15s,background-color .15s}
+.bub{width:36px;height:36px;border-radius:50%;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.otx{display:flex;flex-direction:column;gap:6px;padding-top:6px}
+.opt.sel{border-color:var(--ink);background:var(--selbg)}
+.opt.sel .bub{background:var(--sel);color:var(--bg)}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.ok .bub,.ro.ok .bub{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.opt.bad .bub,.ro.bad .bub{background:var(--bad);border-color:var(--bad);color:var(--bg)}
+.opt.dim .ot{color:var(--mute)}
+.mk{font-style:normal;font-size:13px;font-weight:700}
+.ok .mk{color:var(--ok)}
+.bad .mk{color:var(--bad)}
+.why{font-size:15px;line-height:1.45}
+.verdict{margin:0 0 14px;padding:12px 16px;border-radius:12px;font-size:16px}
+.v-ok{background:var(--okbg);color:var(--ok)}
+.v-bad{background:var(--badbg);color:var(--bad)}
+.qfoot{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--bg);border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom))}
+.qfoot-in{display:flex;gap:10px;align-items:center}
+.sp{flex:1}
+.scrim{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.42);z-index:20}
+.sheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(640px,100%);max-height:88vh;overflow:auto;-webkit-overflow-scrolling:touch;z-index:21;background:var(--bg);border-radius:20px 20px 0 0;padding:18px 20px calc(22px + env(safe-area-inset-bottom))}
+.sh-h{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.sh-h b{font:700 22px/1.2 var(--serif)}
+.sh-sub{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700;color:var(--mute);margin:14px 0 6px}
+.utogs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.utog{display:flex;flex-direction:column;gap:1px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);min-height:64px}
+.utog b{font-size:15px;color:var(--uc)}
+.utog span{font-size:13px;line-height:1.25;color:var(--mute)}
+.utog.on{border-color:var(--uc);background:var(--us);box-shadow:inset 0 0 0 1px var(--uc)}
+.cells{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:8px;margin:12px 0 18px}
+.cell{position:relative;height:48px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.cell.done{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cell.cur{box-shadow:0 0 0 3px var(--focus)}
+.cell.fl::after{content:"";position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:var(--bad);border:2px solid var(--bg)}
+.sh-btns{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.res{padding-top:24px;padding-bottom:max(60px,env(safe-area-inset-bottom))}
+.score{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:28px;align-items:start;padding-bottom:22px;border-bottom:2px solid var(--ink)}
+.tot b{display:block;font:700 clamp(64px,10vw,96px)/1 var(--serif);letter-spacing:-.03em;white-space:nowrap}
+.tot small{font-size:.38em;color:var(--mute)}
+.tot span{display:block;font-size:18px;color:var(--mute);margin-top:6px}
+.bars h3{font-size:15px;color:var(--mute);margin:0 0 4px}
+.bars .row+h3{margin-top:14px}
+.row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) 52px;gap:10px;align-items:center;padding:5px 0;font-size:15px}
+.bar{height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px}
+.bar i.hi{background:var(--ok)}
+.bar i.md{background:var(--mid)}
+.bar i.lo{background:var(--bad)}
+.rv{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 6px}
+.review{margin-top:20px}
+.rv-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.rv-h h2{font:700 24px/1.2 var(--serif)}
+.seg{display:flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden}
+.seg button{padding:0 16px;min-height:44px;font-weight:600}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.seg.lens button{flex:1;text-align:center}
+.ri{border:1.5px solid var(--line);border-radius:14px;margin-bottom:10px;background:var(--bg)}
+.ri.bad{border-left:6px solid var(--bad)}
+.ri.ok{border-left:6px solid var(--ok)}
+.ri summary{list-style:none;display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 10px;padding:14px 16px;cursor:pointer}
+.ri summary::-webkit-details-marker{display:none}
+.rn{font-weight:700;color:var(--mute);grid-row:span 2;font-variant-numeric:tabular-nums}
+.rs{font:600 17px/1.4 var(--serif)}
+.rt{font-size:14px;font-weight:700;color:var(--mute)}
+.ri.bad .rt{color:var(--bad)}
+.ri.ok .rt{color:var(--ok)}
+.ri-b{padding:0 16px 16px}
+.ri-b .stim{margin-bottom:12px}
+.ro{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.ro p{margin:0}
+.ro .ot{font-weight:600}
+.ro .bub{width:32px;height:32px;font-size:14px}
+.ro .why{margin-top:4px}
+#toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translate(-50%,16px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:1000px){.ugrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.qwrap.has-stim{display:block}.has-stim .stim{position:static;margin-bottom:18px}.has-stim .sb{max-height:none}.ucols{grid-template-columns:minmax(0,1fr);gap:0}}
+@media (max-width:700px){.hero,.uhero{grid-template-columns:minmax(0,1fr)}.modes,.mix,.score{grid-template-columns:minmax(0,1fr)}.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.stem{font-size:19px}.btn{padding:0 16px}.utogs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.ugrid{grid-template-columns:minmax(0,1fr)}.ucard{min-height:0}}
+@media (max-width:430px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{gap:18px}.qfoot-in .btn{padding:0 12px}.qfoot-in{gap:8px}}
+
+pre.logpre{font:13px/1.5 ui-monospace,Menlo,monospace;background:#15171b;color:#e9e7e1;padding:12px 14px;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 10px}
+.labw{--card:var(--bg);--soft:var(--selbg);--mut:var(--mute);--acc:#e8251a;--b0:#d9dcdf;--b1:#f4bcb6;--b2:#f2d58a;--b3:#9fc3df;--b4:#86cfa3;padding-top:max(20px,env(safe-area-inset-top));padding-bottom:max(48px,env(safe-area-inset-bottom))}
+@media (prefers-color-scheme:dark){.labw{--b0:#30363c;--b1:#6e2620;--b2:#6b5314;--b3:#22506f;--b4:#1c6a3e}}
+.labw h1{font:700 clamp(28px,4vw,40px)/1.08 var(--serif);letter-spacing:-.01em;margin:12px 0 10px}
+.labw h2{font:700 22px/1.2 var(--serif);margin:0 0 8px}.labw h3{font-size:18px;margin:6px 0}
+.labw p{margin:0 0 10px}.labw ul{margin:0;padding-left:22px}.labw li{margin:4px 0}
+.labw .col{max-width:980px}
+.labw .card{background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:12px;overflow-x:auto}
+.labw .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.labw .sp{flex:1}
+.labw .tag{display:inline-flex;font-size:13px;padding:2px 10px;border-radius:999px;background:var(--selbg);color:var(--mute);white-space:nowrap}
+.labw .btn.sm{min-height:40px;padding:0 14px;font-size:15px}.labw .btn.ghost{border-color:var(--line)}
+.labw .btn:disabled{opacity:.45}
+.labw .fb{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--selbg)}
+.labw .fb.ok b,.labw .ok{color:var(--ok)}.labw .fb.no b,.labw .no{color:var(--bad)}
+.labw .mut{color:var(--mute)}.labw .small{font-size:15px}.labw .tiny{font-size:13px}
+.labw .grid{display:grid;gap:12px}.labw .g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}.labw .g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.labw table{border-collapse:collapse;width:100%;font-size:15px}.labw th,.labw td{padding:8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.labw th{color:var(--mute);font-size:13px}
+.labw .num{text-align:right;white-space:nowrap}
+.labw pre.log,.labw pre.code{font:13px/1.5 ui-monospace,Menlo,monospace;background:#15171b;color:#e9e7e1;padding:12px 14px;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.labw pre.txt{white-space:pre-wrap;font:16px/1.5 var(--serif);background:var(--selbg);padding:12px 14px;border-radius:10px;margin:0}
+.labw code{font-family:ui-monospace,Menlo,monospace;font-size:.92em}
+.labw select,.labw input,.labw textarea{font:16px var(--sans);color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;min-height:44px;max-width:100%}
+.labw textarea{width:100%;min-height:96px;resize:vertical}
+.labw .pk{display:inline-flex;gap:6px}.labw .pk label{display:flex;flex-direction:column;align-items:center;font-size:13px}.labw .pk input{width:24px;height:24px;min-height:0}
+.labw .c0{background:var(--b0)}.labw .c1{background:var(--b1)}.labw .c2{background:var(--b2)}.labw .c3{background:var(--b3)}.labw .c4{background:var(--b4)}
+.labw .hook{border-left:4px solid var(--ink);background:var(--selbg);padding:14px 16px;border-radius:0 12px 12px 0;font:18px/1.5 var(--serif)}
+.labw .terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.labw .terms details{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg)}.labw .terms summary{font-weight:700;cursor:pointer;min-height:28px}
+.labw .tlist{display:grid;gap:8px;margin-top:8px}
+.labw .tl{display:flex;gap:12px;align-items:center;width:100%;min-height:52px;padding:10px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);text-align:left}
+.labw .tl b{min-width:36px}.labw .tl:hover{border-color:var(--ink)}
+.labw .scorebtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.labw .ftimer{font:700 18px ui-monospace,Menlo,monospace}.labw .ftimer.warn{color:var(--bad)}
+.study{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:700px){.study{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<noscript><p style="padding:24px;font:16px/1.5 -apple-system,system-ui,sans-serif">This app needs scripts, which file previews in Files, Mail and Messages switch off. On iPad, open its web link in Safari and add it to your Home Screen. On a computer, open index.html in Chrome, Safari or Edge.</p></noscript>
+<script src="bank.js"></script>
+<script>
+(function () {
+'use strict';
+const B = window.BANK;
+const app = document.getElementById('app');
+if (!B || !B.qs) { app.innerHTML = '<p style="padding:24px">The question bank did not load. Close the app and open it again while you are online.</p>'; return; }
+
+const QI = {}, BYU = {}, BYT = {};
+B.qs.forEach(function (q) {
+  QI[q.id] = q;
+  (BYU[q.u] || (BYU[q.u] = [])).push(q.id);
+  (BYT[q.t] || (BYT[q.t] = [])).push(q.id);
+});
+const UNITS = Object.keys(B.units).map(Number).sort(function (a, b) { return a - b; });
+const SK = {AR: 'Analyze Risk', MR: 'Mitigate Risk', DA: 'Detect Attacks'};
+const L = ['A', 'B', 'C', 'D'];
+const KEY = 'apcyber-all-v1';
+const LENS = [20, 40, 60];
+const ON_WEB = /^https?:$/.test(location.protocol);
+const STANDALONE = !!((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true);
+const IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+let st = load();
+let S = validSession(st.session) ? st.session : null;
+let view = 'home', curU = 0, sheet = null, timerId = null, toastT = null;
+let swState = location.protocol === 'file:' ? 'file' : 'none';
+
+function blank() { return {mode: 'practice', timer: true, best: {}, seen: {}, missed: {}, hist: [], session: null, mixU: UNITS.slice(), mixN: 60, hideInstall: false, labs: {}, frq: {}, frqAns: {}}; }
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && typeof s === 'object') {
+        const o = Object.assign(blank(), s);
+        o.mixU = (Array.isArray(o.mixU) ? o.mixU : UNITS.slice()).filter(function (u) { return UNITS.indexOf(u) >= 0; });
+        if (LENS.indexOf(o.mixN) < 0) o.mixN = 60;
+        if (!o.labs) o.labs = {}; if (!o.frq) o.frq = {}; if (!o.frqAns) o.frqAns = {};
+        return o;
+      }
+    }
+  } catch (e) {}
+  return blank();
+}
+function validSession(s) { return !!(s && s.ids && s.ids.length && !s.done && s.ids.every(function (id) { return QI[id]; })); }
+function save() { st.session = (S && !S.done) ? S : null; try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function groups(ids) { const m = {}, out = []; ids.forEach(function (id) { const k = QI[id].st || id; if (!m[k]) { m[k] = {k: k, ids: []}; out.push(m[k]); } m[k].ids.push(id); }); return out; }
+function flat(gs) { let a = []; gs.forEach(function (g) { a = a.concat(g.ids); }); return a; }
+function byUnit(u) { return (BYU[u] || []).slice(); }
+function byTopic(t) { return (BYT[t] || []).slice(); }
+function unitOf(t) { return +String(t).split('.')[0]; }
+function topicName(t) { const U = B.units[unitOf(t)]; return U && U.topics[t] ? U.topics[t] : t; }
+function fmt(sec) { sec = Math.max(0, Math.floor(sec)); const m = Math.floor(sec / 60), s = sec % 60; return m + ':' + (s < 10 ? '0' : '') + s; }
+function missedIds(u) { return Object.keys(st.missed).filter(function (id) { return QI[id] && (!u || QI[id].u === u); }); }
+function answered() { let c = 0; S.ids.forEach(function (id) { if (S.mode === 'exam' ? S.ans[id] != null : S.chk[id]) c++; }); return c; }
+function cmpKey(a, b) {
+  const x = String(a).split('.'), y = String(b).split('.');
+  for (let i = 0; i < Math.max(x.length, y.length); i++) {
+    const p = Number(x[i] || 0), q = Number(y[i] || 0);
+    if (isNaN(p) || isNaN(q)) return String(a) < String(b) ? -1 : (String(a) > String(b) ? 1 : 0);
+    if (p !== q) return p - q;
+  }
+  return 0;
+}
+function unitsLabel(us) {
+  if (us.length === UNITS.length) return 'all ' + us.length + ' units';
+  if (us.length === 1) return 'Unit ' + us[0];
+  let run = true;
+  for (let i = 1; i < us.length; i++) if (us[i] !== us[i - 1] + 1) run = false;
+  return run ? 'Units ' + us[0] + '–' + us[us.length - 1] : 'Units ' + us.join(', ');
+}
+function goBack(from) {
+  const u = from && from.charAt(0) === 'u' ? +from.slice(1) : 0;
+  if (u && B.units[u]) { curU = u; view = 'unit'; } else view = 'home';
+}
+
+/* ---------- building a quiz ---------- */
+function mixed(units, n) {
+  const wt = function (u) { return B.units[u].w || 1; };
+  const tw = units.reduce(function (s, u) { return s + wt(u); }, 0);
+  const tgt = {};
+  let got = 0;
+  const parts = units.map(function (u) { const x = n * wt(u) / tw; tgt[u] = Math.floor(x); got += tgt[u]; return {u: u, f: x - Math.floor(x)}; });
+  parts.sort(function (a, b) { return b.f - a.f; });
+  for (let i = 0; got < n && parts.length; i = (i + 1) % parts.length) { tgt[parts[i].u]++; got++; }
+  const pick = [];
+  units.forEach(function (u) {
+    const gs = shuffle(groups(byUnit(u))), used = {}, covered = {};
+    let tot = 0;
+    function take(g, t) {
+      const room = tgt[u] - tot;
+      if (room <= 0) return;
+      let ids = g.ids.slice();
+      if (t) ids.sort(function (a, b) { return (QI[b].t === t) - (QI[a].t === t); });
+      ids = ids.slice(0, Math.min(room, 3));
+      used[g.k] = 1; pick.push({k: g.k, ids: ids}); tot += ids.length;
+      ids.forEach(function (id) { covered[QI[id].t] = 1; });
+    }
+    shuffle(Object.keys(B.units[u].topics)).forEach(function (t) {
+      if (covered[t] || tot >= tgt[u]) return;
+      for (let i = 0; i < gs.length; i++) {
+        if (!used[gs[i].k] && gs[i].ids.some(function (id) { return QI[id].t === t; })) { take(gs[i], t); return; }
+      }
+    });
+    for (let i = 0; i < gs.length && tot < tgt[u]; i++) if (!used[gs[i].k]) take(gs[i]);
+  });
+  return flat(shuffle(pick));
+}
+function build(kind, a, b) {
+  if (kind === 'mock') { const u = +a, i = +b; return {key: 'm' + u + '-' + i, title: 'Unit ' + u + ' · Mock quiz ' + (i + 1), ids: B.mocks[u][i].slice(), u: u}; }
+  if (kind === 'topic') return {key: 't' + a, title: 'Topic ' + a + ' · ' + topicName(a), ids: flat(shuffle(groups(byTopic(a)))), u: unitOf(a)};
+  if (kind === 'unit') { const u = +a; return {key: 'u' + u, title: 'Unit ' + u + ' · All questions', ids: flat(shuffle(groups(byUnit(u)))), u: u}; }
+  if (kind === 'mix') {
+    const us = st.mixU.slice().sort(function (x, y) { return x - y; });
+    if (!us.length) return null;
+    return {key: 'mix', title: 'Mixed mock · ' + unitsLabel(us), ids: mixed(us, st.mixN), u: us.length === 1 ? us[0] : 0};
+  }
+  if (kind === 'missed') { const u = a ? +a : 0; return {key: 'missed', title: (u ? 'Unit ' + u + ' · ' : '') + 'Missed questions', ids: flat(groups(missedIds(u))), u: u}; }
+  if (kind === 'retry') return {key: 'retry', title: 'Retry: ' + S.title.replace(/^Retry: /, ''), ids: a.slice(), u: S.u};
+  return null;
+}
+function start(kind, a, b) {
+  const d = build(kind, a, b);
+  if (!d || !d.ids.length) return;
+  const from = view === 'unit' ? 'u' + curU : (view === 'results' && S && S.done ? S.from : 'home');
+  const replaced = S && !S.done;
+  const exam = st.mode === 'exam';
+  S = {key: d.key, title: d.title, u: d.u, ids: d.ids, total: d.ids.length, i: 0, ans: {}, chk: {}, flag: {}, mode: st.mode, used: 0, limit: (exam && st.timer) ? d.ids.length * 80 : 0, done: false, rf: 'all', from: from || 'home'};
+  sheet = null; view = 'quiz'; save(); show(false);
+  if (replaced) toast('Your unfinished quiz was replaced');
+}
+function record(id) {
+  const q = QI[id], a = S.ans[id];
+  if (a == null) { st.missed[id] = 1; return; }
+  const s = st.seen[id] || (st.seen[id] = {c: 0, w: 0, l: 0});
+  if (a === q.a) { s.c++; s.l = 1; delete st.missed[id]; } else { s.w++; s.l = 2; st.missed[id] = 1; }
+}
+function score() {
+  let c = 0;
+  const t = {}, k = {}, uu = {};
+  S.ids.forEach(function (id) {
+    const q = QI[id], ok = S.ans[id] === q.a;
+    if (ok) c++;
+    if (!t[q.t]) t[q.t] = [0, 0]; t[q.t][1]++; if (ok) t[q.t][0]++;
+    if (!k[q.s]) k[q.s] = [0, 0]; k[q.s][1]++; if (ok) k[q.s][0]++;
+    if (!uu[q.u]) uu[q.u] = [0, 0]; uu[q.u][1]++; if (ok) uu[q.u][0]++;
+  });
+  return {c: c, n: S.ids.length, t: t, k: k, uu: uu};
+}
+function finish(timeUp) {
+  if (!S || S.done) return;
+  if (S.mode === 'practice') {
+    const done = S.ids.filter(function (id) { return S.chk[id]; });
+    if (!done.length) { const f = S.from; S = null; sheet = null; goBack(f); save(); show(false); return; }
+    S.ids = done;
+  } else {
+    S.ids.forEach(function (id) { record(id); });
+  }
+  S.done = true; S.timeUp = !!timeUp; S.rf = 'all'; sheet = null;
+  const r = score();
+  if (S.key !== 'retry' && S.key !== 'missed' && S.key !== 'mix' && r.n === S.total) {
+    const b = st.best[S.key];
+    if (!b || r.c / r.n > b.c / b.n) st.best[S.key] = {c: r.c, n: r.n};
+  }
+  st.hist.push({t: S.title, c: r.c, n: r.n, m: S.mode, d: Date.now()});
+  if (st.hist.length > 80) st.hist = st.hist.slice(-80);
+  view = 'results'; save(); show(false);
+  if (timeUp) toast('Time is up. Your answers were submitted.');
+}
+
+
+/* ---------- labs (ported from AP Cyber Lab) ---------- */
+const LAB = (function () {
+  let V = {name: 'none', id: null, st: {}};
+  const handlers = {}; let hid = 0;
+  function on(fn) { const id = 'h' + (hid++); handlers[id] = fn; return id; }
+  const H = function (fn) { return 'data-h="' + on(fn) + '"'; };
+  const clamp = function (x, a, b) { return Math.max(a, Math.min(b, x)); };
+  function go(v) { V = {name: 'lab', id: v.id, st: v.st || {}}; labRender(); }
+  function render() { labRender(); }
+  function labScore(id, pct) { labSaveScore(id, pct); }
+/* ---------- labs ---------- */
+const LABS={
+ phish:{title:'Phishing Inbox Triage',topics:['1.1','1.4'],desc:'Report or keep 8 messages, then see the indicators.'},
+ badge:{title:'Badge Log Detective',topics:['2.4','2.2'],desc:'Classify 8 badge-reader events from logs and sensors.'},
+ acl:{title:'Firewall ACL Builder',topics:['3.4'],desc:'Fix an ordered rule set until every test packet gets the right verdict.'},
+ hash:{title:'Hash and Salt Lab',topics:['4.2','5.6'],desc:'Hash real passwords, then watch salting defeat a rainbow table.'},
+ auth:{title:'Auth Log Analyzer',topics:['4.4','3.5'],desc:'Read 4 authentication logs and name the attack.'},
+ chmod:{title:'chmod Trainer',topics:['5.2'],desc:'Convert permissions and write exact chmod commands.'},
+ risk:{title:'Risk Matrix Builder',topics:['2.1'],desc:'Rate 6 risks on likelihood and impact, then choose avoid, transfer, mitigate or accept.'},
+ floor:{title:'Floor-Plan Walkthrough',topics:['2.3','2.2'],desc:'Match six physical controls to the spots in a building that need them.'},
+ zone:{title:'Network Zoner',topics:['3.3'],desc:'Place 8 assets into DMZ, server, staff, student, guest and IoT zones.'},
+ siem:{title:'SIEM Log Hunt',topics:['3.5','3.1'],desc:'Classify 6 correlated alerts, then tune an ICMP threshold.'},
+ cipher:{title:'Cipher Playground',topics:['5.3','5.4'],desc:'Encrypt, brute-force a tiny keyspace, then pick the right public or private key.'}
+};
+function labShell(inner){const l=LABS[V.id];return `<div class="col"><div class="row"><button class="btn sm ghost" ${H(()=>labClose())}>← Labs</button><span class="sp"></span><span class="tag">${l.topics.join(' · ')}</span></div><h1 style="margin-top:14px">${esc(l.title)}</h1>${inner}</div>`}
+
+/* ---------- labs v2 ---------- */
+const RISKS=[
+ {s:'Teachers carry laptops holding student records home every day. The disks are not encrypted.',l:2,i:2,r:2,w:'Likely and damaging, and an affordable control exists (full-disk encryption): mitigate.'},
+ {s:'A rare but very expensive ransomware recovery bill. Strong controls are already in place.',l:0,i:2,r:1,w:'Low likelihood, high impact, controls already strong: transfer the remaining financial impact with cyber insurance.'},
+ {s:'The cafeteria menu page could be defaced. It holds no data and can be restored in minutes.',l:1,i:0,r:3,w:'Low impact and cheap to recover: accept and document it.'},
+ {s:'A club wants to collect students\' Social Security numbers for a raffle. There is no need for them.',l:1,i:2,r:0,w:'The data serves no purpose: avoid the risk by not collecting it.'},
+ {s:'Staff reuse passwords, and email has no MFA. Phishing reaches inboxes daily.',l:2,i:2,r:2,w:'High on both axes with clear controls (MFA, training): mitigate.'},
+ {s:'An old, unnetworked projector might fail during a class.',l:1,i:0,r:3,w:'Minor inconvenience, no data at risk: accept.'}];
+const LV=['Low','Medium','High'],RR=['Avoid','Transfer','Mitigate','Accept'];
+function labRisk(){const st=V.st;st.a=st.a||RISKS.map(()=>({l:null,i:null,r:null}));st.done=st.done||{};
+ const ready=i=>st.a[i].l!=null&&st.a[i].i!=null&&st.a[i].r!=null;
+ const score=i=>(st.a[i].r===RISKS[i].r?1:0)+(Math.abs(st.a[i].l-RISKS[i].l)<=1&&Math.abs(st.a[i].i-RISKS[i].i)<=1?1:0);
+ const nd=Object.keys(st.done).length,pts=Object.keys(st.done).reduce((s,i)=>s+score(+i),0);
+ if(nd===RISKS.length&&!st.saved){st.saved=1;labScore('risk',Math.round(100*pts/(2*RISKS.length)))}
+ const grid=`<div style="display:grid;grid-template-columns:70px repeat(3,minmax(0,1fr));gap:4px;font-size:13px;max-width:480px">${[2,1,0].map(l=>`<div class="mut" style="display:flex;align-items:center">${LV[l]}</div>${[0,1,2].map(i=>{const cs=RISKS.map((_,k)=>k).filter(k=>st.done[k]&&st.a[k].l===l&&st.a[k].i===i);const sev=l+i;return `<div class="c${sev>=4?1:sev>=2?2:3}" style="min-height:48px;border-radius:6px;padding:4px 6px;color:var(--ink)">${cs.map(k=>`<b>R${k+1}</b>`).join(' ')}</div>`}).join('')}`).join('')}<div></div>${LV.map(x=>`<div class="mut" style="text-align:center">${x}</div>`).join('')}</div><div class="mut tiny" style="max-width:480px;display:flex;justify-content:space-between;margin-top:4px"><span>↑ Likelihood</span><span>Impact →</span></div>`;
+ return labShell(`<p>Rate each risk's likelihood and impact, then choose a response. Placement within one level of the expert rating earns a point; the right response earns a point.</p>
+ <div class="card"><h3>Your risk matrix</h3>${grid}</div>
+ ${RISKS.map((x,k)=>{const a=st.a[k],d=st.done[k];const pick=(f,arr)=>`<div class="row" style="gap:6px">${arr.map((o,j)=>`<button class="btn sm ${a[f]===j?'pri':''}" ${d?'disabled':''} ${H(()=>{a[f]=j;render()})}>${o}</button>`).join('')}</div>`;
+ return `<div class="card" style="margin-top:12px"><h3>R${k+1}</h3><p>${esc(x.s)}</p><div class="grid g3" style="gap:10px"><div><div class="small mut">Likelihood</div>${pick('l',LV)}</div><div><div class="small mut">Impact</div>${pick('i',LV)}</div><div><div class="small mut">Response</div>${pick('r',RR)}</div></div>
+ ${d?`<div class="fb ${score(k)===2?'ok':'no'}"><b>${score(k)}/2.</b> Expert: likelihood ${LV[x.l]}, impact ${LV[x.i]}, ${RR[x.r]}. ${esc(x.w)}</div>`:`<div class="row" style="margin-top:10px"><button class="btn pri sm" ${ready(k)?'':'disabled'} ${H(()=>{st.done[k]=1;render()})}>Check</button></div>`}</div>`}).join('')}
+ ${nd===RISKS.length?`<div class="row" style="margin-top:16px"><b>Score ${pts}/${2*RISKS.length}</b><span class="sp"></span><button class="btn" ${H(()=>{V.st={};render()})}>Retry</button></div>`:''}`)}
+
+const ZONES=['Screened subnet (DMZ)','Internal server zone','Staff VLAN','Student VLAN','Guest VLAN','IoT VLAN'];
+const ASHORT=['Website','Email gateway','Records DB','Teacher laptops','Chromebooks','Visitor phones','Cameras','Thermostats'];
+const ASSETS=[{n:'Public district website',z:0,w:'Internet-facing, so it goes in the DMZ, behind an inner firewall.'},{n:'Inbound email gateway',z:0,w:'Receives mail from the internet: DMZ.'},{n:'Student records database',z:1,w:'The most sensitive data, in the most restricted internal zone.'},{n:'Teacher laptops',z:2,w:'Trusted staff devices on their own VLAN.'},{n:'Student Chromebooks',z:3,w:'Separate from staff, with limited internal access.'},{n:'Visitor phones',z:4,w:'Untrusted: internet only.'},{n:'Hallway security cameras',z:5,w:'IoT devices with weak firmware stay isolated.'},{n:'Smart thermostats',z:5,w:'IoT: isolated, reaching only their management service.'}];
+function labZone(){const st=V.st;st.a=st.a||{};const done=Object.keys(st.a).length,right=ASSETS.filter((x,i)=>st.a[i]===x.z).length;
+ if(done===ASSETS.length&&!st.saved){st.saved=1;labScore('zone',Math.round(100*right/ASSETS.length))}
+ const W=640,cols=[0,1,2,3,4,5];
+ const svg=`<svg viewBox="0 0 ${W} 190" style="width:100%;height:auto" role="img" aria-label="Zones and the assets placed in them"><rect x="8" y="8" width="${W-16}" height="26" rx="6" fill="var(--soft)" stroke="var(--line)"/><text x="${W/2}" y="26" text-anchor="middle" font-size="13" fill="var(--mut)">Internet → edge firewall</text>${cols.map(z=>{const x=8+z*((W-16)/6),w=(W-16)/6-6;const items=ASSETS.map((a,i)=>i).filter(i=>st.a[i]===z);return `<g><rect x="${x}" y="44" width="${w}" height="138" rx="6" fill="${z===0?'var(--b2)':z===1?'var(--b1)':'var(--card)'}" stroke="var(--line)"/><text x="${x+w/2}" y="62" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)">${['DMZ','Servers','Staff','Student','Guest','IoT'][z]}</text>${items.map((i,k)=>`<text x="${x+6}" y="${82+k*16}" font-size="10.5" fill="${ASSETS[i].z===z?'var(--ink)':'var(--bad)'}">${ASHORT[i]}</text>`).join('')}</g>`}).join('')}</svg>`;
+ return labShell(`<p>Place each asset in the right security zone. Traffic between zones is filtered, so the right zone limits what an attacker can reach.</p><div class="card">${svg}</div>
+ <div class="card" style="margin-top:12px"><table class="stack"><thead><tr><th>Asset</th><th>Zone</th><th>Result</th></tr></thead><tbody>${ASSETS.map((x,i)=>{const a=st.a[i];return `<tr><td>${esc(x.n)}</td><td>${a==null?`<select aria-label="Zone for ${esc(x.n)}" ${H((e,el)=>{if(el.value!==''){st.a[i]=+el.value;render()}})}><option value="">Choose…</option>${ZONES.map((z,k)=>`<option value="${k}">${z}</option>`).join('')}</select>`:esc(ZONES[a])}</td><td class="small">${a==null?'':`<span class="${a===x.z?'ok':'no'}"><b>${a===x.z?'✓':'✗ '+ZONES[x.z]}</b></span> ${esc(x.w)}`}</td></tr>`}).join('')}</tbody></table></div>
+ ${done===ASSETS.length?`<div class="row" style="margin-top:16px"><b>Score ${right}/${ASSETS.length}</b><span class="sp"></span><button class="btn" ${H(()=>{V.st={};render()})}>Retry</button></div>`:''}`)}
+
+const SIEMC=[
+ {src:'Switch + gateway ARP table',log:'10:01:12 ARP reply 10.0.0.1 is-at 3c:22:fb:aa:01:9e (gateway)\n10:01:40 ARP reply 10.0.0.1 is-at 00:0c:29:7d:41:02 (from 10.0.0.66)\n10:01:41 ARP reply 10.0.0.1 is-at 00:0c:29:7d:41:02 (from 10.0.0.66)\n10:02:00 gateway traffic for 42 hosts now via 00:0c:29:7d:41:02',a:0,w:'Two MACs claiming the gateway IP, then traffic rerouted through 10.0.0.66: ARP poisoning (on-path).'},
+ {src:'Edge firewall',log:'13:20:01 DENY TCP 198.51.100.8:51522 -> 203.0.113.10:21\n13:20:01 DENY TCP 198.51.100.8:51523 -> 203.0.113.10:22\n13:20:01 DENY TCP 198.51.100.8:51524 -> 203.0.113.10:23\n13:20:02 DENY TCP 198.51.100.8:51525 -> 203.0.113.10:25\n   … 996 more ports in 9 seconds …',a:1,w:'One source probing many ports in seconds: a port scan (reconnaissance).'},
+ {src:'NIDS',log:'07:58:00 ICMP echo-reply -> 203.0.113.80  rate 420,000/s  (baseline 40/s)\n07:58:00 sources: 3,700 hosts in 192.0.2.0/24\n07:57:59 upstream: ICMP echo-request to 192.0.2.255 src=203.0.113.80',a:2,w:'Broadcast pings with a spoofed victim source cause mass replies: a smurf attack (DoS).'},
+ {src:'Wireless scanner',log:'SSID "Lincoln-Staff"  BSSID 70:3a:cb:12:00:01  vendor=District AP  ch 36  WPA3\nSSID "Lincoln-Staff"  BSSID de:ad:be:ef:00:07  vendor=unknown     ch 6   OPEN\n   location estimate: parking lot, row C',a:3,w:'A second "Lincoln-Staff" from unknown hardware, unencrypted, outside: a rogue AP / evil twin.'},
+ {src:'Switch',log:'09:12:00 port Gi1/0/14 MAC table entries: 3\n09:12:05 port Gi1/0/14 MAC table entries: 8,192 (table full)\n09:12:05 switch flooding unknown-unicast frames to all ports',a:4,w:'Thousands of MACs from one port fill the table so traffic floods everywhere: MAC flooding.'},
+ {src:'Firewall + auth',log:'08:00-08:30 web logins from 10.0.2.0/24: 214 OK, 6 FAIL then OK\n08:30 outbound HTTPS volume within baseline (±8%)\nno new MAC/ARP changes',a:5,w:'Business-hours traffic within baseline and normal typos: normal activity.'}];
+const SC=['ARP poisoning','Port scan','Smurf / ICMP flood','Rogue AP / evil twin','MAC flooding','Normal activity'];
+const RATES=[34,41,38,52,47,61,44,39,36,58,72,49,43,40,55,880,910,64,37,45,50,42,39,68];
+function labSiem(){const st=V.st;st.a=st.a||{};st.t=st.t||100;const done=Object.keys(st.a).length,right=SIEMC.filter((c,i)=>st.a[i]===c.a).length;
+ const atk=RATES.map((r,i)=>i===15||i===16);const fp=RATES.filter((r,i)=>r>=st.t&&!atk[i]).length,fn=RATES.filter((r,i)=>r<st.t&&atk[i]).length;const tOk=fp===0&&fn===0;
+ if(done===SIEMC.length&&st.tuned&&!st.saved){st.saved=1;labScore('siem',Math.round(100*(right+(tOk?1:0))/(SIEMC.length+1)))}
+ const mx=1000,W=600,Hh=150,bw=W/RATES.length,y=v=>Hh-10-(Math.min(v,mx)/mx)*(Hh-20);
+ return labShell(`<p>You are on SIEM duty. Classify each correlated alert, then tune the ICMP alert threshold.</p>
+ ${SIEMC.map((c,i)=>{const a=st.a[i];return `<div class="card" style="margin-top:12px"><div class="row"><h3 style="margin:0">Alert ${i+1}</h3><span class="tag">${esc(c.src)}</span></div><pre class="log" style="margin-top:10px">${esc(c.log)}</pre><div class="row" style="margin-top:10px">${SC.map((x,k)=>`<button class="btn sm ${a==null?'':k===c.a?'pri':a===k?'':'ghost'}" ${a!=null?'disabled':''} ${H(()=>{st.a[i]=k;render()})}>${a!=null&&k===c.a?'✓ ':a===k&&k!==c.a?'✗ ':''}${x}</button>`).join('')}</div>${a!=null?`<div class="fb ${a===c.a?'ok':'no'}"><b>${SC[c.a]}.</b> ${esc(c.w)}</div>`:''}</div>`}).join('')}
+ <div class="card" style="margin-top:12px"><h3>Tune the ICMP alert</h3><p class="small mut">ICMP packets per second to the web server, sampled each hour for a day. Two hours were a real attack. Set a threshold that alerts on both attack hours and nothing else.</p>
+ <svg viewBox="0 0 ${W} ${Hh}" style="width:100%;height:auto" role="img" aria-label="ICMP rate by hour">${RATES.map((r,i)=>`<rect x="${i*bw+2}" y="${y(r)}" width="${bw-4}" height="${Hh-10-y(r)}" fill="${r>=st.t?(atk[i]?'var(--ok)':'var(--bad)'):(atk[i]?'var(--bad)':'var(--line)')}"/>`).join('')}<line x1="0" x2="${W}" y1="${y(st.t)}" y2="${y(st.t)}" stroke="var(--acc)" stroke-dasharray="4 4"/></svg>
+ <div class="row"><label for="thr" class="small">Threshold: <b id="thrv">${st.t}/s</b></label><input id="thr" type="range" min="20" max="950" step="10" value="${st.t}" style="flex:1;min-height:0" aria-label="ICMP alert threshold"></div>
+ <p class="small" style="margin:8px 0 0">False positives: <b class="${fp?'no':'ok'}">${fp}</b> · False negatives: <b class="${fn?'no':'ok'}">${fn}</b> ${tOk?'<span class="ok"><b>✓ Tuned.</b> Any threshold between normal peaks (72/s) and the attack (880/s) works; leaving headroom above normal reduces alert fatigue.</span>':''}</p></div>
+ ${done===SIEMC.length&&st.tuned?`<div class="row" style="margin-top:16px"><b>Score ${right+(tOk?1:0)}/${SIEMC.length+1}</b><span class="sp"></span><button class="btn" ${H(()=>{V.st={};render()})}>Retry</button></div>`:''}`)}
+
+const caesar=(s,k)=>s.replace(/[a-z]/gi,c=>{const b=c<='Z'?65:97;return String.fromCharCode((c.charCodeAt(0)-b+k+26*100)%26+b)});
+const KEYQ=[{q:'Bob wants to send Alice a secret. He encrypts it with…',a:1},{q:'Alice reads Bob\'s secret by decrypting with…',a:0},{q:'Alice signs a contract so anyone can confirm it\'s from her. She uses…',a:0},{q:'Carol checks Alice\'s signature using…',a:1}];
+const KO=['Alice\'s private key','Alice\'s public key','Bob\'s private key','Bob\'s public key'];
+function labCipher(){const st=V.st;st.k=st.k??3;st.m=st.m??'Meet at the library at noon';st.q=st.q||{};const ct=caesar(st.m,st.k);
+ const qd=Object.keys(st.q).length,qr=KEYQ.filter((x,i)=>st.q[i]===x.a).length;const pts=qr+(st.bf?1:0)+(st.ks?1:0);
+ if(qd===KEYQ.length&&st.bf&&st.ks&&!st.saved){st.saved=1;labScore('cipher',Math.round(100*pts/6))}
+ const bits=[[8,'2^8 = 256'],[40,'2^40 ≈ 1.1 trillion'],[56,'2^56 ≈ 72 quadrillion'],[128,'2^128 ≈ 3.4 × 10^38'],[256,'2^256 ≈ 1.2 × 10^77']];
+ const time=b=>{const s=2**b/1e12/2;if(s<1)return 'under a second';const y=s/31557600;if(y<1)return s<3600?Math.round(s)+' seconds':Math.round(s/3600)+' hours';return y<1e6?Math.round(y).toLocaleString()+' years':'about 10^'+Math.round(Math.log10(y))+' years'};
+ return labShell(`<div class="card"><h3>1. Symmetric: one shared key</h3><p class="small mut">A shift cipher moves each letter by the key. The same key encrypts and decrypts.</p>
+ <div class="row"><input class="mono" id="cmsg" style="flex:1" value="${esc(st.m)}" aria-label="Plaintext"><label class="small">Key <input id="ckey" type="number" min="1" max="25" value="${st.k}" style="width:80px" aria-label="Shift key"></label></div>
+ <pre class="code" style="margin-top:10px">plaintext : ${esc(st.m)}\nciphertext: ${esc(ct)}\ndecrypted : ${esc(caesar(ct,-st.k))}</pre>
+ <div class="row" style="margin-top:10px"><button class="btn" ${H(()=>{st.bf=1;render()})}>Brute-force the ciphertext</button><span class="small mut">Keyspace: only 25 keys.</span></div>
+ ${st.bf?`<pre class="code" style="margin-top:10px;max-height:220px;overflow:auto">${Array.from({length:25},(_,i)=>`key ${String(i+1).padStart(2)}: ${esc(caesar(ct,-(i+1)))}${i+1===st.k?'   ← readable':''}`).join('\n')}</pre><p class="small">With 25 keys, an attacker just tries them all. Real ciphers need an enormous keyspace.</p>`:''}</div>
+ <div class="card" style="margin-top:12px"><h3>2. Keyspace and brute force</h3><p class="small mut">Time to try half of all keys at one trillion keys per second.</p><table><thead><tr><th>Key length</th><th>Keys</th><th class="num">Average time</th></tr></thead><tbody>${bits.map(([b,k])=>`<tr><td>${b}-bit</td><td>${k}</td><td class="num">${time(b)}</td></tr>`).join('')}</tbody></table>
+ <div class="row" style="margin-top:10px"><span class="small">Each extra bit…</span>${['adds one key','doubles the keyspace','halves the keyspace'].map((o,i)=>`<button class="btn sm ${st.ks?(i===1?'pri':'ghost'):''}" ${st.ks?'disabled':''} ${H(()=>{st.ks=i===1?1:0;if(i!==1)toast('Not quite. Try again.');render()})}>${o}</button>`).join('')}</div></div>
+ <div class="card" style="margin-top:12px"><h3>3. Asymmetric: pick the right key</h3>${KEYQ.map((x,i)=>{const a=st.q[i];return `<p style="margin:12px 0 6px"><b>${esc(x.q)}</b></p><div class="row">${KO.map((o,k)=>`<button class="btn sm ${a==null?'':k===x.a?'pri':a===k?'':'ghost'}" ${a!=null?'disabled':''} ${H(()=>{st.q[i]=k;render()})}>${a!=null&&k===x.a?'✓ ':a===k&&k!==x.a?'✗ ':''}${esc(o)}</button>`).join('')}</div>`}).join('')}
+ ${qd===KEYQ.length?'<p class="small" style="margin-top:12px">Rule of thumb: encrypt to the recipient\'s <b>public</b> key; sign with your own <b>private</b> key.</p>':''}</div>
+ ${st.saved?`<p style="margin-top:14px"><b>Lab score ${Math.round(100*pts/6)}%</b> <button class="btn sm" ${H(()=>{V.st={};render()})}>Retry</button></p>`:''}`)}
+document.addEventListener('input',e=>{if(e.target.id==='thr'){const b=document.getElementById('thrv');if(b)b.textContent=e.target.value+'/s'}});
+document.addEventListener('change',e=>{if(e.target.id==='thr'&&V.name==='lab'&&V.id==='siem'){V.st.t=+e.target.value;V.st.tuned=1;render();const n=document.getElementById('thr');if(n)n.focus()}});
+document.addEventListener('input',e=>{if(V.name==='lab'&&V.id==='cipher'&&(e.target.id==='cmsg'||e.target.id==='ckey')){if(e.target.id==='cmsg')V.st.m=e.target.value;else V.st.k=clamp(parseInt(e.target.value)||1,1,25);const ct=caesar(V.st.m,V.st.k);const pre=document.querySelector('#view pre.code');if(pre)pre.textContent=`plaintext : ${V.st.m}\nciphertext: ${ct}\ndecrypted : ${caesar(ct,-V.st.k)}`}});
+
+const SPOTS=[{n:'Glass lobby facing the street',x:0,y:0,c:0},{n:'Main entrance',x:1,y:0,c:1},{n:'Reception desk',x:2,y:0,c:2},{n:'Loading dock',x:0,y:1,c:3},{n:'Server room door',x:1,y:1,c:4},{n:'Recycling area',x:2,y:1,c:5}];
+const CTRL=['Bollards and exterior lighting','Badge turnstile with a stationary guard','Privacy screens and a clean-desk policy','Door-open alarm and camera','Access control vestibule with badge + PIN','Locked shred bins and media destruction'];
+const CSH=['Bollards + lighting','Turnstile + guard','Privacy screens','Door alarm + camera','Vestibule + PIN','Shred bins'];
+const CW=['Stops vehicle ramming; light deters and helps cameras.','Ties entry to identity and adds judgment at the busiest door.','Visitors waiting here can shoulder surf screens and papers.','Often propped open for deliveries: detect it and record who passes.','Highest-value room: one person at a time, two factors.','Defeats dumpster diving for papers and drives.'];
+function labFloor(){const st=V.st;st.a=st.a||{};const done=Object.keys(st.a).length,right=SPOTS.filter((s,i)=>st.a[i]===s.c).length;
+ if(done===SPOTS.length&&!st.saved){st.saved=1;labScore('floor',Math.round(100*right/SPOTS.length))}
+ const used=Object.values(st.a);
+ const svg=`<svg viewBox="0 0 600 260" style="width:100%;height:auto" role="img" aria-label="Floor plan with six spots">${SPOTS.map((s,i)=>{const x=10+s.x*196,y=10+s.y*124,a=st.a[i];return `<g><rect x="${x}" y="${y}" width="186" height="114" rx="8" fill="${a==null?'var(--card)':a===s.c?'var(--b4)':'var(--b1)'}" stroke="${i===4?'var(--acc)':'var(--line)'}" stroke-width="${i===4?2:1}"/><text x="${x+10}" y="${y+24}" font-size="13" font-weight="600" fill="var(--ink)">${i+1}. ${esc(s.n.length>24?s.n.slice(0,22)+'…':s.n)}</text>${a!=null?`<text x="${x+10}" y="${y+48}" font-size="11" fill="var(--ink)">${CSH[a]}</text>`:''}</g>`}).join('')}</svg>`;
+ return labShell(`<p>You have six controls and six spots in a school office building. Give each spot the control that fits its threat best. Each control is used once.</p><div class="card">${svg}</div>
+ <div class="card" style="margin-top:12px"><table class="stack"><thead><tr><th>Spot</th><th>Control</th><th>Why</th></tr></thead><tbody>${SPOTS.map((s,i)=>{const a=st.a[i];return `<tr><td><b>${i+1}.</b> ${esc(s.n)}</td><td>${a==null?`<select aria-label="Control for ${esc(s.n)}" ${H((e,el)=>{if(el.value!==''){st.a[i]=+el.value;render()}})}><option value="">Choose…</option>${CTRL.map((c,k)=>used.includes(k)?'':`<option value="${k}">${c}</option>`).join('')}</select>`:`<span class="${a===s.c?'ok':'no'}">${a===s.c?'✓':'✗'} ${esc(CTRL[a])}</span>`}</td><td class="small">${a==null?'':(a===s.c?'':'Best: '+esc(CTRL[s.c])+'. ')+esc(CW[s.c])}</td></tr>`}).join('')}</tbody></table></div>
+ ${done===SPOTS.length?`<div class="row" style="margin-top:16px"><b>Score ${right}/${SPOTS.length}</b><span class="sp"></span><button class="btn" ${H(()=>{V.st={};render()})}>Retry</button></div>`:''}`)}
+
+function vLab(){return ({phish:labPhish,badge:labBadge,acl:labACL,hash:labHash,auth:labAuth,chmod:labChmod,risk:labRisk,zone:labZone,siem:labSiem,cipher:labCipher,floor:labFloor})[V.id]()}
+
+/* phishing */
+const MAIL=[
+ {f:'PayPaI Support <support@paypai-security.com>',s:'Account limited: action required within 24 hours',b:'We noticed unusual activity. Log in now at the link below to restore access or your account will be permanently closed.',p:1,w:'Look-alike domain (capital I, not l), urgency and a threat of closure, and a request to log in through a link.'},
+ {f:'Ms. Ortiz <c.ortiz@lincolnhs.edu>',s:'Reminder: lab report due Friday',b:'Upload your lab report to the class portal as usual. Let me know if you need an extension.',p:0,w:'Expected sender on the school domain, no link, no pressure, nothing secret requested.'},
+ {f:'IT Help Desk <helpdesk@lincolnhs-support.net>',s:'Your mailbox is 98% full',b:'Messages will be deleted tonight. Click here and sign in with your school password to keep them.',p:1,w:'External look-alike of the school domain, fear of loss plus a deadline, and a password request.'},
+ {f:'Principal Daniels <principal.daniels.office@gmail.com>',s:'Quick favor',b:'I am in meetings all day. Please buy four $100 gift cards and send me the codes. Keep this between us for now.',p:1,w:'Authority from a free webmail address, gift cards, and a request for secrecy.'},
+ {f:'Apple <no_reply@email.apple.com>',s:'Your receipt from Apple',b:'You purchased iCloud+ 50 GB for $0.99. If you did not make this purchase, sign in to your account settings by typing appleid.apple.com into your browser.',p:0,w:'Genuine sending domain, no urgency, and it tells you to navigate yourself rather than click.'},
+ {f:'Coach Lee <j.lee@lincolnhs.edu>',s:'Team photo link',b:'Photos are up! Sign in with your school email and password at drive-share-files.xyz/login to download them.',p:1,w:'Even a real internal account can be compromised: the link goes to an unrelated domain and asks for your password.'},
+ {f:'Library <library@lincolnhs.edu>',s:'Book due in 3 days',b:'"Network Security Basics" is due Thursday. Renew at the circulation desk or reply to this email.',p:0,w:'Routine notice from the school domain, no link, no secret requested.'},
+ {f:'Toll Notice <alerts@dmv-toll-payments.top>',s:'Unpaid toll: $4.15',b:'Pay today to avoid a $50 late fee and license suspension: dmv-toll-payments.top/pay',p:1,w:'Odd top-level domain, small amount plus intimidation, and a payment link.'}];
+function labPhish(){const st=V.st;st.a=st.a||{};const done=Object.keys(st.a).length,right=MAIL.filter((m,i)=>st.a[i]===m.p).length;
+ if(done===MAIL.length&&!st.saved){st.saved=1;labScore('phish',Math.round(100*right/MAIL.length))}
+ return labShell(`<p>For each message, decide: report as phishing, or keep. Check the sender's domain, the pressure, and what is being asked for.</p>
+ <p class="tag">${done}/${MAIL.length} decided · ${right} correct</p>
+ ${MAIL.map((m,i)=>{const a=st.a[i];return `<div class="card" style="margin-top:12px"><div class="small mut">From: ${esc(m.f)}</div><h3 style="margin:6px 0">${esc(m.s)}</h3><p>${esc(m.b)}</p>
+ ${a==null?`<div class="row"><button class="btn" ${H(()=>{st.a[i]=1;render()})}>Report phishing</button><button class="btn" ${H(()=>{st.a[i]=0;render()})}>Keep</button></div>`:`<div class="fb ${a===m.p?'ok':'no'}"><b>${a===m.p?'Correct':'Missed'}: ${m.p?'phishing':'legitimate'}.</b> ${esc(m.w)}</div>`}</div>`}).join('')}
+ ${done===MAIL.length?`<div class="row" style="margin-top:16px"><b>Score ${right}/${MAIL.length}</b><span class="sp"></span><button class="btn" ${H(()=>{V.st={};render()})}>Retry</button></div>`:''}`)}
+
+/* badge */
+const BADGE=[
+ {t:'08:01',b:'R. Chen',d:'Server room',o:'5 s',c:1,n:'',a:0},
+ {t:'08:14',b:'A. Patel',d:'Server room',o:'21 s',c:2,n:'',a:1},
+ {t:'02:47',b:'M. Gomez',d:'Rear door',o:'6 s',c:1,n:'Gomez is on vacation this week',a:2},
+ {t:'12:30',b:'(no swipe)',d:'Loading dock',o:'240 s',c:0,n:'Door sensor: held open',a:3},
+ {t:'09:05',b:'L. Kim',d:'Lab 2',o:'–',c:1,n:'5 denied swipes in 40 s; Kim has no Lab 2 access',a:2},
+ {t:'17:45',b:'J. Ortiz',d:'Main lobby',o:'4 s',c:1,n:'End of shift',a:0},
+ {t:'22:10',b:'R. Chen',d:'Server room',o:'18 s',c:2,n:'Only Chen is authorized at night',a:1},
+ {t:'03:12',b:'(no swipe)',d:'Server room',o:'–',c:1,n:'Motion sensor triggered inside',a:3}];
+const BC=['Normal','Tailgating / piggybacking','Misused or stolen badge','Entry without a valid swipe'];
+function labBadge(){const st=V.st;st.a=st.a||{};const done=Object.keys(st.a).length,right=BADGE.filter((r,i)=>st.a[i]===r.a).length;
+ if(done===BADGE.length&&!st.saved){st.saved=1;labScore('badge',Math.round(100*right/BADGE.length))}
+ return labShell(`<p>Correlate the badge log, door-open time (normal is about 5 s), camera headcount and notes. Classify each event.</p><p class="tag">${done}/${BADGE.length} classified · ${right} correct</p>
+ <div class="card scroll" style="margin-top:12px"><table class="stack"><thead><tr><th>Time</th><th>Badge</th><th>Door</th><th class="num">Open</th><th class="num">On camera</th><th>Note</th><th>Your call</th></tr></thead><tbody>${BADGE.map((r,i)=>{const a=st.a[i];return `<tr><td>${r.t}</td><td>${esc(r.b)}</td><td>${esc(r.d)}</td><td class="num">${r.o}</td><td class="num">${r.c}</td><td class="small">${esc(r.n)}</td><td>${a==null?`<select aria-label="Classify ${r.t}" ${H((e,el)=>{if(el.value!==''){st.a[i]=+el.value;render()}})}><option value="">Choose…</option>${BC.map((c,k)=>`<option value="${k}">${c}</option>`).join('')}</select>`:`<span class="${a===r.a?'ok':'no'}"><b>${a===r.a?'✓':'✗'}</b> ${BC[r.a]}</span>`}</td></tr>`}).join('')}</tbody></table></div>
+ ${done===BADGE.length?`<div class="row" style="margin-top:16px"><b>Score ${right}/${BADGE.length}</b><span class="sp"></span><button class="btn" ${H(()=>{V.st={};render()})}>Retry</button></div>`:''}`)}
+
+/* firewall */
+const ACL0=[{a:'Allow',p:'TCP',port:'22',src:'ANY'},{a:'Allow',p:'TCP',port:'443',src:'ANY'},{a:'Deny',p:'ANY',port:'ANY',src:'203.0.113.0/24'},{a:'Allow',p:'TCP',port:'23',src:'ANY'}];
+const PKT=[{p:'TCP',port:443,src:'198.51.100.20',want:'Allow',w:'Public HTTPS'},{p:'TCP',port:443,src:'203.0.113.9',want:'Deny',w:'Blocked network'},{p:'TCP',port:22,src:'10.0.5.33',want:'Allow',w:'SSH from IT'},{p:'TCP',port:22,src:'198.51.100.20',want:'Deny',w:'SSH from internet'},{p:'TCP',port:23,src:'10.0.5.33',want:'Deny',w:'Telnet'},{p:'UDP',port:53,src:'198.51.100.20',want:'Deny',w:'Not required'},{p:'TCP',port:22,src:'203.0.113.9',want:'Deny',w:'Blocked network SSH'}];
+const ip2n=s=>s.split('.').reduce((a,x)=>a*256+(+x),0);
+function inNet(ip,src){src=String(src).trim().toUpperCase();if(src==='ANY'||src==='ALL'||src==='0.0.0.0/0')return true;const m=src.match(/^(\d+\.\d+\.\d+\.\d+)(?:\/(\d+))?$/);if(!m)return false;const bits=m[2]==null?32:+m[2];if(bits>32)return false;if(bits===0)return true;const sh=2**(32-bits);return Math.floor(ip2n(ip)/sh)===Math.floor(ip2n(m[1])/sh)}
+function evalACL(rules,k){for(let i=0;i<rules.length;i++){const r=rules[i];const pOk=r.p==='ANY'||r.p===k.p;const portOk=String(r.port).toUpperCase()==='ANY'||+r.port===k.port;if(pOk&&portOk&&inNet(k.src,r.src))return {v:r.a,i:i+1}}return {v:'Deny',i:'implicit'}}
+function labACL(){const st=V.st;st.r=st.r||ACL0.map(x=>({...x}));const res=PKT.map(k=>({k,...evalACL(st.r,k)}));const right=res.filter(x=>x.v===x.k.want).length;
+ if(right===PKT.length&&!st.saved){st.saved=1;labScore('acl',100)}
+ const sel=(i,f,opts)=>`<select aria-label="${f} rule ${i+1}" ${H((e,el)=>{st.r[i][f]=el.value;render()})}>${opts.map(o=>`<option ${st.r[i][f]===o?'selected':''}>${o}</option>`).join('')}</select>`;
+ const inp=(i,f,w)=>`<input class="mono" style="width:${w}" value="${esc(st.r[i][f])}" aria-label="${f} rule ${i+1}" data-i="${i}" data-f="${f}">`;
+ return labShell(`<div class="card"><h3>Requirements for the web server's inbound firewall</h3><ul><li>HTTPS (TCP 443) open to everyone, <b>except</b> 203.0.113.0/24, which is blocked entirely.</li><li>SSH (TCP 22) only from the IT subnet 10.0.5.0/24.</li><li>No Telnet. Everything else denied (an implicit deny follows the last rule).</li></ul><p class="mut small">Rules run top to bottom; the first match wins. Port and source accept ANY. Source accepts an IP or CIDR such as 10.0.5.0/24.</p></div>
+ <div class="card" style="margin-top:12px"><div class="row"><h3 style="margin:0">Rules (inbound)</h3><span class="sp"></span><button class="btn sm" ${H(()=>{st.r.push({a:'Deny',p:'TCP',port:'ANY',src:'ANY'});render()})}>Add rule</button><button class="btn sm ghost" ${H(()=>{V.st={};render()})}>Reset</button></div>
+ <div class="scroll"><table><thead><tr><th>#</th><th>Action</th><th>Protocol</th><th>Port</th><th>Source</th><th></th></tr></thead><tbody>${st.r.map((r,i)=>`<tr><td><b>${i+1}</b></td><td>${sel(i,'a',['Allow','Deny'])}</td><td>${sel(i,'p',['TCP','UDP','ICMP','ANY'])}</td><td>${inp(i,'port','80px')}</td><td>${inp(i,'src','170px')}</td><td style="white-space:nowrap"><button class="btn sm ghost" aria-label="Move up" ${i?'':'disabled'} ${H(()=>{[st.r[i-1],st.r[i]]=[st.r[i],st.r[i-1]];render()})}>↑</button><button class="btn sm ghost" aria-label="Move down" ${i<st.r.length-1?'':'disabled'} ${H(()=>{[st.r[i+1],st.r[i]]=[st.r[i],st.r[i+1]];render()})}>↓</button><button class="btn sm ghost" aria-label="Delete rule" ${H(()=>{st.r.splice(i,1);render()})}>✕</button></td></tr>`).join('')}<tr><td class="mut">–</td><td colspan="5" class="mut">Implicit deny: everything else</td></tr></tbody></table></div></div>
+ <div class="card" style="margin-top:12px"><div class="row"><h3 style="margin:0">Test packets</h3><span class="sp"></span><b class="${right===PKT.length?'ok':''}">${right}/${PKT.length} correct</b></div><div class="scroll"><table class="stack"><thead><tr><th>Packet</th><th>Purpose</th><th>Matched</th><th>Result</th><th>Should be</th></tr></thead><tbody>${res.map(x=>`<tr><td class="small"><code>${x.k.p} ${x.k.port} from ${x.k.src}</code></td><td class="small">${x.k.w}</td><td class="small">${x.i==='implicit'?'implicit deny':'rule '+x.i}</td><td>${x.v}</td><td><b class="${x.v===x.k.want?'ok':'no'}">${x.v===x.k.want?'✓':'✗'} ${x.k.want}</b></td></tr>`).join('')}</tbody></table></div>${right===PKT.length?'<p class="ok" style="margin-top:10px"><b>All packets correct.</b> Notice that the deny for 203.0.113.0/24 must come before the HTTPS allow.</p>':''}</div>`)}
+document.addEventListener('change',e=>{const el=e.target;if(V.name==='lab'&&V.id==='acl'&&el.dataset&&el.dataset.f){V.st.r[+el.dataset.i][el.dataset.f]=el.value.trim()||'ANY';render()}});
+
+/* hash */
+const COMMON=['123456','password','password123','qwerty','letmein','sunshine1','dragon','football','iloveyou','admin','welcome','monkey','abc123','111111','princess','baseball','shadow','master','trustno1','summer2026'];
+const USERS=[['amara','sunshine1'],['ben','dragon'],['chloe','Tr0ub4dor&3x!q'],['dev','password123']];
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+const rnd=()=>[...crypto.getRandomValues(new Uint8Array(4))].map(x=>x.toString(16).padStart(2,'0')).join('');
+function labHash(){const st=V.st;
+ if(!st.init){st.init=1;st.pw='sunshine1';st.salts=[rnd(),rnd()];st.us=USERS.map(()=>rnd());st.q={};(async()=>{st.h=await sha(st.pw);st.same=[await sha('sunshine1'),await sha('sunshine1'),await sha(st.salts[0]+'sunshine1'),await sha(st.salts[1]+'sunshine1')];st.rt=Object.fromEntries(await Promise.all(COMMON.map(async w=>[await sha(w),w])));st.db0=await Promise.all(USERS.map(u=>sha(u[1])));st.db1=await Promise.all(USERS.map((u,i)=>sha(st.us[i]+u[1])));render()})();return labShell('<p>Computing hashes…</p>')}
+ if(!st.rt)return labShell('<p>Computing hashes…</p>');
+ const QS=[{s:'Two users chose the same password. Without salt, their stored hashes are:',o:['Identical','Different','Encrypted with different keys'],a:0},{s:'Why did the rainbow-table lookup fail on the salted database?',o:['Each salt changes the hash, so precomputed hashes no longer match','Salting deletes the password','SHA-256 cannot be looked up'],a:0},{s:'Account lockout would stop this attack.',o:['False: cracking a stolen hash file happens offline','True: lockout blocks all cracking'],a:0}];
+ const qd=Object.keys(st.q).length,qr=QS.filter((q,i)=>st.q[i]===q.a).length;
+ const steps=(st.ran0?1:0)+(st.ran1?1:0)+qr;if(st.ran0&&st.ran1&&qd===QS.length&&!st.saved){st.saved=1;labScore('hash',Math.round(100*steps/5))}
+ const look=(arr)=>USERS.map((u,i)=>({u:u[0],h:arr[i],hit:st.rt[arr[i]]}));
+ return labShell(`<div class="card"><h3>1. Hash anything</h3><p class="mut small">SHA-256 always gives 64 hex characters. Change one character and the whole digest changes.</p><input id="hpw" class="mono" style="width:100%" value="${esc(st.pw)}" aria-label="Text to hash"><pre class="code" style="margin-top:8px" id="hout">${st.h}</pre></div>
+ <div class="card" style="margin-top:12px"><h3>2. Same password, two users</h3><table><thead><tr><th>User</th><th>Salt</th><th>Stored hash</th></tr></thead><tbody><tr><td>amara</td><td class="mut">none</td><td><code>${st.same[0].slice(0,24)}…</code></td></tr><tr><td>jordan</td><td class="mut">none</td><td><code>${st.same[1].slice(0,24)}…</code></td></tr><tr><td>amara</td><td><code>${st.salts[0]}</code></td><td><code>${st.same[2].slice(0,24)}…</code></td></tr><tr><td>jordan</td><td><code>${st.salts[1]}</code></td><td><code>${st.same[3].slice(0,24)}…</code></td></tr></tbody></table><p class="small mut" style="margin-top:8px">Unsalted: identical, so cracking one cracks both. Salted: unrelated.</p></div>
+ <div class="card" style="margin-top:12px"><h3>3. A stolen database meets a rainbow table</h3><p class="mut small">The attacker precomputed SHA-256 for ${COMMON.length} common passwords.</p><div class="row"><button class="btn pri" ${H(()=>{st.ran0=1;render()})}>Run lookup: unsalted DB</button><button class="btn pri" ${H(()=>{st.ran1=1;render()})}>Run lookup: salted DB</button></div>
+ ${st.ran0?`<h3 style="margin-top:14px">Unsalted results</h3><table class="stack"><thead><tr><th>User</th><th>Hash</th><th>Cracked?</th></tr></thead><tbody>${look(st.db0).map(x=>`<tr><td>${x.u}</td><td><code>${x.h.slice(0,16)}…</code></td><td>${x.hit?`<b class="no">Yes: ${esc(x.hit)}</b>`:'<span class="ok">No</span>'}</td></tr>`).join('')}</tbody></table>`:''}
+ ${st.ran1?`<h3 style="margin-top:14px">Salted results</h3><table class="stack"><thead><tr><th>User</th><th>Salt</th><th>Cracked?</th></tr></thead><tbody>${look(st.db1).map((x,i)=>`<tr><td>${x.u}</td><td><code>${st.us[i]}</code></td><td>${x.hit?`<b class="no">Yes: ${esc(x.hit)}</b>`:'<span class="ok">No</span>'}</td></tr>`).join('')}</tbody></table><p class="small mut">The table would have to be rebuilt for every salt. Chloe's long, unusual password resists even the unsalted lookup.</p>`:''}</div>
+ <div class="card" style="margin-top:12px"><h3>4. Check yourself</h3>${QS.map((q,i)=>`<p style="margin:12px 0 6px"><b>${esc(q.s)}</b></p><div class="row">${q.o.map((o,k)=>{const a=st.q[i];return `<button class="btn sm ${a==null?'':k===q.a?'pri':a===k?'':'ghost'}" ${a!=null?'disabled':''} ${H(()=>{st.q[i]=k;render()})}>${a!=null&&k===q.a?'✓ ':a===k?'✗ ':''}${esc(o)}</button>`}).join('')}</div>`).join('')}</div>
+ ${st.saved?`<p style="margin-top:14px"><b>Lab score ${Math.round(100*steps/5)}%</b> <button class="btn sm" ${H(()=>{V.st={};render()})}>Retry</button></p>`:''}`)}
+document.addEventListener('input',async e=>{if(e.target.id==='hpw'&&V.st){V.st.pw=e.target.value;const h=await sha(V.st.pw);V.st.h=h;const o=$('#hout');if(o)o.textContent=h}});
+
+/* auth logs */
+const AUTH=[
+ {n:'Case A',log:`07:41:02 sshd FAIL user=admin src=198.51.100.23\n07:41:03 sshd FAIL user=admin src=198.51.100.23\n07:41:03 sshd FAIL user=admin src=198.51.100.23\n07:41:04 sshd FAIL user=admin src=198.51.100.23\n   … 212 more FAIL user=admin src=198.51.100.23 …\n07:43:58 sshd LOCK user=admin (5 failures)`,a:0,ip:'198.51.100.23',w:'Hundreds of attempts against one account from one source: brute force. Lockout engaged.'},
+ {n:'Case B',log:`11:02:10 web FAIL user=ahmed   src=203.0.113.44\n11:02:10 web FAIL user=bella   src=203.0.113.44\n11:02:11 web FAIL user=carlos  src=203.0.113.44\n11:02:11 web FAIL user=dana    src=203.0.113.44\n11:02:12 web OK   user=elijah  src=203.0.113.44\n11:02:12 web FAIL user=farah   src=203.0.113.44\n   … 600 more users, one attempt each …`,a:1,ip:'203.0.113.44',w:'One attempt per account across many accounts within seconds stays under lockout thresholds: password spraying.'},
+ {n:'Case C',log:`Mon 08:52 vpn OK user=alice src=10.0.3.7 (school)\nTue 08:49 vpn OK user=alice src=10.0.3.7 (school)\nWed 03:12 vpn OK user=alice src=185.220.101.4 (overseas)\nWed 03:14 file READ user=alice /hr/salaries.xlsx\nWed 08:55 vpn OK user=alice src=10.0.3.7 (school)`,a:2,ip:'185.220.101.4',w:'A clean success with no failures, at 3 a.m. from a new country, followed by sensitive access: credentials were stolen (phishing or reuse).'},
+ {n:'Case D',log:`08:01:15 web OK   user=mrivera src=10.0.2.14\n08:03:40 web FAIL user=tnguyen src=10.0.2.31\n08:03:52 web OK   user=tnguyen src=10.0.2.31\n08:10:05 web OK   user=pshah   src=10.0.2.18\n08:22:47 web OK   user=klopez  src=10.0.2.40`,a:3,ip:'',w:'Internal IPs, business hours, a single typo followed by success: normal activity.'}];
+const AC=['Brute force','Password spraying','Stolen credentials','Normal activity'];
+function labAuth(){const st=V.st;st.a=st.a||{};const done=Object.keys(st.a).length,right=AUTH.filter((c,i)=>st.a[i]===c.a).length;
+ if(done===AUTH.length&&!st.saved){st.saved=1;labScore('auth',Math.round(100*right/AUTH.length))}
+ return labShell(`<p>Read each authentication log excerpt. Name the pattern, then compare with the explanation.</p><p class="tag">${done}/${AUTH.length} · ${right} correct</p>
+ ${AUTH.map((c,i)=>{const a=st.a[i];return `<div class="card" style="margin-top:12px"><h3>${c.n}</h3><pre class="log">${esc(c.log)}</pre><div class="row" style="margin-top:10px">${AC.map((x,k)=>`<button class="btn sm ${a==null?'':k===c.a?'pri':a===k?'':'ghost'}" ${a!=null?'disabled':''} ${H(()=>{st.a[i]=k;render()})}>${a!=null&&k===c.a?'✓ ':a===k&&k!==c.a?'✗ ':''}${x}</button>`).join('')}</div>${a!=null?`<div class="fb ${a===c.a?'ok':'no'}"><b>${AC[c.a]}.</b> ${esc(c.w)}${c.ip?` Block or investigate <code>${c.ip}</code>.`:''}</div>`:''}</div>`}).join('')}
+ ${done===AUTH.length?`<div class="row" style="margin-top:16px"><b>Score ${right}/${AUTH.length}</b><span class="sp"></span><button class="btn" ${H(()=>{V.st={};render()})}>Retry</button></div>`:''}`)}
+
+/* chmod */
+const sym2n=s=>[0,3,6].map(o=>(s[o]==='r'?4:0)+(s[o+1]==='w'?2:0)+(s[o+2]==='x'?1:0)).join('');
+const n2sym=n=>String(n).split('').map(d=>((d&4)?'r':'-')+((d&2)?'w':'-')+((d&1)?'x':'-')).join('');
+function applyChmod(cmd,start){cmd=cmd.trim().replace(/\s+/g,' ');const m=cmd.match(/^chmod ([^ ]+)(?: [^ ]+)?$/);if(!m)return null;const mode=m[1];if(/^[0-7]{3}$/.test(mode))return mode;
+ let bits=String(start).split('').map(Number);for(const cl of mode.split(',')){const x=cl.match(/^([ugoa]*)([+\-=])([rwx]*)$/);if(!x)return null;const who=(x[1]||'a').replace('a','ugo');const v=(x[3].includes('r')?4:0)+(x[3].includes('w')?2:0)+(x[3].includes('x')?1:0);
+  for(const w of new Set(who)){const i='ugo'.indexOf(w);if(x[2]==='+')bits[i]|=v;else if(x[2]==='-')bits[i]&=~v;else bits[i]=v}}return bits.join('')}
+const CH=[{k:'num',q:'rwxr-x---',a:'750',p:'Type the numeric mode for rwxr-x---'},{k:'num',q:'rw-r--r--',a:'644',p:'Type the numeric mode for rw-r--r--'},{k:'sym',q:'600',a:'rw-------',p:'Type the 9-character symbolic form of 600'},{k:'sym',q:'755',a:'rwxr-xr-x',p:'Type the 9-character symbolic form of 755'},
+ {k:'cmd',s:'644',a:'600',p:'secrets.txt is 644. Write a command so only the owner can read and write it.'},{k:'cmd',s:'744',a:'755',p:'deploy.sh is 744. Write a command so group and others can also execute it (owner keeps rwx).'},{k:'cmd',s:'777',a:'755',p:'report.sh is 777. Remove write permission from group and others only.'},{k:'cmd',s:'640',a:'660',p:'notes.md is 640. Give the group write permission.'}];
+function labChmod(){const st=V.st;st.g=st.g||'750';st.r=st.r||{};const done=Object.keys(st.r).length,right=Object.values(st.r).filter(x=>x.ok).length;
+ if(done===CH.length&&!st.saved){st.saved=1;labScore('chmod',Math.round(100*right/CH.length))}
+ const sym=n2sym(st.g);
+ return labShell(`<div class="card"><h3>Permission explorer</h3><p class="mut small">r = 4, w = 2, x = 1, summed for owner (u), group (g) and others (o).</p><div class="row" style="gap:22px">${['Owner (u)','Group (g)','Others (o)'].map((l,i)=>`<div><div class="small"><b>${l}</b></div><div class="pk">${['r','w','x'].map((p,j)=>`<label>${p}<input type="checkbox" ${(+st.g[i]&[4,2,1][j])?'checked':''} ${H((e,el)=>{const b=st.g.split('').map(Number);b[i]^=[4,2,1][j];st.g=b.join('');render()})}></label>`).join('')}</div></div>`).join('')}<div><div class="small mut">Symbolic</div><code style="font-size:20px">${sym}</code></div><div><div class="small mut">Numeric</div><code style="font-size:20px">${st.g}</code></div><div><div class="small mut">Command</div><code>chmod ${st.g} file</code></div></div></div>
+ <div class="card" style="margin-top:12px"><div class="row"><h3 style="margin:0">Challenges</h3><span class="sp"></span><b>${right}/${CH.length}</b></div>
+ ${CH.map((c,i)=>{const r=st.r[i];return `<form ${H((e,el)=>{const v=el.querySelector('input').value.trim();if(!v)return;let ok=false,got='';if(c.k==='num'){ok=v===c.a;got=v}else if(c.k==='sym'){ok=v===c.a;got=v}else{const res=applyChmod(v,c.s);got=res?res+' ('+n2sym(res)+')':'not a valid chmod command';ok=res===c.a}st.r[i]={ok,v,got};render()})} style="padding:12px 0;border-bottom:1px solid var(--line)"><p style="margin:0 0 8px">${i+1}. ${esc(c.p)}</p><div class="row"><input class="mono" ${r?'disabled':''} value="${r?esc(r.v):''}" placeholder="${c.k==='cmd'?'chmod …':''}" aria-label="Answer ${i+1}" style="width:260px"><button class="btn sm" ${r?'disabled':''} type="submit">Check</button>${r?`<span class="${r.ok?'ok':'no'} small"><b>${r.ok?'✓ Correct':'✗'}</b>${r.ok?'':` Result: ${esc(r.got)}. Target: ${c.k==='cmd'?c.a+' ('+n2sym(c.a)+')':c.a}`}</span>`:''}</div></form>`}).join('')}
+ ${done===CH.length?`<div class="row" style="margin-top:12px"><b>Score ${right}/${CH.length}</b><span class="sp"></span><button class="btn" ${H(()=>{V.st={};render()})}>Retry</button></div>`:''}</div>`)}
+
+
+
+  return {
+    LABS: LABS,
+    open: function (id) { V = {name: 'lab', id: id, st: {}}; },
+    close: function () { V = {name: 'none', id: null, st: {}}; },
+    html: function () { for (const k in handlers) delete handlers[k]; return vLab(); },
+    bind: function (root) {
+      root.querySelectorAll('[data-h]').forEach(function (e) {
+        const fn = handlers[e.getAttribute('data-h')]; if (!fn) return;
+        const ev = e.tagName === 'FORM' ? 'submit' : ((e.tagName === 'INPUT' || e.tagName === 'SELECT') && e.type !== 'button') ? 'input' : 'click';
+        e.addEventListener(ev, function (x) { if (ev === 'submit') x.preventDefault(); fn(x, e); });
+      });
+    }
+  };
+})();
+
+/* ---------- study views: lessons, written practice, labs ---------- */
+let curT = null, curF = null, fTimer = null, fEnd = 0;
+const LABFOR = {};
+Object.keys(LAB.LABS).forEach(function (k) { LAB.LABS[k].topics.forEach(function (t) { if (!LABFOR[t]) LABFOR[t] = k; }); });
+function labRender() { if (view === 'lab') show(true); }
+function labClose() { LAB.close(); view = 'labs'; show(false); }
+function labSaveScore(id, pct) { const prev = st.labs[id]; st.labs[id] = Math.max(prev || 0, pct); save(); if (prev == null || pct > prev) toast('Lab scored ' + pct + '%'); }
+function topBar(back, label) { return '<div class="row"><button class="lnk" data-act="' + back + '">‹ ' + label + '</button></div>'; }
+function learnPage() {
+  let h = '<main class="wrap labw"><div class="col">' + topBar('home', 'Home') + '<h1>Lessons</h1><p class="mute">All 24 topics of the course. Each lesson has a short scenario, the core concepts, key terms, a comparison table and the traps to avoid. Then drill the topic.</p>';
+  UNITS.forEach(function (u) {
+    const U = B.units[u];
+    h += '<section class="card u' + u + '"><h2>Unit ' + u + ': ' + esc(U.name) + '</h2><div class="tlist">' + Object.keys(U.topics).map(function (t) {
+      return '<button class="tl" data-act="lesson" data-a="' + t + '"><b>' + t + '</b><span class="sp">' + esc(U.topics[t]) + '</span><span class="tag">' + byTopic(t).length + ' Q</span></button>';
+    }).join('') + '</div></section>';
+  });
+  app.innerHTML = h + '</div></main>';
+}
+function lessonPage(t) {
+  const L2 = B.lessons[t], u = unitOf(t), lab = LABFOR[t];
+  let h = '<main class="wrap labw u' + u + '"><div class="col">' + topBar('learn', 'All lessons') + '<span class="tag">Unit ' + u + ' · ' + esc(B.units[u].name) + '</span>'
+    + '<h1>' + t + ' ' + esc(topicName(t)) + '</h1><div class="hook">' + esc(L2.hook) + '</div>'
+    + '<section class="card"><h2>Concepts</h2>' + L2.concept.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + '</section>'
+    + '<section class="card"><h2>Key terms</h2><p class="mute small">Tap a term to see its meaning.</p><div class="terms">' + L2.terms.map(function (x) { return '<details><summary>' + esc(x[0]) + '</summary><p class="small" style="margin:8px 0 0">' + esc(x[1]) + '</p></details>'; }).join('') + '</div></section>';
+  if (L2.compare) h += '<section class="card"><h2>' + esc(L2.compare.title) + '</h2><table><thead><tr>' + L2.compare.cols.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' + L2.compare.rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></section>';
+  h += '<section class="card"><h2>Common traps</h2><ul>' + L2.traps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></section>'
+    + '<div class="row" style="margin-top:16px"><button class="btn pri" data-act="start" data-kind="topic" data-a="' + t + '">Drill ' + t + ' (' + byTopic(t).length + ' questions)</button>'
+    + (lab ? '<button class="btn" data-act="lab" data-a="' + lab + '">Lab: ' + esc(LAB.LABS[lab].title) + '</button>' : '')
+    + '<button class="btn" data-act="unit" data-a="' + u + '">Unit ' + u + ' page</button></div>';
+  app.innerHTML = h + '</div></main>';
+}
+function frqTotal(f) { return f.parts.reduce(function (a, p) { return a + p.points; }, 0); }
+function frqList() {
+  let h = '<main class="wrap labw"><div class="col">' + topBar('home', 'Home') + '<h1>Written practice</h1><p class="mute">Device Security Analysis questions like Section II of the exam (30% of the score, 50 minutes). Read the sources, answer each part, then check yourself against the scoring guide.</p><div class="tlist">';
+  B.frqs.forEach(function (f, i) {
+    const b = st.frq[f.id];
+    h += '<button class="tl" data-act="frq" data-a="' + f.id + '"><b>' + (i + 1) + '</b><span class="sp">' + esc(f.title) + '</span><span class="tag">' + (b != null ? 'Best ' + b + '/' + frqTotal(f) : frqTotal(f) + ' points') + '</span></button>';
+  });
+  app.innerHTML = h + '</div></div></main>';
+}
+function srcBlock(x) {
+  if (x.kind === 'table') return '<div style="overflow-x:auto"><table><thead><tr>' + x.cols.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' + x.rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+  return '<pre class="' + (x.kind === 'code' ? 'code' : 'txt') + '">' + esc(x.body) + '</pre>';
+}
+function frqPage(id) {
+  const f = B.frqs.filter(function (x) { return x.id === id; })[0];
+  const A = st.frqAns[id] || (st.frqAns[id] = {ans: {}, show: false, sc: {}});
+  let h = '<main class="wrap labw"><div class="col">' + '<div class="row"><button class="lnk" data-act="frqs">‹ All written questions</button><span class="sp"></span><span id="ftimer" class="ftimer"></span>'
+    + (fTimer ? '<button class="btn sm" data-act="ftimeroff">Stop timer</button>' : '<button class="btn sm" data-act="ftimer">Start 50-minute timer</button>') + '</div>'
+    + '<h1>' + esc(f.title) + '</h1><section class="card"><p>' + esc(f.scenario) + '</p>' + f.sources.map(function (x) { return '<h3 style="margin-top:14px">' + esc(x.title) + '</h3>' + srcBlock(x); }).join('') + '</section>';
+  f.parts.forEach(function (p) {
+    const sc = A.sc[p.id];
+    h += '<section class="card"><div class="row"><b>(' + p.id + ')</b><span class="tag">' + p.verb + '</span><span class="tag">' + p.points + ' pt' + (p.points > 1 ? 's' : '') + '</span></div>'
+      + '<p style="margin:10px 0">' + esc(p.prompt) + '</p><textarea data-fp="' + p.id + '" aria-label="Answer part ' + p.id + '">' + esc(A.ans[p.id] || '') + '</textarea>';
+    if (A.show) {
+      h += '<div class="fb"><b>Scoring guide.</b> ' + esc(p.rubric) + '</div><div class="scorebtns"><span class="small mute">Your score:</span>';
+      for (let k = 0; k <= p.points; k++) h += '<button class="btn sm' + (sc === k ? ' pri' : '') + '" data-act="fscore" data-a="' + p.id + '" data-v="' + k + '">' + k + '</button>';
+      h += '</div>';
+    }
+    h += '</section>';
+  });
+  const tot = frqTotal(f), got = f.parts.reduce(function (a, p) { return a + (A.sc[p.id] || 0); }, 0), all = f.parts.every(function (p) { return A.sc[p.id] != null; });
+  h += '<div class="row" style="margin-top:16px">' + (A.show
+    ? '<b style="font-size:20px">' + (all ? 'Score ' + got + '/' + tot : 'Score each part to see your total') + '</b><span class="sp"></span>' + (all ? '<button class="btn pri" data-act="fsave">Save score</button>' : '') + '<button class="btn" data-act="fclear">Clear answers</button>'
+    : '<span class="sp"></span><button class="btn pri" data-act="fshow">Show scoring guide</button>') + '</div>';
+  app.innerHTML = h + '</div></main>';
+  paintFTimer();
+}
+function paintFTimer() { const e = document.getElementById('ftimer'); if (!e) return; if (!fTimer) { e.textContent = ''; return; } const left = Math.max(0, Math.round((fEnd - Date.now()) / 1000)); e.textContent = fmt(left) + ' left'; e.className = 'ftimer' + (left <= 300 ? ' warn' : ''); if (!left) { clearInterval(fTimer); fTimer = null; toast('Time is up'); } }
+function frqCollect() { if (!curF) return; const A = st.frqAns[curF]; if (!A) return; app.querySelectorAll('textarea[data-fp]').forEach(function (t) { A.ans[t.getAttribute('data-fp')] = t.value; }); }
+function labsPage() {
+  let h = '<main class="wrap labw"><div class="col">' + topBar('home', 'Home') + '<h1>Labs</h1><p class="mute">Hands-on simulators with practice data, graded automatically. Four of them (firewall rules, auth logs, chmod, hashing) match the kinds of sources on the written question.</p><div class="grid g2">';
+  Object.keys(LAB.LABS).sort(function (a, b) { return LAB.LABS[a].topics[0].localeCompare(LAB.LABS[b].topics[0], undefined, {numeric: true}); }).forEach(function (k) {
+    const l = LAB.LABS[k], best = st.labs[k];
+    h += '<button class="tl" style="flex-direction:column;align-items:flex-start;gap:4px;min-height:120px" data-act="lab" data-a="' + k + '"><span class="row" style="width:100%"><span class="tag">' + l.topics.join(' · ') + '</span><span class="sp"></span>' + (best != null ? '<span class="tag">Best ' + best + '%</span>' : '') + '</span><b style="font-size:18px">' + esc(l.title) + '</b><span class="small mute">' + esc(l.desc) + '</span></button>';
+  });
+  app.innerHTML = h + '</div></div></main>';
+}
+function labPage() { app.innerHTML = '<main class="wrap labw">' + LAB.html() + '</main>'; LAB.bind(app); }
+app.addEventListener('input', function (e) { if (view === 'frq' && e.target && e.target.hasAttribute && e.target.hasAttribute('data-fp')) { frqCollect(); save(); } });
+
+/* ---------- views ---------- */
+function show(keep) {
+  const y = window.pageYOffset || 0;
+  const sb = app.querySelector('.qwrap .sb');
+  const prevSt = sb ? sb.getAttribute('data-st') : null, prevTop = sb ? sb.scrollTop : 0;
+  const det = app.querySelector('.qwrap details.stim');
+  const prevOpen = det ? det.open : null;
+  if (view === 'quiz' && S && !S.done) quiz(prevSt, prevOpen);
+  else if (view === 'results' && S && S.done) results();
+  else if (view === 'unit' && B.units[curU]) unitPage(curU);
+  else if (view === 'learn') learnPage();
+  else if (view === 'lesson' && B.lessons[curT]) lessonPage(curT);
+  else if (view === 'frqs') frqList();
+  else if (view === 'frq' && curF) frqPage(curF);
+  else if (view === 'labs') labsPage();
+  else if (view === 'lab') labPage();
+  else { view = 'home'; home(); }
+  window.scrollTo(0, keep ? y : 0);
+  const sb2 = app.querySelector('.qwrap .sb');
+  if (sb2 && prevSt && sb2.getAttribute('data-st') === prevSt) sb2.scrollTop = prevTop;
+  if (view === 'quiz') startTick(); else stopTick();
+}
+function modeBtn(v, t, d) {
+  const on = st.mode === v;
+  return '<button class="mode' + (on ? ' on' : '') + '" data-act="mode" data-v="' + v + '" role="radio" aria-checked="' + on + '"><b>' + t + '</b><span>' + d + '</span></button>';
+}
+function modesHTML() {
+  return '<div class="modes" role="radiogroup" aria-label="Quiz mode">'
+    + modeBtn('practice', 'Practice', 'Check each answer as you go and read why every choice is right or wrong.')
+    + modeBtn('exam', 'Exam', 'No feedback until you submit. Flag questions and jump around, like the real test.')
+    + '<button class="sw' + (st.timer ? ' on' : '') + '" data-act="timer" aria-pressed="' + st.timer + '"' + (st.mode === 'exam' ? '' : ' hidden') + '><span class="knob"></span>AP-pace timer: 80 seconds per question</button></div>';
+}
+function resumeHTML() {
+  if (!S || S.done) return '';
+  return '<div class="resume"><div><b>Unfinished: ' + esc(S.title) + '</b><span>' + answered() + ' of ' + S.ids.length + ' done · ' + (S.mode === 'exam' ? 'Exam' : 'Practice') + ' mode</span></div>'
+    + '<button class="btn pri" data-act="resume">Resume</button><button class="btn" data-act="discard">Discard</button></div>';
+}
+function installHTML() {
+  if (!ON_WEB || STANDALONE || st.hideInstall) return '';
+  const how = IOS
+    ? 'In Safari, tap Share (or ••• and then Share), then Add to Home Screen. Open it once from the new icon while online; after that it works offline.'
+    : 'Use your browser’s Install or Add to Home Screen option so it opens in its own window and works offline.';
+  return '<div class="inst"><div><b>Put this app on your Home Screen</b><span>' + how + '</span></div><button class="btn" data-act="hideinst">Got it</button></div>';
+}
+function offlText() {
+  if (swState === 'ready') return 'Saved on this device, so it works offline. Progress stays on this device.';
+  if (swState === 'saving') return 'Saving a copy on this device for offline use…';
+  if (swState === 'file') return 'Opened as a file, so progress saves in this browser. For an app icon, open it from its web link.';
+  return 'Progress is saved on this device.';
+}
+function paintOffl() { const e = document.getElementById('offl'); if (e) e.textContent = offlText(); }
+function unitStats(u) {
+  const ids = byUnit(u);
+  let r = 0, w = 0, c = 0, n = 0, taken = 0, best = null;
+  ids.forEach(function (id) { const s = st.seen[id]; if (s) { if (s.l === 1) r++; else w++; c += s.c; n += s.c + s.w; } });
+  (B.mocks[u] || []).forEach(function (m, i) {
+    const b = st.best['m' + u + '-' + i];
+    if (b) { taken++; if (!best || b.c / b.n > best.c / best.n) best = b; }
+  });
+  return {n: ids.length, r: r, w: w, tried: r + w, acc: n ? Math.round(c / n * 100) : null, taken: taken, best: best};
+}
+function unitCard(u) {
+  const U = B.units[u], s = unitStats(u);
+  const pr = s.r / s.n * 100, pw = s.w / s.n * 100;
+  return '<button class="ucard u' + u + '" data-act="unit" data-a="' + u + '" aria-label="Unit ' + u + ': ' + esc(U.name) + '">'
+    + '<span class="k"><span>Unit ' + u + '</span><span>' + esc(U.period) + '</span></span>'
+    + '<span class="nm">' + esc(U.name) + '</span>'
+    + '<span class="m">' + s.n + ' questions · ' + Object.keys(U.topics).length + ' topics · ' + esc(U.weight) + ' of exam</span>'
+    + '<span class="pbar" aria-hidden="true"><i class="r" style="width:' + pr.toFixed(1) + '%"></i><i class="w" style="width:' + pw.toFixed(1) + '%"></i></span>'
+    + '<span class="p"><span>' + (s.tried ? s.tried + ' tried · ' + s.acc + '% right' : 'Not started') + '</span><span>'
+    + (s.taken ? 'Mocks ' + s.taken + '/' + B.mocks[u].length + ' · best ' + s.best.c + '/' + s.best.n : B.mocks[u].length + ' mock quizzes') + '</span></span></button>';
+}
+function home() {
+  const tried = Object.keys(st.seen).filter(function (id) { return QI[id]; });
+  let c = 0, w = 0;
+  tried.forEach(function (id) { c += st.seen[id].c; w += st.seen[id].w; });
+  const acc = c + w ? Math.round(c / (c + w) * 100) + '%' : '–';
+  const mN = missedIds().length;
+  let h = '<main class="wrap home">';
+  h += '<header class="hero"><div><h1>AP<br>Cybersecurity</h1><p>' + B.qs.length + ' AP-style questions across all five units and 24 topics, including source-based sets built on logs, rule tables and policies. Every answer choice comes with an explanation of why it is right or wrong.</p></div>'
+    + '<div class="stats"><div><b>' + tried.length + '<small> / ' + B.qs.length + '</small></b><span>questions tried</span></div><div><b>' + acc + '</b><span>accuracy</span></div><div><b>' + mN + '</b><span>to review</span></div></div></header>';
+  h += installHTML() + resumeHTML() + modesHTML();
+  h += '<h2 class="sech">Units</h2><div class="ugrid">' + UNITS.map(unitCard).join('') + '</div>';
+  h += '<h2 class="sech">Study and practice</h2><section class="mix study"><button class="big" data-act="learn"><b>Lessons</b><span>All 24 topics: scenarios, key terms, comparisons and common traps.</span></button>'
+    + '<button class="big" data-act="frqs"><b>Written practice</b><span>' + B.frqs.length + ' Device Security Analysis questions with scoring guides.</span></button>'
+    + '<button class="big" data-act="labs"><b>Labs</b><span>' + Object.keys(LAB.LABS).length + ' hands-on simulators: firewall rules, logs, chmod, hashing and more.</span></button></section>';
+  h += '<section class="mix"><button class="big" data-act="mixopen"><b>Mixed mock</b><span>Up to 60 questions from the units you choose, weighted by class time. A new draw every time.</span></button>'
+    + '<button class="big" data-act="start" data-kind="missed"' + (mN ? '' : ' disabled') + '><b>Review missed questions</b><span>' + (mN ? mN + ' question' + (mN === 1 ? '' : 's') + ' you got wrong last time' : 'Questions you miss will collect here') + '</span></button></section>';
+  if (st.hist.length) {
+    h += '<section class="hist"><h3>Recent attempts</h3>' + st.hist.slice(-6).reverse().map(function (x) {
+      return '<div class="hrow"><span>' + esc(x.t) + '</span><span>' + (x.m === 'exam' ? 'Exam' : 'Practice') + '</span><b>' + x.c + '/' + x.n + '</b></div>';
+    }).join('') + '</section>';
+  }
+  h += '<footer class="foot"><span id="offl">' + offlText() + '</span><button class="lnk" data-act="reset">Reset progress</button></footer>'
+    + '<p class="fine">Version ' + esc(B.meta.version) + '. Questions, sources and explanations were written for this practice set. AP is a registered trademark of College Board, which was not involved in making this app.</p></main>';
+  if (sheet === 'reset') h += resetSheet();
+  if (sheet === 'mix') h += mixSheet();
+  app.innerHTML = h;
+}
+function unitPage(u) {
+  const U = B.units[u], ids = byUnit(u), topics = Object.keys(U.topics), s = unitStats(u), mN = missedIds(u).length;
+  const dots = topics.map(function (t) {
+    return '<div class="dt"><span>' + t + '</span><div class="dd">' + byTopic(t).map(function (id) {
+      const x = st.seen[id]; return '<i class="' + (x ? (x.l === 1 ? 'd1' : 'd2') : '') + '"></i>';
+    }).join('') + '</div></div>';
+  }).join('');
+  const mocks = B.mocks[u].map(function (m, i) {
+    const b = st.best['m' + u + '-' + i];
+    return '<button class="tile" data-act="start" data-kind="mock" data-a="' + u + '" data-b="' + i + '"><b>Mock ' + (i + 1) + '</b><span>' + m.length + ' questions</span><em>' + (b ? 'Best ' + b.c + '/' + b.n : 'Not taken') + '</em></button>';
+  }).join('');
+  const chips = topics.map(function (t) {
+    const tids = byTopic(t);
+    let tr = 0, ok = 0;
+    tids.forEach(function (id) { const x = st.seen[id]; if (x) { tr++; if (x.l === 1) ok++; } });
+    return '<button class="chip" data-act="start" data-kind="topic" data-a="' + t + '"><b>' + t + '</b><span>' + esc(U.topics[t]) + '</span><em>' + tids.length + ' Q' + (tr ? ' · ' + Math.round(ok / tr * 100) + '%' : '') + '</em></button>';
+  }).join('');
+  let h = '<main class="wrap upage u' + u + '">';
+  h += '<div class="uptop"><button class="lnk" data-act="home">‹ All units</button></div>';
+  h += '<header class="uhero"><div><span class="k">Unit ' + u + ' · ' + esc(U.period) + '</span><h1>' + esc(U.name) + '</h1><p>' + ids.length + ' questions across ' + topics.length + ' topics · ' + esc(U.weight) + ' of the AP exam</p></div>'
+    + '<div class="stats"><div><b>' + s.tried + '<small> / ' + s.n + '</small></b><span>tried</span></div><div><b>' + (s.acc == null ? '–' : s.acc + '%') + '</b><span>accuracy</span></div><div><b>' + (s.best ? s.best.c + '/' + s.best.n : '–') + '</b><span>best mock</span></div></div></header>';
+  h += resumeHTML() + modesHTML();
+  h += '<div class="ucols"><div>'
+    + '<section class="sec"><h3>Mock quizzes</h3><div class="tiles">' + mocks + '</div></section>'
+    + '<section class="sec"><h3>Answer sheet</h3><div class="sheetmap" role="img" aria-label="Answer sheet for Unit ' + u + '">' + dots
+    + '<p class="key"><span><i class="d1"></i>right last time</span><span><i class="d2"></i>missed</span><span><i></i>not tried</span></p></div></section>'
+    + '<div class="ubtns"><button class="btn wide" data-act="start" data-kind="unit" data-a="' + u + '">All ' + ids.length + ' questions, shuffled</button>'
+    + '<button class="btn wide" data-act="start" data-kind="missed" data-a="' + u + '"' + (mN ? '' : ' disabled') + '>' + (mN ? 'Review ' + mN + ' missed in this unit' : 'No missed questions in this unit yet') + '</button></div>'
+    + '</div><div><section class="sec"><h3>Topic drills</h3><div class="chips">' + chips + '</div></section>'
+    + '<section class="sec"><h3>Lessons</h3><div class="chips">' + topics.map(function (t) { return '<button class="chip" data-act="lesson" data-a="' + t + '"><b>' + t + '</b><span>Read the lesson</span><em>' + (LABFOR[t] ? 'Lab' : '') + '</em></button>'; }).join('') + '</div></section></div></div>';
+  h += '<nav class="unav" aria-label="Other units">' + (B.units[u - 1] ? '<button class="btn" data-act="unit" data-a="' + (u - 1) + '">‹ Unit ' + (u - 1) + '</button>' : '<span></span>')
+    + (B.units[u + 1] ? '<button class="btn" data-act="unit" data-a="' + (u + 1) + '">Unit ' + (u + 1) + ' ›</button>' : '<span></span>') + '</nav></main>';
+  app.innerHTML = h;
+}
+function mixSheet() {
+  const sel = st.mixU, ex = st.mode === 'exam';
+  const togs = UNITS.map(function (u) {
+    const on = sel.indexOf(u) >= 0;
+    return '<button class="utog u' + u + (on ? ' on' : '') + '" data-act="mixu" data-a="' + u + '" aria-pressed="' + on + '"><b>Unit ' + u + '</b><span>' + esc(B.units[u].name) + '</span></button>';
+  }).join('');
+  const lens = LENS.map(function (n) { return '<button class="' + (st.mixN === n ? 'on' : '') + '" data-act="mixn" data-v="' + n + '" aria-pressed="' + (st.mixN === n) + '">' + n + ' questions</button>'; }).join('');
+  return '<div class="scrim" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Mixed mock"><div class="sh-h"><b>Mixed mock</b><button class="lnk" data-act="close">Cancel</button></div>'
+    + '<p class="mute">Questions come from the units you pick, weighted by each unit’s class time, with a new draw every time. The real exam has 60 multiple-choice questions in 80 minutes (70% of the score) plus one written Device Security Analysis question.</p>'
+    + '<div class="sh-sub"><span>Units</span><span><button class="lnk" data-act="mixall">All</button><button class="lnk" data-act="mixnone">None</button></span></div><div class="utogs">' + togs + '</div>'
+    + '<div class="sh-sub"><span>Length</span></div><div class="seg lens" role="group" aria-label="Number of questions">' + lens + '</div>'
+    + '<div class="sh-btns"><button class="btn pri wide" data-act="mixgo"' + (sel.length ? '' : ' disabled') + '>' + (sel.length ? 'Start ' + (ex ? 'exam' : 'practice') + ': ' + st.mixN + ' questions' + (ex && st.timer ? ' in ' + Math.round(st.mixN * 4 / 3) + ' minutes' : '') : 'Pick at least one unit') + '</button></div></div>';
+}
+
+function quiz(prevSt, prevOpen) {
+  const n = S.ids.length, id = S.ids[S.i], q = QI[id], a = S.ans[id];
+  const exam = S.mode === 'exam', checked = !exam && !!S.chk[id];
+  let open = true;
+  if (q.st) {
+    if (prevSt === q.st && prevOpen !== null) open = prevOpen;
+    else { const pq = S.i > 0 ? QI[S.ids[S.i - 1]] : null; open = window.innerWidth >= 900 || !(pq && pq.st === q.st); }
+  }
+  let h = '<header class="qbar"><div class="wrap qbar-in"><button class="lnk" data-act="quit">Menu</button>'
+    + '<div class="qt"><b>' + esc(S.title) + '</b><span>Question ' + (S.i + 1) + ' of ' + n + '</span></div>'
+    + '<span id="clock" class="clock"></span>'
+    + (exam ? '<button class="lnk" data-act="nav">All questions</button>' : '')
+    + '</div><div class="prog"><i class="u' + q.u + '" style="width:' + (answered() / n * 100).toFixed(1) + '%"></i></div></header>';
+  h += '<main class="wrap qwrap' + (q.st ? ' has-stim' : '') + '">';
+  if (q.st) h += stimHTML(q.st, open);
+  h += '<section class="qcard"><p class="meta"><span class="tag u' + q.u + '">Topic ' + q.t + '</span><span>' + SK[q.s] + '</span>'
+    + (exam && S.flag[id] ? '<span class="fl-t">Flagged</span>' : '') + '</p>'
+    + '<h2 class="stem">' + esc(q.q) + '</h2>'
+    + (checked ? verdict(q, a) : '')
+    + '<div class="opts" role="radiogroup" aria-label="Answer choices">' + q.c.map(function (c, k) { return opt(q, k, a, checked); }).join('') + '</div>'
+    + '</section></main>';
+  h += foot(q, a, checked, exam, n);
+  if (sheet === 'nav') h += navSheet();
+  if (sheet === 'quit') h += quitSheet();
+  app.innerHTML = h;
+  paintTime();
+}
+function stimHTML(sid, open) {
+  const s = B.stims[sid];
+  let body = (s.text || []).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
+  if (s.table && s.table.length) {
+    body += '<div class="scroll"><table><thead><tr>' + s.table[0].map(function (c) { return '<th scope="col">' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>'
+      + s.table.slice(1).map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('')
+      + '</tbody></table></div>';
+  }
+  body += (s.note || []).map(function (p) { return '<p class="note">' + esc(p) + '</p>'; }).join('');
+  if (s.pre) body += '<pre class="logpre">' + esc(s.pre) + '</pre>';
+  if (s.source) body += '<p class="src">' + esc(s.source) + '</p>';
+  return '<details class="stim"' + (open ? ' open' : '') + '><summary><span>Source</span><b>' + esc(s.title) + '</b></summary><div class="sb" data-st="' + esc(sid) + '">' + body + '</div></details>';
+}
+function opt(q, k, a, checked) {
+  let cls = 'opt', mk = '';
+  if (a === k) cls += ' sel';
+  if (checked) {
+    if (k === q.a) { cls += ' ok'; mk = '<em class="mk">Correct answer</em>'; }
+    else if (a === k) { cls += ' bad'; mk = '<em class="mk">Your answer</em>'; }
+    else cls += ' dim';
+  }
+  return '<button class="' + cls + '" data-act="pick" data-k="' + k + '" role="radio" aria-checked="' + (a === k) + '"' + (checked ? ' aria-disabled="true"' : '') + '>'
+    + '<span class="bub">' + L[k] + '</span><span class="otx"><span class="ot">' + esc(q.c[k]) + '</span>' + mk
+    + (checked ? '<span class="why">' + esc(q.r[k]) + '</span>' : '') + '</span></button>';
+}
+function verdict(q, a) {
+  const ok = a === q.a;
+  return '<div class="verdict ' + (ok ? 'v-ok' : 'v-bad') + '" role="status"><b>' + (ok ? 'Correct.' : 'Not quite.') + '</b> '
+    + (ok ? 'Read why the other three fail.' : 'The answer is ' + L[q.a] + '. Every choice is explained below.') + '</div>';
+}
+function foot(q, a, checked, exam, n) {
+  const last = S.i === n - 1;
+  let h = '<footer class="qfoot"><div class="wrap qfoot-in">';
+  h += '<button class="btn" data-act="prev"' + (S.i === 0 ? ' disabled' : '') + '>Back</button>';
+  if (exam) h += '<button class="btn' + (S.flag[q.id] ? ' on' : '') + '" data-act="flag" aria-pressed="' + !!S.flag[q.id] + '">' + (S.flag[q.id] ? 'Flagged' : 'Flag') + '</button>';
+  h += '<span class="sp"></span>';
+  if (exam) h += last ? '<button class="btn pri" data-act="nav">Review and submit</button>' : '<button class="btn pri" data-act="next">Next</button>';
+  else if (!checked) h += '<button class="btn pri" data-act="check"' + (a == null ? ' disabled' : '') + '>Check answer</button>';
+  else h += last ? '<button class="btn pri" data-act="finish">See results</button>' : '<button class="btn pri" data-act="next">Next question</button>';
+  return h + '</div></footer>';
+}
+function navSheet() {
+  const un = S.ids.filter(function (id) { return S.ans[id] == null; }).length;
+  const fl = S.ids.filter(function (id) { return S.flag[id]; }).length;
+  const cells = S.ids.map(function (id, k) {
+    return '<button class="cell' + (S.ans[id] != null ? ' done' : '') + (S.flag[id] ? ' fl' : '') + (k === S.i ? ' cur' : '') + '" data-act="jump" data-k="' + k + '" aria-label="Question ' + (k + 1) + '">' + (k + 1) + '</button>';
+  }).join('');
+  return '<div class="scrim" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="All questions"><div class="sh-h"><b>All questions</b><button class="lnk" data-act="close">Close</button></div>'
+    + '<p class="mute">' + (S.ids.length - un) + ' answered · ' + un + ' blank · ' + fl + ' flagged. Tap a number to jump to it.</p><div class="cells">' + cells + '</div>'
+    + '<button class="btn pri wide" data-act="submit">' + (un ? 'Submit with ' + un + ' blank' : 'Submit quiz') + '</button></div>';
+}
+function quitSheet() {
+  return '<div class="scrim" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Leave quiz"><div class="sh-h"><b>Leave this quiz?</b><button class="lnk" data-act="close">Keep going</button></div>'
+    + '<p class="mute">Your place is saved, so you can resume it later.</p>'
+    + '<div class="sh-btns"><button class="btn pri" data-act="leave">Save and leave</button><button class="btn" data-act="finish">End now and score it</button><button class="btn danger" data-act="discard">Discard this attempt</button></div></div>';
+}
+function resetSheet() {
+  return '<div class="scrim" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Reset progress"><div class="sh-h"><b>Reset all progress?</b><button class="lnk" data-act="close">Cancel</button></div>'
+    + '<p class="mute">This clears best scores, the answer sheets, missed questions and history on this device.</p><div class="sh-btns"><button class="btn danger" data-act="doreset">Reset everything</button></div></div>';
+}
+
+function results() {
+  const r = score(), pct = Math.round(r.c / r.n * 100);
+  const wrong = S.ids.filter(function (id) { return S.ans[id] !== QI[id].a; });
+  const list = S.ids.map(function (id, k) { return {id: id, k: k}; }).filter(function (x) { return S.rf === 'all' || S.ans[x.id] !== QI[x.id].a; });
+  const multi = Object.keys(r.uu).length > 1;
+  const backU = S.from && S.from.charAt(0) === 'u' ? +S.from.slice(1) : 0;
+  const back = backU ? '<button class="btn" data-act="tounit">Back to Unit ' + backU + '</button>' : '<button class="btn" data-act="home">Back to menu</button>';
+  const m = /^m(\d+)-(\d+)$/.exec(S.key);
+  const next = m && B.mocks[+m[1]][+m[2] + 1] ? '<button class="btn" data-act="start" data-kind="mock" data-a="' + m[1] + '" data-b="' + (+m[2] + 1) + '">Next: Mock ' + (+m[2] + 2) + '</button>' : '';
+  let h = '<header class="qbar"><div class="wrap qbar-in"><button class="lnk" data-act="' + (backU ? 'tounit' : 'home') + '">' + (backU ? '‹ Unit ' + backU : 'Menu') + '</button><div class="qt"><b>' + esc(S.title) + '</b><span>'
+    + (S.mode === 'exam' ? 'Exam mode' : 'Practice mode') + ' · ' + fmt(S.used) + (S.timeUp ? ' · time ran out' : '') + '</span></div></div></header>';
+  h += '<main class="wrap res"><section class="score"><div class="tot"><b>' + r.c + '<small> / ' + r.n + '</small></b><span>' + pct + '% correct</span></div>'
+    + '<div class="bars">' + (multi
+      ? '<h3>By unit</h3>' + bars(r.uu, function (u) { return 'Unit ' + u + ' · ' + B.units[u].name; })
+      : '<h3>By topic</h3>' + bars(r.t, function (t) { return t + ' ' + topicName(t); }))
+    + '<h3>By skill</h3>' + bars(r.k, function (s) { return SK[s]; }) + '</div></section>';
+  h += '<div class="actions">' + (wrong.length ? '<button class="btn pri" data-act="retry">Retry the ' + wrong.length + ' missed</button>' : '') + next
+    + '<button class="btn" data-act="copy">Copy score summary</button>' + back + '</div>';
+  h += '<section class="review"><div class="rv-h"><h2>Review every question</h2><div class="seg" role="group" aria-label="Filter review">'
+    + '<button class="' + (S.rf === 'all' ? 'on' : '') + '" data-act="rf" data-v="all">All ' + r.n + '</button>'
+    + '<button class="' + (S.rf === 'wrong' ? 'on' : '') + '" data-act="rf" data-v="wrong">Missed ' + wrong.length + '</button></div></div>'
+    + (list.length ? list.map(function (x) { return revItem(x.id, x.k); }).join('') : '<p class="mute">Nothing missed. A clean sheet.</p>')
+    + '</section></main>';
+  app.innerHTML = h;
+}
+function bars(obj, label) {
+  return Object.keys(obj).sort(cmpKey).map(function (k) {
+    const v = obj[k], p = Math.round(v[0] / v[1] * 100);
+    return '<div class="row"><span>' + esc(label(k)) + '</span><span class="bar"><i class="' + (p >= 80 ? 'hi' : p >= 60 ? 'md' : 'lo') + '" style="width:' + Math.max(p, 2) + '%"></i></span><span class="rv">' + v[0] + '/' + v[1] + '</span></div>';
+  }).join('');
+}
+function revItem(id, k) {
+  const q = QI[id], a = S.ans[id], ok = a === q.a;
+  const tag = ok ? 'Correct' : (a == null ? 'Left blank' : 'You chose ' + L[a]);
+  return '<details class="ri ' + (ok ? 'ok' : 'bad') + '"><summary><span class="rn">' + (k + 1) + '</span><span class="rs">' + esc(q.q) + '</span><span class="rt">' + tag + ' · Answer ' + L[q.a] + '</span></summary><div class="ri-b">'
+    + '<p class="meta"><span class="tag u' + q.u + '">Topic ' + q.t + '</span><span>' + SK[q.s] + '</span></p>'
+    + (q.st ? stimHTML(q.st, true) : '')
+    + q.c.map(function (c, j) {
+      return '<div class="ro' + (j === q.a ? ' ok' : '') + (j === a && !ok ? ' bad' : '') + '"><span class="bub">' + L[j] + '</span><div><p class="ot">' + esc(c)
+        + (j === q.a ? ' <em class="mk">Correct answer</em>' : (j === a ? ' <em class="mk">Your answer</em>' : '')) + '</p><p class="why">' + esc(q.r[j]) + '</p></div></div>';
+    }).join('') + '</div></details>';
+}
+
+/* ---------- small helpers ---------- */
+function paintPick() {
+  const a = S.ans[S.ids[S.i]];
+  const bs = app.querySelectorAll('.opt');
+  for (let k = 0; k < bs.length; k++) { bs[k].classList.toggle('sel', k === a); bs[k].setAttribute('aria-checked', k === a ? 'true' : 'false'); }
+  const ck = app.querySelector('[data-act="check"]'); if (ck) ck.disabled = a == null;
+  const pg = app.querySelector('.prog i'); if (pg) pg.style.width = (answered() / S.ids.length * 100).toFixed(1) + '%';
+}
+function startTick() {
+  if (timerId) return;
+  timerId = setInterval(function () {
+    if (view !== 'quiz' || !S || S.done) { stopTick(); return; }
+    if (document.hidden || sheet === 'quit') return;
+    S.used++; paintTime();
+    if (S.limit && S.used >= S.limit) { finish(true); return; }
+    if (S.used % 15 === 0) save();
+  }, 1000);
+}
+function stopTick() { if (timerId) { clearInterval(timerId); timerId = null; } }
+function paintTime() {
+  const c = document.getElementById('clock');
+  if (!c || !S) return;
+  if (S.limit) { const left = S.limit - S.used; c.textContent = fmt(left) + ' left'; c.className = 'clock' + (left <= 60 ? ' warn' : ''); }
+  else { c.textContent = fmt(S.used); c.className = 'clock'; }
+}
+function toast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+  t.textContent = msg; t.className = 'show';
+  clearTimeout(toastT); toastT = setTimeout(function () { t.className = ''; }, 2400);
+}
+function copyText(txt) {
+  function fallback() {
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, txt.length);
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta); toast(ok ? 'Copied' : 'Copying is blocked here');
+  }
+  try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt).then(function () { toast('Copied'); }, fallback); return; } } catch (e) {}
+  fallback();
+}
+function summary() {
+  const r = score();
+  const multi = Object.keys(r.uu).length > 1;
+  const src = multi ? r.uu : r.t;
+  const parts = Object.keys(src).sort(cmpKey).map(function (k) { return (multi ? 'Unit ' : '') + k + ' ' + src[k][0] + '/' + src[k][1]; });
+  return 'AP Cybersecurity: ' + S.title + '\nScore ' + r.c + '/' + r.n + ' (' + Math.round(r.c / r.n * 100) + '%), ' + (S.mode === 'exam' ? 'exam' : 'practice') + ' mode, ' + fmt(S.used) + '\nBy ' + (multi ? 'unit' : 'topic') + ': ' + parts.join(', ');
+}
+
+/* ---------- events ---------- */
+app.addEventListener('click', function (e) {
+  const el = e.target && e.target.closest ? e.target.closest('[data-act]') : null;
+  if (!el || el.disabled) return;
+  const act = el.getAttribute('data-act'), v = el.getAttribute('data-v');
+  switch (act) {
+    case 'mode': st.mode = v; save(); show(true); return;
+    case 'timer': st.timer = !st.timer; save(); show(true); return;
+    case 'start': start(el.getAttribute('data-kind'), el.getAttribute('data-a'), el.getAttribute('data-b')); return;
+    case 'unit': curU = +el.getAttribute('data-a'); sheet = null; if (S && S.done) S = null; view = 'unit'; save(); show(false); return;
+    case 'resume': if (S && !S.done) { sheet = null; view = 'quiz'; show(false); } return;
+    case 'discard': { const f = S ? S.from : null, inQuiz = view === 'quiz'; S = null; sheet = null; if (inQuiz) goBack(f); save(); show(!inQuiz); return; }
+    case 'reset': sheet = 'reset'; show(true); return;
+    case 'doreset': st = blank(); S = null; sheet = null; view = 'home'; save(); show(false); toast('Progress cleared'); return;
+    case 'close': sheet = null; show(true); return;
+    case 'home': if (S && S.done) S = null; sheet = null; view = 'home'; save(); show(false); return;
+    case 'tounit': { const f = S ? S.from : null; if (S && S.done) S = null; sheet = null; goBack(f); save(); show(false); return; }
+    case 'hideinst': st.hideInstall = true; save(); show(true); return;
+    case 'mixopen': sheet = 'mix'; show(true); return;
+    case 'mixu': { const u = +el.getAttribute('data-a'), i = st.mixU.indexOf(u); if (i >= 0) st.mixU.splice(i, 1); else st.mixU.push(u); st.mixU.sort(function (x, y) { return x - y; }); save(); show(true); return; }
+    case 'mixall': st.mixU = UNITS.slice(); save(); show(true); return;
+    case 'mixnone': st.mixU = []; save(); show(true); return;
+    case 'mixn': st.mixN = +v; save(); show(true); return;
+    case 'mixgo': if (st.mixU.length) start('mix'); return;
+    case 'learn': sheet = null; if (S && S.done) S = null; view = 'learn'; show(false); return;
+    case 'lesson': curT = el.getAttribute('data-a'); sheet = null; if (S && S.done) S = null; view = 'lesson'; show(false); return;
+    case 'frqs': frqCollect(); save(); sheet = null; if (S && S.done) S = null; view = 'frqs'; show(false); return;
+    case 'frq': curF = el.getAttribute('data-a'); sheet = null; view = 'frq'; show(false); return;
+    case 'fshow': frqCollect(); st.frqAns[curF].show = true; save(); show(true); return;
+    case 'fscore': frqCollect(); st.frqAns[curF].sc[el.getAttribute('data-a')] = +v; save(); show(true); return;
+    case 'fsave': { const f = B.frqs.filter(function (x) { return x.id === curF; })[0], A = st.frqAns[curF]; const got = f.parts.reduce(function (a, p) { return a + (A.sc[p.id] || 0); }, 0); st.frq[curF] = Math.max(st.frq[curF] || 0, got); st.hist.push({t: 'Written: ' + f.title, c: got, n: frqTotal(f), m: 'practice', d: Date.now()}); save(); toast('Score saved'); show(true); return; }
+    case 'fclear': st.frqAns[curF] = {ans: {}, show: false, sc: {}}; save(); show(false); return;
+    case 'ftimer': fEnd = Date.now() + 50 * 60 * 1000; clearInterval(fTimer); fTimer = setInterval(paintFTimer, 1000); show(true); return;
+    case 'ftimeroff': clearInterval(fTimer); fTimer = null; show(true); return;
+    case 'labs': LAB.close(); sheet = null; if (S && S.done) S = null; view = 'labs'; show(false); return;
+    case 'lab': LAB.open(el.getAttribute('data-a')); view = 'lab'; show(false); return;
+  }
+  if (!S) return;
+  const id = S.ids[S.i];
+  switch (act) {
+    case 'pick':
+      if (view !== 'quiz' || S.done || (S.mode === 'practice' && S.chk[id])) return;
+      S.ans[id] = +el.getAttribute('data-k'); save(); paintPick(); return;
+    case 'check': if (S.ans[id] == null) return; S.chk[id] = 1; record(id); save(); show(true); return;
+    case 'next': if (S.i < S.ids.length - 1) { S.i++; save(); show(false); } return;
+    case 'prev': if (S.i > 0) { S.i--; save(); show(false); } return;
+    case 'flag': if (S.flag[id]) delete S.flag[id]; else S.flag[id] = 1; save(); show(true); return;
+    case 'nav': sheet = 'nav'; show(true); return;
+    case 'jump': S.i = +el.getAttribute('data-k'); sheet = null; save(); show(false); return;
+    case 'submit': case 'finish': finish(false); return;
+    case 'quit': sheet = 'quit'; show(true); return;
+    case 'leave': sheet = null; goBack(S.from); save(); show(false); return;
+    case 'rf': S.rf = v; show(true); return;
+    case 'retry': { const wrong = S.ids.filter(function (x) { return S.ans[x] !== QI[x].a; }); if (wrong.length) start('retry', wrong); return; }
+    case 'copy': copyText(summary()); return;
+  }
+});
+document.addEventListener('keydown', function (e) {
+  if (sheet) { if (e.key === 'Escape') { sheet = null; show(true); } return; }
+  if (view !== 'quiz' || !S || S.done || e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = (e.key || '').toUpperCase();
+  let idx = -1;
+  if (k.length === 1) { idx = 'ABCD'.indexOf(k); if (idx < 0) idx = '1234'.indexOf(k); }
+  if (idx >= 0) { const b = app.querySelectorAll('.opt')[idx]; if (b) b.click(); e.preventDefault(); return; }
+  if (e.target && e.target.tagName === 'BUTTON') return;
+  if (e.key === 'Enter') { const p = app.querySelector('.qfoot .pri'); if (p && !p.disabled) { p.click(); e.preventDefault(); } return; }
+  if (e.key === 'ArrowRight') { const n = app.querySelector('.qfoot [data-act="next"]'); if (n) n.click(); return; }
+  if (e.key === 'ArrowLeft') { const p = app.querySelector('.qfoot [data-act="prev"]'); if (p && !p.disabled) p.click(); }
+});
+window.addEventListener('resize', function () {
+  if (view === 'quiz' && window.innerWidth >= 900) { const d = app.querySelector('.qwrap details.stim'); if (d) d.open = true; }
+});
+document.addEventListener('visibilitychange', function () { if (document.hidden) save(); });
+window.addEventListener('pagehide', save);
+
+show(false);
+
+/* ---------- offline copy ---------- */
+if (ON_WEB && 'serviceWorker' in navigator) {
+  swState = navigator.serviceWorker.controller ? 'ready' : 'saving';
+  paintOffl();
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    const first = swState !== 'ready';
+    swState = 'ready'; paintOffl();
+    if (first) toast('Saved for offline use');
+  });
+  navigator.serviceWorker.register('sw.js').catch(function () { swState = 'none'; paintOffl(); });
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().then(function () {}, function () {}); } catch (e) {}
+}
+})();
+</script>
+</body>
+</html>
