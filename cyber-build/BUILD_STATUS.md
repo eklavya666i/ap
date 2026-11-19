@@ -10,7 +10,7 @@ Rule: commit + push after each completed step so progress is never lost. Tick wh
 - [x] 1. Per-choice explanations Unit 1 (expl/u1.json: id -> 3 wrong-choice explanations in original option order)
 - [x] 2. Per-choice explanations Unit 2
 - [x] 3. Per-choice explanations Unit 3
-- [ ] 4. Per-choice explanations Unit 4
+- [x] 4. Per-choice explanations Unit 4
 - [ ] 5. Per-choice explanations Unit 5
 - [ ] 6. Source-based sets: 4 stimuli x 3 questions per unit (stims/u1-5.json)
 - [ ] 7. build.py -> cyber/bank.js (balanced answer positions, 5 mocks/unit) + engine cyber/index.html (WHAP engine + lessons, FRQs, labs) + sw.js, manifest, icons
