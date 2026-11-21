@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Math 6</title>
+<!--__HEAD__-->
+<!--__FONTS__-->
+<style>
+/* Math 6 shell. Plumbing (storage, backup, offline worker, safe updates, install note) comes from SAT Daily. */
+:root{color-scheme:light;--bg:#fbfaf7;--card:#fff;--ink:#17181c;--soft:#5d6068;--line:#e3e1db;--panel:#f2f1ec;--accent:#1d4ed8;--accentbg:#e8eefc;--onaccent:#fff;--ok:#127a45;--okbg:#e8f5ee;--pen:#c8102e;--penbg:#fcebee}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#111317;--card:#181b20;--ink:#ecebe6;--soft:#a6a9b0;--line:#2c3038;--panel:#1d2026;--accent:#7aa2ff;--accentbg:#1b2440;--onaccent:#0d1430;--ok:#4cc685;--okbg:#13261b;--pen:#ff6b6b;--penbg:#2b1518}}
+*{box-sizing:border-box;min-width:0}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Archivo,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:clip}
+button,select,input{font:inherit;color:inherit}
+.band{background:var(--accent);color:var(--onaccent);padding:calc(14px + env(safe-area-inset-top)) max(4vw,16px,env(safe-area-inset-right)) 14px max(4vw,16px,env(safe-area-inset-left))}
+.band .in{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
+h1{font:800 clamp(30px,5vw,42px)/1 Archivo,system-ui,sans-serif;font-stretch:82%;letter-spacing:-.02em;margin:0}
+.stats{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15}
+.stat b{font:800 26px/1 Archivo,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;font-weight:600;opacity:.9}
+.xpbar{width:120px;height:8px;border-radius:4px;background:rgba(255,255,255,.3);overflow:hidden;margin-top:4px}
+.xpbar i{display:block;height:100%;background:currentColor}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .in{max-width:1100px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:6px max(4vw,12px)}
+nav a{flex:0 0 auto;display:flex;align-items:center;min-height:44px;padding:0 14px;border-radius:10px;color:var(--soft);font-weight:700;text-decoration:none}
+nav a[aria-current=page]{background:var(--accentbg);color:var(--accent)}
+nav a.gear{margin-left:auto}
+main{max-width:1100px;margin:0 auto;padding:20px max(4vw,16px,env(safe-area-inset-left)) 40px}
+h2{font:800 26px/1.15 Archivo,system-ui,sans-serif;margin:4px 0 6px}
+.lead{color:var(--soft);margin:0 0 18px;max-width:60ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.unit{display:flex;flex-direction:column;gap:6px;min-height:120px;text-decoration:none;color:inherit;border-left:6px solid var(--u)}
+.unit .k{font-size:13px;font-weight:700;color:var(--u);letter-spacing:.04em;text-transform:uppercase}
+.unit b{font-size:19px;line-height:1.25}
+.unit small{color:var(--soft)}
+.lessons{list-style:none;margin:0;padding:0}
+.lessons li{display:flex;align-items:center;gap:12px;min-height:56px;border-bottom:1px solid var(--line)}
+.lessons li:last-child{border-bottom:0}
+.lessons .id{font-weight:800;font-variant-numeric:tabular-nums;color:var(--u);min-width:3.2em}
+.lessons .t{flex:1}
+.lessons .std{font-size:13px;color:var(--soft)}
+.chip{font-size:12px;font-weight:700;padding:4px 10px;border-radius:12px;background:var(--panel);color:var(--soft);white-space:nowrap}
+.chip.m{background:var(--okbg);color:var(--ok)}
+.plus{font-size:12px;font-weight:800;color:var(--soft);border:1px solid var(--line);border-radius:6px;padding:0 5px;margin-left:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:11px;border:2px solid var(--accent);background:var(--accent);color:var(--onaccent);font-weight:700;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.sm{min-height:44px;padding:0 14px;font-size:15px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.say{display:grid;grid-template-columns:minmax(90px,auto) 1fr auto;gap:6px 14px;align-items:center;border-bottom:1px solid var(--line);padding:6px 0}
+.say:last-child{border-bottom:0}
+.say .shown{font:600 20px/1.3 "Source Serif 4",Georgia,serif}
+.say .spoken{color:var(--soft);font-size:15px}
+.say.on{background:var(--accentbg);border-radius:8px}
+label.f{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:15px}
+select,input[type=text]{min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:0 12px}
+.meta{font-size:14px;color:var(--soft);margin:8px 0 0}
+.inst{display:flex;gap:14px;align-items:center;justify-content:space-between;background:var(--accentbg);border-radius:12px;padding:12px 16px;margin:0 0 14px}
+.inst span{display:block;color:var(--soft);font-size:15px}
+.sr{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:20}
+footer{max-width:1100px;margin:0 auto;padding:0 max(4vw,16px) 30px;color:var(--soft);font-size:13px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="band"><div class="in">
+  <h1>Math 6</h1>
+  <div class="stats" id="stats"></div>
+</div></header>
+<nav aria-label="Sections"><div class="in" id="tabs"></div></nav>
+<main>
+  <div id="inst" hidden></div>
+  <div id="view"></div>
+</main>
+<footer><p>Grade 6 math practice, built on the Common Core grade 6 standards. Works offline once installed.</p></footer>
+<script>
+{
+/*__LIB__*/
+/*__CURRICULUM__*/
+const M6U = {};
+/*__UNITS__*/
+const OFFLINE = /*__OFFLINE__*/false, PWA = /*__PWA__*/false;
+const ON_WEB = /^https?:$/.test(location.protocol);
+const STANDALONE = !!((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true);
+const IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const LS = "math6.v1";
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;"}[c]));
+
+// ---------- Dates are local calendar days (from SAT Daily)
+const pad = n => String(n).padStart(2, "0");
+const dk = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const dn = k => { const [y, m, d] = k.split("-").map(Number); return Math.round(Date.UTC(y, m - 1, d) / 864e5); };
+const fromN = n => { const d = new Date(n * 864e5); return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`; };
+const addD = (k, n) => fromN(dn(k) + n);
+const nice = k => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("en-US", {weekday: "long", month: "short", day: "numeric"}); };
+const today = () => dk();
+
+// ---------- Saved progress (key math6.v1, apart from the other apps)
+const fresh = () => ({v: 1, upd: 0, name: "", days: {}, xp: 0, coins: 0, lessons: {}, voice: {uri: null, rate: 1}, bk: null});
+let S = fresh();
+try { const j = JSON.parse(localStorage.getItem(LS) || "null"); if (j && j.v === 1) S = Object.assign(fresh(), j); } catch (e) {}
+function save() { S.upd = Date.now(); try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
+
+// ---------- Levels and streak (rules in the spec: level L needs 50 x L x (L - 1) XP)
+const levelOf = xp => { let L = 1; while (50 * (L + 1) * L <= xp) L++; return L; };
+const TITLES = [[30, "Legend"], [25, "Master"], [20, "Expert"], [15, "Pro"], [10, "Ranger"], [5, "Scout"], [1, "Rookie"]];
+const titleOf = L => TITLES.find(t => L >= t[0])[1];
+function streak() {
+  let k = today(), n = 0;
+  if (!S.days[k]) k = addD(k, -1);
+  while (S.days[k]) { n++; k = addD(k, -1); }
+  return n;
+}
+
+// ---------- Voice: one sentence at a time; pause is stop-and-remember (pause/resume is unreliable on iPad Safari)
+const Voice = (() => {
+  const ok = typeof speechSynthesis !== "undefined" && typeof SpeechSynthesisUtterance !== "undefined";
+  const PREF = [/premium/i, /enhanced/i, /samantha/i, /\bava\b/i, /allison/i, /susan/i, /karen/i, /daniel/i];
+  let list = [], queue = [], at = 0, playing = false, onStep = null, resumeLater = false;
+  const load = () => (list = ok ? speechSynthesis.getVoices().filter(v => /^en([-_]|$)/i.test(v.lang)) : []);
+  if (ok) { load(); speechSynthesis.addEventListener ? speechSynthesis.addEventListener("voiceschanged", load) : (speechSynthesis.onvoiceschanged = load); }
+  function chosen() {
+    const mine = list.find(v => v.voiceURI === S.voice.uri);
+    if (mine) return mine;
+    for (const re of PREF) { const v = list.find(v => re.test(v.name) && /^en[-_]US/i.test(v.lang)); if (v) return v; }
+    return list.find(v => /^en[-_]US/i.test(v.lang)) || list[0] || null;
+  }
+  // Split into sentences, then cut any long sentence at commas, so no single utterance runs long.
+  function chunks(text) {
+    const out = [];
+    for (const s of String(text).match(/[^.!?]+[.!?]*/g) || []) {
+      let t = s.trim();
+      while (t.length > 180) { const i = t.lastIndexOf(",", 180); if (i < 40) break; out.push(t.slice(0, i + 1)); t = t.slice(i + 1).trim(); }
+      if (t) out.push(t);
+    }
+    return out;
+  }
+  function sayAt(i) {
+    if (!playing) return;
+    if (i >= queue.length) { playing = false; onStep && onStep(-1); return; }
+    at = i;
+    const u = new SpeechSynthesisUtterance(queue[i].said), v = chosen();
+    if (v) { u.voice = v; u.lang = v.lang; } else u.lang = "en-US";
+    u.rate = S.voice.rate || 1;
+    let done = false;
+    const next = () => { if (done) return; done = true; clearInterval(watch); if (playing && at === i) sayAt(i + 1); };
+    u.onend = next; u.onerror = next;
+    onStep && onStep(queue[i].line);
+    speechSynthesis.speak(u);
+    // Some voices never send "end". If the voice has gone quiet, move on anyway.
+    const started = Date.now();
+    const watch = setInterval(() => {
+      if (done || !playing || at !== i) { clearInterval(watch); return; }
+      if (Date.now() - started > 600 && !speechSynthesis.speaking && !speechSynthesis.pending) next();
+    }, 400);
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && playing) { playing = false; resumeLater = true; speechSynthesis.cancel(); onStep && onStep(-2); }
+  });
+  return {
+    ok, voices: () => load(), chosen,
+    // lines: strings in screen notation; each is read through M6.speak()
+    play(lines, cb) {
+      if (!ok) return false;
+      speechSynthesis.cancel();
+      queue = []; lines.forEach((l, line) => chunks(M6.speak(l)).forEach(said => queue.push({said, line})));
+      onStep = cb || null; playing = true; resumeLater = false; sayAt(0); return true;
+    },
+    pause() { if (!playing) return; playing = false; speechSynthesis.cancel(); },
+    resume() { if (!queue.length || playing) return; playing = true; resumeLater = false; sayAt(at); },
+    stop() { playing = false; resumeLater = false; queue = []; if (ok) speechSynthesis.cancel(); },
+    get playing() { return playing; }, get paused() { return !playing && queue.length > 0; }, get waiting() { return resumeLater; }
+  };
+})();
+
+// Strings the voice must read correctly (the speech test in the spec's device checklist)
+const SPEECH_TEST = ["2:3", "2/3", "2 3/4", "−8", "5 − 8", "3x", "x/4", "2³", "(3, −4)", "12.6", "$4.25", "30%",
+  "|−5|", "x ≥ 3", "30 ft³", "2(3 + 4)", "2/3 ÷ 3/4 = 8/9", "−8 < −3", "0.45", "3 + 4 × 2²"];
+
+// ---------- Views
+const TABS = [["today", "Today"], ["units", "Units"], ["tests", "Tests"], ["mistakes", "Mistakes"], ["progress", "Progress"], ["settings", "Settings"]];
+const unitOf = u => CURRICULUM.find(x => x.u === Number(u));
+const lessonOf = id => { for (const u of CURRICULUM) { const l = u.lessons.find(x => x[0] === id); if (l) return {u, l}; } return null; };
+const starsOf = n => "★".repeat(n) + "☆".repeat(3 - n);
+const chipOf = id => { const st = (S.lessons[id] || {}).chip || "untouched"; return `<span class="chip${st === "mastered" ? " m" : ""}">${st === "mastered" ? "Mastered" : st === "practicing" ? "Practicing" : "Untouched"}</span>`; };
+const built = u => Object.keys((M6U[u] || {}).lessons || {}).length;
+const soon = what => `<div class="card"><p>${what}</p><p class="meta">Coming in the build phases. See the spec's roadmap.</p></div>`;
+
+const V = {
+  today() {
+    const L = levelOf(S.xp);
+    return `<h2>${S.name ? "Hi, " + esc(S.name) : "Welcome to Math 6"}</h2>
+<p class="lead">75 lessons in 10 units, each taught out loud, then practiced with fresh numbers every time.</p>
+<div class="card"><p><b>Level ${L} · ${titleOf(L)}</b> — ${S.xp} XP, ${S.coins} coins, ${streak()}-day streak.</p>
+<p class="meta">Daily quests, the daily 5-minute test and the journey map arrive with Phase 1.</p></div>
+<div class="card"><p><b>Try the voice now.</b> Hear how this iPad reads fractions, negatives and other math.</p><a class="btn" href="#/voice">Open the voice check</a></div>`;
+  },
+  units() {
+    return `<h2>Units</h2><p class="lead">Your list's order. Stars show how often a unit appears in mixed tests.</p><div class="grid">${CURRICULUM.map(u =>
+      `<a class="card unit" style="--u:${u.color}" href="#/unit/${u.u}"><span class="k">Unit ${u.u} · ${starsOf(u.stars)}</span><b>${esc(u.title)}</b><small>${u.lessons.length} lessons · ${esc(u.ccss)}</small></a>`).join("")}</div>`;
+  },
+  unit(u) {
+    const U = unitOf(u);
+    if (!U) return V.units();
+    return `<p><a href="#/units">← All units</a></p><h2 style="color:${U.color}">Unit ${U.u}: ${esc(U.title)}</h2>
+<p class="lead">${U.lessons.length} lessons · ${esc(U.ccss)} · ${built(U.u)} built so far.</p>
+<div class="card" style="--u:${U.color}"><ul class="lessons">${U.lessons.map(l => `<li><span class="id">${l[0]}</span><span class="t"><a href="#/lesson/${l[0]}">${esc(l[1])}</a>${l[3] ? '<span class="plus" title="Added from Common Core">+</span>' : ""}<br><span class="std">${l[2]}</span></span>${chipOf(l[0])}</li>`).join("")}</ul></div>`;
+  },
+  lesson(id) {
+    const f = lessonOf(id);
+    if (!f) return V.units();
+    return `<p><a href="#/unit/${f.u.u}">← Unit ${f.u.u}: ${esc(f.u.title)}</a></p><h2>${f.l[0]} · ${esc(f.l[1])}</h2><p class="lead">${f.l[2]}${f.l[3] ? " · added from Common Core" : ""}</p>
+${soon("Learn, Practice, Quiz, 5-Minute Test and Notes for this lesson.")}`;
+  },
+  tests() { return `<h2>Tests</h2>${soon("5-minute tests, Unit Tests (forms A–C), MCQ Sprint, Speed Tests, Boss Challenges and the Benchmark.")}`; },
+  mistakes() { return `<h2>Mistakes</h2>${soon("Every missed skill comes back here as a fresh question.")}`; },
+  progress() { return `<h2>Progress</h2>${soon("Mastery grid, accuracy by unit, test history, badges, speed records and the coin shop.")}`; },
+  settings() {
+    return `<h2>Settings</h2>
+<div class="card"><label class="f">Student's name<input type="text" id="name" value="${esc(S.name)}" autocomplete="off" placeholder="First name"></label></div>
+<div class="card"><p><b>Voice</b></p><p class="meta">Lessons are read by this iPad's built-in voice.</p><div class="row" style="margin-top:10px"><a class="btn ghost" href="#/voice">Voice check</a></div></div>
+${OFFLINE ? `<div class="card"><p><b>Back up progress</b></p><div class="row"><button id="bkup" type="button" class="btn ghost sm">Back up progress</button><label class="btn ghost sm" for="rst">Restore</label><input id="rst" type="file" accept=".json,application/json,text/plain" class="sr"></div><p class="meta" id="bkm">Last backup: ${S.bk ? nice(S.bk) : "never"}</p></div>` : ""}`;
+  },
+  voice() {
+    if (!Voice.ok) return `<h2>Voice check</h2><div class="card"><p>This browser has no speech voice, so lessons will show captions and move on when you tap Next.</p></div>`;
+    const vs = Voice.voices(), cur = Voice.chosen();
+    return `<p><a href="#/settings">← Settings</a></p><h2>Voice check</h2>
+<p class="lead">Each line shows the math, then the words the app gives the voice. Play them and listen for anything read wrong.</p>
+<div class="card"><div class="row">
+<label class="f">Voice<select id="vsel">${vs.length ? vs.map(v => `<option value="${esc(v.voiceURI)}"${cur && v.voiceURI === cur.voiceURI ? " selected" : ""}>${esc(v.name)} (${esc(v.lang)})</option>`).join("") : "<option>Default voice</option>"}</select></label>
+<label class="f">Speed<select id="vrate">${[0.8, 0.9, 1, 1.1].map(r => `<option value="${r}"${(S.voice.rate || 1) === r ? " selected" : ""}>${r}×</option>`).join("")}</select></label>
+<button type="button" class="btn" id="vall">Play all</button><button type="button" class="btn ghost" id="vstop">Stop</button></div>
+<p class="meta">Robotic voice? On the iPad: Settings → Accessibility → Spoken Content → Voices → English. Download an Enhanced voice, then reopen Math 6.</p></div>
+<div class="card">${SPEECH_TEST.map((s, i) => `<div class="say" data-i="${i}"><span class="shown">${esc(s)}</span><span class="spoken">${esc(M6.speak(s))}</span><button type="button" class="btn ghost sm" data-play="${i}" aria-label="Play ${esc(M6.speak(s))}">Play</button></div>`).join("")}</div>`;
+  }
+};
+
+function route() {
+  const [name, arg] = (location.hash.replace(/^#\/?/, "") || "today").split("/");
+  return V[name] ? [name, arg] : ["today"];
+}
+function render() {
+  Voice.stop();
+  const [name, arg] = route(), L = levelOf(S.xp), lo = 50 * L * (L - 1), hi = 50 * (L + 1) * L;
+  $("#stats").innerHTML = `<div class="stat"><b>${streak()}</b><span>day streak</span></div><div class="stat"><b>Lv ${L}</b><span>${titleOf(L)} · ${S.xp} XP</span><span class="xpbar" aria-hidden="true"><i style="width:${Math.round(100 * (S.xp - lo) / (hi - lo))}%"></i></span></div>`;
+  const tab = ["unit", "lesson"].includes(name) ? "units" : name === "voice" ? "settings" : name;
+  $("#tabs").innerHTML = TABS.map(([k, t]) => `<a href="#/${k}"${k === tab ? ' aria-current="page"' : ""}${k === "settings" ? ' class="gear"' : ""}>${t}</a>`).join("");
+  $("#view").innerHTML = V[name](arg);
+  renderInst();
+}
+
+// ---------- Install note for Safari on iPad (from SAT Daily)
+function renderInst() {
+  const el = $("#inst");
+  if (!PWA || !ON_WEB || STANDALONE || !IOS || localStorage.getItem(LS + ".inst")) { el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = `<div class="inst"><div><b>Put Math 6 on your Home Screen</b><span>Tap Share, then Add to Home Screen. Open it once while online; after that it works offline.</span></div><button type="button" class="btn ghost sm" id="hideinst">Got it</button></div>`;
+}
+
+// ---------- Backup and restore through the share sheet (from SAT Daily)
+async function backup() {
+  const day = today(), name = `math6-backup-${day}.json`, data = JSON.stringify(S);
+  if (IOS && navigator.share && navigator.canShare) {
+    for (const type of ["application/json", "text/plain"]) {
+      const f = new File([data], name, {type});
+      if (!navigator.canShare({files: [f]})) continue;
+      try { await navigator.share({files: [f]}); S.bk = day; save(); render(); toast("Backed up"); } catch (e) {}
+      return;
+    }
+  }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([data], {type: "application/json"})); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  S.bk = day; save(); render(); toast("Backup saved");
+}
+function restore(file) {
+  const r = new FileReader();
+  r.onload = () => {
+    try { const j = JSON.parse(r.result); if (!j || j.v !== 1) throw 0; S = Object.assign(fresh(), j); save(); render(); toast("Progress restored"); }
+    catch (e) { toast("That file isn't a Math 6 backup"); }
+  };
+  r.readAsText(file);
+}
+function toast(msg) {
+  const t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2400);
+}
+
+// ---------- Events
+function mark(line) { $$(".say").forEach(el => el.classList.toggle("on", Number(el.dataset.i) === line)); }
+document.addEventListener("click", e => {
+  const t = e.target.closest("button, [data-play]");
+  if (!t) return;
+  if (t.id === "hideinst") { localStorage.setItem(LS + ".inst", "1"); renderInst(); }
+  else if (t.id === "bkup") backup();
+  else if (t.id === "vall") Voice.play(SPEECH_TEST, mark);
+  else if (t.id === "vstop") { Voice.stop(); mark(-1); }
+  else if (t.dataset.play != null) { const i = Number(t.dataset.play); Voice.play([SPEECH_TEST[i]], k => mark(k === -1 || k === -2 ? -1 : i)); }
+});
+document.addEventListener("change", e => {
+  if (e.target.id === "rst" && e.target.files[0]) restore(e.target.files[0]);
+  else if (e.target.id === "vsel") { S.voice.uri = e.target.value; save(); }
+  else if (e.target.id === "vrate") { S.voice.rate = Number(e.target.value); save(); }
+  else if (e.target.id === "name") { S.name = e.target.value.trim().slice(0, 30); save(); render(); }
+});
+window.addEventListener("hashchange", render);
+render();
+
+// ---------- Offline copy. A new version takes over between screens, never mid-lesson (from SAT Daily).
+const canReload = () => !Voice.playing && !Voice.paused;
+if (PWA && ON_WEB && "serviceWorker" in navigator) {
+  const had = !!navigator.serviceWorker.controller;
+  let pending = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!had) { toast("Saved for offline use"); return; }
+    if (canReload()) location.reload(); else pending = true;
+  });
+  window.addEventListener("hashchange", () => { if (pending && canReload()) location.reload(); });
+  navigator.serviceWorker.register("sw.js").then(reg => {
+    let checked = Date.now();
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && Date.now() - checked > 36e5) { checked = Date.now(); reg.update().catch(() => {}); }
+    });
+  }).catch(() => {});
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (e) {}
+}
+}
+</script>
+</body>
+</html>
