@@ -58,11 +58,15 @@ const MANIFEST = JSON.stringify({
 }, null, 1);
 
 const unitFiles = fs.readdirSync(here("units")).filter(f => /^u\d\d\.js$/.test(f)).sort();
+// js/NN-name.js run in number order; later units add files such as js/25-models-fractions.js without editing these.
+const appFiles = fs.readdirSync(here("js")).filter(f => /^\d\d-[\w-]+\.js$/.test(f)).sort();
 const base = fs.readFileSync(here("app.html"), "utf8")
   .replace("/*__LIB__*/", () => strip("lib.js"))
   .replace("/*__CURRICULUM__*/", () => strip("curriculum.js"))
-  .replace("/*__UNITS__*/", () => unitFiles.map(f => strip("units/" + f)).join("\n"));
-if (/\/\*__(LIB|CURRICULUM|UNITS)__/.test(base)) throw new Error("placeholder left");
+  .replace("/*__DRILLS__*/", () => strip("drills.js"))
+  .replace("/*__UNITS__*/", () => unitFiles.map(f => strip("units/" + f)).join("\n"))
+  .replace("/*__APP__*/", () => appFiles.map(f => `// ===== js/${f}\n` + fs.readFileSync(here("js/" + f), "utf8")).join("\n"));
+if (/\/\*__(LIB|CURRICULUM|DRILLS|UNITS|APP)__/.test(base)) throw new Error("placeholder left");
 
 const fonts = embeddedFonts();
 const web = base.replace("<!--__HEAD__-->\n", "").replace("<!--__FONTS__-->", () => WEB_FONTS);
@@ -85,4 +89,4 @@ fs.writeFileSync(root("index.html"), app);
 fs.writeFileSync(root("manifest.webmanifest"), MANIFEST + "\n");
 fs.writeFileSync(root("sw.js"), sw);
 const kb = s => (Buffer.byteLength(s) / 1024).toFixed(0) + " KB";
-console.log(`app ${kb(app)} (cache math6-${version}, ${unitFiles.length} unit files); single file ${kb(off)}; artifact ${kb(web)}`);
+console.log(`app ${kb(app)} (cache math6-${version}, ${unitFiles.length} unit files, ${appFiles.length} app files); single file ${kb(off)}; artifact ${kb(web)}`);

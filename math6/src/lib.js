@@ -189,7 +189,7 @@ function speak(text) {
   s = s.replace(/(−?)(\d+) (\d+)\/(\d+)/g, (m, neg, w, n, d) => `${neg ? "negative " : ""}${w} and ${fracWords(n, d)}`);
   s = s.replace(/(−?)(\d+)\/(\d+)/g, (m, neg, n, d) => `${neg ? "negative " : ""}${fracWords(n, d)}`);
   s = s.replace(/\b([a-z])\/(\d+)/g, "$1 divided by $2");
-  s = s.replace(/(\d)\s?:\s?(\d)/g, "$1 to $2");
+  s = s.replace(/(\d)(?: : |:)(\d)/g, "$1 to $2");      // "4:6" or "4 : 6", but not "by 2: 6"
   s = s.replace(/(\d)\s?%/g, "$1 percent");
   // powers
   s = s.replace(/([\da-z])²/g, "$1 squared").replace(/([\da-z])³/g, "$1 to the third power").replace(/([\da-z])\^(\d+)/g, (m, b, e) => `${b} to the ${ordinal(Number(e)) || e} power`);
@@ -199,14 +199,15 @@ function speak(text) {
     .replace(/\s*×\s*/g, " times ").replace(/\s*÷\s*/g, " divided by ").replace(/\s+\+\s+/g, " plus ").replace(/\s+[−-]\s+/g, " minus ");
   s = s.replace(/−(?=\d)/g, "negative ");
   // 2(3 + 4) → 2 times the quantity 3 plus 4; 3x → 3 x
-  s = s.replace(/([\da-z])\s?\(/g, "$1 times the quantity ").replace(/[()]/g, " ");
+  // only after a number or a one-letter variable, so "the cost (in cents)" is left alone
+  s = s.replace(/(\d)\s?\(/g, "$1 times the quantity ").replace(/(^|[^A-Za-z])([a-z])\s?\(/g, "$1$2 times the quantity ").replace(/[()]/g, " ");
   s = s.replace(/(\d)([a-z])(?![a-z])/g, "$1 $2");
   // decimals: 12.6 → 12 point 6, 0.45 → 0 point 4 5
   s = s.replace(/(\d+)\.(\d+)/g, (m, w, f) => `${w} point ${f.split("").join(" ")}`);
   return s.replace(/\s+([,.?!])/g, "$1").replace(/\s{2,}/g, " ").trim();
 }
 // What must never reach the voice: raw math symbols, or a decimal point between digits
-const UNSPOKEN = /[\/^\u2212<>\u2264\u2265\u00d7\u00f7=|\u00b2\u00b3$%]|\d\s?:\s?\d|\d\.\d/;
+const UNSPOKEN = /[\/^\u2212<>\u2264\u2265\u00d7\u00f7=|\u00b2\u00b3$%]|\d ?:\d|\d\.\d/;     // "Step 2: 6 more" is prose; "2:6" is not
 
 return {MI, rng, ri, pick, shuffle, gcd, lcm, Q, fromDecimal, parse, check, fn, fr, money, fracWords, ordinal, speak, UNSPOKEN};
 })();

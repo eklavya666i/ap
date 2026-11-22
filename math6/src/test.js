@@ -73,7 +73,8 @@ const SPEECH = [
   ["3 + 4 × 2²", "3 plus 4 times 2 squared"], ["4(2x + 5)", "4 times the quantity 2 x plus 5"],
   ["12 oz for $3.00", "12 oz for 3 dollars"], ["7/12", "7 twelfths"], ["5/24", "5 twenty-fourths"],
   ["−$30", "negative 30 dollars"], ["12.5%", "12 point 5 percent"], ["4x = 36", "4 x equals 36"],
-  ["Not a whole one: 8/9 of one.", "Not a whole one: 8 ninths of one."]
+  ["Not a whole one: 8/9 of one.", "Not a whole one: 8 ninths of one."], ["3(x + 2)", "3 times the quantity x plus 2"],
+  ["the price (in cents) is 70", "the price in cents is 70"], ["(10, 15)", "the point 10, 15"]
 ];
 for (const [shown, said] of SPEECH) {
   ok("speak " + shown, speak(shown), said);
@@ -102,6 +103,163 @@ for (const [u, content] of Object.entries(ctx.M6U)) {
   ok(`unit ${u} lessons are its own`, Object.keys(content.lessons || {}).every(id => ids.includes(id)), true);
 }
 
-console.log(`${n} checks, ${unitFiles.length} unit files`);
+// ---------- Lesson content: every lesson, every template, many seeds
+// The question engine (20-board.js, 30-question.js) runs here exactly as it does on the iPad.
+const kinds = {};       // failures grouped by what failed, with the seed numbers taken out, so one bad template prints once
+const must = (label, cond, detail) => {
+  n++; if (cond) return;
+  fails++; const k = label.replace(/seed \d+ /, "").replace(/\d+ different/, "N different");
+  if ((kinds[k] = (kinds[k] || 0) + 1) === 1 && Object.keys(kinds).length <= 50) console.log("FAIL", label, detail === undefined ? "" : "\n   " + (typeof detail === "string" ? detail : JSON.stringify(detail)).slice(0, 600));
+};
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;"}[c]));
+const app = {M6, esc, S: {explore: {types: {}}}, TPL: {}};
+vm.createContext(app);
+for (const f of ["js/20-board.js", "js/30-question.js"]) vm.runInContext(fs.readFileSync(path.join(__dirname, f), "utf8"), app, {filename: f});
+const E = vm.runInContext("({normItem, makeItem, grade, answerText, keysFor, board, MODELS})", app);
+const PARTS = ["hook", "idea", "see", "ido", "wedo", "watch", "recap"], TAGS = ["CONCEPT", "PROCEDURE", "APPLICATION"];
+const TYPES = ["mc", "multi", "num", "table", "grid", "order", "match", "yn", "mistake", "explain"];
+const BAD = /undefined|NaN|Infinity|\[object|null/;
+// Every string the voice may read must come out as words: no symbols, no "3:5", no "2.5"
+const spoken = (label, text) => { const s = speak(text); must("speech " + label, !UNSPOKEN.test(s) && !/\b[a-z]:\d|\d:[a-z]\b/.test(s) && !BAD.test(s), `${JSON.stringify(text)} → ${JSON.stringify(s)}`); };
+const strings = (x, out = []) => { if (typeof x === "string") out.push(x); else if (Array.isArray(x)) x.forEach(y => strings(y, out)); else if (x && typeof x === "object") Object.entries(x).forEach(([k, v]) => k !== "p" && strings(v, out)); return out; };
+// What a student who knows the answer would enter, for each question type
+function rightResponse(it) {
+  switch (it.type) {
+    case "mc": return it.choices.findIndex(c => c.ok);
+    case "multi": return it.opts.map((o, i) => o.ok ? i : -1).filter(i => i >= 0);
+    case "num": return [Array.isArray(it.ans) ? it.ans.join(":") : String(it.ans)];
+    case "table": return it.blanks.map(([r, c]) => String(it.rows[r][c]));
+    case "grid": return it.n;
+    case "order": return it.items.map(t => it.shown.indexOf(t));
+    case "match": { const r = {}; it.pairs.forEach((p, i) => { r[i] = it.rights.indexOf(p[1]); }); return r; }
+    case "yn": return it.rows.map(r => r.ok);
+    case "mistake": return {step: it.wrong, fix: it.fixes.findIndex(f => f.ok)};
+    default: return null;
+  }
+}
+const misUsed = new Set(), misKnown = {}, rightPos = [0, 0, 0, 0, 0];
+function checkItem(label, it, tpl) {
+  must(label + " type", TYPES.includes(it.type), it.type);
+  must(label + " stem", typeof it.stem === "string" && it.stem.length > 8, it.stem);
+  strings(it).forEach(t => must(label + " no broken text", !BAD.test(t), t));
+  spoken(label + " stem", it.stem);
+  (it.hints || []).forEach((h, i) => spoken(`${label} hint ${i + 1}`, h));
+  it.sol.forEach((x, i) => { spoken(`${label} solution ${i + 1}`, x.s); if (x.why) spoken(`${label} solution why ${i + 1}`, x.why); });
+  if (it.board) must(label + " board draws", E.board(it.board).length > 40 && !BAD.test(E.board(it.board)), it.board);
+  const r = rightResponse(it), g = E.grade(it, r);
+  must(label + " the right answer grades right", g && g.ok === true, {g, r, ans: it.ans});
+  must(label + " answer text", E.answerText(it).length > 0 && !BAD.test(E.answerText(it)), E.answerText(it));
+  if (it.type === "mc") {
+    const texts = it.choices.map(c => c.t);
+    must(label + " 3 or 4 choices", texts.length >= 3 && texts.length <= 5, texts);
+    must(label + " choices differ", new Set(texts).size === texts.length, texts);
+    must(label + " exactly one right choice", it.choices.filter(c => c.ok).length === 1);
+    it.choices.forEach((c, i) => { spoken(`${label} choice ${i}`, c.t); if (c.why) spoken(`${label} choice why ${i}`, c.why); if (!c.ok) { must(label + " wrong choice explains itself", c.why.length > 5, c); if (c.mis) misUsed.add(c.mis); } });
+    if (it.whyRight) spoken(label + " why right", it.whyRight);
+    it.choices.forEach((c, i) => { if (!c.ok) must(label + " a wrong choice grades wrong", !E.grade(it, i).ok); });
+    if (tpl) rightPos[it.choices.findIndex(c => c.ok)]++;
+  }
+  if (it.type === "multi") {
+    must(label + " multi has right and wrong options", it.opts.some(o => o.ok) && it.opts.some(o => !o.ok));
+    must(label + " options differ", new Set(it.opts.map(o => o.t)).size === it.opts.length, it.opts.map(o => o.t));
+    it.opts.forEach((o, i) => spoken(`${label} option ${i}`, o.t));
+  }
+  if (it.type === "num") {
+    must(label + " keypad", /int|dec|frac|ratio|neg|money|pct/.test(E.keysFor(it)), E.keysFor(it));
+    (it.traps || []).forEach(t => {
+      const v = Array.isArray(t) ? t : [t.v, t.m, t.mis];
+      must(label + " trap is a number", (() => { try { Q.of(v[0]); return true; } catch (e) { return false; } })(), v);
+      const tg = E.grade(it, [Array.isArray(it.ans) ? String(v[0]).replace("/", ":") : String(v[0])]);   // a ratio trap is typed with a colon
+      must(label + " trap grades wrong with its message", !tg.ok && tg.msg === v[1], {trap: v, ans: it.ans, tg});
+      spoken(label + " trap message", v[1]);
+      if (v[2]) misUsed.add(v[2]);
+    });
+  }
+  if (it.type === "table") must(label + " table blanks are cells", it.blanks.length && it.blanks.every(([r, c]) => it.rows[r] && it.rows[r][c] !== undefined && c > 0));
+  if (it.type === "grid") must(label + " grid count", Number.isInteger(it.n) && it.n > 0 && it.n < 100);
+  if (it.type === "order") must(label + " order items differ", new Set(it.items).size === it.items.length && it.items.length >= 3 && it.shown.join("|") !== it.items.join("|"));
+  if (it.type === "match") must(label + " match pairs differ", new Set(it.pairs.map(p => p[0])).size === it.pairs.length && new Set(it.pairs.map(p => p[1])).size === it.pairs.length);
+  if (it.type === "yn") {
+    must(label + " yes and no rows", it.rows.length >= 3 && it.rows.some(r => r.ok) && it.rows.some(r => !r.ok), it.rows);
+    must(label + " rows differ", new Set(it.rows.map(r => r.t)).size === it.rows.length);
+    it.rows.forEach((row, i) => { spoken(`${label} row ${i}`, row.t); if (row.why) spoken(`${label} row why ${i}`, row.why); });
+  }
+  if (it.type === "mistake") must(label + " one mistake, one right fix", it.steps[it.wrong] !== undefined && it.fixes.filter(f => f.ok).length === 1 && new Set(it.fixes.map(f => f.t)).size === it.fixes.length);
+}
+
+for (const [u, content] of Object.entries(ctx.M6U)) for (const c of Object.values(content.lessons || {})) Object.assign(misKnown, c.misconceptions || {});
+let built = 0, tplCount = 0;
+for (const [u, content] of Object.entries(ctx.M6U)) {
+  for (const [id, c] of Object.entries(content.lessons || {})) {
+    built++;
+    const L = `lesson ${id}`;
+    // the lesson gate from the spec: seven parts, 550-950 spoken words, two checks, another way, notes
+    const parts = new Set(c.script.map(st => st.part));
+    must(L + " has all seven parts", PARTS.every(p => parts.has(p)), [...parts]);
+    must(L + " parts are known", c.script.concat(c.alt).every(st => PARTS.includes(st.part)));
+    const words = c.script.map(st => speak(st.say)).join(" ").split(/\s+/).length;
+    must(L + ` spoken words 550-950 (has ${words})`, words >= 550 && words <= 950);
+    must(L + " two We do checks", c.script.filter(st => st.part === "wedo" && st.check).length >= 2);
+    must(L + " starts with a board", !!c.script[0].board);
+    must(L + " another way", c.alt.length >= 2 && !!c.alt[0].board);
+    must(L + " three misconceptions", Object.keys(c.misconceptions).length >= 3);
+    must(L + " vocabulary", c.vocab.length >= 2 && c.vocab.every(v => v.length === 2));
+    must(L + " notes", c.notes.idea && c.notes.examples.length >= 2 && c.notes.watch);
+    c.script.concat(c.alt).forEach((st, i) => {
+      spoken(`${L} step ${i} (${st.part})`, st.say);
+      if (st.why) spoken(`${L} step ${i} why`, st.why);
+      if (st.board) must(`${L} step ${i} board draws`, E.board(st.board).length > 40 && !BAD.test(E.board(st.board)), st.board);
+      if (st.check) {
+        const it = E.normItem(Object.assign({seed: 7 + i}, JSON.parse(JSON.stringify(st.check.item))));
+        checkItem(`${L} check ${i}`, it, null);
+        spoken(`${L} check ${i} miss`, st.check.miss);
+      }
+    });
+    spoken(L + " notes", c.notes.idea);
+    c.vocab.forEach(([w, d]) => spoken(`${L} vocab ${w}`, w + ". " + d));
+    Object.values(c.misconceptions).forEach(m => spoken(L + " misconception", m));
+    // templates
+    const ts = c.templates;
+    must(L + " four templates", ts.length >= 4);
+    must(L + " a word problem", ts.some(t => t.word));
+    must(L + " Warm-up, Standard and Stretch", [1, 2, 3].every(d => ts.some(t => t.diff === d)), ts.map(t => t.diff));
+    must(L + " concept, procedure and application", TAGS.every(g => ts.some(t => t.tag === g)), ts.map(t => t.tag));
+    for (const t of ts) {
+      tplCount++;
+      app.TPL[t.id] = Object.assign(t, {lesson: id});
+      must(`${t.id} id`, t.id.startsWith(id + "-"));
+      must(`${t.id} fields`, TYPES.includes(t.type) && TAGS.includes(t.tag) && [1, 2, 3].includes(t.diff) && t.est >= 15 && t.est <= 90 && typeof t.make === "function" && typeof t.verify === "function", t);
+      const stems = new Set();
+      for (let seed = 1; seed <= 120; seed++) {
+        let it;
+        try { it = E.makeItem(t.id, seed); } catch (e) { must(`${t.id} seed ${seed} makes`, false, e.stack.split("\n").slice(0, 3).join(" ")); continue; }
+        stems.add(JSON.stringify([it.stem, it.rows, it.ans, it.n, it.items, it.pairs, it.choices && it.choices.map(c => c.t)]));
+        checkItem(`${t.id} seed ${seed}`, it, t);
+        let v = false; try { v = t.verify(it) === true; } catch (e) { v = false; }
+        must(`${t.id} seed ${seed} answer checks out`, v, {stem: it.stem, ans: it.ans, right: it.right});
+        if (t.word) must(`${t.id} seed ${seed} word frame`, it.frame && it.frame.find.length === 3 && it.frame.tool.length === 3 && new Set(it.frame.find).size === 3 && new Set(it.frame.tool).size === 3 && it.frame.fr && it.frame.tr && it.frame.check, it.frame);
+        const again = E.makeItem(t.id, seed);
+        must(`${t.id} seed ${seed} same seed, same question`, again.stem === it.stem && JSON.stringify(again.choices || again.ans) === JSON.stringify(it.choices || it.ans));
+      }
+      must(`${t.id} varies (${stems.size} different questions in 120)`, stems.size >= Math.min(12, 120));
+    }
+  }
+  const t5 = content.t5 || [];
+  must(`unit ${u} 5-minute test blueprint`, built === 0 || t5.every(sl => sl === "W" || [].concat(sl).every(id => content.lessons[id])), t5);
+}
+misUsed.forEach(m => must(`named mistake ${m} is described in a lesson`, !!misKnown[m]));
+const posTotal = rightPos.slice(0, 4).reduce((a, b) => a + b, 0);
+if (posTotal) must("right answers spread over A to D", rightPos.slice(0, 4).every(k => k / posTotal > 0.15 && k / posTotal < 0.35), rightPos);
+
+// ---------- Speed drills: every question has an answer the checker can read
+global.M6 = M6; const DRILLS = require("./drills.js");
+for (const d of DRILLS) for (let seed = 1; seed <= 200; seed++) {
+  const g = d.gen(M6.rng(seed));
+  if (d.kind === "num") must(`drill ${d.id} answer`, !!parse(g.a) && check({ans: g.a}, g.a).ok, g);
+  else must(`drill ${d.id} answer`, (d.kind === "cmp" ? ["<", "=", ">"] : d.kind === "yn" ? ["Yes", "No"] : ["I", "II", "III", "IV"]).includes(g.a), g);
+  must(`drill ${d.id} question`, typeof g.q === "string" && g.q.length > 0 && !BAD.test(g.q), g);
+}
+
+console.log(`${n} checks, ${unitFiles.length} unit files, ${built} lessons built, ${tplCount} templates`);
 console.log(fails ? `${fails} FAILURES` : "ALL CHECKS PASSED");
 process.exitCode = fails ? 1 : 0;
