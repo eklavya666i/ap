@@ -159,6 +159,12 @@ h4{margin:12px 0 6px;font-size:15px;color:var(--soft)}
 .tdot::after{content:"";position:absolute;left:4px;right:4px;top:16px;height:12px;border-radius:6px;background:var(--line)}
 .tdot.past::after{background:var(--accentbg)}.tdot.on::after{background:var(--accent)}
 .done-card{border:2px solid var(--ok)}
+.vfail{grid-column:1/-1;padding:12px 14px;border-radius:12px;border-left:5px solid var(--pen);background:var(--penbg)}
+.tips{margin:8px 0 0;padding-left:1.3em}.tips li{margin:4px 0}
+.premhelp{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--accentbg)}.premhelp p{margin:6px 0}
+.vnote{grid-column:1/-1;margin-top:0}
+details summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700;list-style:none}
+details summary::-webkit-details-marker{display:none}details summary::before{content:"▸";margin-right:8px;color:var(--accent)}details[open] summary::before{content:"▾"}
 /* board models */
 .bw{text-align:center}.bw-big{font:700 clamp(24px,3.6vw,34px)/1.3 "Source Serif 4",Georgia,serif}.bw-small{color:var(--soft);margin-top:8px;font-size:18px}
 .beq{font:600 clamp(20px,3vw,28px)/1.5 "Source Serif 4",Georgia,serif;text-align:center}
@@ -2149,7 +2155,7 @@ const fresh = () => ({
   v: 1, upd: 0, name: "", days: {}, xp: 0, coins: 0, coinRem: 0,
   L: {}, att: [], mist: {}, fixed: 0, tests: [], badges: {}, quests: null, pbs: {}, facts: {}, explore: {types: {}, another: 0},
   streak: {freezes: 0, used: [], lastRun: 0}, last: null, boss: {}, wslevel: 0, wsrun: 0,
-  set: {voice: {uri: null, rate: 1}, autoRead: false, sound: true, calm: false, timer: "always", speed: true, added: true, current: 1, pin: null, rest: []},
+  set: {voice: {uri: null, rate: 1}, autoplay: true, autoRead: false, sound: true, calm: false, timer: "always", speed: true, added: true, current: 1, pin: null, rest: []},
   bk: null
 });
 let S = fresh();
@@ -2364,19 +2370,49 @@ function celebrate(kind, x) {
 
 // ===== js/10-voice.js
 // ---------- Voice: the iPad's built-in voices through the Web Speech API.
-// One sentence at a time; pause is stop-and-remember, because pause() and resume() are unreliable in iPad Safari.
+// Safari's rules on iPad, and what this player does about each:
+//  1. A page can speak only after speech has started during a tap. The first tap anywhere speaks an empty, silent
+//     utterance, which unlocks speech for the rest of the visit, so lessons can start talking on their own.
+//  2. Speaking straight after cancel() can be dropped, so after a real cancel the next sentence waits a moment.
+//  3. Voice quality: Apple's Premium voices sound most natural, then Enhanced, then the standard ones. The player
+//     picks the best installed English voice (or the student's own pick) and never uses the novelty and "Eloquence"
+//     voices, which sound robotic or cartoonish. Some voices never make a sound in Safari: a sentence that hasn't
+//     started within a few seconds is retried with the next best voice, which is remembered on this iPad, and if
+//     nothing starts, the player stops and says so instead of running silently.
+//  4. pause() and resume() are unreliable, so pause is stop-and-remember.
+//  5. A muted iPad can silence web audio; Safari 17 lets a page ask to play anyway (navigator.audioSession).
 const Voice = (() => {
   const ok = typeof speechSynthesis !== "undefined" && typeof SpeechSynthesisUtterance !== "undefined";
-  const PREF = [/premium/i, /enhanced/i, /samantha/i, /\bava\b/i, /allison/i, /susan/i, /karen/i, /daniel/i];
+  const START_MS = 3500;            // a sentence that hasn't started by then didn't start
   let list = [], queue = [], at = 0, playing = false, onStep = null, onDone = null, resumeLater = false, token = 0;
+  const tried = [];                                                    // voices that failed while saying the current sentence
+  let unlocked = false, lastCancel = 0, watcher = null;
+  const bad = new Set((S.set.voice.skip || []));                       // voices that didn't start in Safari on this iPad
+  const NOVELTY = /^(albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|pipe organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|kathy|ralph|princess|deranged|hysterical|eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley)\b/i;
+  const NATURAL = /samantha|alex|ava|allison|susan|tom|evan|nathan|zoe|joelle|noelle|nicky|aaron|google us english/i;
+  const quality = v => { const id = v.name + " " + v.voiceURI; return /premium/i.test(id) ? 3 : /enhanced/i.test(id) ? 2 : 1; };
+  const score = v => quality(v) * 100 + (/^en[-_]US/i.test(v.lang) ? 20 : 0) + (NATURAL.test(v.name) ? 5 : 0);
+  // English voices, best first, without the novelty voices
+  const ranked = () => list.filter(v => !NOVELTY.test(v.name)).sort((a, b) => score(b) - score(a));
+  const stat = {state: ok ? "untested" : "none", voice: "", error: "", started: 0};
+  const note = (k, v) => { Object.assign(stat, k); if (watcher) try { watcher(stat); } catch (e) {} };
   const load = () => (list = ok ? speechSynthesis.getVoices().filter(v => /^en([-_]|$)/i.test(v.lang)) : []);
   if (ok) { load(); if (speechSynthesis.addEventListener) speechSynthesis.addEventListener("voiceschanged", load); else speechSynthesis.onvoiceschanged = load; }
-  function chosen() {
-    const mine = list.find(v => v.voiceURI === S.set.voice.uri);
-    if (mine) return mine;
-    for (const re of PREF) { const v = list.find(v => re.test(v.name) && /^en[-_]US/i.test(v.lang)); if (v) return v; }
-    return list.find(v => /^en[-_]US/i.test(v.lang)) || list[0] || null;
+  function playback() { try { if (navigator.audioSession && navigator.audioSession.type !== "playback") navigator.audioSession.type = "playback"; } catch (e) {} }
+  function unlock() {
+    if (unlocked || !ok) return;
+    unlocked = true; playback();
+    try { const u = new SpeechSynthesisUtterance(""); u.volume = 0; speechSynthesis.speak(u); } catch (e) {}
   }
+  if (ok) ["touchend", "click", "keydown"].forEach(t => document.addEventListener(t, unlock, {capture: true, passive: true}));
+  // The student's pick if it works, else the best installed voice that works; null means the iPad's default voice.
+  function chosen() {
+    if (!list.length) load();
+    const uri = S.set.voice.uri;
+    if (uri && !bad.has(uri)) { const v = list.find(v => v.voiceURI === uri); if (v) return v; }
+    return ranked().find(v => !bad.has(v.voiceURI)) || null;
+  }
+  const keepSkips = () => { S.set.voice.skip = [...bad]; save(); };
   // Sentences, with any long one cut at commas, so no single utterance runs long enough to stall.
   function chunks(text) {
     const out = [];
@@ -2387,40 +2423,71 @@ const Voice = (() => {
     }
     return out;
   }
-  function sayAt(i, my) {
+  function sayAt(i, my, plain) {
     if (!playing || my !== token) return;
     if (i >= queue.length) { playing = false; queue = []; const d = onDone; onDone = null; onStep && onStep(-1); d && d(); return; }
+    const gap = Date.now() - lastCancel;
+    if (gap < 150) { setTimeout(() => sayAt(i, my, plain), 160 - gap); return; }   // rule 2
     at = i;
-    const u = new SpeechSynthesisUtterance(queue[i].said), v = chosen();
+    const v = plain === true ? null : chosen(), u = new SpeechSynthesisUtterance(queue[i].said), t0 = Date.now();
     if (v) { u.voice = v; u.lang = v.lang; } else u.lang = "en-US";
     u.rate = S.set.voice.rate || 1;
-    let done = false;
-    const next = () => { if (done) return; done = true; clearInterval(watch); if (playing && at === i && my === token) sayAt(i + 1, my); };
-    u.onend = next; u.onerror = next;
+    let started = false, over = false, quiet = 0, skipped = false;
+    const live = () => !over && playing && at === i && my === token;
+    const begin = () => {
+      if (started) return; started = true;
+      if (tried.length) { keepSkips(); tried.length = 0; }            // a voice failed and this one works: remember the failure
+      note({state: "spoke", voice: v ? v.name : "the iPad's default English voice", quality: v ? quality(v) : 1, error: "", started: stat.started + 1});
+    };
+    const finish = () => { if (!live()) return; over = true; clearInterval(watch); tried.length = 0; setTimeout(() => sayAt(i + 1, my, plain === true), 0); };
+    const fail = why => {
+      if (!live()) return; over = true; clearInterval(watch);
+      speechSynthesis.cancel(); lastCancel = Date.now();               // clear anything stuck in the engine
+      // rule 3: try the next best voice once, then the default voice; two silent voices in a row point at the engine
+      if (v) { bad.add(v.voiceURI); tried.push(v.voiceURI); const nv = tried.length < 2 ? chosen() : null; return sayAt(i, my, nv ? "fallback" : true); }
+      tried.forEach(u => bad.delete(u)); tried.length = 0;             // nothing starts at all: not the voices' fault
+      playing = false; note({state: "blocked", error: why});
+      onStep && onStep(-3);                                            // the player shows "the voice didn't start"
+    };
+    u.onstart = begin;
+    u.onend = () => { if (!started && Date.now() - t0 < Math.min(1500, 25 * u.text.length)) return fail("ended without speaking"); begin(); finish(); };
+    u.onerror = e => { const why = (e && e.error) || "error"; if (started && (why === "interrupted" || why === "canceled")) finish(); else fail(why); };
     onStep && onStep(queue[i].line);
     speechSynthesis.speak(u);
-    // Some voices never send "end". If the voice has gone quiet, move on anyway.
-    const started = Date.now();
     const watch = setInterval(() => {
-      if (done || !playing || at !== i || my !== token) { clearInterval(watch); return; }
-      if (Date.now() - started > 600 && !speechSynthesis.speaking && !speechSynthesis.pending) next();
+      if (!live()) { clearInterval(watch); return; }
+      if (!started && speechSynthesis.speaking) begin();               // some engines speak without a start event
+      if (!started) {                                                 // never started: dropped, blocked or a silent voice
+        const t = Date.now() - t0;
+        if (t > START_MS || (t > 1500 && !speechSynthesis.speaking && !speechSynthesis.pending)) fail("didn't start");
+        return;
+      }
+      quiet = !speechSynthesis.speaking && !speechSynthesis.pending ? quiet + 1 : 0;
+      if (quiet >= 3) finish();                                        // some voices never send "end"
     }, 400);
   }
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden && playing) { playing = false; resumeLater = true; token++; speechSynthesis.cancel(); onStep && onStep(-2); }
+    if (document.hidden && playing) { playing = false; resumeLater = true; token++; speechSynthesis.cancel(); lastCancel = Date.now(); onStep && onStep(-2); }
   });
+  // stop first, then cancel, so the "interrupted" event from our own cancel isn't mistaken for a failed voice
+  function halt() { const was = playing; playing = false; token++; if (was) { speechSynthesis.cancel(); lastCancel = Date.now(); } }
   return {
-    ok, voices: () => load(), chosen,
-    // lines are in screen notation; each goes through M6.speak(). cb(line) runs as each line starts, cb(-1) at the end.
+    ok, voices: () => (load(), ranked()), chosen, quality,
+    hasPremium: () => (load(), ranked().some(v => quality(v) === 3 && !bad.has(v.voiceURI))),
+    get status() { return stat; }, set watch(fn) { watcher = fn; },
+    // lines are in screen notation; each goes through M6.speak(). cb(line) runs as each line starts,
+    // cb(-1) at the end, cb(-2) when the iPad hides the page, cb(-3) when the voice didn't start.
     play(lines, cb, done) {
       if (!ok) { if (done) setTimeout(done, 0); return false; }
-      token++; speechSynthesis.cancel();
+      unlock(); playback(); halt();
       queue = []; lines.forEach((l, line) => chunks(M6.speak(l)).forEach(said => queue.push({said, line})));
       onStep = cb || null; onDone = done || null; playing = true; resumeLater = false; sayAt(0, token); return true;
     },
-    pause() { if (!playing) return; playing = false; token++; speechSynthesis.cancel(); },
-    resume() { if (!queue.length || playing) return; playing = true; resumeLater = false; token++; sayAt(at, token); },
-    stop() { playing = false; resumeLater = false; queue = []; onDone = null; token++; if (ok) speechSynthesis.cancel(); },
+    pause() { if (playing) halt(); },
+    resume() { if (!queue.length || playing) return; playback(); playing = true; resumeLater = false; token++; sayAt(at, token); },
+    stop() { halt(); resumeLater = false; queue = []; onDone = null; },
+    forget() {},
+    retry(uri) { if (bad.delete(uri)) keepSkips(); },                  // the student picked this voice: give it another chance
     get playing() { return playing; }, get paused() { return !playing && queue.length > 0; }, get waiting() { return resumeLater; }
   };
 })();
@@ -2736,14 +2803,15 @@ const PARTS = {hook: "Hook", idea: "Big idea", see: "See it", ido: "I do", wedo:
 let T = null;
 function teachStart(lessonId, alt = false) {
   const c = LESSONS[lessonId].c;
-  T = {lesson: lessonId, alt, steps: alt ? c.alt : c.script, i: 0, playing: false, checks: {}, finished: false, why: false};
+  // quiet: the student paused on purpose, so Next and Back stay silent; vfail: the voice didn't start
+  T = {lesson: lessonId, alt, steps: alt ? c.alt : c.script, i: 0, playing: false, checks: {}, finished: false, why: false, quiet: false, vfail: false};
   if (alt) { S.explore.another++; checkBadges(); save(); }
 }
 function boardAt(i) { for (let k = i; k >= 0; k--) if (T.steps[k].board) return T.steps[k].board; return null; }
 function teachHTML() {
   if (T.finished) return teachEndHTML();
   const st = T.steps[T.i], n = T.steps.length, ck = st.check && T.checks[T.i] !== "done";
-  const playLabel = T.playing ? "❚❚ Pause" : Voice.waiting || Voice.paused ? "▶ Resume" : T.i === 0 && !T.started ? "▶ Play lesson" : "▶ Play";
+  const playLabel = T.playing ? "❚❚ Pause" : T.vfail ? "▶ Play" : Voice.waiting || Voice.paused ? "▶ Resume" : T.i === 0 && !T.started ? "▶ Play lesson" : "▶ Play";
   return `<div class="teach">
 <div class="tboard" id="tboard">${board(boardAt(T.i))}</div>
 <div class="tside">
@@ -2752,6 +2820,7 @@ function teachHTML() {
   ${T.why && st.why ? `<div class="twhy"><b>Why?</b> ${mathHTML(st.why)}</div>` : ""}
   <div id="tcheck">${ck && T.checks[T.i] ? qHTML({scratch: false}) + checkBarHTML() : ""}</div>
 </div>
+${T.vfail ? `<div class="vfail" role="alert"><b>The voice didn't start.</b> Tap ▶ Play to try again. Still quiet? Turn the volume up, and check that Silent Mode is off: swipe down from the top-right corner for Control Center. <div class="row"><a class="btn ghost sm" href="#/voice">Open Voice check</a></div></div>` : ""}
 <div class="tbar">
   <button type="button" class="btn ghost sm" data-act="t-back" aria-label="Back one step"${T.i === 0 ? " disabled" : ""}>⏮ Back</button>
   <button type="button" class="btn sm" data-act="t-play">${playLabel}</button>
@@ -2763,7 +2832,7 @@ function teachHTML() {
   <button type="button" class="btn ghost sm" data-act="t-alt">${T.alt ? "Back to the lesson" : "Explain it another way"}</button>
 </div>
 <div class="tdots">${T.steps.map((s, k) => `<button type="button" class="tdot${k === T.i ? " on" : k < T.i ? " past" : ""}" data-tgo="${k}" aria-label="Step ${k + 1}: ${esc(PARTS[s.part] || "")}"></button>`).join("")}</div>
-${Voice.ok ? "" : '<p class="meta">No speech voice on this device: read the captions and tap Next.</p>'}
+${Voice.ok ? (Voice.hasPremium() ? "" : '<div class="row vnote"><span class="meta">No Premium voice on this iPad yet.</span><a class="btn ghost sm" href="#/voice">Get the natural Premium voice</a></div>') : '<p class="meta">No speech voice on this device: read the captions and tap Next.</p>'}
 </div>`;
 }
 function checkBarHTML() {
@@ -2784,9 +2853,16 @@ function teachGo(i, speak) {
 }
 function teachSpeak() {
   const i = T.i, st = T.steps[i];
-  T.playing = true; T.started = true; teachRender();
-  const said = Voice.play([st.say], k => { if (k === -2) { T.playing = false; teachRender(); } }, () => teachStepDone(i));
+  T.playing = true; T.started = true; T.quiet = false; T.vfail = false; teachRender();
+  const said = Voice.play([st.say], k => {
+    if (k === -2) { T.playing = false; teachRender(); }                         // the iPad hid the page
+    if (k === -3) { T.playing = false; T.vfail = true; teachRender(); }         // the voice didn't start: say so, don't move on
+  }, () => teachStepDone(i));
   if (!said) { T.playing = false; teachRender(); }
+}
+// A lesson starts talking as soon as it opens, unless the student turned that off in Settings.
+function teachAuto() {
+  if (CUR === "teach" && T && !T.started && !T.playing && !T.quiet && !T.finished && Voice.ok && S.set.autoplay !== false) teachSpeak();
 }
 function teachStepDone(i) {
   if (!T || T.i !== i || !T.playing) return;
@@ -2804,16 +2880,17 @@ function teachFinish() {
 }
 Object.assign(ACT, {
   "t-play": () => {
-    if (T.playing) { Voice.pause(); T.playing = false; teachRender(); }
-    else if (Voice.paused || Voice.waiting) { T.playing = true; Voice.resume(); teachRender(); }
-    else teachSpeak();
+    if (T.playing) { Voice.pause(); T.playing = false; T.quiet = true; teachRender(); }
+    else if ((Voice.paused || Voice.waiting) && !T.vfail) { T.playing = true; T.quiet = false; Voice.resume(); teachRender(); }
+    else { Voice.forget(); teachSpeak(); }
   },
-  "t-next": () => { Voice.stop(); if (T.i >= T.steps.length - 1) teachFinish(); else teachGo(T.i + 1, T.playing || T.started); },
-  "t-back": () => { Voice.stop(); teachGo(T.i - 1, T.playing); },
+  // Next and Back read the new step aloud, unless the student paused the voice on purpose
+  "t-next": () => { Voice.stop(); if (T.i >= T.steps.length - 1) teachFinish(); else teachGo(T.i + 1, !T.quiet); },
+  "t-back": () => { Voice.stop(); teachGo(T.i - 1, !T.quiet); },
   "t-replay": () => { Voice.stop(); teachSpeak(); },
   "t-cap": () => { S.set.captions = S.set.captions === false; save(); teachRender(); },
   "t-why": () => { T.why = true; Voice.stop(); T.playing = false; teachRender(); Voice.play([T.steps[T.i].why]); },
-  "t-alt": () => { Voice.stop(); const id = T.lesson; teachStart(id, !T.alt); teachGo(0, false); },
+  "t-alt": () => { Voice.stop(); const id = T.lesson, quiet = T.quiet; teachStart(id, !T.alt); T.quiet = quiet; teachGo(0, !quiet); },
   "t-again": () => { teachStart(T.lesson, false); teachGo(0, true); },
   "t-check": () => {
     const g = grade(Q.it, Q.r);
@@ -3300,7 +3377,7 @@ ${bossOpen ? `<a class="btn ghost" href="#/run/boss/${U.u}">⚔ Boss challenge${
     tab = tab || "learn";
     const tabs = [["learn", "Learn"], ["practice", "Practice"], ["quiz", "Quiz"], ["test5", "5-Minute Test"], ["notes", "Notes"]];
     const bar = `<div class="ltabs">${tabs.map(([k, t]) => `<a href="#/lesson/${id}/${k}"${k === tab ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</div>`;
-    if (tab === "learn") { if (!T || T.lesson !== id || T.alt) { teachStart(id); T.i = 0; } CUR = "teach"; return head + bar + `<div id="teach">${teachHTML()}</div>`; }
+    if (tab === "learn") { if (!T || T.lesson !== id || T.alt) { teachStart(id); T.i = 0; } CUR = "teach"; setTimeout(teachAuto, 0); return head + bar + `<div id="teach">${teachHTML()}</div>`; }
     if (tab === "practice") { if (!P || P.lesson !== id || P.mode !== "practice" || !Q) practiceStart(id); CUR = "practice"; return head + bar + `<div id="mode">${practiceHTML()}</div>`; }
     if (tab === "quiz" || tab === "test5") { const k = tab === "quiz" ? "quiz" : "t5"; if (!SES || SES.kind !== k || SES.scope !== id || SES.done && SES.stale) startKind(k, id, `#/lesson/${id}`); SES.stale = SES.done; CUR = "ses"; return head + bar + `<div id="mode">${sesHTML()}</div>`; }
     const c = l.c;
@@ -3355,7 +3432,7 @@ ${list.length ? `<div class="card"><p>${list.length} to fix · ${S.fixed || 0} f
   settings() {
     return `<h2>Settings</h2>
 <div class="card"><label class="f">Student's name<input type="text" id="name" value="${esc(S.name)}" autocomplete="off" placeholder="First name"></label></div>
-<div class="card"><b>Voice and sound</b><div class="toggles">${tog("autoRead", "Read feedback and hints aloud")}${tog("sound", "Sound effects")}${tog("calm", "Calm mode: hide combos, pops and confetti")}</div><a class="btn ghost" href="#/voice">Voice check</a></div>
+<div class="card"><b>Voice and sound</b><div class="toggles">${tog("autoplay", "Start lessons talking as soon as they open", true)}${tog("autoRead", "Read feedback and hints aloud")}${tog("sound", "Sound effects")}${tog("calm", "Calm mode: hide combos, pops and confetti")}</div><a class="btn ghost" href="#/voice">Voice check</a></div>
 ${OFFLINE ? `<div class="card"><b>Back up progress</b><div class="row"><button type="button" id="bkup" class="btn ghost sm">Back up progress</button><label class="btn ghost sm" for="rst">Restore</label><input id="rst" type="file" accept=".json,application/json,text/plain" class="sr"></div><p class="meta">Last backup: ${S.bk ? nice(S.bk) : "never"}${S.bk && dn(today()) - dn(S.bk) > 14 ? " · time for a new one" : ""}</p></div>` : ""}
 <div class="card"><b>Parent</b><p class="meta">Current unit, timers, speed tests, rest days and a summary. PIN-locked.</p><a class="btn ghost" href="#/parent">Open parent settings</a></div>`;
   },
@@ -3379,16 +3456,48 @@ ${OFFLINE ? `<div class="card"><b>Back up progress</b><div class="row"><button t
   voice() {
     if (!Voice.ok) return `<h2>Voice check</h2><div class="card"><p>This browser has no speech voice, so lessons show captions and move on when you tap Next.</p></div>`;
     const vs = Voice.voices(), cur = Voice.chosen();
-    return `<p><a href="#/settings">← Settings</a></p><h2>Voice check</h2><p class="lead">Each line shows the math, then the words the app gives the voice. Play them and listen for anything read wrong.</p>
-<div class="card"><div class="row"><label class="f">Voice<select id="vsel">${vs.length ? vs.map(v => `<option value="${esc(v.voiceURI)}"${cur && v.voiceURI === cur.voiceURI ? " selected" : ""}>${esc(v.name)} (${esc(v.lang)})</option>`).join("") : "<option>Default voice</option>"}</select></label>
+    return `<p><a href="#/settings">← Settings</a></p><h2>Voice check</h2><p class="lead">Check that the voice works on this iPad, pick a voice, then play the math lines and listen for anything read wrong.</p>
+<div class="card" id="vstat">${voiceStatusHTML()}</div>
+<div class="card"><div class="row"><label class="f">Voice<select id="vsel">${vs.map(v => `<option value="${esc(v.voiceURI)}"${cur && v.voiceURI === cur.voiceURI ? " selected" : ""}>${esc(voiceLabel(v))}</option>`).join("")}<option value=""${cur ? "" : " selected"}>iPad's default English voice</option></select></label>
 <label class="f">Speed<select id="vrate">${[0.8, 0.9, 1, 1.1].map(r => `<option value="${r}"${(S.set.voice.rate || 1) === r ? " selected" : ""}>${r}×</option>`).join("")}</select></label>
 <button type="button" class="btn" id="vall">Play all</button><button type="button" class="btn ghost" id="vstop">Stop</button></div>
-<p class="meta">Robotic voice? On the iPad: Settings → Accessibility → Spoken Content → Voices → English. Download an Enhanced voice, then reopen Math 6.</p></div>
+<p class="meta">Voices are listed best first. Robotic and cartoon voices are left out.</p></div>
 <div class="card">${SPEECH_TEST.map((s, i) => `<div class="say" data-i="${i}"><span class="shown">${esc(s)}</span><span class="spoken">${esc(M6.speak(s))}</span><button type="button" class="btn ghost sm" data-play="${i}" aria-label="Play ${esc(M6.speak(s))}">Play</button></div>`).join("")}</div>`;
   }
 };
 let parentOpen = false, CUR = null;
-function tog(key, label) { return `<label class="tog"><input type="checkbox" data-set="${key}"${S.set[key] !== false && S.set[key] ? " checked" : ""}><span>${esc(label)}</span></label>`; }
+function tog(key, label, def = false) { const on = S.set[key] === undefined ? def : !!S.set[key]; return `<label class="tog"><input type="checkbox" data-set="${key}"${on ? " checked" : ""}><span>${esc(label)}</span></label>`; }
+// The voice check's status card: is speech working on this iPad, and what to try when it isn't
+function voiceStatusHTML() {
+  const st = Voice.status, cur = Voice.chosen();
+  const line = st.state === "spoke" ? `<p class="okmsg"><b>✓ The voice is working.</b> Last sentence spoken with ${esc(st.voice)}.</p>`
+    : st.state === "blocked" ? `<p class="nomsg"><b>✗ The voice didn't start</b> (${esc(st.error || "no sound")}). Try the steps below, then tap the test again.</p>`
+    : `<p>Tap the button and listen for a short sentence.</p>`;
+  return `<b>Is the voice working?</b>${line}
+<div class="row"><button type="button" class="btn" id="vtest">🔊 Say a test sentence</button></div>
+<p class="meta">Speech engine: found · English voices on this iPad: ${Voice.voices().length} · Voice in use: ${esc(cur ? voiceLabel(cur) : "the iPad's default English voice")}</p>
+${Voice.hasPremium() ? "" : premiumHelpHTML()}
+<details${st.state === "blocked" ? " open" : ""}><summary>No sound? Try these, in order</summary><ol class="tips">
+<li>Turn the volume up with the buttons on the side of the iPad.</li>
+<li>Swipe down from the top-right corner for Control Center. If Silent Mode (the bell) is on, turn it off.</li>
+<li>Pick "iPad's default English voice" below, then tap the test again.</li>
+<li>On the iPad, open Settings → Accessibility → Spoken Content → Voices → English, and make sure a voice is downloaded.</li>
+<li>Close Math 6 completely (swipe it away in the app switcher) and open it again.</li></ol></details>`;
+}
+Voice.watch = () => { const el = $("#vstat"); if (el) el.innerHTML = voiceStatusHTML(); };
+function voiceLabel(v) {
+  const q = Voice.quality(v), tag = q === 3 ? "Premium" : q === 2 ? "Enhanced" : "Standard";
+  return `${v.name.replace(/\s*\((premium|enhanced)\)/i, "")} · ${tag} · ${v.lang}`;
+}
+// How to get Apple's Premium voice: the app can only use voices that are downloaded on the device.
+function premiumHelpHTML() {
+  return `<div class="premhelp"><b>Get the natural Premium voice</b>
+<p>This iPad doesn't have a Premium voice yet, so Math 6 is using the best voice it has. Premium voices sound like a real person. Download one once:</p>
+<ol class="tips"><li>Open the iPad's Settings → Accessibility → Spoken Content → Voices → English.</li>
+<li>Tap a voice such as Ava, Zoe or Evan, then tap the download button next to its Premium version.</li>
+<li>When it finishes, close Math 6 completely (swipe it away in the app switcher) and open it again. It will use the Premium voice on its own.</li></ol>
+<p class="meta">On a Mac: System Settings → Accessibility → Spoken Content → System voice → Manage Voices. Siri voices can't be used by websites, so Premium is the best voice Math 6 can use.</p></div>`;
+}
 function calendarHTML() {
   const end = dn(today()), start = end - 55 - ((new Date().getDay() + 6) % 7);
   let s = '<div class="cal">';
@@ -3486,6 +3595,7 @@ document.addEventListener("click", e => {
   const d = t.dataset;
   if (d.act && ACT[d.act]) return ACT[d.act](t);
   if (t.id === "bkup") return backup();
+  if (t.id === "vtest") { Voice.forget(); return Voice.play(["Hi! If you can hear me, the voice is working."], null, () => { const el = $("#vstat"); if (el) el.innerHTML = voiceStatusHTML(); }); }
   if (t.id === "vall") return Voice.play(SPEECH_TEST, markSay);
   if (t.id === "vstop") { Voice.stop(); return markSay(-1); }
   if (d.play != null) { const i = Number(d.play); return Voice.play([SPEECH_TEST[i]], k => markSay(k < 0 ? -1 : i)); }
@@ -3494,7 +3604,7 @@ document.addEventListener("click", e => {
   if (d.spa != null) return spAnswer(d.spa);
   if (d.spk === "enter") return SP && spAnswer(SP.input);
   if (d.key != null) { if (CUR === "speed") return spType(d.key); return typeKey(d.key); }
-  if (d.tgo != null) { Voice.stop(); return teachGo(Number(d.tgo), false); }
+  if (d.tgo != null) { Voice.stop(); return teachGo(Number(d.tgo), !T.quiet); }
   if (d.sgo != null) { SES.sheet = false; sesShow(Number(d.sgo)); return sesRender(); }
   if (d.rsay != null) { const it = sesItem(Number(d.rsay)); return Voice.play(it.sol.map(x => plain(x.s) + ". " + plain(x.why))); }
   if (d.frame != null) {
@@ -3542,7 +3652,7 @@ document.addEventListener("keydown", e => {
 document.addEventListener("change", e => {
   const el = e.target;
   if (el.id === "rst" && el.files[0]) return restore(el.files[0]);
-  if (el.id === "vsel") { S.set.voice.uri = el.value; return save(); }
+  if (el.id === "vsel") { S.set.voice.uri = el.value || null; if (el.value) Voice.retry(el.value); save(); const st = $("#vstat"); if (st) st.innerHTML = voiceStatusHTML(); return; }
   if (el.id === "vrate" || el.id === "t-rate") { S.set.voice.rate = Number(el.value); return save(); }
   if (el.id === "name") { S.name = el.value.trim().slice(0, 30); save(); return render(); }
   if (el.id === "p-cur") { S.set.current = Number(el.value); return save(); }

@@ -32,7 +32,9 @@ const fakeVoice = {name: 'Samantha', lang: 'en-US', voiceURI: 'samantha'};
 const synth = {
   speaking: false, pending: false,
   getVoices: () => [fakeVoice], addEventListener: () => {}, cancel() { this.speaking = false; },
-  speak(u) { window.__said.push(u.text); this.speaking = true; setTimeout(() => { this.speaking = false; u.onend && u.onend(); }, 20); }
+  // like a real voice: "start" first, then "end" after a time that grows with the sentence
+  speak(u) { if (u.text) window.__said.push(u.text); this.speaking = true;
+    setTimeout(() => { u.onstart && u.onstart({}); setTimeout(() => { this.speaking = false; u.onend && u.onend(); }, Math.max(15, u.text.length)); }, 5); }
 };
 Object.defineProperty(window, 'speechSynthesis', {value: synth, configurable: true, writable: true});
 window.SpeechSynthesisUtterance = function (t) { this.text = t; };
@@ -53,6 +55,12 @@ window.__answer = (wrong) => {
       type(0, t || (String(it.ans) === '1' ? '2' : '1')); return it.type;
     }
     if (it.type === 'mc') { tap($(`[data-pick="${it.choices.findIndex(c => !c.ok)}"]`)); return it.type; }
+    if (it.type === 'multi') { tap($(`[data-pick="${it.opts.findIndex(o => !o.ok)}"]`)); return it.type; }
+    if (it.type === 'table') { it.blanks.forEach(([r, c], k) => type(k, String(it.rows[r][c]) === '1' ? '2' : '1')); return it.type; }
+    const wrongs = {grid: () => it.n === 1 ? 2 : 1, order: () => it.items.map(t => it.shown.indexOf(t)).reverse(),
+      match: () => { const o = {}; it.pairs.forEach((p, i) => { o[i] = it.rights.indexOf(it.pairs[(i + 1) % it.pairs.length][1]); }); return o; },
+      yn: () => it.rows.map(x => !x.ok), mistake: () => ({step: (it.wrong + 1) % it.steps.length, fix: 0})};
+    if (wrongs[it.type]) { Q.r = wrongs[it.type](); return it.type; }
   }
   switch (it.type) {
     case 'mc': tap($(`[data-pick="${it.choices.findIndex(c => c.ok)}"]`)); break;
@@ -173,7 +181,9 @@ async def main():
             # 4. Learn: play lesson 1.1 start to finish with the voice, answering both "We do" checks
             await page.goto(URL + "#/lesson/1.1/learn"); await page.wait_for_selector('[data-act="t-play"]')
             await page.evaluate("window.__said = []")
-            await page.locator('[data-act="t-play"]').tap()
+            await page.wait_for_timeout(300)
+            r["learn_started_on_its_own"] = await page.evaluate("!!(M6APP.T.started)")   # lessons start talking when they open
+            if not await page.evaluate("M6APP.T.started"): await page.locator('[data-act="t-play"]').tap()
             checks = []
             for _ in range(200):
                 await page.wait_for_timeout(150)
@@ -328,6 +338,7 @@ async def main():
     need(not s["manifest_errors"] and not [e for e in s["installability_errors"] or [] if e.get("errorId") != "in-incognito"], "manifest or installability errors")
     need(s["voice_spoken"] >= 20 and not s["voice_unspoken_symbols"], "voice queue or speech text")
     need(s["screens"]["regions"] == 10 and s["screens"]["unit_1"]["lessons"] == 12, "journey map or unit page")
+    need(s["learn_started_on_its_own"], "the lesson didn't start talking when it opened")
     L = s["learn"]; need(L["finished"] and L["checks_right"] == [True, True] and L["learned"] == 1 and L["xp"] >= 20 and not L["unspoken_symbols"] and L["sentences_spoken"] > 40, f"learn flow {L}")
     P = s["practice"]; need(P["wrong_feedback_shown"] and P["mastered"] and P["mistakes_saved"] >= 1 and P["answers_to_master"] <= 12, f"practice flow {P}")
     need(s["fixed"] >= 1, "fixing a mistake")

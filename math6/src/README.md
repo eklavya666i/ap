@@ -30,6 +30,8 @@ node build.js         # rebuild; the offline cache version changes automatically
 python3 check_ipad.py # iPad checks in headless Chrome: a whole lesson with the voice, practice to mastery,
                       # quiz, 5-minute tests, all 3 speed formats, the boss, mistakes, offline, backup,
                       # other apps, 5 iPad sizes (needs Playwright and Chrome)
+python3 check_voice.py # the voice against Safari's speech rules: silent until a tap, silent voices, blocked speech,
+                      # Premium voice first, no novelty voices
 python3 make_icons.py # redraw the icons
 ```
 

@@ -71,6 +71,7 @@ document.addEventListener("click", e => {
   const d = t.dataset;
   if (d.act && ACT[d.act]) return ACT[d.act](t);
   if (t.id === "bkup") return backup();
+  if (t.id === "vtest") { Voice.forget(); return Voice.play(["Hi! If you can hear me, the voice is working."], null, () => { const el = $("#vstat"); if (el) el.innerHTML = voiceStatusHTML(); }); }
   if (t.id === "vall") return Voice.play(SPEECH_TEST, markSay);
   if (t.id === "vstop") { Voice.stop(); return markSay(-1); }
   if (d.play != null) { const i = Number(d.play); return Voice.play([SPEECH_TEST[i]], k => markSay(k < 0 ? -1 : i)); }
@@ -79,7 +80,7 @@ document.addEventListener("click", e => {
   if (d.spa != null) return spAnswer(d.spa);
   if (d.spk === "enter") return SP && spAnswer(SP.input);
   if (d.key != null) { if (CUR === "speed") return spType(d.key); return typeKey(d.key); }
-  if (d.tgo != null) { Voice.stop(); return teachGo(Number(d.tgo), false); }
+  if (d.tgo != null) { Voice.stop(); return teachGo(Number(d.tgo), !T.quiet); }
   if (d.sgo != null) { SES.sheet = false; sesShow(Number(d.sgo)); return sesRender(); }
   if (d.rsay != null) { const it = sesItem(Number(d.rsay)); return Voice.play(it.sol.map(x => plain(x.s) + ". " + plain(x.why))); }
   if (d.frame != null) {
@@ -127,7 +128,7 @@ document.addEventListener("keydown", e => {
 document.addEventListener("change", e => {
   const el = e.target;
   if (el.id === "rst" && el.files[0]) return restore(el.files[0]);
-  if (el.id === "vsel") { S.set.voice.uri = el.value; return save(); }
+  if (el.id === "vsel") { S.set.voice.uri = el.value || null; if (el.value) Voice.retry(el.value); save(); const st = $("#vstat"); if (st) st.innerHTML = voiceStatusHTML(); return; }
   if (el.id === "vrate" || el.id === "t-rate") { S.set.voice.rate = Number(el.value); return save(); }
   if (el.id === "name") { S.name = el.value.trim().slice(0, 30); save(); return render(); }
   if (el.id === "p-cur") { S.set.current = Number(el.value); return save(); }

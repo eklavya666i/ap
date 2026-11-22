@@ -54,7 +54,7 @@ ${bossOpen ? `<a class="btn ghost" href="#/run/boss/${U.u}">⚔ Boss challenge${
     tab = tab || "learn";
     const tabs = [["learn", "Learn"], ["practice", "Practice"], ["quiz", "Quiz"], ["test5", "5-Minute Test"], ["notes", "Notes"]];
     const bar = `<div class="ltabs">${tabs.map(([k, t]) => `<a href="#/lesson/${id}/${k}"${k === tab ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</div>`;
-    if (tab === "learn") { if (!T || T.lesson !== id || T.alt) { teachStart(id); T.i = 0; } CUR = "teach"; return head + bar + `<div id="teach">${teachHTML()}</div>`; }
+    if (tab === "learn") { if (!T || T.lesson !== id || T.alt) { teachStart(id); T.i = 0; } CUR = "teach"; setTimeout(teachAuto, 0); return head + bar + `<div id="teach">${teachHTML()}</div>`; }
     if (tab === "practice") { if (!P || P.lesson !== id || P.mode !== "practice" || !Q) practiceStart(id); CUR = "practice"; return head + bar + `<div id="mode">${practiceHTML()}</div>`; }
     if (tab === "quiz" || tab === "test5") { const k = tab === "quiz" ? "quiz" : "t5"; if (!SES || SES.kind !== k || SES.scope !== id || SES.done && SES.stale) startKind(k, id, `#/lesson/${id}`); SES.stale = SES.done; CUR = "ses"; return head + bar + `<div id="mode">${sesHTML()}</div>`; }
     const c = l.c;
@@ -109,7 +109,7 @@ ${list.length ? `<div class="card"><p>${list.length} to fix · ${S.fixed || 0} f
   settings() {
     return `<h2>Settings</h2>
 <div class="card"><label class="f">Student's name<input type="text" id="name" value="${esc(S.name)}" autocomplete="off" placeholder="First name"></label></div>
-<div class="card"><b>Voice and sound</b><div class="toggles">${tog("autoRead", "Read feedback and hints aloud")}${tog("sound", "Sound effects")}${tog("calm", "Calm mode: hide combos, pops and confetti")}</div><a class="btn ghost" href="#/voice">Voice check</a></div>
+<div class="card"><b>Voice and sound</b><div class="toggles">${tog("autoplay", "Start lessons talking as soon as they open", true)}${tog("autoRead", "Read feedback and hints aloud")}${tog("sound", "Sound effects")}${tog("calm", "Calm mode: hide combos, pops and confetti")}</div><a class="btn ghost" href="#/voice">Voice check</a></div>
 ${OFFLINE ? `<div class="card"><b>Back up progress</b><div class="row"><button type="button" id="bkup" class="btn ghost sm">Back up progress</button><label class="btn ghost sm" for="rst">Restore</label><input id="rst" type="file" accept=".json,application/json,text/plain" class="sr"></div><p class="meta">Last backup: ${S.bk ? nice(S.bk) : "never"}${S.bk && dn(today()) - dn(S.bk) > 14 ? " · time for a new one" : ""}</p></div>` : ""}
 <div class="card"><b>Parent</b><p class="meta">Current unit, timers, speed tests, rest days and a summary. PIN-locked.</p><a class="btn ghost" href="#/parent">Open parent settings</a></div>`;
   },
@@ -133,16 +133,48 @@ ${OFFLINE ? `<div class="card"><b>Back up progress</b><div class="row"><button t
   voice() {
     if (!Voice.ok) return `<h2>Voice check</h2><div class="card"><p>This browser has no speech voice, so lessons show captions and move on when you tap Next.</p></div>`;
     const vs = Voice.voices(), cur = Voice.chosen();
-    return `<p><a href="#/settings">← Settings</a></p><h2>Voice check</h2><p class="lead">Each line shows the math, then the words the app gives the voice. Play them and listen for anything read wrong.</p>
-<div class="card"><div class="row"><label class="f">Voice<select id="vsel">${vs.length ? vs.map(v => `<option value="${esc(v.voiceURI)}"${cur && v.voiceURI === cur.voiceURI ? " selected" : ""}>${esc(v.name)} (${esc(v.lang)})</option>`).join("") : "<option>Default voice</option>"}</select></label>
+    return `<p><a href="#/settings">← Settings</a></p><h2>Voice check</h2><p class="lead">Check that the voice works on this iPad, pick a voice, then play the math lines and listen for anything read wrong.</p>
+<div class="card" id="vstat">${voiceStatusHTML()}</div>
+<div class="card"><div class="row"><label class="f">Voice<select id="vsel">${vs.map(v => `<option value="${esc(v.voiceURI)}"${cur && v.voiceURI === cur.voiceURI ? " selected" : ""}>${esc(voiceLabel(v))}</option>`).join("")}<option value=""${cur ? "" : " selected"}>iPad's default English voice</option></select></label>
 <label class="f">Speed<select id="vrate">${[0.8, 0.9, 1, 1.1].map(r => `<option value="${r}"${(S.set.voice.rate || 1) === r ? " selected" : ""}>${r}×</option>`).join("")}</select></label>
 <button type="button" class="btn" id="vall">Play all</button><button type="button" class="btn ghost" id="vstop">Stop</button></div>
-<p class="meta">Robotic voice? On the iPad: Settings → Accessibility → Spoken Content → Voices → English. Download an Enhanced voice, then reopen Math 6.</p></div>
+<p class="meta">Voices are listed best first. Robotic and cartoon voices are left out.</p></div>
 <div class="card">${SPEECH_TEST.map((s, i) => `<div class="say" data-i="${i}"><span class="shown">${esc(s)}</span><span class="spoken">${esc(M6.speak(s))}</span><button type="button" class="btn ghost sm" data-play="${i}" aria-label="Play ${esc(M6.speak(s))}">Play</button></div>`).join("")}</div>`;
   }
 };
 let parentOpen = false, CUR = null;
-function tog(key, label) { return `<label class="tog"><input type="checkbox" data-set="${key}"${S.set[key] !== false && S.set[key] ? " checked" : ""}><span>${esc(label)}</span></label>`; }
+function tog(key, label, def = false) { const on = S.set[key] === undefined ? def : !!S.set[key]; return `<label class="tog"><input type="checkbox" data-set="${key}"${on ? " checked" : ""}><span>${esc(label)}</span></label>`; }
+// The voice check's status card: is speech working on this iPad, and what to try when it isn't
+function voiceStatusHTML() {
+  const st = Voice.status, cur = Voice.chosen();
+  const line = st.state === "spoke" ? `<p class="okmsg"><b>✓ The voice is working.</b> Last sentence spoken with ${esc(st.voice)}.</p>`
+    : st.state === "blocked" ? `<p class="nomsg"><b>✗ The voice didn't start</b> (${esc(st.error || "no sound")}). Try the steps below, then tap the test again.</p>`
+    : `<p>Tap the button and listen for a short sentence.</p>`;
+  return `<b>Is the voice working?</b>${line}
+<div class="row"><button type="button" class="btn" id="vtest">🔊 Say a test sentence</button></div>
+<p class="meta">Speech engine: found · English voices on this iPad: ${Voice.voices().length} · Voice in use: ${esc(cur ? voiceLabel(cur) : "the iPad's default English voice")}</p>
+${Voice.hasPremium() ? "" : premiumHelpHTML()}
+<details${st.state === "blocked" ? " open" : ""}><summary>No sound? Try these, in order</summary><ol class="tips">
+<li>Turn the volume up with the buttons on the side of the iPad.</li>
+<li>Swipe down from the top-right corner for Control Center. If Silent Mode (the bell) is on, turn it off.</li>
+<li>Pick "iPad's default English voice" below, then tap the test again.</li>
+<li>On the iPad, open Settings → Accessibility → Spoken Content → Voices → English, and make sure a voice is downloaded.</li>
+<li>Close Math 6 completely (swipe it away in the app switcher) and open it again.</li></ol></details>`;
+}
+Voice.watch = () => { const el = $("#vstat"); if (el) el.innerHTML = voiceStatusHTML(); };
+function voiceLabel(v) {
+  const q = Voice.quality(v), tag = q === 3 ? "Premium" : q === 2 ? "Enhanced" : "Standard";
+  return `${v.name.replace(/\s*\((premium|enhanced)\)/i, "")} · ${tag} · ${v.lang}`;
+}
+// How to get Apple's Premium voice: the app can only use voices that are downloaded on the device.
+function premiumHelpHTML() {
+  return `<div class="premhelp"><b>Get the natural Premium voice</b>
+<p>This iPad doesn't have a Premium voice yet, so Math 6 is using the best voice it has. Premium voices sound like a real person. Download one once:</p>
+<ol class="tips"><li>Open the iPad's Settings → Accessibility → Spoken Content → Voices → English.</li>
+<li>Tap a voice such as Ava, Zoe or Evan, then tap the download button next to its Premium version.</li>
+<li>When it finishes, close Math 6 completely (swipe it away in the app switcher) and open it again. It will use the Premium voice on its own.</li></ol>
+<p class="meta">On a Mac: System Settings → Accessibility → Spoken Content → System voice → Manage Voices. Siri voices can't be used by websites, so Premium is the best voice Math 6 can use.</p></div>`;
+}
 function calendarHTML() {
   const end = dn(today()), start = end - 55 - ((new Date().getDay() + 6) % 7);
   let s = '<div class="cal">';

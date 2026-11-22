@@ -4,14 +4,15 @@ const PARTS = {hook: "Hook", idea: "Big idea", see: "See it", ido: "I do", wedo:
 let T = null;
 function teachStart(lessonId, alt = false) {
   const c = LESSONS[lessonId].c;
-  T = {lesson: lessonId, alt, steps: alt ? c.alt : c.script, i: 0, playing: false, checks: {}, finished: false, why: false};
+  // quiet: the student paused on purpose, so Next and Back stay silent; vfail: the voice didn't start
+  T = {lesson: lessonId, alt, steps: alt ? c.alt : c.script, i: 0, playing: false, checks: {}, finished: false, why: false, quiet: false, vfail: false};
   if (alt) { S.explore.another++; checkBadges(); save(); }
 }
 function boardAt(i) { for (let k = i; k >= 0; k--) if (T.steps[k].board) return T.steps[k].board; return null; }
 function teachHTML() {
   if (T.finished) return teachEndHTML();
   const st = T.steps[T.i], n = T.steps.length, ck = st.check && T.checks[T.i] !== "done";
-  const playLabel = T.playing ? "❚❚ Pause" : Voice.waiting || Voice.paused ? "▶ Resume" : T.i === 0 && !T.started ? "▶ Play lesson" : "▶ Play";
+  const playLabel = T.playing ? "❚❚ Pause" : T.vfail ? "▶ Play" : Voice.waiting || Voice.paused ? "▶ Resume" : T.i === 0 && !T.started ? "▶ Play lesson" : "▶ Play";
   return `<div class="teach">
 <div class="tboard" id="tboard">${board(boardAt(T.i))}</div>
 <div class="tside">
@@ -20,6 +21,7 @@ function teachHTML() {
   ${T.why && st.why ? `<div class="twhy"><b>Why?</b> ${mathHTML(st.why)}</div>` : ""}
   <div id="tcheck">${ck && T.checks[T.i] ? qHTML({scratch: false}) + checkBarHTML() : ""}</div>
 </div>
+${T.vfail ? `<div class="vfail" role="alert"><b>The voice didn't start.</b> Tap ▶ Play to try again. Still quiet? Turn the volume up, and check that Silent Mode is off: swipe down from the top-right corner for Control Center. <div class="row"><a class="btn ghost sm" href="#/voice">Open Voice check</a></div></div>` : ""}
 <div class="tbar">
   <button type="button" class="btn ghost sm" data-act="t-back" aria-label="Back one step"${T.i === 0 ? " disabled" : ""}>⏮ Back</button>
   <button type="button" class="btn sm" data-act="t-play">${playLabel}</button>
@@ -31,7 +33,7 @@ function teachHTML() {
   <button type="button" class="btn ghost sm" data-act="t-alt">${T.alt ? "Back to the lesson" : "Explain it another way"}</button>
 </div>
 <div class="tdots">${T.steps.map((s, k) => `<button type="button" class="tdot${k === T.i ? " on" : k < T.i ? " past" : ""}" data-tgo="${k}" aria-label="Step ${k + 1}: ${esc(PARTS[s.part] || "")}"></button>`).join("")}</div>
-${Voice.ok ? "" : '<p class="meta">No speech voice on this device: read the captions and tap Next.</p>'}
+${Voice.ok ? (Voice.hasPremium() ? "" : '<div class="row vnote"><span class="meta">No Premium voice on this iPad yet.</span><a class="btn ghost sm" href="#/voice">Get the natural Premium voice</a></div>') : '<p class="meta">No speech voice on this device: read the captions and tap Next.</p>'}
 </div>`;
 }
 function checkBarHTML() {
@@ -52,9 +54,16 @@ function teachGo(i, speak) {
 }
 function teachSpeak() {
   const i = T.i, st = T.steps[i];
-  T.playing = true; T.started = true; teachRender();
-  const said = Voice.play([st.say], k => { if (k === -2) { T.playing = false; teachRender(); } }, () => teachStepDone(i));
+  T.playing = true; T.started = true; T.quiet = false; T.vfail = false; teachRender();
+  const said = Voice.play([st.say], k => {
+    if (k === -2) { T.playing = false; teachRender(); }                         // the iPad hid the page
+    if (k === -3) { T.playing = false; T.vfail = true; teachRender(); }         // the voice didn't start: say so, don't move on
+  }, () => teachStepDone(i));
   if (!said) { T.playing = false; teachRender(); }
+}
+// A lesson starts talking as soon as it opens, unless the student turned that off in Settings.
+function teachAuto() {
+  if (CUR === "teach" && T && !T.started && !T.playing && !T.quiet && !T.finished && Voice.ok && S.set.autoplay !== false) teachSpeak();
 }
 function teachStepDone(i) {
   if (!T || T.i !== i || !T.playing) return;
@@ -72,16 +81,17 @@ function teachFinish() {
 }
 Object.assign(ACT, {
   "t-play": () => {
-    if (T.playing) { Voice.pause(); T.playing = false; teachRender(); }
-    else if (Voice.paused || Voice.waiting) { T.playing = true; Voice.resume(); teachRender(); }
-    else teachSpeak();
+    if (T.playing) { Voice.pause(); T.playing = false; T.quiet = true; teachRender(); }
+    else if ((Voice.paused || Voice.waiting) && !T.vfail) { T.playing = true; T.quiet = false; Voice.resume(); teachRender(); }
+    else { Voice.forget(); teachSpeak(); }
   },
-  "t-next": () => { Voice.stop(); if (T.i >= T.steps.length - 1) teachFinish(); else teachGo(T.i + 1, T.playing || T.started); },
-  "t-back": () => { Voice.stop(); teachGo(T.i - 1, T.playing); },
+  // Next and Back read the new step aloud, unless the student paused the voice on purpose
+  "t-next": () => { Voice.stop(); if (T.i >= T.steps.length - 1) teachFinish(); else teachGo(T.i + 1, !T.quiet); },
+  "t-back": () => { Voice.stop(); teachGo(T.i - 1, !T.quiet); },
   "t-replay": () => { Voice.stop(); teachSpeak(); },
   "t-cap": () => { S.set.captions = S.set.captions === false; save(); teachRender(); },
   "t-why": () => { T.why = true; Voice.stop(); T.playing = false; teachRender(); Voice.play([T.steps[T.i].why]); },
-  "t-alt": () => { Voice.stop(); const id = T.lesson; teachStart(id, !T.alt); teachGo(0, false); },
+  "t-alt": () => { Voice.stop(); const id = T.lesson, quiet = T.quiet; teachStart(id, !T.alt); T.quiet = quiet; teachGo(0, !quiet); },
   "t-again": () => { teachStart(T.lesson, false); teachGo(0, true); },
   "t-check": () => {
     const g = grade(Q.it, Q.r);

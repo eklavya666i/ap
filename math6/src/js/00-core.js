@@ -39,7 +39,7 @@ const fresh = () => ({
   v: 1, upd: 0, name: "", days: {}, xp: 0, coins: 0, coinRem: 0,
   L: {}, att: [], mist: {}, fixed: 0, tests: [], badges: {}, quests: null, pbs: {}, facts: {}, explore: {types: {}, another: 0},
   streak: {freezes: 0, used: [], lastRun: 0}, last: null, boss: {}, wslevel: 0, wsrun: 0,
-  set: {voice: {uri: null, rate: 1}, autoRead: false, sound: true, calm: false, timer: "always", speed: true, added: true, current: 1, pin: null, rest: []},
+  set: {voice: {uri: null, rate: 1}, autoplay: true, autoRead: false, sound: true, calm: false, timer: "always", speed: true, added: true, current: 1, pin: null, rest: []},
   bk: null
 });
 let S = fresh();

@@ -1,6 +1,6 @@
 /* Math 6: keeps a full copy of the app on the device so it works offline.
    The version changes with every build, which replaces the old copy the next time the app opens online. */
-const CACHE = 'math6-d338c57c7e02';
+const CACHE = 'math6-3f57e7315153';
 const FILES = ["./","index.html","manifest.webmanifest","icon-180.png","icon-192.png","icon-512.png","icon-maskable-512.png"];
 
 /* Safari will not use a redirected response for a page served from a service worker, so store a clean copy. */

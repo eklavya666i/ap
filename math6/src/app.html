@@ -99,6 +99,12 @@ h4{margin:12px 0 6px;font-size:15px;color:var(--soft)}
 .tdot::after{content:"";position:absolute;left:4px;right:4px;top:16px;height:12px;border-radius:6px;background:var(--line)}
 .tdot.past::after{background:var(--accentbg)}.tdot.on::after{background:var(--accent)}
 .done-card{border:2px solid var(--ok)}
+.vfail{grid-column:1/-1;padding:12px 14px;border-radius:12px;border-left:5px solid var(--pen);background:var(--penbg)}
+.tips{margin:8px 0 0;padding-left:1.3em}.tips li{margin:4px 0}
+.premhelp{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--accentbg)}.premhelp p{margin:6px 0}
+.vnote{grid-column:1/-1;margin-top:0}
+details summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700;list-style:none}
+details summary::-webkit-details-marker{display:none}details summary::before{content:"▸";margin-right:8px;color:var(--accent)}details[open] summary::before{content:"▾"}
 /* board models */
 .bw{text-align:center}.bw-big{font:700 clamp(24px,3.6vw,34px)/1.3 "Source Serif 4",Georgia,serif}.bw-small{color:var(--soft);margin-top:8px;font-size:18px}
 .beq{font:600 clamp(20px,3vw,28px)/1.5 "Source Serif 4",Georgia,serif;text-align:center}
