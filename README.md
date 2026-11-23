@@ -1,6 +1,6 @@
 # AP Practice Apps
 
-Four offline iPad apps. Each saves its own progress and works without a connection once installed.
+Offline iPad apps. Each saves its own progress and works without a connection once installed.
 
 | App | Open it |
 |---|---|
@@ -8,6 +8,7 @@ Four offline iPad apps. Each saves its own progress and works without a connecti
 | AP Cybersecurity | https://eklavya666i.github.io/ap/cyber/ |
 | SAT Daily | https://eklavya666i.github.io/ap/sat/ |
 | Algebra 2: Rational Expressions (4.3–4.5) | https://eklavya666i.github.io/ap/alg2-rational/ |
+| Algebra 2: Topic 4 Prep (Rational Functions) | https://eklavya666i.github.io/ap/alg2-topic4/ |
 
 **AP World History: Modern.** 954 AP-style questions across all nine units, with an explanation for every answer choice. It has 45 mock quizzes (5 per unit), topic drills, a mixed mock weighted like the exam, practice and timed exam modes, and saved progress.
 
@@ -29,6 +30,13 @@ Four offline iPad apps. Each saves its own progress and works without a connecti
 - a 15-question, 25-minute test sim
 - all 12 problems from the 4.3–4.5 review sheet, solved step by step
 
+**Topic 4 Prep.** The full Algebra 2 Topic 4 test review: inverse variation, the reciprocal function and its transformations, key features and graphs of rational functions (holes, asymptotes, intercepts, end behavior), plus everything in Rational Expressions Prep. It is a separate app with its own saved progress, so progress in Rational Expressions Prep is kept. It has:
+- 11 lessons with step-through worked examples and a Listen button
+- 231 practice questions (54 easy, 110 medium, 67 hard), each with a worked solution and an explanation for every wrong choice; graph questions are drawn on a grid
+- every problem from the Topic 4 test review, as practice questions and solved step by step, alongside the 4.3–4.5 review sheet
+- speed drills with a Functions focus (asymptotes, holes, inverse variation, horizontal asymptotes)
+- a 20-question, 30-minute test sim weighted like the Topic 4 review
+
 ## Put an app on an iPad
 
 1. Open the app's link in Safari.
@@ -37,7 +45,7 @@ Four offline iPad apps. Each saves its own progress and works without a connecti
 
 Each app gets its own icon. Progress is saved on each device, inside the app. Deleting the icon deletes that device's progress.
 
-If the Cyber, SAT or Rational Expressions link shows World History the first time on an iPad that already has World History installed, wait a few seconds and reload the page once.
+If the Cyber, SAT, Rational Expressions or Topic 4 link shows World History the first time on an iPad that already has World History installed, wait a few seconds and reload the page once.
 
 ## Updating
 
