@@ -1,0 +1,13 @@
+{
+  "name": "english10h-src",
+  "private": true,
+  "description": "Builds English 10H (Honors Lit Analysis & Composition 2) and checks every question and the draft checker.",
+  "scripts": {
+    "build": "node build.js",
+    "test": "node test.js"
+  },
+  "devDependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/source-serif-4": "^5.3.1"
+  }
+}

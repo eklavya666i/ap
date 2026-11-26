@@ -9,6 +9,7 @@ Offline iPad apps. Each saves its own progress and works without a connection on
 | SAT Daily | https://eklavya666i.github.io/ap/sat/ |
 | Algebra 2: Rational Expressions (4.3–4.5) | https://eklavya666i.github.io/ap/alg2-rational/ |
 | Algebra 2: Topic 4 Prep (Rational Functions) | https://eklavya666i.github.io/ap/alg2-topic4/ |
+| English 10H (Honors Lit Analysis & Composition 2) | https://eklavya666i.github.io/ap/english10/ |
 
 **AP World History: Modern.** 954 AP-style questions across all nine units, with an explanation for every answer choice. It has 45 mock quizzes (5 per unit), topic drills, a mixed mock weighted like the exam, practice and timed exam modes, and saved progress.
 
@@ -37,6 +38,15 @@ Offline iPad apps. Each saves its own progress and works without a connection on
 - speed drills with a Functions focus (asymptotes, holes, inverse variation, horizontal asymptotes)
 - a 20-question, 30-minute test sim weighted like the Topic 4 review
 
+**English 10H.** Honors English 10 at Issaquah High (Honors Lit Analysis & Composition 2), built around the IHS unit order. Phase 1 covers Unit 4, Lord of the Flies and critical lenses, plus the writing tools for every unit. It has:
+- 12 chapter guides with summaries, key events, symbols to watch, quote hunts and seminar questions, hidden past the chapter Ira has read
+- 96 reading checks, 27 lens questions, a terms quiz from a 74-term glossary, a 30-question timed unit test, and My misses
+- 9 critical lenses applied to the novel; character, symbol and theme trackers
+- assignments planned day by day, a prompt decoder, thesis and outline builders, a Quote Log with MLA citations, seminar prep
+- 6 essay guides with rubrics and model paragraphs, 28 writing drills, and 8 timed writes
+- an offline draft checker that marks thesis, evidence, citation, commentary and style problems in the draft, rubric self-scoring, and a feedback-only hand-off to Claude with an AI-use log
+- Coach: what to do next and why; review cards, daily goals, streaks, badges, backup and a parent summary
+
 ## Put an app on an iPad
 
 1. Open the app's link in Safari.
@@ -45,7 +55,7 @@ Offline iPad apps. Each saves its own progress and works without a connection on
 
 Each app gets its own icon. Progress is saved on each device, inside the app. Deleting the icon deletes that device's progress.
 
-If the Cyber, SAT, Rational Expressions or Topic 4 link shows World History the first time on an iPad that already has World History installed, wait a few seconds and reload the page once.
+If the Cyber, SAT, Rational Expressions, Topic 4 or English 10H link shows World History the first time on an iPad that already has World History installed, wait a few seconds and reload the page once.
 
 ## Updating
 
