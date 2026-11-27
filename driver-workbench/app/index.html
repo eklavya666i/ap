@@ -123,6 +123,11 @@
 <label>Carry<select data-param="cview"><option value="hit">As hit in GSPro</option><option value="sea">At sea level</option></select></label>
 <p class="wb-note">The golfer is picked at the top. These apply to every view; Imported files on the import station always lists everything. Club and session-type filters come with per-club trends.</p>
 </div>
+<section id="command" data-only="analysis" data-view="command">
+<h2>Command center</h2>
+<div class="wb-cmd" data-draw="cmd"></div>
+</section>
+
 <section id="dashboard" data-only="analysis" data-view="command">
 <h2>Driver dashboard</h2>
 <p class="wb-note">Weekly averages for <b data-draw="gname">—</b> by program week. Shaded bars show the spread of shots around each average in imported weeks; green bands are launch and spin windows for this golfer’s club speed (<b data-draw="win" data-w="l_lo">—</b>–<b data-draw="win" data-w="l_hi">—</b>°, <b data-draw="win" data-w="s_lo">—</b>–<b data-draw="win" data-w="s_hi">—</b> rpm); the dashed line is the target smash. A hollow red point is a week whose numbers don’t add up.</p>
@@ -435,6 +440,7 @@
 <script src="import.js"></script>
 <script src="rounds.js"></script>
 <script src="shots.js"></script>
+<script src="command.js"></script>
 <script>dash.start();</script>
 </body>
 </html>

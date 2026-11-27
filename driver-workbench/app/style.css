@@ -287,3 +287,14 @@ input:not([type=checkbox]):not([type=radio]),select{min-height:44px}
 .wb-tagbox summary{cursor:pointer;font-weight:600}
 .wb-tag-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 .wb-queue{margin-top:16px}
+.wb-cmd{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.wb-cmd-card h3{margin:0 0 6px;font-size:16px}
+.wb-cmd-week{margin:0 0 4px;color:var(--color-fg-muted);font-size:14px}
+.wb-cmd-list{margin:0;padding-left:20px;line-height:1.5}
+.wb-cmd-alerts{border-color:var(--color-warn)}
+.wb-cmd-fair svg{width:100%;max-width:360px;height:auto;display:block;margin:4px auto}
+.wb-fw-band{fill:var(--color-ok);opacity:.14}
+.wb-fw-line{stroke:var(--color-fg-muted);stroke-dasharray:3 4}
+.wb-fw-in{fill:var(--series-1)}
+.wb-fw-out{fill:none;stroke:var(--color-warn);stroke-width:1.8}
+.wb-fw-label{fill:var(--color-fg-muted);font-size:11px}

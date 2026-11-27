@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -226,6 +226,10 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   check(carrySum() < hitSum, 'sea-level view restates carry');
   rangeSel.value = 'all'; rangeSel.dispatchEvent(new w.Event('change')); cvSel.value = 'hit'; cvSel.dispatchEvent(new w.Event('change'));
   await sleep(150);
+
+  // Command center: what's happening, how it's moving, what needs to happen, the week's fairway.
+  const cmd = doc.querySelector('[data-draw="cmd"]').textContent;
+  check(cmd.includes('What’s happening') && cmd.includes('How it’s moving') && cmd.includes('What needs to happen') && /\d+ of \d+ drives in week .* finish inside a 30-yard fairway/.test(cmd) && cmd.includes('Last import'), 'command center shows the week, the trend, the plan, the fairway and imports');
 
   // Every chart has a table view and Copy as CSV.
   w.WB.setMode('analysis');
