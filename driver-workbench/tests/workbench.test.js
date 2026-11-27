@@ -203,6 +203,23 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   await sleep(200);
   check(saved.some((k) => M.docs.has(k) && M.docs.get(k).conditions && M.docs.get(k).conditions.altitude_ft === 0 && M.docs.get(k).conditions.ball !== undefined), 'edits one session’s conditions after import');
 
+  // Filter row: a date range and a sea-level view scope the analysis; Imported files still lists everything.
+  w.WB.setMode('analysis');
+  await sleep(150);
+  const trendRows = () => w.dash.data('trend').data;
+  const allN = trendRows().length, carrySum = () => trendRows().reduce((t, r) => t + (r.carry || 0), 0), hitSum = carrySum();
+  const rangeSel = doc.querySelector('select[data-param="range"]'), cvSel = doc.querySelector('select[data-param="cview"]');
+  rangeSel.value = '2'; rangeSel.dispatchEvent(new w.Event('change'));
+  await sleep(150);
+  check(allN > 2 && trendRows().length <= 2 && w.dash.data('sessionrows').data.length >= allN, 'date range scopes the analysis, not Imported files');
+  cvSel.value = 'sea'; cvSel.dispatchEvent(new w.Event('change'));
+  await sleep(150);
+  rangeSel.value = 'all'; rangeSel.dispatchEvent(new w.Event('change'));
+  await sleep(150);
+  check(carrySum() < hitSum, 'sea-level view restates carry');
+  rangeSel.value = 'all'; rangeSel.dispatchEvent(new w.Event('change')); cvSel.value = 'hit'; cvSel.dispatchEvent(new w.Event('change'));
+  await sleep(150);
+
   // Every chart has a table view and Copy as CSV.
   w.WB.setMode('analysis');
   await sleep(200);

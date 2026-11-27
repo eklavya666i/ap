@@ -263,3 +263,6 @@ a:focus-visible,summary:focus-visible,textarea:focus-visible,[tabindex]:focus-vi
 .wb-nav a{display:inline-flex;align-items:center}
 input:not([type=checkbox]):not([type=radio]),select{min-height:44px}
 }
+.wb-filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:12px 0}
+.wb-filters label{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.wb-filters .wb-note{flex-basis:100%;margin:0}

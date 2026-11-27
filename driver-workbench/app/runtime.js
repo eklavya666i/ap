@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var datasets = {}, calcs = {}, cache = {}, draws = {}, onDataFns = [];
-  var DEFAULTS = {basis: 'logged', smash_target: 1.47, aoa: 3.5, weeks: 8, gain: 0.3, temp: 70, turf: 'normal', bagspan: 'last4'};
+  var DEFAULTS = {basis: 'logged', smash_target: 1.47, aoa: 3.5, weeks: 8, gain: 0.3, temp: 70, turf: 'normal', bagspan: 'last4', range: 'all', cview: 'hit'};
   var params = Object.assign({}, DEFAULTS);
   var store = function (k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } return null; };
   try {
@@ -15,15 +15,24 @@
   var golfers = [], configLoaded = false, configDoc = null, conditionsDoc = null, selected = store('wb-golfer'), raw = {}, subs = {};
   var ID_RE = /^[a-z0-9][a-z0-9_-]{0,30}$/;
 
+  /* The filter row's date range: the last N program weeks of the golfer's data, typed and imported together. */
+  function inRange(list) {
+    var n = Number(params.range);
+    if (!(n > 0) || !Array.isArray(list)) return list;
+    var g = selected && raw[selected], top = -Infinity;
+    if (g) ((g.imports || []).concat(g.typed || [])).forEach(function (x) { if (Number.isInteger(x.week) && x.week > top) top = x.week; });
+    if (!isFinite(top)) return list;
+    return list.filter(function (x) { return Number.isInteger(x.week) && x.week > top - n; });
+  }
   function golferData(id) {
-    if (!configLoaded) return {status: 'loading', data: null};
     var g = selected && raw[selected];
     if (!g) return {status: 'ok', data: []};
-    var v = g[id];
-    return v === null || v === undefined ? {status: 'loading', data: null} : {status: 'ok', data: v};
+    var v = g[id === 'imports_all' ? 'imports' : id];
+    if (v === null || v === undefined) return {status: 'loading', data: null};
+    return {status: 'ok', data: id === 'imports_all' ? v : inRange(v)};
   }
   function data(id) {
-    if (id === 'typed' || id === 'imports') return golferData(id);
+    if (id === 'typed' || id === 'imports' || id === 'imports_all') return golferData(id);
     if (datasets[id]) return datasets[id];
     var c = calcs[id];
     if (!c) return {status: 'missing', data: []};

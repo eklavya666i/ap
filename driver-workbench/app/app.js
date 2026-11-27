@@ -30,7 +30,7 @@ function importWeeksOf(imports, target) {
 dash.calc('csvweeks', {inputs: ['imports'], fn: (imports) => importWeeksOf(imports, Number(dash.params().smash_target))});
 
 dash.calc('sessionrows', {
-  inputs: ['imports'],
+  inputs: ['imports_all'],
   fn: (imports) => {
     const target = Number(dash.params().smash_target);
     return imports.map((i) => {
@@ -816,14 +816,16 @@ const fmtD = (v, d) => (v === null || v === undefined ? '—' : d === 0 ? Math.r
 const withUnit = (txt, unit) => (txt === '—' ? txt : unit === '°' ? txt + '°' : unit ? txt + ' ' + unit : txt);
 
 dash.calc('trend', {
-  inputs: ['weeks', 'csvweeks', 'checks'],
-  fn: (weeks, csv, checks) => {
+  inputs: ['weeks', 'csvweeks', 'checks', 'altitude'],
+  fn: (weeks, csv, checks, alt) => {
     const c = new Map(csv.map((x) => [x.week, x])), k = new Map(checks.map((x) => [x.week, x]));
+    const sea = dash.params().cview === 'sea', ratio = new Map(alt.map((a) => [a.week, a.carry > 0 ? a.carry_sea / a.carry : 1]));
     return weeks.map((w) => {
       const cw = c.get(w.week) || {}, ck = k.get(w.week) || {};
       const club = num(w.club_speed), ball = num(w.ball_speed);
       const o = {week: w.week, flagged: ck.verdict === 'Doesn’t add up', club, ball, smash: club && ball !== null ? ball / club : null, launch: num(w.launch), spin: num(w.spin), carry: num(w.carry)};
       ['sd_club', 'sd_ball', 'sd_smash', 'sd_launch', 'sd_spin', 'sd_carry'].forEach((s) => { o[s] = cw[s] === undefined ? null : cw[s]; });
+      if (sea && ratio.has(w.week)) { const f = ratio.get(w.week); if (o.carry !== null) o.carry *= f; if (o.sd_carry !== null) o.sd_carry *= f; }
       return o;
     });
   },
@@ -903,8 +905,11 @@ function ringOf(pts) {
   return {mx, my, width: 2 * Math.sqrt(a * a * c * c + b * b * s * s), depth: 2 * Math.sqrt(a * a * s * s + b * b * c * c), path, n};
 }
 dash.calc('dispweeks', {
-  inputs: ['csvweeks'],
-  fn: (csv) => csv.map((c) => ({week: c.week, pts: c.pts.filter((p) => p.used && p.carry !== null && p.offline !== null)}))
+  inputs: ['csvweeks', 'altitude'],
+  fn: (csv, alt) => csv.map((c) => {
+    const a = dash.params().cview === 'sea' ? alt.find((x) => x.week === c.week) : null, f = a && a.carry > 0 ? a.carry_sea / a.carry : 1;
+    return {week: c.week, pts: c.pts.filter((p) => p.used && p.carry !== null && p.offline !== null).map((p) => (f === 1 ? p : Object.assign({}, p, {carry: p.carry * f})))};
+  })
     .filter((c) => c.pts.length >= 3).slice(-2).map((c) => Object.assign(c, {ring: ringOf(c.pts.map((p) => ({x: p.offline, y: p.carry})))})),
 });
 dash.draw('dispchart', (el) => {
