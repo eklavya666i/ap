@@ -40,7 +40,7 @@
       const eta = med !== null && med < GOAL && slope > 0.2 ? Math.ceil((GOAL - med) / slope) : null;
       /* Club speed that reaches 260 with the target smash and the best launch and spin for it (bisection on the model). */
       const smT = Number(p.smash_target) || 1.47, aoa = Number(p.aoa) || 0;
-      const totalAt = (cs) => { const b = BF.best(cs * smT, cs, aoa, std); return b && b.total ? b.total : BF.shot(cs * smT, b ? b.launch : 12, b ? b.spin : 2500, std).total; };
+      const totalAt = (cs) => { const b = BF.best(cs * smT, cs, aoa, std); return (WB.fitShot || BF.shot)(cs * smT, b ? b.launch : 12, b ? b.spin : 2500, std).total; };
       let lo = 60, hi = 130;
       for (let i = 0; i < 18; i++) { const mid = (lo + hi) / 2; if (totalAt(mid) < GOAL) lo = mid; else hi = mid; }
       return {median: med, n: last2.length, provisional: last2.length < MIN_N, gap: med === null ? null : GOAL - med, ls, lsN: last2.length, corridor, series, slope, eta, speedFor: hi, smT,

@@ -77,4 +77,43 @@
       'If spin still reads low, fit the flight model to the outdoor carry and use it for the what-ifs.'].forEach((s) => steps.append(el('li', '', s)));
     box.append(el('h3', '', 'The check, step by step'), steps);
   });
+
+  /* FR-31: fit the flight model to GSPro. The carry ratio (GSPro ÷ model) is fitted against spin by least squares over
+     the golfer's drives in range; what-ifs then use the fitted carry. Spin outside the measured range is held at the edge. */
+  let memo = {key: null, val: null};
+  dash.calc('modelfit', {
+    inputs: ['csvweeks'],
+    fn: (csv) => {
+      const c = WB.conditions(), g = WB.golfer(), pts = [];
+      csv.forEach((w) => w.pts.forEach((p) => { if (p.used && ['ball_speed', 'launch', 'spin', 'carry'].every((k) => typeof p[k] === 'number') && p.carry > 50 && p.spin > 0) pts.push([p.ball_speed, p.launch, p.spin, p.carry, typeof w.alt === 'number' ? w.alt : c.altitude_ft]); }));
+      if (pts.length < 20) return null;
+      const step = Math.ceil(pts.length / 300), sample = pts.filter((_, i) => i % step === 0);
+      const key = [g && g.id, sample.length, c.temp_f, c.altitude_ft, sample.slice(0, 4).join('|'), sample.slice(-4).join('|')].join(':');
+      if (memo.key === key) return memo.val;
+      const rows = sample.map(([bs, la, sp, carry, alt]) => { const m = BF.shot(bs, la, sp, {alt, temp: c.temp_f, turf: 'normal'}).carry; return {x: (sp - 1500) / 1000, sp, carry, m, r: carry / m}; }).filter((q) => q.m > 20 && isFinite(q.r));
+      if (rows.length < 20) return null;
+      const n = rows.length, mx = rows.reduce((t, q) => t + q.x, 0) / n, my = rows.reduce((t, q) => t + q.r, 0) / n;
+      const sxx = rows.reduce((t, q) => t + (q.x - mx) * (q.x - mx), 0), b = sxx > 1e-6 ? rows.reduce((t, q) => t + (q.x - mx) * (q.r - my), 0) / sxx : 0, a = my - b * mx;
+      const sps = rows.map((q) => q.sp).sort((u, v) => u - v), lo = sps[Math.floor(n * 0.05)], hi = sps[Math.ceil(n * 0.95) - 1];
+      const k = (sp) => Math.max(0.6, Math.min(1.6, a + b * (Math.min(hi, Math.max(lo, sp)) - 1500) / 1000));
+      const err0 = med(rows.map((q) => Math.abs(q.carry - q.m))), err1 = med(rows.map((q) => Math.abs(q.carry - q.m * k(q.sp)))), bias0 = med(rows.map((q) => q.carry - q.m));
+      memo = {key, val: {a, b, lo, hi, n, err0, err1, bias0, k1500: k(1500), k2500: k(2500)}};
+      return memo.val;
+    },
+  });
+  WB.fitShot = function (bs, la, sp, cond) {
+    const m = BF.shot(bs, la, sp, cond), d = dash.data('modelfit');
+    if (d.status !== 'ok' || !d.data) return m;
+    const f = d.data, s = Math.min(f.hi, Math.max(f.lo, sp)), k = Math.max(0.6, Math.min(1.6, f.a + f.b * (s - 1500) / 1000)), carry = m.carry * k;
+    return Object.assign({}, m, {carry, total: m.total + (carry - m.carry), fitted: true});
+  };
+  dash.draw('modelfit', (box) => {
+    box.replaceChildren();
+    const g = WB.golfer(), d = dash.data('modelfit');
+    if (!g || d.status !== 'ok') return;
+    if (!d.data) { box.append(el('p', 'wb-note', 'The fit needs 20 or more drives with ball speed, launch, spin and carry in the date range.')); return; }
+    const f = d.data, r = (v) => Math.round(v), x = (v) => '×' + v.toFixed(2);
+    box.append(el('p', '', `Fitted on ${f.n} of ${g.name}'s drives. Before fitting, the model's carry was off by a median ${r(f.err0)} yd (GSPro ${f.bias0 >= 0 ? 'longer' : 'shorter'} by ${r(Math.abs(f.bias0))} yd); after fitting, ${r(f.err1)} yd.`));
+    box.append(el('p', 'wb-note', `The correction is ${x(f.k1500)} at 1,500 rpm and ${x(f.k2500)} at 2,500 rpm; spin outside the measured ${r(f.lo).toLocaleString('en-US')}–${r(f.hi).toLocaleString('en-US')} rpm is held at the edge. The Realistic look and the goal tracker's speed for 260 use the fitted model. Once outdoor carry is measured (the spin check's step 3), the fit can move to outdoor carry.`));
+  });
 })();

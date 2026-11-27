@@ -243,6 +243,10 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   const sc = doc.querySelector('[data-draw="spincheck"]');
   check(sc.querySelector('table') && sc.querySelector('tbody tr') && /rpm/.test(sc.textContent) && sc.textContent.includes('The check, step by step'), 'spin check lists clubs against a typical band');
 
+  // The flight model is fitted to GSPro's carry, and the what-ifs use the fitted model.
+  const mf = doc.querySelector('[data-draw="modelfit"]').textContent;
+  check(/Fitted on \d+ of .* drives/.test(mf) && w.WB.fitShot(130, 13, 2400, {alt: 0, temp: 75, turf: 'normal'}).fitted === true, 'fits the flight model to GSPro carry');
+
   // Every chart has a table view and Copy as CSV.
   w.WB.setMode('analysis');
   await sleep(200);

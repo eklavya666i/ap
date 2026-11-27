@@ -127,7 +127,7 @@ dash.calc('scenario', {
     const flagged = dev !== null && Math.abs(dev - ball / club) > TOL;
     const rows = [];
     const add = (step, label, cs, sm, L, s) => {
-      const f = BF.shot(cs * sm, L, s, air);
+      const f = (WB.fitShot || BF.shot)(cs * sm, L, s, air);
       rows.push({step, label, club_speed: rnd(cs, 1), smash: rnd(sm, 2), ball_speed: rnd(cs * sm, 1), launch: rnd(L, 1), spin: Math.round(s / 5) * 5, carry: Math.round(f.carry), total: Math.round(f.total), week: last.week, delivery_from: from, temp});
     };
     add('logged', 'As logged', club, ball / club, launch, spin);
@@ -137,7 +137,7 @@ dash.calc('scenario', {
     const smT = Math.max(sm0, Number(p.smash_target));
     add('strike', 'Strike to target smash', club, smT, launch, spin);
     const fit = BF.best(club * smT, club, Number(p.aoa), air);
-    const keep = BF.shot(club * smT, launch, spin, air).total >= BF.shot(club * smT, fit.launch, fit.spin, air).total;
+    const shot = WB.fitShot || BF.shot, keep = shot(club * smT, launch, spin, air).total >= shot(club * smT, fit.launch, fit.spin, air).total;
     add('attack', 'Plus target attack angle', club, smT, keep ? launch : fit.launch, keep ? spin : fit.spin);
     let gain = 0;
     for (let k = 0; k < Number(p.weeks); k++) gain += Number(p.gain) * Math.pow(DECAY, k);
