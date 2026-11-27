@@ -1474,3 +1474,18 @@ function chartTable(el, title, cols, rows) {
   bar.__data = {title, cols, rows};
   bar.__render();
 }
+
+
+/* View tabs (the dashboards spec's views). A link to a section's #id opens the view that holds it. */
+(function () {
+  document.querySelectorAll('[data-goto]').forEach((b) => b.addEventListener('click', () => { WB.setView(b.getAttribute('data-goto')); window.scrollTo({top: 0}); }));
+  const openHash = () => {
+    const id = decodeURIComponent((location.hash || '').slice(1));
+    const t = id && document.getElementById(id);
+    const holder = t && (t.matches('[data-view]') ? t : t.closest('[data-view]'));
+    if (holder && holder.getAttribute('data-view') !== WB.view() && WB.view() !== 'all') { WB.setView(holder.getAttribute('data-view')); setTimeout(() => t.scrollIntoView(), 50); }
+  };
+  window.addEventListener('hashchange', openHash);
+  openHash();
+  WB.applyMode();
+})();

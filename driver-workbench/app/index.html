@@ -33,7 +33,7 @@
 <div class="wb-card"><div class="wb-lab">Smash, ball ÷ club</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_calc"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_calc">—</div></div>
 <div class="wb-card"><div class="wb-lab">Smash on the device</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_device"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_device">—</div></div>
 </div>
-<nav class="wb-nav" aria-label="Sections"><a href="#dashboard">Dashboard</a><a href="#bag">Bag</a><a href="#rounds">Rounds</a><a href="#shots">Shots</a><a href="#consistency">Consistency</a><a href="#check">Check</a><a href="#realistic">Realistic look</a><a href="#outlook">Outlook</a><a href="#topics">Topics</a><a href="#history">History</a><a href="#log">Log by hand</a><a href="#capture">Data to capture</a><a href="#refs">Benchmarks</a><a href="#backlog">Backlog</a></nav>
+<nav class="wb-nav wb-views" aria-label="Views" data-only="analysis"><button type="button" data-goto="command">Command center</button><button type="button" data-goto="progress">Progress and forecast</button><button type="button" data-goto="driver">Driver lab</button><button type="button" data-goto="bag">Bag</button><button type="button" data-goto="rounds">Round journal</button><button type="button" data-goto="data">Data hub</button></nav>
 </div>
 <div data-only="ingest" hidden>
 <p class="wb-lede">Drop GSPro exports here on the GSPro PC. Analysis by player is on the iPad, or switch to Analysis above.</p>
@@ -123,7 +123,7 @@
 <label>Carry<select data-param="cview"><option value="hit">As hit in GSPro</option><option value="sea">At sea level</option></select></label>
 <p class="wb-note">The golfer is picked at the top. These apply to every view; Imported files on the import station always lists everything. Club and session-type filters come with per-club trends.</p>
 </div>
-<section id="dashboard" data-only="analysis">
+<section id="dashboard" data-only="analysis" data-view="command">
 <h2>Driver dashboard</h2>
 <p class="wb-note">Weekly averages for <b data-draw="gname">—</b> by program week. Shaded bars show the spread of shots around each average in imported weeks; green bands are launch and spin windows for this golfer’s club speed (<b data-draw="win" data-w="l_lo">—</b>–<b data-draw="win" data-w="l_hi">—</b>°, <b data-draw="win" data-w="s_lo">—</b>–<b data-draw="win" data-w="s_hi">—</b> rpm); the dashed line is the target smash. A hollow red point is a week whose numbers don’t add up.</p>
 <p class="wb-note" data-draw="alttext"></p>
@@ -146,7 +146,7 @@
 <div class="wb-card wb-dash3"><h3>Golfers side by side</h3><div data-draw="compare"></div></div>
 </section>
 
-<section id="bag" data-only="analysis">
+<section id="bag" data-only="analysis" data-view="bag">
 <h2>Whole bag</h2>
 <p class="wb-note">Every club in <b data-draw="gname">—</b>’s imported sessions: carry (dark), the spread of carry (the band), and roll out to total (light). Each gap is the carry difference to the next club down; tight gaps (under 7 yards) or wide ones (over 18, or 25 around the woods) are flagged. <span data-draw="bagnote"></span></p>
 <div class="wb-controls"><label>Sessions from<select data-param="bagspan"><option value="latest">The latest week</option><option value="last4">The last 4 weeks</option><option value="last12">The last 12 weeks</option><option value="all">All history</option></select></label></div>
@@ -158,7 +158,7 @@
 </table></div>
 </section>
 
-<section id="rounds" data-only="analysis">
+<section id="rounds" data-only="analysis" data-view="rounds">
 <h2>Rounds</h2>
 <p class="wb-lede">Notes from rounds and practice rounds for the golfer picked at the top: how each part went, what happened, what to work on, and a photo of the scorecard. Made for the phone, right after a round.</p>
 <form id="round-form" class="wb-card wb-write" autocomplete="off">
@@ -191,14 +191,14 @@
 <div data-draw="rounds"></div>
 </section>
 
-<section id="shots" data-only="analysis">
+<section id="shots" data-only="analysis" data-view="data">
 <h2>Shots</h2>
 <p class="wb-lede">Every shot behind the numbers. Pick a week, then a session, then a shot to see all its fields, the line it came from in the GSPro file, and its flight. The date range above applies.</p>
 <nav class="wb-crumbs" aria-label="Where you are" data-draw="crumbs"></nav>
 <div data-draw="drill"></div>
 </section>
 
-<section id="consistency" data-only="analysis">
+<section id="consistency" data-only="analysis" data-view="driver">
 <h2>Consistency from imported shots</h2>
 <p class="wb-note">Spread of <b data-draw="gname">—</b>’s driver shots in each imported week. Likely misreads and tops (a smash outside 1.00–1.56, launch outside −10° to 40°, or spin outside 500–8,000 rpm) are left out and counted. More than <b data-draw="const" data-c="left_warn">—</b> left out points to a setup problem with the monitor.</p>
 <p class="wb-note" id="cons-none" hidden>Import a GSPro CSV to see shot-by-shot consistency.</p>
@@ -214,7 +214,7 @@
 </div>
 </section>
 
-<section id="check" data-only="analysis">
+<section id="check" data-only="analysis" data-view="driver">
 <h2>Do the numbers add up?</h2>
 <p class="wb-note">Smash factor is ball speed ÷ club speed. When that differs from the device’s smash by more than <b data-draw="const" data-c="tol">—</b>, one of the three numbers was copied wrong or came from different swings.</p>
 <div class="wb-card wb-alert" id="cn-bad" hidden>
@@ -233,7 +233,7 @@
 </table></div>
 </section>
 
-<section id="realistic" data-only="analysis">
+<section id="realistic" data-only="analysis" data-view="driver">
 <h2>Realistic look at the latest week</h2>
 <p class="wb-note">Carry and total from a ball-flight model calibrated to TrackMan data, at the latest week’s club speed. Each step adds one fix to the one before it. Change the targets to see what each is worth.</p>
 <div class="wb-controls">
@@ -259,7 +259,7 @@
 <p class="wb-note">Launch and spin used before the attack-angle step: <span data-draw="asv">—</span>.</p>
 </section>
 
-<section id="outlook" data-only="analysis">
+<section id="outlook" data-only="analysis" data-view="progress">
 <h2>Speed and ball-speed outlook</h2>
 <p class="wb-note">Logged weeks, then the weeks ahead at the speed gain set above. Each week’s gain is <b data-draw="const" data-c="decay">—</b> of the week before, since speed programs tend to jump first and then plateau. The band runs from <b data-draw="const" data-c="band_lo">—</b> to <b data-draw="const" data-c="band_hi">—</b> of that gain. Projected ball speed ramps the strike from the starting smash to the target.</p>
 <div class="wb-grid2">
@@ -271,7 +271,7 @@
 <span data-draw="plstate"></span>
 </section>
 
-<section id="topics" data-only="analysis">
+<section id="topics" data-only="analysis" data-view="command">
 <h2>Topics to cover</h2>
 <p class="wb-note">In order of priority. Each status comes from <b data-draw="gname">—</b>’s latest week and the targets above.</p>
 <ol class="wb-topics">
@@ -301,7 +301,7 @@
 </ol>
 </section>
 
-<section id="history" data-only="analysis">
+<section id="history" data-only="analysis" data-view="progress">
 <h2>History</h2>
 <p class="wb-note">Every week for <b data-draw="gname">—</b>, typed or imported. A week with several sessions combines their driver shots; imported numbers win over typed ones. Weeks before week 1 show as 0 or below.</p>
 <p class="wb-note" id="log-empty" hidden>No weeks yet.</p>
@@ -313,7 +313,7 @@
 
 </section>
 
-<section id="log" class="wb-write" data-only="analysis">
+<section id="log" class="wb-write" data-only="analysis" data-view="data">
 <h2>Log a week by hand</h2>
 <p class="wb-note">For <b data-draw="gname">—</b>’s weeks without a CSV, or to add conditions and notes to an imported week. Enter averages from 10 or more swings. Saving the same week again replaces the typed row.</p>
 <form id="logform" class="wb-card">
@@ -353,7 +353,7 @@
 </form>
 </section>
 
-<section id="capture" data-only="analysis">
+<section id="capture" data-only="analysis" data-view="data">
 <h2>Data to capture each week</h2>
 <p class="wb-note">Marks show what <span data-draw="capweek">—</span> has, imported or typed. A GSPro CSV fills most of these; type the context by hand.</p>
 <div class="wb-grid2">
@@ -389,7 +389,7 @@
 </div>
 </section>
 
-<section id="refs" data-only="analysis">
+<section id="refs" data-only="analysis" data-view="data">
 <h2>Benchmarks</h2>
 <p class="wb-note">An earlier shot and published averages to compare against.</p>
 <div class="wb-scroll"><table class="wb-table" id="refs-table">
@@ -398,7 +398,7 @@
 </table></div>
 </section>
 
-<section id="backlog" data-only="analysis">
+<section id="backlog" data-only="analysis" data-view="data">
 <h2>Backlog</h2>
 <p class="wb-note">What comes next for the workbench, for both golfers. Change a status as work lands, or add an item.</p>
 <div data-draw="backlogrows"></div>
@@ -415,7 +415,7 @@
 </details>
 </section>
 
-<details class="wb-details" id="notes" data-only="analysis"><summary>How the numbers are worked out</summary>
+<details class="wb-details" id="notes" data-only="analysis" data-view="data"><summary>How the numbers are worked out</summary>
 <ul>
 <li>Smash factor is ball speed ÷ club speed. A week is flagged when that differs from the device’s smash by more than <b data-draw="const" data-c="tol">—</b>. For imported weeks, the speeds are averages of the driver shots that both speeds were read for.</li>
 <li>Carry and total come from a ball-flight model (drag, lift and spin decay, then bounce and roll) calibrated to TrackMan tour averages and TrackMan’s optimizer chart. Trust the changes more than the exact yards, which can be off by about 5 yards.</li>

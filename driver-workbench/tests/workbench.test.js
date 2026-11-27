@@ -88,6 +88,13 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   w.WB.setMode('ingest');
   await sleep(50);
   check(!doc.getElementById('import').hidden && doc.getElementById('dashboard').hidden, 'Import view shows the import station only');
+  w.WB.setMode('analysis');
+  w.WB.setView('bag');
+  await sleep(50);
+  check(doc.getElementById('dashboard').hidden && !doc.getElementById('bag').hidden && doc.querySelector('[data-goto="bag"]').getAttribute('aria-current') === 'page', 'views show one part of the analysis at a time');
+  w.WB.setView('all');
+  w.WB.setMode('ingest');
+  await sleep(50);
 
   const P = w.WB.csv;
   const range = P.parse([HDR, ...rows(3, 97, 1)].join('\n'));

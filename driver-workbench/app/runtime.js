@@ -179,8 +179,17 @@
   function applyMode() {
     var m = mode === 'ingest' ? 'ingest' : 'analysis';
     document.documentElement.setAttribute('data-mode', m);
-    document.querySelectorAll('[data-only]').forEach(function (el) { el.hidden = el.getAttribute('data-only') !== m; });
+    document.querySelectorAll('[data-only]').forEach(function (el) {
+      var v = el.getAttribute('data-view');
+      el.hidden = el.getAttribute('data-only') !== m || (!!v && view !== 'all' && v !== view);
+    });
+    document.querySelectorAll('[data-goto]').forEach(function (b) { if (b.getAttribute('data-goto') === view) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   }
+  /* The analysis views of the dashboards spec; "all" shows every section on one page. */
+  var VIEWS = ['command', 'progress', 'driver', 'bag', 'rounds', 'data', 'all'];
+  var view = VIEWS.indexOf(store('wb-view')) >= 0 ? store('wb-view') : 'command';
+  WB.view = function () { return view; };
+  WB.setView = function (v) { if (VIEWS.indexOf(v) < 0) return; view = v; store('wb-view', v); applyMode(); clearCache(); render(); };
   WB.mode = function () { return mode === 'ingest' ? 'ingest' : 'analysis'; };
   WB.setMode = function (m, keep) { mode = m; if (keep !== false) store('wb-mode', m); applyMode(); clearCache(); render(); };
   WB.applyMode = applyMode;
