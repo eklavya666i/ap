@@ -213,6 +213,43 @@
     drawHoles();
   });
 
+  /* Notes sent from a golfer's phone (the Golf notes app): a JSON file with rounds, added to the matching golfer's rounds. */
+  async function importNotes(data) {
+    if (!data || data.app !== 'driver-workbench-notes' || !Array.isArray(data.rounds)) return {ok: false, text: 'That file isn’t a Golf notes file.'};
+    const name = typeof data.golfer === 'string' ? data.golfer.trim().toLowerCase() : '';
+    const g = WB.golfers().find((x) => x.name.toLowerCase() === name) || WB.golfer();
+    if (!g) return {ok: false, text: 'Pick a golfer at the top first.'};
+    const have = new Set((WB.roundsFor(g.id) || []).map((r) => r.id));
+    let added = 0, skipped = 0, photos = 0;
+    for (const n of data.rounds.slice(0, 200)) {
+      if (!n || typeof n.id !== 'string' || !/^[A-Za-z0-9_-]{1,40}$/.test(n.id) || have.has(n.id)) { skipped++; continue; }
+      let card = null;
+      if (typeof n.photo === 'string' && /^data:image\/(jpeg|png|webp);base64,/.test(n.photo) && caps.assets) {
+        try { const up = await caps.assets.upload(await (await fetch(n.photo)).blob()); card = {asset: up.id}; photos++; } catch (e) { card = null; }
+      }
+      const ratings = {};
+      RATINGS.forEach(([k]) => { const v = intIn(n.ratings && n.ratings[k], 1, 5); if (v !== null) ratings[k] = v; });
+      const now = new Date().toISOString();
+      const body = {schema: 1, date: /^\d{4}-\d{2}-\d{2}$/.test(n.date) ? n.date : localDate(), course: String(n.course || '').slice(0, 80),
+        kind: KINDS.includes(n.kind) ? n.kind : KINDS[1], holes_played: 18, score: intIn(n.score, 18, 200), ratings,
+        what: String(n.what || '').slice(0, 4000), work_on: String(n.work_on || '').slice(0, 2000), card, holes: [],
+        created_at: typeof n.created_at === 'string' ? n.created_at.slice(0, 40) : now, updated_at: now, from: 'phone', by: String(data.golfer || '').slice(0, 30)};
+      try { await WB.save('golfers/' + g.id + '/rounds/' + n.id, body); added++; have.add(n.id); } catch (e) { skipped++; }
+    }
+    return {ok: true, text: `Added ${added} note${added === 1 ? '' : 's'} to ${g.name}'s rounds` + (photos ? ` with ${photos} photo${photos === 1 ? '' : 's'}` : '') + (skipped ? `; ${skipped} were already here or unreadable.` : '.')};
+  }
+  WB.importNotes = importNotes;
+  const imp = $('round-import');
+  if (imp) imp.addEventListener('change', async (ev) => {
+    const f = ev.target.files && ev.target.files[0];
+    ev.target.value = '';
+    if (!f) return;
+    let data = null;
+    try { data = JSON.parse(await f.text()); } catch (e) { data = null; }
+    const r = await importNotes(data);
+    say(r.text, r.ok);
+  });
+
   /* Save, edit, reset. */
   function reset() {
     form.reset();

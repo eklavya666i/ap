@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07140d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Golf notes">
+<title>Golf notes</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root{color-scheme:dark;--bg:#07140d;--p1:#0f2219;--p2:#132a1f;--line:#21402f;--ink:#e8f2ea;--ink2:#acc2b4;--turf:#2fbf71;--flag:#ffd23f;--warn:#fbb315;--crit:#f0605f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;padding:max(16px,env(safe-area-inset-top)) 16px 40px}
+main{max-width:560px;margin:0 auto}
+h1{font-size:28px;margin:0 0 4px}
+h2{font-size:18px;margin:22px 0 8px}
+p{margin:6px 0}
+.muted{color:var(--ink2);font-size:14px}
+.card{background:var(--p1);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}
+label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--ink2)}
+input,select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--p2);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:44px;width:100%}
+textarea{min-height:96px;resize:vertical}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.rate{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px}
+button,.btn{font:inherit;font-size:16px;min-height:44px;padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:var(--p2);color:var(--ink);cursor:pointer}
+.main{background:var(--flag);color:#1a1a00;border-color:var(--flag);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.banner{border:1px solid var(--warn);background:rgba(251,179,21,.1);border-radius:10px;padding:10px;margin:10px 0}
+.note{border-bottom:1px solid var(--line);padding:10px 0}
+.note:last-child{border-bottom:0}
+.note b{display:block}
+.tag{display:inline-block;font-size:13px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);margin-right:6px}
+.sent{color:var(--turf);border-color:var(--turf)}
+img.thumb{max-width:100%;max-height:220px;border-radius:8px;border:1px solid var(--line);margin-top:8px;display:block}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid var(--flag);outline-offset:2px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<h1>Golf notes</h1>
+<p class="muted" id="who">Notes stay on this phone until you send them to your coach.</p>
+
+<div class="card" id="name-card" hidden>
+<label>Your first name<input id="name" autocomplete="given-name" maxlength="30"></label>
+<div class="row"><button type="button" class="main" id="name-save">Start</button></div>
+</div>
+
+<div id="app" hidden>
+<div class="row"><button type="button" class="main" id="new">New note</button><button type="button" id="send">Send to coach</button></div>
+<p class="muted" id="send-msg" aria-live="polite"></p>
+
+<form class="card" id="form" hidden autocomplete="off">
+<div class="grid">
+<label>Date<input name="date" type="date" required></label>
+<label>Kind<select name="kind"><option>Practice round</option><option>Tournament</option><option>Casual round</option><option>Range or lesson</option></select></label>
+<label>Course<input name="course" maxlength="80"></label>
+<label>Score<input name="score" type="number" inputmode="numeric" min="18" max="200"></label>
+</div>
+<div class="banner" id="t-banner" hidden><b>Tournament: record only.</b> Your notes save on this phone. Nothing is reviewed or sent until you mark the round complete (Rules of Golf 4.3a(3)).
+<label style="flex-direction:row;align-items:center;gap:8px;margin-top:8px"><input type="checkbox" name="complete" style="width:22px;height:22px;min-height:0"> The round is complete</label></div>
+<div class="rate" role="group" aria-label="How each part went, 1 poor to 5 great">
+<label>Driving<select name="r_driving"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label>Approach<select name="r_approach"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label>Short game<select name="r_short"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label>Putting<select name="r_putting"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label>Mental game<select name="r_mental"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+</div>
+<h2>What happened</h2>
+<label class="vh" for="what">What happened</label>
+<textarea id="what" name="what" maxlength="4000" placeholder="Key shots, misses, decisions, how it felt"></textarea>
+<p class="muted">To talk instead of typing, tap the mic on your keyboard.</p>
+<h2>What to work on</h2>
+<label class="vh" for="workon">What to work on</label>
+<textarea id="workon" name="workon" maxlength="2000" placeholder="One or two things for practice"></textarea>
+<div class="row"><label class="btn" for="photo" id="photo-label">Add scorecard photo</label><input id="photo" type="file" accept="image/*" class="vh"><button type="button" id="photo-remove" hidden>Remove photo</button></div>
+<img class="thumb" id="thumb" alt="Scorecard photo" hidden>
+<div class="row"><button type="submit" class="main" id="save">Save note</button><button type="button" id="cancel">Cancel</button><button type="button" id="delete" hidden>Delete</button></div>
+</form>
+
+<h2>Your notes</h2>
+<div class="card" id="list"></div>
+</div>
+</main>
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const KINDS = ['Practice round', 'Tournament', 'Casual round', 'Range or lesson'];
+  const RATE = ['driving', 'approach', 'short', 'putting', 'mental'];
+  let db = null, notes = [], editing = null, photo = null, armed = false;
+
+  /* Storage: IndexedDB on this phone only. */
+  function open() {
+    return new Promise((res, rej) => {
+      const r = indexedDB.open('golf-notes', 1);
+      r.onupgradeneeded = () => { r.result.createObjectStore('notes', {keyPath: 'id'}); r.result.createObjectStore('meta'); };
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+    });
+  }
+  const tx = (store, mode, fn) => new Promise((res, rej) => { const t = db.transaction(store, mode), s = t.objectStore(store), out = fn(s); t.oncomplete = () => res(out && out.result !== undefined ? out.result : out); t.onerror = () => rej(t.error); });
+  const all = () => new Promise((res, rej) => { const q = db.transaction('notes').objectStore('notes').getAll(); q.onsuccess = () => res(q.result || []); q.onerror = () => rej(q.error); });
+  const getMeta = (k) => new Promise((res) => { const q = db.transaction('meta').objectStore('meta').get(k); q.onsuccess = () => res(q.result); q.onerror = () => res(undefined); });
+  const setMeta = (k, v) => tx('meta', 'readwrite', (s) => s.put(v, k));
+
+  const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  const newId = () => 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  const int = (v, lo, hi) => { const n = Number(v); return v !== '' && Number.isFinite(n) && n >= lo && n <= hi ? Math.round(n) : null; };
+
+  async function refresh() {
+    notes = (await all()).sort((a, b) => String(b.date).localeCompare(String(a.date)) || String(b.updated_at).localeCompare(String(a.updated_at)));
+    const box = $('list');
+    box.textContent = '';
+    if (!notes.length) { const p = document.createElement('p'); p.className = 'muted'; p.textContent = 'No notes yet. Tap New note after a round.'; box.append(p); return; }
+    notes.forEach((n) => {
+      const d = document.createElement('div'); d.className = 'note';
+      const b = document.createElement('b'); b.textContent = [n.date, n.kind, n.course].filter(Boolean).join(' · ') + (n.score ? ' · ' + n.score : ''); d.append(b);
+      const t = document.createElement('span'); t.className = 'tag' + (n.sent_at ? ' sent' : ''); t.textContent = n.sent_at ? 'Sent' : n.kind === 'Tournament' && !n.complete ? 'Round in progress' : 'Not sent yet'; d.append(t);
+      const e = document.createElement('button'); e.type = 'button'; e.textContent = 'Open'; e.addEventListener('click', () => edit(n)); d.append(e);
+      box.append(d);
+    });
+  }
+
+  function show(on) { $('form').hidden = !on; $('new').hidden = on; }
+  function edit(n) {
+    const f = $('form').elements;
+    editing = n || null; photo = n && n.photo ? n.photo : null; armed = false;
+    f.date.value = n ? n.date : today(); f.kind.value = n && KINDS.includes(n.kind) ? n.kind : KINDS[0];
+    f.course.value = n ? n.course || '' : ''; f.score.value = n && n.score ? n.score : '';
+    f.complete.checked = !!(n && n.complete);
+    RATE.forEach((k) => { f['r_' + k].value = n && n.ratings && n.ratings[k] ? String(n.ratings[k]) : ''; });
+    f.what.value = n ? n.what || '' : ''; f.workon.value = n ? n.work_on || '' : '';
+    $('delete').hidden = !n; $('delete').textContent = 'Delete';
+    tbanner(); showPhoto(); show(true);
+    $('form').scrollIntoView({behavior: 'smooth', block: 'start'});
+  }
+  function tbanner() { $('t-banner').hidden = $('form').elements.kind.value !== 'Tournament'; }
+  function showPhoto() {
+    const img = $('thumb');
+    if (img.dataset.url) { URL.revokeObjectURL(img.dataset.url); delete img.dataset.url; }
+    if (photo) { img.dataset.url = URL.createObjectURL(photo); img.src = img.dataset.url; }
+    img.hidden = !photo; $('photo-remove').hidden = !photo;
+    $('photo-label').textContent = photo ? 'Replace scorecard photo' : 'Add scorecard photo';
+  }
+  async function shrink(file) {
+    try {
+      const bmp = await createImageBitmap(file), k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+      const c = document.createElement('canvas'); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+      c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+      return await new Promise((r) => c.toBlob((b) => r(b || file), 'image/jpeg', 0.82));
+    } catch (e) { return file; }
+  }
+
+  $('new').addEventListener('click', () => edit(null));
+  $('cancel').addEventListener('click', () => { show(false); editing = null; });
+  $('form').elements.kind.addEventListener('change', tbanner);
+  $('photo').addEventListener('change', async (ev) => { const f = ev.target.files && ev.target.files[0]; ev.target.value = ''; if (!f) return; photo = await shrink(f); showPhoto(); });
+  $('photo-remove').addEventListener('click', () => { photo = null; showPhoto(); });
+  $('delete').addEventListener('click', async () => {
+    if (!editing) return;
+    if (!armed) { armed = true; $('delete').textContent = 'Tap again to delete'; setTimeout(() => { armed = false; $('delete').textContent = 'Delete'; }, 4000); return; }
+    await tx('notes', 'readwrite', (s) => s.delete(editing.id));
+    show(false); editing = null; refresh();
+  });
+  $('form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const f = $('form').elements, now = new Date().toISOString(), ratings = {};
+    RATE.forEach((k) => { const v = int(f['r_' + k].value, 1, 5); if (v !== null) ratings[k] = v; });
+    const n = {id: editing ? editing.id : newId(), schema: 1, date: f.date.value || today(), kind: KINDS.includes(f.kind.value) ? f.kind.value : KINDS[0],
+      course: f.course.value.trim().slice(0, 80), score: int(f.score.value, 18, 200), ratings, what: f.what.value.trim().slice(0, 4000),
+      work_on: f.workon.value.trim().slice(0, 2000), complete: f.complete.checked, photo: photo || null,
+      created_at: editing ? editing.created_at : now, updated_at: now, sent_at: null};
+    await tx('notes', 'readwrite', (s) => s.put(n));
+    show(false); editing = null; refresh();
+  });
+
+  /* Send to coach: unsent notes (tournament rounds only once complete) as one file, shared from the phone. */
+  const dataUrl = (blob) => new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => res(null); r.readAsDataURL(blob); });
+  $('send').addEventListener('click', async () => {
+    const msg = $('send-msg'), name = (await getMeta('name')) || '';
+    const ready = notes.filter((n) => !n.sent_at && (n.kind !== 'Tournament' || n.complete));
+    if (!ready.length) { msg.textContent = 'Nothing new to send.'; return; }
+    const rounds = [];
+    for (const n of ready) rounds.push(Object.assign({}, n, {photo: n.photo ? await dataUrl(n.photo) : null}));
+    const body = JSON.stringify({app: 'driver-workbench-notes', format: 1, golfer: name, exported_at: new Date().toISOString(), rounds});
+    const fname = `golf-notes-${(name || 'golfer').toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${today()}.json`;
+    const file = new File([body], fname, {type: 'application/json'});
+    let ok = false;
+    try {
+      if (navigator.canShare && navigator.canShare({files: [file]})) { await navigator.share({files: [file], title: 'Golf notes'}); ok = true; }
+    } catch (e) { if (e && e.name === 'AbortError') { msg.textContent = 'Not sent.'; return; } }
+    if (!ok) { const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = fname; document.body.append(a); a.click(); a.remove(); ok = true; }
+    const at = new Date().toISOString();
+    for (const n of ready) await tx('notes', 'readwrite', (s) => s.put(Object.assign({}, n, {sent_at: at})));
+    msg.textContent = `Sent ${ready.length} note${ready.length === 1 ? '' : 's'}. Your coach adds them to the workbench.`;
+    refresh();
+  });
+
+  $('name-save').addEventListener('click', async () => {
+    const v = $('name').value.trim().slice(0, 30);
+    if (!v) return;
+    await setMeta('name', v); start(v);
+  });
+  function start(name) { $('name-card').hidden = true; $('app').hidden = false; $('who').textContent = `${name}'s notes stay on this phone until you send them to your coach.`; refresh(); }
+
+  (async () => {
+    try { db = await open(); } catch (e) { $('who').textContent = 'This browser can’t store notes. Open it in Safari or Chrome.'; return; }
+    const name = await getMeta('name');
+    if (name) start(name); else $('name-card').hidden = false;
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  })();
+})();
+</script>
+</body>
+</html>

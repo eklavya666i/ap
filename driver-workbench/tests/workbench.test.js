@@ -288,6 +288,14 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   await sleep(600);
   check(M.docs.has(rk[0]) && M.docs.get(rk[0]).course === 'Test Links', 'backup and restore bring back a lost round');
 
+  // Notes from a golfer's phone are added to that golfer's rounds once.
+  const nf = {app: 'driver-workbench-notes', format: 1, golfer: 'Golfer A', rounds: [{id: 'ptest1', date: '2026-11-26', kind: 'Practice round', course: 'Phone Course', score: 80, ratings: {driving: 3}, what: 'From the phone'}]};
+  const r1 = await w.WB.importNotes(nf);
+  await sleep(150);
+  const r2 = await w.WB.importNotes(nf);
+  const pk = [...M.docs.keys()].find((k) => k.endsWith('/rounds/ptest1'));
+  check(r1.ok && pk && M.docs.get(pk).from === 'phone' && M.docs.get(pk).course === 'Phone Course' && /already here/.test(r2.text) && !(await w.WB.importNotes({app: 'x'})).ok, 'imports notes from a phone once');
+
   // Drill-down: golfer, then week, then session, then one shot with its fields and original line.
   w.WB.setMode('analysis');
   await sleep(150);
