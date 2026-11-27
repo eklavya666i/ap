@@ -259,12 +259,12 @@ const COURSE = {
     {u: 1, title: "Literary Analysis", text: "The Astonishing Color of After", author: "Emily X.R. Pan", product: "Personal narrative", essay: "narrative", color: "#b45309",
      skills: ["Theme statements", "Figurative language", "Color imagery and symbolism", "Nonlinear structure and flashback", "Magical realism", "Narrative techniques"],
      note: "This novel deals with a parent's suicide, depression and grief.", phase: 3},
-    {u: 2, title: "Rhetorical Analysis", text: "A Small Place", author: "Jamaica Kincaid", product: "Socratic seminar and rhetorical analysis", essay: "rhetorical", color: "#0f766e",
-     skills: ["Rhetorical situation (SOAPSTone)", "Ethos, pathos, logos", "Second-person address", "Tone and irony", "Rhetorical verbs"], phase: 2},
-    {u: 3, title: "Argument", text: "Articles and persuasive texts", author: "", product: "Persuasive essay", essay: "argument", color: "#1d4ed8",
-     skills: ["Claim, reasons, evidence", "Reasoning (warrants)", "Counterclaim and rebuttal", "Logical fallacies", "Credible sources"], phase: 2},
+    {u: 2, title: "Rhetorical Analysis", text: "A Small Place", author: "Jamaica Kincaid", product: "Socratic seminar and rhetorical analysis", essay: "rhetorical", color: "#0f766e", book: "asp",
+     skills: ["Rhetorical situation (SOAPSTone)", "Ethos, pathos, logos", "Second-person address", "Tone and irony", "Rhetorical verbs"], phase: 2, ready: true},
+    {u: 3, title: "Argument", text: "Articles and persuasive texts", author: "", product: "Persuasive essay", essay: "argument", color: "#1d4ed8", workshop: true,
+     skills: ["Claim, reasons, evidence", "Reasoning (warrants)", "Counterclaim and rebuttal", "Logical fallacies", "Credible sources", "Debate"], phase: 2, ready: true},
     {u: 4, title: "Critical Lenses", text: "Lord of the Flies", author: "William Golding", product: "Critical lens analysis essay", essay: "lens", color: "#5b21b6", book: "lotf",
-     skills: ["Nine critical lenses", "Symbol and motif tracking", "Allegory", "Embedding and citing quotations", "Commentary"], phase: 1},
+     skills: ["Nine critical lenses", "Symbol and motif tracking", "Allegory", "Embedding and citing quotations", "Commentary"], phase: 1, ready: true},
     {u: 5, title: "Synthesis", text: "Night", author: "Elie Wiesel", product: "Synthesis paragraph and Socratic seminar", essay: "synthesis", color: "#9f1239",
      skills: ["Putting sources in conversation", "Memoir and testimony", "Faith and silence", "Synthesis paragraphs"],
      note: "Night is a memoir of the Holocaust, with scenes of extreme violence and loss.", phase: 3},
@@ -557,6 +557,247 @@ const LOTF = {
     [12, "theme", "What does the officer's warship suggest?", ["The adult world is at war too.", "Rescue was always guaranteed for British boys.", "The navy has grown weak.", "The boys will be punished."], "The officer turns back to a warship: the boys' violence mirrors the adults'."]
   ]
 };
+// ===== content/asp.js
+// A Small Place (Jamaica Kincaid, 1988): Unit 2 of Honors LAC 2, rhetorical analysis.
+// Original study material in our own words; the book is under copyright, so the app quotes none of it.
+// The book has four untitled sections; the app calls them sections 1 to 4 and gates them like chapters.
+const ASP = {
+  id: "asp", title: "A Small Place", author: "Jamaica Kincaid", year: 1988, unit: 2, cite: "Kincaid", chapters_n: 4,
+  word: {ch: "Section", chs: "Sections", people: "Voices", symbols: "Motifs"},
+  context: [
+    {h: "The author", p: [
+      "Jamaica Kincaid was born Elaine Potter Richardson in 1949 in St. John's, the capital of Antigua, when the island was still a British colony. At sixteen she left for the United States to work as an au pair, later became a staff writer at The New Yorker, and took a new name as a writer.",
+      "A Small Place is creative nonfiction: a long essay that mixes memoir, history and argument. Her personal history is part of her ethos: she writes as a daughter of the island who left, not as a visitor."]},
+    {h: "Antigua", p: [
+      "Antigua is a small island in the eastern Caribbean. The English colonized it in the 1600s and brought enslaved Africans to work its sugar plantations. Slavery ended in the British colonies in 1834, but British rule continued until Antigua became independent on November 1, 1981, as part of the nation of Antigua and Barbuda.",
+      "By the time Kincaid wrote, tourism was the heart of the economy. That is the book's exigence: a beautiful island marketed to visitors, a history the brochures leave out, and a government she sees as corrupt."]},
+    {h: "How to read it rhetorically", p: [
+      "Ask SOAPSTone questions as you go: who speaks, on what occasion, to which audience, for what purpose, about what, and in what tone. Kincaid's audience is mostly white North American and European readers, the people most likely to visit Antigua, and she addresses them as you.",
+      "Track her moves, not just her claims: second-person address, sarcasm, rhetorical questions, long catalog sentences, sudden shifts from anger to tenderness, and juxtapositions of beauty and decay. For each move, ask what effect it has on a reader who came for a vacation."]}
+  ],
+  slang: [["you", "the reader cast as a tourist: the book's central rhetorical move"], ["the English", "the colonizers, and the English residents of her childhood"], ["the Mill Reef Club", "a private club founded by North Americans, where Antiguans were allowed only as servants"], ["the Hotel Training School", "a school that trains Antiguans for jobs serving tourists"], ["Emancipation", "the end of slavery in the British colonies, 1834"], ["Independence", "Antigua's independence from Britain, 1981"]],
+  chapters: [
+    {n: 1, title: "The tourist",
+     sum: ["Kincaid opens by speaking directly to you, a tourist from North America or Europe, and walks you through an imagined trip to Antigua. You land at an airport named after the prime minister, ride in a taxi past brand-new Japanese cars on badly kept roads, and pass crumbling buildings you hardly notice: a school, a hospital, and a library damaged in an earthquake years earlier and never repaired.",
+           "At every step she shows what the tourist doesn't see or doesn't want to think about. The endless sunshine you enjoy means drought for the people who live there. The water you swim in may carry the hotel's sewage. Then she turns on the tourist directly. At home, she says, you are an ordinary person with an ordinary, dull life; on vacation you become an ugly figure, feeding on the sights of people too poor to escape their own place. The people of Antigua, she adds, envy the tourist one thing: the ability to leave."],
+     events: ["The reader is cast as a tourist, addressed as you", "The airport named after the prime minister", "New Japanese cars on bad roads", "A school, a hospital and a library in disrepair", "The drought the tourist enjoys as good weather", "Hotel sewage in the sea where tourists swim", "The tourist as an ugly figure, envied only for being able to leave"],
+     watch: ["Second-person address: who is 'you,' and how does it feel to be addressed?", "Juxtaposition: postcard scenery set against decay", "Tone: sarcasm that grows into open accusation"],
+     move: {name: "Second-person address", text: "By making the reader the tourist, Kincaid removes the safe distance of reading. You can't watch the tourist from outside; you are the one being judged, so her argument lands on you, not on someone else."},
+     hunt: ["Find a sentence where Kincaid speaks directly to you. How does it make you feel as a reader, and why might she want that?", "Find the passage about the water and the sewage. How does she build from pleasant to disgusting?", "Find where she describes the tourist's ordinary life back home. What is the purpose of that contrast?"],
+     seminar: ["What does the tourist notice, and what does the tourist miss?", "Why does Kincaid make the reader the tourist instead of describing a tourist?", "Is tourism ever fair to the people who live in a tourist destination?"]},
+    {n: 2, title: "The Antigua I knew",
+     sum: ["Kincaid turns from the present to the Antigua of her childhood, when it was still a British colony. Everything she describes carries the mark of English rule: children taught British history instead of their own, landmarks named after English naval heroes, and English people who seemed to find happiness mainly in feeling superior to the people they ruled. She describes Barclays Bank and its founders' ties to the slave trade, and the Mill Reef Club, a private club started by North Americans, where Antiguans were allowed in only as servants.",
+           "She recalls foreign residents who treated Antiguans with open contempt, and she lets her anger show without softening it for the reader. The section ends with a direct indictment of English rule and its legacy. Her bitterest point is about language itself: the only language she has to describe the crime is English, the language of the people who committed it."],
+     events: ["The Antigua of her childhood, under British rule", "British history taught in Antiguan schools", "Barclays Bank and its founders' ties to slavery", "The Mill Reef Club: Antiguans only as servants", "Foreign residents' contempt for Antiguans", "The indictment of English rule", "English as the language of the criminal"],
+     watch: ["Shift in time: from the tourist's present to the colonial past", "Pathos: anger that refuses to be polite", "Irony: institutions that look respectable but rest on slavery"],
+     move: {name: "Cause and effect across time", text: "Kincaid places the colonial past right after the tourist's present so the reader starts to connect them: the bank, the club and the schools explain the Antigua the tourist sees."},
+     hunt: ["Find the description of the Mill Reef Club. Which details show who belongs and who serves?", "Find the passage about the English language. Why is it the angriest point in the section?", "Find a moment where Kincaid's tone is sarcastic. What does the sarcasm let her say?"],
+     seminar: ["What did English rule teach Antiguan children about themselves?", "Why does Kincaid connect a respected bank to the slave trade?", "Can you criticize a culture using that culture's own language? What does that mean for her?"]},
+    {n: 3, title: "Antigua now",
+     sum: ["Kincaid turns to independent Antigua and asks whether self-rule has made things better or worse. She traces how government ministers use their power for profit and how foreign money still shapes the island. The old library, which she loved as a child, is her central example: still damaged years after the earthquake, it waits for repairs that the wealthy members of the Mill Reef Club will fund only on their terms, while that part of town may be turned into shops for tourists.",
+           "She notes that Antiguans proudly celebrate the end of slavery while also admiring the Hotel Training School, which prepares them to serve tourists, and that almost no one sees the connection between the two. She explains the book's title: in a small place, every event becomes enormous and is felt only in the present, so people rarely link one scandal to another or to the past. That habit, she argues, lets corruption continue unchallenged."],
+     events: ["Is independent Antigua worse than colonial Antigua?", "Ministers profiting from power", "The old library and the Mill Reef Club's conditions", "Plans to turn the old town into tourist shops", "Emancipation celebrated, the Hotel Training School admired", "The meaning of 'a small place'", "Corruption that people see but don't connect"],
+     watch: ["The library: what the island values and what it lets decay", "Connections the people don't make, which Kincaid makes for them", "Rhetorical questions aimed at the reader and at Antigua"],
+     move: {name: "Rhetorical questions and contradiction", text: "Kincaid lines up contradictions (celebrating emancipation while training servants, honoring the library while letting it rot) and asks questions that force the reader to hold both halves at once."},
+     hunt: ["Find the conversation about the library with the woman connected to the Mill Reef Club. What does it reveal?", "Find where Kincaid sets emancipation next to the Hotel Training School. What connection does she want us to see?", "Find her explanation of what a small place is. How does it change your reading of the title?"],
+     seminar: ["What happens to the old library, and why does it matter to Kincaid?", "Why doesn't independence automatically mean freedom, in her view?", "What problems in your community do people talk about but never connect?"]},
+    {n: 4, title: "Too beautiful",
+     sum: ["In the short final section, Kincaid steps back from argument into something closer to a prose poem. She describes Antigua's sea, sand and sky as so beautiful that the beauty seems unreal, like a painted backdrop, and so unchanging that it can feel like a kind of prison. Beauty, she suggests, covers over the island's history and its people's real lives.",
+           "She ends with a reflection on masters and slaves. Once the masters are gone and the enslaved are free, neither group is noble or degraded any longer; they are simply human beings, with all the ordinary failings that being human brings. The ending refuses both easy blame and easy comfort."],
+     events: ["The extraordinary beauty of the island", "Beauty that seems unreal, like a set", "Beauty as a kind of prison", "Masters and slaves after slavery", "Everyone as simply human beings"],
+     watch: ["Tone shift: from anger to lyrical reflection", "The postcard image the tourist arrived with, now complicated", "The final claim about being human"],
+     move: {name: "Tone shift and an open ending", text: "After three sections of accusation, Kincaid turns lyrical. The shift makes readers lower their guard, then leaves them with a harder idea than blame: that freedom makes everyone, former masters and former slaves alike, simply and imperfectly human."},
+     hunt: ["Find a sentence that describes the island's beauty. Which words make it feel unreal?", "Find the reflection on masters and slaves. Restate it in your own words.", "Find the last sentence. Why end there instead of on anger?"],
+     seminar: ["How does Kincaid describe Antigua's beauty?", "Why might beauty feel like a prison?", "Is it more powerful to end an argument with anger or with reflection? Why?"]}
+  ],
+  characters: [
+    {id: "narrator", name: "Kincaid, the narrator", from: 1, role: "The speaker: a woman born in colonial Antigua who left and now looks back with anger, love and grief.", arc: [[1, "Mocks and accuses the tourist."], [2, "Remembers the colonial island of her childhood."], [3, "Investigates the library and the government."], [4, "Steps back into reflection."]], traits: ["angry", "witty", "honest", "unsparing"], lens: "Ethos: she speaks as a native daughter, and she doesn't hide her bias."},
+    {id: "you", name: "You, the tourist", from: 1, role: "The reader, cast as a North American or European tourist: the book's audience and its target.", arc: [[1, "Arrives, enjoys, and fails to see."], [2, "Is shown the history behind the scenery."], [4, "Is left with the beauty and a harder idea."]], traits: ["comfortable", "unaware", "envied"], lens: "Audience: Kincaid writes to the people most likely to visit Antigua."},
+    {id: "english", name: "The English", from: 2, role: "The colonial rulers of Kincaid's childhood, who shaped the island's schools, institutions and language.", arc: [[2, "Rule Antigua and teach it to admire England."]], traits: ["superior", "cruel", "polite on the surface"], lens: "Postcolonial: the empire behind the postcard."},
+    {id: "government", name: "The Antiguan government", from: 1, role: "The independent government that, in Kincaid's account, profits from power while public buildings decay.", arc: [[1, "Its prime minister's name is on the airport."], [3, "Ministers profit; the library waits."]], traits: ["corrupt", "self-serving"], lens: "Marxist: power and money moving to a new ruling class."},
+    {id: "people", name: "The people of Antigua", from: 1, role: "Ordinary Antiguans: the people the tourist doesn't see, who live with drought, neglect and the island's history.", arc: [[1, "Envy the tourist's ability to leave."], [3, "Celebrate emancipation but don't connect it to the present."]], traits: ["proud", "resigned", "overlooked"], lens: "Reader response: whose experience does the reader never consider?"}
+  ],
+  symbols: [
+    {id: "library", name: "The old library", from: 1, means: "What the island once valued and now lets decay; a colonial gift Kincaid loved, and a test of who decides the island's future.", track: [[1, "A ruin the tourist rides past."], [3, "Repairs depend on wealthy outsiders' terms."]]},
+    {id: "sea", name: "The sea and the sewage", from: 1, means: "Paradise as the tourist sees it, and the waste the tourist doesn't see.", track: [[1, "The tourist swims where the sewage flows."]]},
+    {id: "sun", name: "Sunshine and drought", from: 1, means: "The tourist's good weather is the residents' water shortage: one place, two experiences.", track: [[1, "Sun for the visitor, drought for the people."]]},
+    {id: "millreef", name: "The Mill Reef Club", from: 2, means: "Colonial-style separation that survives into the present: Antiguans welcome only as servants.", track: [[2, "Antiguans allowed in only as servants."], [3, "Its members control the library's repair."]]},
+    {id: "bank", name: "Barclays Bank", from: 2, means: "Respectable institutions built on slavery.", track: [[2, "Founders tied to the slave trade."]]},
+    {id: "hts", name: "The Hotel Training School", from: 3, means: "Servitude renamed as a career: the link to slavery no one draws.", track: [[3, "Admired, even as emancipation is celebrated."]]},
+    {id: "language", name: "The English language", from: 2, means: "The tool of the colonizer that is also the only tool Kincaid has to accuse him.", track: [[2, "The criminal's language describes the crime."]]},
+    {id: "beauty", name: "Antigua's beauty", from: 1, means: "The postcard image that hides history; by the end, beauty that feels unreal and confining.", track: [[1, "What the tourist came for."], [4, "Too perfect to be real, a kind of prison."]]}
+  ],
+  themes: [
+    {id: "tourism", name: "Tourism as exploitation", what: "The tourist's pleasure depends on not seeing the people who make it possible.", track: [[1, "The tourist's blindness."], [3, "Old town to tourist shops."]]},
+    {id: "colonial", name: "The legacy of colonialism", what: "Institutions, habits and even language from colonial rule shape the present.", track: [[2, "Bank, club, schools, language."], [3, "The training school."]]},
+    {id: "corruption", name: "Corruption after independence", what: "Independence changed who rules, not how power is used.", track: [[3, "Ministers' profits; is self-rule worse?"]]},
+    {id: "history", name: "History and seeing connections", what: "People in a small place feel each event intensely but rarely link events to each other or to the past.", track: [[3, "The meaning of 'a small place.'"], [4, "Beauty as something that hides history."]]},
+    {id: "language", name: "Language and power", what: "Whoever controls the language controls the story, and Kincaid must use the colonizer's language to tell hers.", track: [[2, "The criminal's language."]]},
+    {id: "human", name: "Being human", what: "After slavery, masters and slaves alike are simply human: neither noble nor degraded.", track: [[4, "The final reflection."]]}
+  ],
+  // [section, kind, question, [right answer, wrong, wrong, wrong], why]. Kinds add "rhetoric" for questions about Kincaid's choices.
+  questions: [
+    [1, "plot", "Whom does Kincaid address as 'you' in the first section?", ["A tourist visiting Antigua", "An Antiguan schoolchild", "The British queen", "Her own mother"], "She casts the reader as a North American or European tourist arriving for a vacation."],
+    [1, "plot", "Whom is the airport named after?", ["The prime minister", "Christopher Columbus", "The British queen", "A famous cricket player"], "The airport carries the prime minister's name, an early hint about who holds power on the island."],
+    [1, "plot", "What does the tourist enjoy as good weather?", ["Sun that means drought for residents", "Cool breezes after the long rainy season", "A storm that clears the beaches", "Mild winters that keep crowds away"], "The tourist's sunshine is the residents' water shortage: one place, two very different experiences."],
+    [1, "plot", "What does Kincaid say may be in the sea where the tourist swims?", ["Sewage from the hotels", "Oil from cruise ships", "Plastic from the airport", "Runoff from sugar fields"], "The hotels' waste goes into the water: paradise and its hidden cost in one image."],
+    [1, "plot", "Which buildings does the tourist pass without really noticing?", ["A school, a hospital and a damaged library", "A cathedral, an old fort and a history museum", "A stadium, a market and a bank", "A courthouse, a prison and a port"], "The crumbling public buildings show what the tourist's eye skips over."],
+    [1, "rhetoric", "Why does Kincaid write in the second person?", ["To put the reader in the tourist's place and implicate them", "To give practical, step-by-step instructions for planning a trip", "Because she is writing a letter to an old friend", "To keep the argument polite and impersonal"], "Addressing 'you' removes the reader's safe distance: the reader is the one being judged."],
+    [1, "rhetoric", "Which word best describes the tone of the first section?", ["Sarcastic", "Neutral", "Nostalgic", "Celebratory"], "Kincaid mocks the tourist's comforts, and the mockery grows into open accusation."],
+    [1, "theme", "What does Kincaid say the people of Antigua envy about the tourist?", ["The ability to leave", "The tourist's clothes", "The tourist's education", "The tourist's language"], "They are stuck in their place; the tourist can escape boredom by coming, and then go home."],
+    [2, "plot", "What period does the second section describe?", ["Antigua under British rule, in her childhood", "Antigua before Europeans arrived", "Antigua after a future revolution", "Kincaid's own years as a young writer in New York"], "She turns from the tourist's present to the colonial Antigua of her childhood."],
+    [2, "plot", "How could Antiguans enter the Mill Reef Club?", ["Only as servants", "As paying members", "On national holidays", "As invited guests"], "The club, started by North Americans, kept Antiguans out except as workers."],
+    [2, "plot", "What does Kincaid connect Barclays Bank to?", ["The slave trade", "The sugar boycott", "Antiguan independence", "The Hotel Training School"], "She points to the bank's founders' ties to slavery: a respectable institution with a brutal history."],
+    [2, "plot", "Whose history did Antiguan children learn in school?", ["Britain's", "Antigua's", "Africa's", "America's"], "Schools taught British history, teaching children to admire the people who ruled them."],
+    [2, "theme", "What is Kincaid's bitterest point about the English language?", ["It is the only language she has to describe the crime, and it belongs to the criminal.", "It is the most beautiful language she knows, so she forgives the English a great deal for it.", "She refuses to write in it and plans to switch to another language.", "It was forced only on schools, so it doesn't matter elsewhere."], "She must use the colonizer's language to accuse the colonizer, a trap she names directly."],
+    [2, "rhetoric", "How does the second section change the book's focus?", ["From the tourist's present to the colonial past", "From Antigua to Kincaid's later life as a writer in New York", "From argument to a short story", "From anger to forgiveness"], "Placing the past after the present invites the reader to see the past as the cause."],
+    [2, "rhetoric", "Which appeal drives most of the second section?", ["Pathos: anger she won't soften", "Logos: tables of economic data", "Ethos: a neutral historian's voice", "Kairos: a deadline for action"], "Her anger is the point: she refuses to make English readers comfortable."],
+    [2, "theme", "What does the Mill Reef Club show about colonial attitudes?", ["Outsiders lived there but kept Antiguans as servants.", "Antiguans and visitors mixed freely as equals.", "The club taught Antiguans to run their own businesses.", "Foreign residents protected Antiguan culture."], "The club recreates colonial separation inside Antigua itself."],
+    [3, "plot", "What question does Kincaid ask about independent Antigua?", ["Whether self-rule has made things worse", "Whether Britain should rule again", "Whether tourists should stay away", "Whether the airport should be renamed"], "Standing in the capital, she wonders if self-governing Antigua is worse off than colonial Antigua."],
+    [3, "plot", "What happens with the old library in this section?", ["Its repair depends on wealthy outsiders' terms.", "It is rebuilt quickly by the government with public money.", "It becomes a museum about slavery.", "It is moved to the Mill Reef Club."], "The Mill Reef Club's members will help only on their own terms, while the area may become tourist shops."],
+    [3, "plot", "What might the old part of town become?", ["Shops for tourists", "A new library", "A national park", "Government offices"], "Tourism again decides what happens to the island's public spaces."],
+    [3, "theme", "What connection does Kincaid say Antiguans fail to make?", ["Between slavery and serving tourists", "Between rain and the drought", "Between the airport and the run-down hospital", "Between cricket and politics"], "They celebrate emancipation while admiring the Hotel Training School, which prepares them for servitude."],
+    [3, "plot", "Who profits from power, in Kincaid's account?", ["Ministers and their associates", "The island's schoolteachers", "The librarians", "The Hotel Training School students"], "She describes ministers using their positions for personal profit."],
+    [3, "theme", "What does Kincaid mean by a 'small place'?", ["Every event feels huge and present, so it's rarely linked to the past.", "The island is too small to have its own government.", "Small places are always more beautiful than large ones, so they suffer less.", "The book is about a single small house."], "The title names a way of seeing: intense, present-tense, and disconnected from history."],
+    [3, "rhetoric", "What do Kincaid's rhetorical questions do in this section?", ["Make the reader hold contradictions they'd rather ignore", "Ask for information she doesn't have", "Show that she is unsure whether her own argument is right", "Give the reader a break from serious ideas"], "Her questions are accusations shaped as questions: the answers are obvious and uncomfortable."],
+    [3, "theme", "Why does the library matter so much to Kincaid?", ["It shows what the island values and lets decay.", "It is where she now works as a librarian.", "It is the only building tourists photograph.", "It holds the island's only copy of her book."], "A loved public institution left to rot becomes her clearest example of neglect and misplaced priorities."],
+    [4, "plot", "How does Kincaid describe Antigua's beauty?", ["So perfect it seems unreal", "Spoiled by hotels and highways", "Ordinary compared with other islands", "Gray and cold most of the year"], "The beauty is real, yet it looks like a backdrop that hides the island's history."],
+    [4, "theme", "Why might beauty feel like a prison?", ["It never changes and covers over the island's history.", "Tourists are not allowed to leave the beaches during their stay.", "The beaches are fenced off for hotels.", "It draws hurricanes every summer."], "Unchanging beauty becomes a trap that makes the real lives and history harder to see."],
+    [4, "theme", "What does Kincaid conclude about masters and slaves?", ["Once freed, both are simply human beings.", "Former masters must pay forever.", "The enslaved were happier before.", "The masters will return one day."], "Freedom strips away both nobility and degradation, leaving ordinary, flawed humans."],
+    [4, "rhetoric", "How does the tone shift in the final section?", ["It turns lyrical and reflective.", "It becomes even more sarcastic.", "It turns comic and light.", "It becomes a set of instructions."], "After three sections of anger, the prose becomes almost poetic."],
+    [4, "rhetoric", "Why end with beauty after so much anger?", ["To complicate the postcard image and leave a harder idea", "To apologize to readers for the anger in the earlier sections", "To advertise Antigua to new tourists", "To show that nothing she said matters"], "The lyrical close lowers the reader's guard, then delivers the book's most unsettling claim."],
+    [4, "rhetoric", "How do the four sections move overall?", ["Present, colonial past, corrupt present, reflection", "Childhood, adulthood, old age, death", "Problem, solution, evidence, and a final call to action", "Beach, town, mountain, sea"], "The structure moves from what the tourist sees to the history behind it, then to now, then outward."],
+    [4, "theme", "What purpose does the whole book serve?", ["To show the history and costs behind a vacation", "To recommend the best beaches and hotels in Antigua", "To praise British rule in the Caribbean", "To explain how to open a hotel"], "Kincaid wants the reader to see Antigua as a real place shaped by colonialism, tourism and corruption."],
+    [4, "rhetoric", "Which best describes Kincaid's ethos in the book?", ["A native daughter who speaks with open anger and love", "A neutral journalist with no personal stake in Antigua", "A government official defending its record", "A tourist writing a travel review"], "Her authority comes from her own history with the island, and she doesn't pretend to be neutral."]
+  ]
+};
+// ===== content/argument.js
+// Unit 3: the argument workshop. Lessons, fallacies, public-domain sources to analyze, labeled practice sources,
+// debate preparation and a question bank. Statistics in practice items are labeled hypothetical so nothing reads as a real fact.
+const ARG = {
+  unit: 3,
+  lessons: [
+    {id: "claims", title: "Claims you can argue", why: "Every argument stands on its claim. A claim no one could disagree with, or one too vague to prove, sinks the essay before it starts.",
+     points: ["A claim of fact says something is or isn't true (and must be debatable, not common knowledge).", "A claim of value judges something as good or bad, better or worse.", "A claim of policy says what should be done.", "Make it specific: who, what, how much. Qualify it honestly: usually, for most students, in this case."],
+     example: ["Weak: Homework is bad.", "Better: Daily homework beyond an hour cuts into high schoolers' sleep, so schools should cap it."]},
+    {id: "evidence", title: "Evidence that holds up", why: "Evidence turns an opinion into an argument. Readers trust evidence that is relevant, credible, current and enough for the size of the claim.",
+     points: ["Types: statistics and data, expert testimony, research findings, historical examples, anecdotes, analogies.", "Relevant: it proves this claim, not just the same topic.", "Sufficient: bigger claims need more and stronger evidence.", "Introduce it: name the source, then quote or paraphrase, then cite."],
+     example: ["Anecdote: my brother sleeps better since his school started later.", "Data: a multi-year study of thousands of students' sleep and grades. Use the anecdote to illustrate what the data proves."]},
+    {id: "reasoning", title: "Reasoning: the 'because' that connects", why: "Evidence never speaks for itself. Reasoning explains how the evidence proves the claim; it's where most of the points in an argument essay are.",
+     points: ["The Toulmin model: claim, evidence (grounds), warrant (the assumption linking them), backing (support for the warrant), qualifier and rebuttal.", "Say the warrant out loud when a reader might not share it.", "After every piece of evidence, write at least two sentences explaining why it matters."],
+     example: ["Claim: the cafeteria should offer a vegetarian entrée daily. Evidence: a third of students surveyed skip lunch for lack of options (hypothetical). Warrant: students who skip lunch learn less in the afternoon, so options that get them eating serve the school's purpose."]},
+    {id: "sources", title: "Judging sources", why: "Bad sources quietly ruin good arguments. Check who is behind a source and whether its evidence holds up before you build on it.",
+     points: ["Lateral reading: leave the page and see what others say about the source and its author.", "SIFT: Stop; Investigate the source; Find better coverage; Trace claims to the original.", "Watch for financial or political interests in the conclusion.", "Every source has a perspective. Bias becomes a problem when it distorts or hides evidence.", "Primary sources come from the time or the people involved; secondary sources interpret them."],
+     example: ["A sleep-supplement company's website says teens need supplements: check who funds the research and whether independent sources agree."]},
+    {id: "counter", title: "Counterclaims and rebuttals", why: "Answering the other side shows you've thought harder than someone who ignores it, and it makes your claim more credible.",
+     points: ["Steelman: state the strongest version of the opposing view, fairly.", "Concede what's true about it; the concession buys trust.", "Rebut by challenging the evidence, the reasoning, or by showing your side outweighs it.", "Place it where it matters most: often its own paragraph near the end of the body."],
+     example: ["Critics argue that later start times squeeze after-school jobs and sports. That cost is real; however, a schedule built around practices that leaves students too tired to learn has its priorities backward."]},
+    {id: "fallacies", title: "Fallacies", why: "Fallacies are errors in reasoning that can sound convincing. Spot them in others' arguments, and keep them out of yours.",
+     points: ["Attacks on people instead of ideas (ad hominem, whataboutism).", "Distorted choices and chains (false dilemma, slippery slope, straw man).", "Bad evidence (hasty generalization, cherry picking, false authority, false cause).", "Pressure instead of proof (bandwagon, appeal to fear, appeal to tradition)."],
+     example: ["Use the fallacy gallery below; each one has an example and a way to fix it."]},
+    {id: "appeals", title: "Appeals in argument", why: "Strong arguments use logic, credibility and emotion together, at the right moment.",
+     points: ["Logos: evidence and reasoning.", "Ethos: why the audience should trust the speaker.", "Pathos: the audience's emotions and values.", "Kairos: the right moment; why this argument matters now.", "Pathos becomes manipulation when it replaces evidence instead of supporting it."],
+     example: ["Lincoln at Gettysburg uses kairos: a cemetery dedication in the middle of a war, so honoring the dead becomes a call to finish the work."]},
+    {id: "debate", title: "Debate", why: "Debate trains the core argument skills out loud: claim, evidence, reasoning and the answer to the other side, under time pressure.",
+     points: ["Prepare both sides; you may not choose yours.", "Flow: take notes in columns so every opposing argument gets an answer.", "Signpost: 'My second argument is...' so judges can follow.", "Cross-examination: ask short questions that expose weak evidence or reasoning; don't argue during it.", "Rebuttal: answer their strongest point first, then extend your best one."],
+     example: ["Open with a one-sentence case, give three arguments with evidence, and save thirty seconds to answer their best point."]}
+  ],
+  fallacies: [
+    {name: "Ad hominem", d: "Attacking the person instead of the argument.", ex: "Her library plan can't be good; she failed a math test last year.", fix: "Respond to the plan's reasoning and evidence."},
+    {name: "Straw man", d: "Twisting the opposing view into a weaker version that's easy to knock down.", ex: "People who want later start times just want students to be lazy.", fix: "State the strongest version of their view, then answer it."},
+    {name: "False dilemma", d: "Offering only two options when more exist.", ex: "Either we ban all phones or students will never learn anything.", fix: "Name the middle options and argue for the best one."},
+    {name: "Slippery slope", d: "Claiming one step will inevitably lead to extreme results, with no evidence for the chain.", ex: "If we allow hats in class, soon no one will follow any rules.", fix: "Show evidence for each step, or limit the claim."},
+    {name: "Hasty generalization", d: "Drawing a broad conclusion from too little evidence.", ex: "Two kids in my class cheated, so this whole generation has no integrity.", fix: "Use a larger, representative sample, or narrow the claim."},
+    {name: "Bandwagon", d: "Arguing something is right because many people believe or do it.", ex: "Everyone is joining the walkout, so it must be the right thing.", fix: "Give the reasons that make it right."},
+    {name: "False authority", d: "Citing someone as an expert on a topic outside their expertise.", ex: "A famous soccer player says this vitamin cures colds, so it works.", fix: "Cite an expert in the relevant field, or the research itself."},
+    {name: "Red herring", d: "Changing the subject to distract from the real issue.", ex: "Why discuss the bus budget? Think about how hard our teachers work.", fix: "Return to the question actually being argued."},
+    {name: "Circular reasoning", d: "Using the claim as its own proof.", ex: "This book is the best because it's better than all the others.", fix: "Give independent reasons and evidence."},
+    {name: "False cause", d: "Assuming that because one thing followed another, the first caused the second.", ex: "I wore my lucky socks and we won, so the socks caused the win.", fix: "Show a mechanism and rule out other causes."},
+    {name: "Appeal to fear", d: "Using fear instead of evidence to win agreement.", ex: "If you don't buy this alarm system, your family will be in danger tonight.", fix: "Give evidence of the actual risk and how the solution reduces it."},
+    {name: "Whataboutism", d: "Deflecting criticism by pointing to someone else's wrongdoing.", ex: "Why should I recycle when that factory pollutes far more?", fix: "Address the original point; both can be true."},
+    {name: "Appeal to tradition", d: "Arguing something is right because it has always been done.", ex: "We've always had finals in June, so we should keep it that way.", fix: "Give reasons the tradition still works."},
+    {name: "Cherry picking", d: "Choosing only the evidence that supports your side and hiding the rest.", ex: "The report shows the three months when scores rose and leaves out the nine when they fell.", fix: "Present the full picture, then explain why your side still holds."}
+  ],
+  sources: [
+    {id: "douglass", title: "What to the Slave Is the Fourth of July?", author: "Frederick Douglass", year: 1852, kind: "Speech (public domain)",
+     text: "What, to the American slave, is your 4th of July? I answer: a day that reveals to him, more than all other days in the year, the gross injustice and cruelty to which he is the constant victim.",
+     note: "Delivered on July 5, 1852, in Rochester, New York, at an Independence Day event held by the Rochester Ladies' Anti-Slavery Society. Most of the audience was white."},
+    {id: "anthony", title: "On Women's Right to Vote", author: "Susan B. Anthony", year: 1873, kind: "Speech (public domain)",
+     text: "It was we, the people; not we, the white male citizens; nor yet we, the male citizens; but we, the whole people, who formed the Union.",
+     note: "Given in 1873 while Anthony awaited trial for voting in the 1872 presidential election."},
+    {id: "thoreau", title: "Civil Disobedience", author: "Henry David Thoreau", year: 1849, kind: "Essay (public domain)",
+     text: "I heartily accept the motto, \"That government is best which governs least\"; and I should like to see it acted up to more rapidly and systematically. Carried out, it finally amounts to this, which also I believe, \"That government is best which governs not at all.\"",
+     note: "Written after Thoreau spent a night in jail for refusing to pay a tax that he believed supported slavery and the Mexican-American War."},
+    {id: "practice-a", title: "Practice source A: a company blog post", author: "Made up for this exercise", year: 0, kind: "Practice (hypothetical)",
+     text: "A post on a phone company's website claims that a survey it ran shows students focus better when they can check their phones during class. It doesn't say how many students took part, how they were chosen, or what focus means.",
+     note: "Use it to practice judging credibility: who made it, why, and what's missing."},
+    {id: "practice-b", title: "Practice source B: a research summary", author: "Made up for this exercise", year: 0, kind: "Practice (hypothetical)",
+     text: "A university research summary describes a study of 2,000 students at 20 schools over three years, comparing test scores before and after phone restrictions. It reports its methods, names its funders (a public grant), and notes that the effect was larger for lower-performing students.",
+     note: "Use it to compare with source A: method, size, transparency, funding."}
+  ],
+  debate: {
+    motions: ["High schools should start no earlier than 8:30 a.m.", "Phones should be banned during the whole school day, including lunch.", "Tourism does more harm than good to small island nations.", "Community service should be required to graduate from high school.", "Leaders should be chosen for competence over popularity.", "Ninth-grade classes should be graded pass or fail."],
+    format: [["Opening case", "3 minutes", "Your claim and three arguments with evidence."], ["Cross-examination", "2 minutes", "Questions only: expose weak evidence or reasoning."], ["Rebuttal", "2 minutes", "Answer their strongest point first, then rebuild your best one."], ["Closing", "1 minute", "Why your side wins, in one clear sentence and one reason."]]
+  },
+  // [lesson or source, kind, question, [right, wrong, wrong, wrong], why]
+  questions: [
+    ["claims", "claim", "Which is an arguable claim?", ["Schools should start no earlier than 8:30 a.m.", "Most American high schools start before 8:30 a.m.", "A school is a place where students learn.", "I like to sleep late on weekends."], "A policy claim that reasonable people could debate. The others are facts or personal preferences."],
+    ["claims", "claim", "What kind of claim is 'Social media does more harm than good to teenagers'?", ["Value", "Fact", "Policy", "Definition"], "It judges something as better or worse: a claim of value."],
+    ["claims", "claim", "What kind of claim is 'The city should add bike lanes on Front Street'?", ["Policy", "Value", "Fact", "Definition"], "It says what should be done: a claim of policy."],
+    ["claims", "claim", "Which revision of 'Homework is bad' makes the strongest claim?", ["Daily homework over an hour cuts teen sleep and should be capped.", "Homework is really, really bad for everyone, and that is a fact everyone knows.", "Some people think homework is bad.", "Homework has existed for a long time."], "It is specific, arguable and points to a solution."],
+    ["claims", "claim", "What does a qualifier like 'usually' or 'for most students' do?", ["Limits a claim so it stays accurate and defensible", "Makes a claim sound more extreme", "Introduces a piece of evidence", "States the opposing point of view"], "Honest limits make a claim harder to knock down."],
+    ["evidence", "evidence", "Which is the strongest evidence that later start times help students?", ["A multi-year study of thousands of students' sleep and grades", "My friend says she feels less tired", "A famous actor supports later starts", "Everyone at my school says they want to sleep in a little later"], "Large, systematic data beats anecdotes, celebrities and popularity."],
+    ["evidence", "evidence", "How should a writer use an anecdote?", ["To illustrate a point that stronger evidence supports", "As the only proof needed for a broad claim about everyone", "To replace statistics entirely", "Never, under any circumstances"], "A story makes data human, but it can't carry a broad claim alone."],
+    ["evidence", "evidence", "When is evidence relevant?", ["When it directly supports the specific claim", "When it's about the same general topic", "When it comes from a long source", "When it includes a number"], "Being on topic isn't enough; it has to prove this claim."],
+    ["evidence", "evidence", "Which lead-in introduces evidence best?", ["According to a 2018 University of Washington study, ...", "Some people say that ...", "It is a well-known fact, as everyone has always said, that ...", "Everybody knows that ..."], "Naming the source tells the reader why to trust it."],
+    ["evidence", "evidence", "What does 'sufficient' evidence mean?", ["Enough evidence for the size of the claim", "Evidence from exactly one source", "Any evidence at all", "Evidence the reader already agrees with"], "Big claims need more and stronger support."],
+    ["reasoning", "reasoning", "In the Toulmin model, what is the warrant?", ["The assumption that links evidence to claim", "The claim stated in the introduction", "The strongest opposing argument", "The author of the main source"], "The warrant is the 'because' that connects the evidence to what it's meant to prove."],
+    ["reasoning", "reasoning", "Claim: add bottle-filling stations. Evidence: most students carry reusable bottles. Which warrant links them?", ["Easier refills cut plastic waste and keep students hydrated.", "Water fountains are expensive to install and costly to repair.", "Many students prefer sports drinks to water.", "Reusable bottles come in many colors and sizes."], "It explains why the evidence makes the claim worth doing."],
+    ["reasoning", "reasoning", "'Phones distract students. One study found scores rose after a ban.' What is missing?", ["Reasoning that connects evidence to claim", "A claim of any kind, stated in a thesis sentence", "Evidence of any kind", "A topic"], "There's a claim and evidence, but nothing explains the connection or why it matters."],
+    ["reasoning", "reasoning", "In the Toulmin model, what is backing?", ["Support for the warrant itself", "A counterclaim from the other side", "The writer's closing sentence", "A hook in the introduction"], "Backing shows why the warrant is believable."],
+    ["reasoning", "reasoning", "Which sentence does the work of reasoning?", ["Because teen sleep cycles shift later, an early bell cuts sleep students need.", "Many high schools across the country start their first class at 7:30 in the morning.", "A 2014 policy statement recommended 8:30 a.m.", "Some parents disagree with later start times."], "It explains why the evidence supports the claim; the others are facts or a counterclaim."],
+    ["sources", "sources", "What is lateral reading?", ["Leaving a site to see what others say about it", "Reading a source slowly from start to finish", "Reading only the headline and the summary", "Reading two sources side by side on one screen"], "Fact-checkers learn about a source by checking other sources, not by staying on its page."],
+    ["sources", "sources", "A company that sells sleep supplements posts 'research' saying teens need supplements. What's the biggest concern?", ["Its financial interest in the conclusion", "It uses numbers and percentages in its findings", "The article is very long", "The page has many photos"], "A source that profits from its conclusion needs independent confirmation."],
+    ["sources", "sources", "Which is a primary source for an essay about the Civil War?", ["A soldier's letter written in 1863", "A history textbook from 2015", "A documentary made in 2010", "An encyclopedia entry"], "Primary sources come from the time or the people involved."],
+    ["sources", "sources", "Which detail most increases a source's credibility?", ["It names its author and cites its data", "It has many images and charts", "It's the first search result", "It agrees with my claim"], "Transparency about who wrote it and where the data comes from lets you check it."],
+    ["sources", "sources", "How is bias different from perspective?", ["Bias distorts or hides evidence; every source has a perspective.", "Bias means a source is fake, and perspective means a source is real.", "Only opinion pieces have a perspective at all.", "They mean the same thing in argument writing."], "Every writer has a point of view. The problem is when it bends the evidence."],
+    ["sources", "sources", "A post cites 'a study' that supports your claim. What's the best next step?", ["Trace it to the original study", "Share it because it agrees with you", "Trust it if it has many likes", "Ignore every study you find online"], "Check the original: what it actually found, and whether the post reports it accurately."],
+    ["practice-a", "sources", "What is the main weakness of Practice source A?", ["No method is given, and the company profits from its conclusion.", "It is too recent to be useful for a school essay.", "It uses too many statistics and graphs for a general reader to follow.", "It was written by a university professor."], "No sample size, no method and a financial interest: it can't carry a claim."],
+    ["practice-b", "sources", "Why is Practice source B more credible than source A?", ["It reports its method, its sample and its funding.", "It comes from a company that knows phones well.", "It is shorter and easier to read.", "It agrees with what most students want."], "Transparency and a large, multi-school sample make it checkable."],
+    ["counter", "counter", "What does it mean to steelman an argument?", ["State the strongest version of the other side", "Attack the other side's character", "Ignore the other side completely", "Repeat your own claim more loudly"], "Answering the best version of the opposing view is what makes a rebuttal convincing."],
+    ["counter", "counter", "What is a concession?", ["Admitting part of the opposing view is true", "Giving up your claim entirely", "A summary of your three reasons", "A question asked in cross-examination"], "A concession buys credibility before the rebuttal."],
+    ["counter", "counter", "Which is a strong way to rebut?", ["Show the opposing evidence is outdated or doesn't apply", "Call the opponent's idea ridiculous", "Change the subject to a topic where your side is stronger", "Say it's just their opinion"], "Rebuttals work on evidence and reasoning, not on people."],
+    ["counter", "counter", "Why include a counterclaim in an argument essay?", ["It shows you've weighed other views, which builds trust.", "It makes the essay long enough to hand in.", "It lets you quietly change your claim at the end of the essay.", "It is required only in the introduction."], "Addressing the other side makes your own claim more credible."],
+    ["fallacies", "fallacy", "\"Her plan for the library can't be good; she failed a math test last year.\" Which fallacy is this?", ["Ad hominem", "Straw man", "Red herring", "Bandwagon"], "It attacks the person, not the plan."],
+    ["fallacies", "fallacy", "\"People who want later start times just want students to be lazy.\" Which fallacy is this?", ["Straw man", "Ad hominem", "False cause", "Circular reasoning"], "It replaces the real argument with a weaker, distorted one."],
+    ["fallacies", "fallacy", "\"Either we ban all phones or students will never learn anything.\" Which fallacy is this?", ["False dilemma", "Slippery slope", "Hasty generalization", "Appeal to tradition"], "Only two options are offered when many exist."],
+    ["fallacies", "fallacy", "\"If we allow hats in class, soon no one will follow any rules.\" Which fallacy is this?", ["Slippery slope", "False dilemma", "Appeal to fear", "Cherry picking"], "It predicts an extreme chain of events with no evidence for each step."],
+    ["fallacies", "fallacy", "\"Two kids in my class cheated, so this whole generation has no integrity.\" Which fallacy is this?", ["Hasty generalization", "Bandwagon", "Ad hominem", "False authority"], "A sweeping conclusion from two examples."],
+    ["fallacies", "fallacy", "\"Everyone is joining the walkout, so it must be the right thing.\" Which fallacy is this?", ["Bandwagon", "Appeal to tradition", "Red herring", "Whataboutism"], "Popularity isn't a reason."],
+    ["fallacies", "fallacy", "\"A famous soccer player says this vitamin cures colds, so it works.\" Which fallacy is this?", ["False authority", "Bandwagon", "False cause", "Straw man"], "A soccer player isn't an expert on medicine."],
+    ["fallacies", "fallacy", "\"Why discuss the bus budget? Think about how hard our teachers work.\" Which fallacy is this?", ["Red herring", "Circular reasoning", "Slippery slope", "Hasty generalization"], "It changes the subject to dodge the real question."],
+    ["fallacies", "fallacy", "\"This book is the best because it's better than all the others.\" Which fallacy is this?", ["Circular reasoning", "False dilemma", "Appeal to fear", "Ad hominem"], "The conclusion is used as its own proof."],
+    ["fallacies", "fallacy", "\"I wore my lucky socks and we won, so the socks caused the win.\" Which fallacy is this?", ["False cause", "Cherry picking", "Bandwagon", "Red herring"], "One event following another doesn't prove it caused it."],
+    ["fallacies", "fallacy", "\"Why should I recycle when that factory pollutes far more?\" Which fallacy is this?", ["Whataboutism", "Appeal to tradition", "False authority", "Straw man"], "It deflects by pointing at someone else's wrongdoing."],
+    ["fallacies", "fallacy", "\"We've always had finals in June, so we should keep it that way.\" Which fallacy is this?", ["Appeal to tradition", "Bandwagon", "Hasty generalization", "Circular reasoning"], "Age isn't a reason."],
+    ["fallacies", "fallacy", "\"The report shows the three months when scores rose and leaves out the nine when they fell.\" Which fallacy is this?", ["Cherry picking", "False cause", "Ad hominem", "Slippery slope"], "Selecting only the favorable evidence hides the real picture."],
+    ["appeals", "appeal", "\"As a nurse who has worked night shifts for twenty years, I know what sleep loss does.\" Which appeal is this?", ["Ethos", "Pathos", "Logos", "Kairos"], "It builds trust in the speaker's experience."],
+    ["appeals", "appeal", "\"Imagine a tired sixteen-year-old driving to school in the dark at 6:30 a.m.\" Which appeal is this?", ["Pathos", "Ethos", "Logos", "Kairos"], "It moves the audience through emotion and imagination."],
+    ["appeals", "appeal", "\"In one study, students who slept eight hours outscored those who slept six.\" Which appeal is this?", ["Logos", "Ethos", "Pathos", "Kairos"], "It argues from evidence and reasoning."],
+    ["appeals", "appeal", "What is kairos?", ["Using the right moment to make an argument matter", "An argument based only on statistics and other numbers", "Insulting an opponent's character", "The final sentence of an essay"], "Kairos is timing: why this argument matters now."],
+    ["appeals", "appeal", "When does pathos become manipulative?", ["When emotion replaces evidence instead of supporting it", "Whenever a speaker mentions feelings or personal stories at all", "Only when the audience disagrees", "Never; emotion is always fair"], "Emotion should strengthen a sound argument, not substitute for one."],
+    ["debate", "debate", "What does it mean to 'flow' a debate?", ["Take notes in columns to track each argument and answer", "Speak quickly so the judges can't interrupt", "Agree with the other side on everything to keep things calm", "Read your speech word for word from a script"], "Flowing makes sure every opposing argument gets a response."],
+    ["debate", "debate", "What is cross-examination for?", ["Asking questions that expose weak evidence", "Giving a second, longer version of the opening speech", "Summarizing both sides fairly", "Thanking the judges"], "Ask, don't argue: the answers go into your rebuttal."],
+    ["debate", "debate", "What is signposting?", ["Telling the audience which argument you're addressing", "Holding up a sign with your claim", "Ending your speech early", "Repeating the motion word for word before every single point"], "'My second argument...' helps judges follow and flow."],
+    ["debate", "debate", "What's the best way to prepare for a debate?", ["Research both sides and prepare answers to the best points", "Memorize only your own opening speech", "Pick the side most of your friends already agree with, and stick to it", "Avoid looking at the other side's evidence"], "You may be assigned either side, and you'll need answers to their strongest points."],
+    ["douglass", "rhetoric", "What strategy does Douglass use in the excerpt?", ["A rhetorical question he answers himself", "A statistic from a census", "A joke to lighten the mood", "A quotation from a famous poet"], "He asks the audience's own question and answers it in a way they can't easily dismiss."],
+    ["douglass", "rhetoric", "Who is 'your' in Douglass's question?", ["His mostly white audience celebrating independence", "The enslaved people whose freedom he is speaking for", "The British king", "Future generations of readers"], "The word separates the celebration from the people it excludes."],
+    ["anthony", "rhetoric", "What appeal does Anthony rely on most in the excerpt?", ["Logos: the Constitution's own words", "Pathos: a story about her childhood", "Ethos: her degree in law", "Kairos: an upcoming election date"], "She argues that the Constitution's words, read plainly, include women."],
+    ["anthony", "rhetoric", "What device does Anthony use with 'we, the people; not we, the white male citizens...'?", ["Repetition that narrows and then widens", "Hyperbole that exaggerates the facts", "Understatement that downplays the issue", "Dialogue between two speakers"], "Repeating 'we' while rejecting narrower versions builds to 'the whole people.'"],
+    ["thoreau", "rhetoric", "What does Thoreau do with the motto 'That government is best which governs least'?", ["Accepts it and pushes it further", "Rejects it as foolish", "Calls it a quotation from Lincoln", "Says it applies only to towns"], "He extends it to its logical end: government that governs not at all."],
+    ["thoreau", "claim", "What kind of claim is 'That government is best which governs least'?", ["Value", "Fact", "Definition", "Cause"], "It judges what makes a government good."]
+  ]
+};
 // ===== content/lenses.js
 // Nine critical lenses for Unit 4, each applied to Lord of the Flies. lotf: [chapter needed to read it without spoilers, reading].
 // terms feed the draft checker's lens-vocabulary check, so keep them lowercase single words or short phrases.
@@ -741,6 +982,26 @@ const TERMS = [
   {t: "Hook", g: "write", d: "An opening that draws the reader in: a striking detail, question, scenario or idea.", ex: "Start with a moment, not a dictionary definition."},
   {t: "Transition", g: "write", d: "Words that show how ideas connect: addition, contrast, cause, example.", ex: "However, Similarly, As a result, For instance."},
   {t: "Block quotation", g: "write", d: "In MLA, a quotation longer than four lines of prose, indented without quotation marks.", ex: "Use rarely: long quotes leave less room for your analysis."},
+  {t: "Second-person address", g: "arg", d: "Speaking directly to the reader as you, which can draw the reader in or put them on trial.", ex: "Kincaid casts the reader as the tourist she criticizes."},
+  {t: "Sarcasm", g: "arg", d: "Mocking language that says the opposite of what it means, usually to wound or criticize.", ex: "Praising a ruined building as a fine example of public care."},
+  {t: "Hyperbole", g: "arg", d: "Deliberate exaggeration for emphasis or effect.", ex: "\"I've told you a million times.\""},
+  {t: "Understatement", g: "arg", d: "Presenting something as smaller or less important than it is, often for irony.", ex: "Calling a hurricane 'a bit of weather.'"},
+  {t: "Kairos", g: "arg", d: "The timing of an argument: why it matters at this moment, for this audience.", ex: "A speech on rebuilding delivered the week after a flood."},
+  {t: "Antithesis", g: "arg", d: "Contrasting ideas placed in parallel structure.", ex: "\"It was the best of times, it was the worst of times\" (Dickens)."},
+  {t: "Tricolon", g: "arg", d: "A series of three parallel words, phrases or clauses.", ex: "Lincoln: \"of the people, by the people, for the people.\""},
+  {t: "Connotation", g: "arg", d: "The feelings and associations a word carries beyond its dictionary meaning.", ex: "'Home' and 'house' mean similar things but feel different."},
+  {t: "Qualifier", g: "arg", d: "A word or phrase that limits a claim so it stays accurate.", ex: "Usually, in most cases, for many students."},
+  {t: "Steelman", g: "arg", d: "Stating the strongest version of an opposing argument before answering it.", ex: "The opposite of a straw man."},
+  {t: "Lateral reading", g: "arg", d: "Checking a source by leaving it to see what other sources say about it and its author.", ex: "Searching a website's name to see who funds it."},
+  {t: "Red herring", g: "arg", d: "A fallacy that changes the subject to distract from the real issue.", ex: "\"Why discuss the budget when teachers work so hard?\""},
+  {t: "Circular reasoning", g: "arg", d: "A fallacy that uses the claim as its own proof.", ex: "\"This is the best book because it's better than the rest.\""},
+  {t: "False cause", g: "arg", d: "A fallacy assuming that because one thing followed another, the first caused it.", ex: "\"I wore my lucky socks and we won.\""},
+  {t: "False authority", g: "arg", d: "A fallacy citing someone as an expert outside their field.", ex: "A singer's opinion on vaccines offered as medical proof."},
+  {t: "Whataboutism", g: "arg", d: "A fallacy that deflects criticism by pointing to someone else's wrongdoing.", ex: "\"Why should I recycle when factories pollute more?\""},
+  {t: "Cherry picking", g: "arg", d: "A fallacy that selects only favorable evidence and hides the rest.", ex: "Reporting the three good months and leaving out the nine bad ones."},
+  {t: "Appeal to tradition", g: "arg", d: "A fallacy arguing something is right because it has always been done.", ex: "\"We've always had finals in June.\""},
+  {t: "Appeal to fear", g: "arg", d: "A fallacy that uses fear instead of evidence to win agreement.", ex: "\"Buy this alarm or your family is in danger tonight.\""},
+  {t: "Creative nonfiction", g: "lit", d: "True writing that uses literary techniques such as scene, voice and imagery.", ex: "A Small Place mixes memoir, history and argument."},
   {t: "Soliloquy", g: "drama", d: "A speech in which a character alone on stage speaks their thoughts aloud.", ex: "Macbeth's dagger speech."},
   {t: "Aside", g: "drama", d: "A brief remark to the audience that other characters on stage don't hear.", ex: "A character mutters a secret plan while others talk."},
   {t: "Iambic pentameter", g: "drama", d: "A line of ten syllables in five unstressed-stressed pairs (da-DUM x 5).", ex: "\"So foul and fair a day I have not seen.\""},
@@ -917,6 +1178,12 @@ const PROMPTS = [
   {id: "lens-gender", type: "lens", min: 45, upto: 8, text: "Using a gender lens, explain what the all-male world of the novel reveals about how the boys define strength and leadership."},
   {id: "lit-symbol", type: "lit", min: 45, upto: 11, text: "Trace one symbol (the conch, Piggy's glasses or the signal fire) across the novel. How does its change reveal a central theme?"},
   {id: "arg-rules", type: "argument", min: 45, upto: 12, text: "Golding suggests that without rules, people turn to violence. Do you agree? Take a position, using the novel and your own knowledge or observations."},
+  {id: "rhet-asp-you", type: "rhetorical", book: "asp", min: 40, upto: 1, text: "Analyze how Kincaid uses second-person address in the first section of A Small Place to achieve her purpose with her audience."},
+  {id: "rhet-asp-tone", type: "rhetorical", book: "asp", min: 40, upto: 4, text: "Analyze how Kincaid's shifts in tone across A Small Place help her achieve her purpose."},
+  {id: "rhet-douglass", type: "rhetorical", book: "", min: 40, upto: 0, text: "Read the excerpt from Frederick Douglass's 1852 speech in Unit 3's sources. Analyze how Douglass uses a rhetorical question to move his audience."},
+  {id: "arg-tourism", type: "argument", book: "asp", min: 45, upto: 1, text: "Does tourism do more good than harm for small island nations? Take a position, using A Small Place and your own knowledge or observations."},
+  {id: "arg-service", type: "argument", book: "", min: 45, upto: 0, text: "Should high schools require community service hours to graduate? Take a position and support it with reasoning and evidence."},
+  {id: "arg-phones", type: "argument", book: "", min: 45, upto: 0, text: "Should phones be banned for the whole school day, including lunch? Take a position and answer the strongest opposing argument."},
   {id: "arg-leaders", type: "argument", min: 45, upto: 8, text: "Should leaders be chosen for popularity or for competence? Argue your position using Lord of the Flies and at least one real-world example."}
 ];
 const TIMED_TIPS = ["Spend 5 minutes planning: thesis, two body claims, the evidence for each.", "Write the thesis first, then the body paragraphs. A short introduction is fine.", "Two well-developed body paragraphs beat three rushed ones.", "Keep 3 minutes at the end to reread and fix your thesis and topic sentences.", "No quotation memorized? Paraphrase precisely and cite the chapter."];
@@ -1273,23 +1540,29 @@ const daysTo = k => dn(k) - dn(today());
 const dueWords = k => { const n = daysTo(k); return n < 0 ? `${-n} day${n === -1 ? "" : "s"} late` : n === 0 ? "due today" : n === 1 ? "due tomorrow" : `due in ${n} days`; };
 
 // ---------- Content lookups
-const BOOK = LOTF, UNIT = n => COURSE.units.find(u => u.u === n);
+const BOOKS = {lotf: LOTF, asp: ASP}, UNIT = n => COURSE.units.find(u => u.u === n);
+const bookOfUnit = n => { const U = UNIT(n); return U && U.book ? BOOKS[U.book] : null; };
+const W = b => BOOKS[b].word || {ch: "Chapter", chs: "Chapters", people: "Characters", symbols: "Symbols"};
 const ESSAY = id => ESSAYS.find(e => e.id === id);
 const LENS = id => LENSES.find(l => l.id === id);
-const RQ = [];   // reading checks
-{ const k = {}; for (const [ch, kind, q, c, why] of LOTF.questions) { k[ch] = (k[ch] || 0) + 1; RQ.push({id: `lotf.${ch}.${k[ch]}`, set: "read", ch, kind, q, c, why}); } }
+const RQ = [];   // reading checks for every book: ids like lotf.3.2 and asp.1.4
+for (const B of Object.values(BOOKS)) { const k = {}; for (const [ch, kind, q, c, why] of B.questions) { k[ch] = (k[ch] || 0) + 1; RQ.push({id: `${B.id}.${ch}.${k[ch]}`, set: "read", book: B.id, ch, kind, q, c, why}); } }
 const LQ = [];   // lens questions
 { const k = {}; for (const [lens, q, c, why] of LENS_QS) { k[lens] = (k[lens] || 0) + 1; LQ.push({id: `lens.${lens}.${k[lens]}`, set: "lens", lens, kind: "lens", q, c, why}); } }
 const TERM = {}; for (const t of TERMS) TERM[slug(t.t)] = t;
 const DRILL = {}; for (const d of DRILLS) DRILL[d.id] = d;
-const ALLQ = {}; for (const x of RQ.concat(LQ)) ALLQ[x.id] = x;
-const CH = n => LOTF.chapters[n - 1];
-const KIND_NAMES = {plot: "Plot", character: "Character", symbol: "Symbol", theme: "Theme", inference: "Inference", lens: "Lenses", term: "Terms", who: "Who and what"};
+const AQ = [];   // argument workshop questions
+{ const k = {}; for (const [src, kind, q, c, why] of ARG.questions) { k[src] = (k[src] || 0) + 1; AQ.push({id: `arg.${src}.${k[src]}`, set: "arg", src, kind, q, c, why}); } }
+const ALLQ = {}; for (const x of RQ.concat(LQ, AQ)) ALLQ[x.id] = x;
+const CH = (n, b = "lotf") => BOOKS[b].chapters[n - 1];
+const KIND_NAMES = {plot: "Plot", character: "Character", symbol: "Symbol", theme: "Theme", inference: "Inference", rhetoric: "Rhetoric", lens: "Lenses", term: "Terms", who: "Who and what",
+  claim: "Claims", evidence: "Evidence", reasoning: "Reasoning", sources: "Sources", counter: "Counterclaims", fallacy: "Fallacies", appeal: "Appeals", debate: "Debate"};
+const ARG_KINDS = ["claim", "evidence", "reasoning", "sources", "counter", "fallacy", "appeal", "debate"];
 
 // ---------- Saved progress (key eng10h.v1)
 const fresh = () => ({
   v: 1, upd: 0, name: "", days: {}, xp: 0,
-  read: {lotf: 0}, peek: {}, readLog: [],
+  read: {lotf: 0, asp: 0}, peek: {}, readLog: [], soaps: [], debates: [],
   qs: {}, miss: {}, fixed: 0, quizzes: [],
   cards: {}, newDay: null, newCount: 0,
   drills: {}, asg: [], quotes: [], sem: [], rub: [], checks: [], writes: [], tw: null, ai: [], drafts: {}, seen: {},
@@ -1304,8 +1577,8 @@ function loadState(j) {
 try { const j = JSON.parse(localStorage.getItem(LS) || "null"); if (j && j.v === 1) loadState(j); } catch (e) {}
 function save() { S.upd = Date.now(); try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
 let saveT = 0; function saveSoon() { clearTimeout(saveT); saveT = setTimeout(save, 400); }
-const readTo = () => S.read.lotf || 0;
-const canSee = ch => ch <= readTo() || !!S.peek[ch];
+const readTo = (b = "lotf") => S.read[b] || 0;
+const canSee = (ch, b = "lotf") => ch <= readTo(b) || !!S.peek[b + ":" + ch] || (b === "lotf" && !!S.peek[ch]);
 
 // ---------- Days, active minutes and streak (from Math 6)
 function day(k = today()) { return S.days[k] || (S.days[k] = {min: 0, done: 0, xp: 0}); }
@@ -1375,9 +1648,11 @@ for (const n of [3, 7, 14, 30, 60, 100]) BADGES.push({id: `streak-${n}`, fam: "S
 BADGES.push({id: "read-1", fam: "Reading", name: "Washed ashore", rule: "Finish chapter 1", test: () => readTo() >= 1});
 BADGES.push({id: "read-6", fam: "Reading", name: "Halfway across", rule: "Read through chapter 6", test: () => readTo() >= 6});
 BADGES.push({id: "read-12", fam: "Reading", name: "Rescued", rule: "Finish Lord of the Flies", test: () => readTo() >= 12});
+BADGES.push({id: "asp-4", fam: "Reading", name: "Small place, big ideas", rule: "Finish A Small Place", test: () => readTo("asp") >= 4});
 BADGES.push({id: "perfect", fam: "Quizzes", name: "Perfect check", rule: "100% on a reading check", test: () => S.quizzes.some(q => q.kind === "ch" && q.right === q.n)});
 BADGES.push({id: "perfect5", fam: "Quizzes", name: "Five perfect checks", rule: "100% on five reading checks", test: () => new Set(S.quizzes.filter(q => q.kind === "ch" && q.right === q.n).map(q => q.ch)).size >= 5});
-BADGES.push({id: "allch", fam: "Quizzes", name: "Every chapter checked", rule: "Pass all 12 reading checks (6 of 8 or better)", test: () => LOTF.chapters.every(c => S.quizzes.some(q => q.kind === "ch" && q.ch === c.n && q.right >= 6))});
+BADGES.push({id: "allch", fam: "Quizzes", name: "Every chapter checked", rule: "Pass all 12 Lord of the Flies reading checks (6 of 8 or better)", test: () => LOTF.chapters.every(c => S.quizzes.some(q => q.kind === "ch" && (q.book || "lotf") === "lotf" && q.ch === c.n && q.right >= 6))});
+BADGES.push({id: "fallacy90", fam: "Quizzes", name: "Fallacy finder", rule: "90% or better on the fallacy finder", test: () => S.quizzes.some(q => q.kind === "fallacies" && q.right >= 0.9 * q.n)});
 BADGES.push({id: "lens90", fam: "Quizzes", name: "Lens spotter", rule: "90% or better on a lens quiz", test: () => S.quizzes.some(q => q.kind === "lens" && q.right >= 0.9 * q.n)});
 BADGES.push({id: "term90", fam: "Quizzes", name: "Word smith", rule: "90% or better on a terms quiz", test: () => S.quizzes.some(q => q.kind === "terms" && q.right >= 0.9 * q.n)});
 BADGES.push({id: "unit90", fam: "Quizzes", name: "Unit champion", rule: "90% or better on a unit test", test: () => S.quizzes.some(q => q.kind === "unit" && q.right >= 0.9 * q.n)});
@@ -1394,6 +1669,9 @@ BADGES.push({id: "timed1", fam: "Writing", name: "Under the clock", rule: "Finis
 BADGES.push({id: "timed5", fam: "Writing", name: "Clock master", rule: "Finish 5 timed writes", test: () => S.writes.length >= 5});
 BADGES.push({id: "planner", fam: "Habits", name: "Planner", rule: "Add an assignment 4 or more days before it's due", test: () => S.asg.some(a => a.created && a.due && dn(a.due) - dn(a.created) >= 4)});
 BADGES.push({id: "ontime5", fam: "Habits", name: "On time", rule: "Finish 5 assignments on or before the due date", test: () => S.asg.filter(a => a.done && a.due && a.done <= a.due).length >= 5});
+BADGES.push({id: "lessons", fam: "Learning", name: "Workshop graduate", rule: "Open all eight argument lessons", test: () => ARG.lessons.every(l => S.seen["lesson:" + l.id])});
+BADGES.push({id: "soap3", fam: "Writing", name: "SOAPSTone pro", rule: "Complete 3 SOAPSTone analyses", test: () => S.soaps.length >= 3});
+BADGES.push({id: "debate1", fam: "Habits", name: "Ready to debate", rule: "Prepare a debate case", test: () => S.debates.length >= 1});
 BADGES.push({id: "seminar3", fam: "Habits", name: "Seminar ready", rule: "Prepare for 3 seminars", test: () => S.sem.length >= 3});
 const badge = id => BADGES.find(b => b.id === id);
 function checkBadges() {
@@ -1403,10 +1681,15 @@ function checkBadges() {
 // ---------- Review cards (Leitner boxes: 1, 3, 7, 21, 60 days). New cards come in at 8 a day.
 const BOX_DAYS = [0, 1, 3, 7, 21, 60];
 function allCards() {
-  const out = [];
-  for (const l of LENSES) out.push({id: "l:" + l.id, kind: "Lens", front: l.name + " lens", back: l.q, extra: "Key terms: " + l.terms.slice(0, 5).join(", ")});
-  for (const c of LOTF.characters) if (canSee(c.from)) out.push({id: "c:" + c.id, kind: "Character", front: c.name, back: c.role});
-  for (const s of LOTF.symbols) if (canSee(s.from)) out.push({id: "s:" + s.id, kind: "Symbol", front: s.name, back: s.means});
+  const groups = {4: [], 2: [], 3: []};
+  for (const l of LENSES) groups[4].push({id: "l:" + l.id, kind: "Lens", front: l.name + " lens", back: l.q, extra: "Key terms: " + l.terms.slice(0, 5).join(", ")});
+  for (const c of LOTF.characters) if (canSee(c.from)) groups[4].push({id: "c:" + c.id, kind: "Character", front: c.name, back: c.role});
+  for (const s of LOTF.symbols) if (canSee(s.from)) groups[4].push({id: "s:" + s.id, kind: "Symbol", front: s.name, back: s.means});
+  for (const c of ASP.characters) if (canSee(c.from, "asp")) groups[2].push({id: "ac:" + c.id, kind: "Voice", front: c.name, back: c.role});
+  for (const s of ASP.symbols) if (canSee(s.from, "asp")) groups[2].push({id: "as:" + s.id, kind: "Motif", front: s.name, back: s.means});
+  for (const f of ARG.fallacies) groups[3].push({id: "f:" + slug(f.name), kind: "Fallacy", front: f.name, back: f.d, extra: "Example: " + f.ex});
+  const first = groups[S.set.unit] ? [S.set.unit] : [];
+  const out = [...first, ...[4, 2, 3].filter(u => !first.includes(u))].flatMap(u => groups[u]);
   const order = {write: 0, lit: 1, narr: 2, arg: 3, drama: 4};
   for (const t of TERMS.slice().sort((a, b) => order[a.g] - order[b.g])) out.push({id: "t:" + slug(t.t), kind: TERM_GROUPS[t.g], front: t.t, back: t.d, extra: t.ex});
   return out;
@@ -1483,44 +1766,57 @@ function termItems(n) {
   const pool = shuffle(TERMS.filter(t => t.g !== "drama" || S.set.unit === 7)).slice(0, n);
   return pool.map((t, i) => termItem(t, "dte"[i % 3]));
 }
-function whoItem(kind, id) {
+function whoItem(kind, id, b = "lotf") {
+  const B = BOOKS[b], pre = b === "lotf" ? "" : b + ".";
   if (kind === "c") {
-    const all = LOTF.characters.filter(c => canSee(c.from)), c = all.find(x => x.id === id), others = shuffle(all.filter(o => o !== c)).slice(0, 3);
+    const all = B.characters.filter(c => canSee(c.from, b)), c = all.find(x => x.id === id), others = shuffle(all.filter(o => o !== c)).slice(0, 3);
     if (!c || others.length < 3) return null;
-    return {id: "who.c." + id, set: "who", kind: "who", q: `Who is this? ${mask(c.role, c.name)}`, c: [c.name, ...others.map(o => o.name)], why: c.role};
+    return {id: `who.${pre}c.${id}`, set: "who", kind: "who", q: `${b === "lotf" ? "Who is this?" : "Which voice is this?"} ${mask(c.role, c.name)}`, c: [c.name, ...others.map(o => o.name)], why: c.role};
   }
-  const all = LOTF.symbols.filter(s => canSee(s.from)), s = all.find(x => x.id === id), others = shuffle(all.filter(o => o !== s)).slice(0, 3);
+  const all = B.symbols.filter(s => canSee(s.from, b)), s = all.find(x => x.id === id), others = shuffle(all.filter(o => o !== s)).slice(0, 3);
   if (!s || others.length < 3) return null;
-  return {id: "who.s." + id, set: "who", kind: "who", q: `Which symbol is this? ${mask(s.means, s.name)}`, c: [s.name, ...others.map(o => o.name)], why: s.means};
+  return {id: `who.${pre}s.${id}`, set: "who", kind: "who", q: `${b === "lotf" ? "Which symbol is this?" : "Which motif is this?"} ${mask(s.means, s.name)}`, c: [s.name, ...others.map(o => o.name)], why: s.means};
 }
-function whoItems(n) {
-  const ids = LOTF.characters.filter(c => canSee(c.from)).map(c => ["c", c.id]).concat(LOTF.symbols.filter(s => canSee(s.from)).map(s => ["s", s.id]));
-  return shuffle(ids).map(([k, id]) => whoItem(k, id)).filter(Boolean).slice(0, n);
+function whoItems(n, b = "lotf") {
+  const B = BOOKS[b], ids = B.characters.filter(c => canSee(c.from, b)).map(c => ["c", c.id]).concat(B.symbols.filter(s => canSee(s.from, b)).map(s => ["s", s.id]));
+  return shuffle(ids).map(([k, id]) => whoItem(k, id, b)).filter(Boolean).slice(0, n);
+}
+function fallacyItem(f) {
+  const others = shuffle(ARG.fallacies.filter(o => o !== f)).slice(0, 3);
+  return {id: "fal." + slug(f.name), set: "arg", kind: "fallacy", q: `Which fallacy is this? "${f.ex}"`, c: [f.name, ...others.map(o => o.name)], why: `${f.name}: ${f.d} Fix it: ${f.fix}`};
 }
 function itemById(id) {
   if (ALLQ[id]) return ALLQ[id];
   const m = id.match(/^term\.(.+)\.([dte])$/); if (m && TERM[m[1]]) return termItem(TERM[m[1]], m[2]);
-  const w = id.match(/^who\.([cs])\.(.+)$/); if (w) return whoItem(w[1], w[2]);
+  const w = id.match(/^who\.(?:(asp)\.)?([cs])\.(.+)$/); if (w) return whoItem(w[2], w[3], w[1] || "lotf");
+  const f = id.match(/^fal\.(.+)$/); if (f) { const x = ARG.fallacies.find(y => slug(y.name) === f[1]); return x ? fallacyItem(x) : null; }
   return null;
 }
 const mkItem = x => ({id: x.id, q: x.q, why: x.why, kind: x.kind, ch: x.ch || 0, set: x.set, choices: shuffle(x.c.map((t, i) => ({t, ok: i === 0})))});
 
-function startQuiz(kind, arg) {
-  let items = [], title = "", mode = "practice", minutes = 0;
-  if (kind === "ch") { const n = Number(arg); items = RQ.filter(q => q.ch === n); title = `Reading check · Chapter ${n}`; }
-  else if (kind === "mix") { items = shuffle(RQ.filter(q => canSee(q.ch))).slice(0, 15); title = "Mixed review"; }
+function startQuiz(kind, arg, arg2) {
+  let items = [], title = "", mode = "practice", minutes = 0, book = "lotf", ch = 0;
+  if (kind === "ch") { if (arg2) { book = arg; ch = Number(arg2); } else ch = Number(arg); items = RQ.filter(q => q.book === book && q.ch === ch); title = `Reading check · ${W(book).ch} ${ch}${book !== "lotf" ? " · " + BOOKS[book].title : ""}`; }
+  else if (kind === "mix") { book = BOOKS[arg] ? arg : "lotf"; items = shuffle(RQ.filter(q => q.book === book && canSee(q.ch, book))).slice(0, 15); title = `Mixed review · ${BOOKS[book].title}`; }
   else if (kind === "lens") { items = shuffle(LQ).slice(0, 15); title = "Lens quiz"; }
   else if (kind === "terms") { items = termItems(15); title = "Terms quiz"; }
-  else if (kind === "who") { items = whoItems(12); title = "Who and what"; }
+  else if (kind === "who") { book = BOOKS[arg] ? arg : "lotf"; items = whoItems(12, book); title = `Who and what · ${BOOKS[book].title}`; }
+  else if (kind === "arg") { items = shuffle(AQ.filter(q => !arg || q.src === arg)).slice(0, 15); const src = ARG.sources.find(x => x.id === arg), L = ARG.lessons.find(x => x.id === arg); title = src ? `Source practice · ${src.author}` : L ? `Lesson quiz · ${L.title}` : "Argument quiz"; }
+  else if (kind === "fallacies") { items = shuffle(ARG.fallacies.map(fallacyItem).concat(AQ.filter(q => q.kind === "fallacy"))).slice(0, 15); title = "Fallacy finder"; }
   else if (kind === "unit") {
-    const r = shuffle(RQ.filter(q => canSee(q.ch))).slice(0, 18), rest = 30 - r.length;
-    items = shuffle(r.concat(shuffle(LQ).slice(0, Math.ceil(rest / 2)), termItems(Math.floor(rest / 2))));
-    title = "Unit 4 test"; mode = "test"; minutes = 40;
+    const u = Number(arg) || 4; mode = "test"; minutes = 40; title = `Unit ${u} test`;
+    if (u === 3) items = shuffle(AQ).slice(0, 24).concat(shuffle(ARG.fallacies).slice(0, 6).map(fallacyItem));
+    else {
+      const b = u === 2 ? "asp" : "lotf", r = shuffle(RQ.filter(q => q.book === b && canSee(q.ch, b))).slice(0, u === 2 ? 20 : 18), rest = 30 - r.length;
+      const extra = u === 2 ? termItems(40).filter(t => TERM[t.id.split(".")[1]] && TERM[t.id.split(".")[1]].g === "arg").slice(0, rest) : shuffle(LQ).slice(0, Math.ceil(rest / 2)).concat(termItems(Math.floor(rest / 2)));
+      items = r.concat(extra);
+    }
+    items = shuffle(items);
   }
   else if (kind === "miss") { items = Object.keys(S.miss).map(itemById).filter(Boolean).slice(0, 15); title = "My misses"; }
   else if (kind === "retry" && SES) { items = SES.items.filter((it, i) => !(it.choices[SES.picks[i]] || {}).ok).map(it => itemById(it.id)).filter(Boolean); title = "Retry missed"; }
   if (!items.length) { toast(kind === "miss" ? "No misses to fix. Nice." : "Nothing to quiz yet: read a chapter first."); return false; }
-  SES = {kind, arg, title, mode, items: items.map(mkItem), i: 0, picks: [], t0: Date.now(), end: minutes ? Date.now() + minutes * 60000 : 0, done: false, ch: kind === "ch" ? Number(arg) : 0};
+  SES = {kind, arg, title, mode, items: items.map(mkItem), i: 0, picks: [], t0: Date.now(), end: minutes ? Date.now() + minutes * 60000 : 0, done: false, ch, book};
   if (location.hash === "#/run") render(); else location.hash = "#/run";
   return true;
 }
@@ -1531,7 +1827,7 @@ function recordQ(it, ok) {
   else if (S.miss[it.id] && (SES.kind === "miss" || SES.kind === "retry" || q.n > 1)) { delete S.miss[it.id]; S.fixed++; }
   active();
 }
-ACT.quiz = a => { const [k, arg] = String(a).split(":"); startQuiz(k, arg); };
+ACT.quiz = a => { const [k, arg, arg2] = String(a).split(":"); startQuiz(k, arg, arg2); };
 ACT.pick = a => {
   if (!SES || SES.done) return;
   const i = Number(a);
@@ -1559,11 +1855,11 @@ function finishQuiz() {
   SES.done = true; clearInterval(TICK);
   const n = SES.items.length, right = SES.items.filter((it, i) => (it.choices[SES.picks[i]] || {}).ok).length;
   SES.right = right; SES.ms = Date.now() - SES.t0;
-  S.quizzes.push({d: today(), kind: SES.kind, ch: SES.ch, title: SES.title, n, right, ms: SES.ms});
+  S.quizzes.push({d: today(), kind: SES.kind, ch: SES.ch, book: SES.book, unit: SES.kind === "unit" ? Number(SES.arg) || 4 : undefined, title: SES.title, n, right, ms: SES.ms});
   if (S.quizzes.length > 400) S.quizzes.splice(0, S.quizzes.length - 400);
   addXP((SES.kind === "unit" ? 50 : 20) + (right === n ? 20 : 0));
   if (["ch", "mix", "unit", "miss", "retry"].includes(SES.kind)) goalTick("rcheck");
-  if (["lens", "terms", "who", "unit"].includes(SES.kind)) goalTick("quiz");
+  if (["lens", "terms", "who", "unit", "arg", "fallacies"].includes(SES.kind)) goalTick("quiz");
   if (right === n) celebrate("perfect");
   checkBadges(); save(); render(); window.scrollTo(0, 0);
 }
@@ -1577,7 +1873,7 @@ function quizTimer() {
   };
   upd(); TICK = setInterval(upd, 1000);
 }
-const kindChip = it => `<span class="pill">${esc(KIND_NAMES[it.kind] || it.kind)}</span>${it.ch ? `<span class="chip">Chapter ${it.ch}</span>` : ""}`;
+const kindChip = it => { const b = it.id.startsWith("asp.") ? "asp" : "lotf"; return `<span class="pill">${esc(KIND_NAMES[it.kind] || it.kind)}</span>${it.ch ? `<span class="chip">${W(b).ch} ${it.ch}</span>` : ""}`; };
 V.run = () => {
   if (!SES) { location.replace("#/test"); return ""; }
   if (SES.done) return quizResults();
@@ -1608,7 +1904,7 @@ function quizResults() {
     return `<li class="${ok ? "ok" : "no"}"><details${ok ? "" : " open"}><summary><span class="mark">${ok ? "✓" : "✗"}</span><span>${esc(it.q)}</span></summary>
       <p>${p ? `Your answer: ${esc(p.t)}<br>` : "Not answered<br>"}${ok ? "" : `Answer: <b>${esc(r.t)}</b><br>`}<span class="quiet">${esc(it.why)}</span></p></details></li>`;
   }).join("");
-  const missed = n - right, chNext = SES.kind === "ch" && SES.ch < 12 ? `<a class="btn ghost" href="#/ch/${SES.ch + 1}">Chapter ${SES.ch + 1} guide</a>` : "";
+  const B = BOOKS[SES.book] || LOTF, missed = n - right, chNext = SES.kind === "ch" && SES.ch < B.chapters_n ? `<a class="btn ghost" href="#/ch/${B.id}/${SES.ch + 1}">${W(B.id).ch} ${SES.ch + 1} guide</a>` : "";
   return `<p class="crumb"><a href="#/test">‹ Test</a></p>
   <div class="card ${right === n ? "okc" : ""}"><h2>${esc(SES.title)}</h2><p class="big">${right} of ${n} · ${pct(right, n)}%</p>
   <p class="meta">${mmss(SES.ms / 1000)} · ${right === n ? "Perfect. Every answer right." : missed === 1 ? "One to review below." : `${missed} to review below; they're saved in My misses.`}</p>
@@ -1618,73 +1914,92 @@ function quizResults() {
 }
 
 // ===== js/20-learn.js
-// ---------- Learn: units, the Lord of the Flies guide (chapters, characters, symbols, themes, lenses, context), glossary
+// ---------- Learn: units; book guides (Lord of the Flies, A Small Place) with sections, people, symbols, themes, lenses or rhetoric, context;
+// the argument workshop (lessons, fallacies, sources, debate); the glossary
 const unitColor = n => (UNIT(n) || {}).color || "var(--accent)";
-const readSelect = () => `<label class="tog"><span>I've read through</span><select data-in="readto" aria-label="Chapters read">${Array.from({length: 13}, (_, i) => `<option value="${i}"${i === readTo() ? " selected" : ""}>${i === 0 ? "not started" : i === 12 ? "chapter 12 (finished)" : "chapter " + i}</option>`).join("")}</select></label>`;
-function setRead(n) {
-  const old = readTo(); S.read.lotf = n;
-  if (n > old) { for (let c = old + 1; c <= n; c++) S.readLog.push({ch: c, d: today()}); addXP(15 * (n - old)); toast(n === 12 ? "You finished Lord of the Flies!" : `Read through chapter ${n}`); }
+const readSelect = (b = "lotf") => { const B = BOOKS[b], w = W(b).ch.toLowerCase(), n = B.chapters_n; return `<label class="tog"><span>I've read through</span><select data-in="readto" data-b="${b}" aria-label="${esc(B.title)}: how far I've read">${Array.from({length: n + 1}, (_, i) => `<option value="${i}"${i === readTo(b) ? " selected" : ""}>${i === 0 ? "not started" : i === n ? `${w} ${n} (finished)` : `${w} ${i}`}</option>`).join("")}</select></label>`; };
+function setRead(n, b = "lotf") {
+  const B = BOOKS[b], old = readTo(b); S.read[b] = n;
+  if (n > old) { for (let c = old + 1; c <= n; c++) S.readLog.push({book: b, ch: c, d: today()}); addXP(15 * (n - old)); toast(n === B.chapters_n ? `You finished ${B.title}!` : `Read through ${W(b).ch.toLowerCase()} ${n}`); }
   checkBadges(); save(); render();
 }
-IN.readto = el => setRead(Number(el.value));
-ACT.readch = a => setRead(Math.max(readTo(), Number(a)));
-ACT.peek = a => { S.peek[Number(a)] = 1; save(); render(); };
+IN.readto = el => setRead(Number(el.value), el.dataset.b || "lotf");
+ACT.readch = a => { const [b, n] = a.includes(":") ? a.split(":") : ["lotf", a]; setRead(Math.max(readTo(b), Number(n)), b); };
+ACT.peek = a => { const [b, n] = a.includes(":") ? a.split(":") : ["lotf", a]; S.peek[b + ":" + n] = 1; save(); render(); };
+const chHref = (b, n) => b === "lotf" ? `#/ch/${n}` : `#/ch/${b}/${n}`;
 
 V.learn = () => {
   const cards = COURSE.units.map(U => {
-    const ready = U.u === 4, cur = S.set.unit === U.u;
+    const cur = S.set.unit === U.u;
     return `<a class="card unit${cur ? " hi" : ""}" style="--u:${U.color};display:block;text-decoration:none;color:inherit" href="#/unit/${U.u}">
-      <div class="row" style="margin:0"><span class="pill" style="background:${U.color};color:#fff">Unit ${U.u}</span>${ready ? `<span class="chip ok">Ready</span>` : `<span class="chip">Coming in phase ${U.phase}</span>`}${cur ? `<span class="chip ac">Current unit</span>` : ""}</div>
+      <div class="row" style="margin:0"><span class="pill" style="background:${U.color};color:#fff">Unit ${U.u}</span>${U.ready ? `<span class="chip ok">Ready</span>` : `<span class="chip">Coming in phase ${U.phase}</span>`}${cur ? `<span class="chip ac">Current unit</span>` : ""}</div>
       <h3 style="margin-top:8px">${esc(U.title)}</h3><p class="meta"><i>${esc(U.text)}</i>${U.author ? " · " + esc(U.author) : ""}</p><p class="meta">Product: ${esc(U.product)}</p></a>`;
   }).join("");
-  return `<h2>Learn</h2><p class="lead">The seven units of ${esc(COURSE.name)}, in the order of the IHS syllabus. Unit 4 is fully built; the writing guides for every unit are ready in Write.</p>
+  return `<h2>Learn</h2><p class="lead">The seven units of ${esc(COURSE.name)}, in the order of the IHS syllabus. Units 2, 3 and 4 are fully built; the writing guides for every unit are ready in Write.</p>
   <div class="grid">${cards}<a class="card" style="display:block;text-decoration:none;color:inherit" href="#/terms"><span class="pill">Glossary</span><h3 style="margin-top:8px">Terms</h3><p class="meta">${TERMS.length} literary, rhetorical and essay terms with examples.</p></a></div>`;
 };
 
 V.unit = (n, tab) => {
   n = Number(n) || 4; const U = UNIT(n); if (!U) return V.learn();
-  if (n !== 4) return unitSoon(U);
-  tab = tab || "chapters";
-  const TABS = [["chapters", "Chapters"], ["characters", "Characters"], ["symbols", "Symbols"], ["themes", "Themes"], ["lenses", "Lenses"], ["context", "Context"]];
-  const body = {chapters: unitChapters, characters: unitCharacters, symbols: unitSymbols, themes: unitThemes, lenses: unitLenses, context: unitContext}[tab] || unitChapters;
-  return `<p class="crumb"><a href="#/learn">‹ Learn</a></p>
-  <div class="card unit" style="--u:${U.color}"><span class="pill" style="background:${U.color};color:#fff">Unit 4 · ${esc(U.title)}</span>
-  <h2 style="margin-top:8px"><i>${esc(LOTF.title)}</i></h2><p class="meta">${esc(LOTF.author)} · ${LOTF.year} · Product: ${esc(U.product)}</p>
-  <div class="row">${readSelect()}</div></div>
-  <div class="ltabs">${TABS.map(([k, t]) => `<a href="#/unit/4/${k}"${k === tab ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</div>${body()}`;
+  if (U.book) return bookUnit(U, BOOKS[U.book], tab);
+  if (U.workshop) return argUnit(U, tab);
+  return unitSoon(U);
 };
-function bestCheck(ch) { const q = S.quizzes.filter(x => x.kind === "ch" && x.ch === ch); return q.length ? Math.max(...q.map(x => x.right)) : null; }
-function unitChapters() {
-  return `<ul class="list card">${LOTF.chapters.map(c => {
-    const ok = canSee(c.n), b = bestCheck(c.n);
-    return `<li class="${ok ? "" : "locked"}"><a class="go" href="#/ch/${c.n}"><span class="n">${c.n}</span><span class="t">${esc(c.title)}<br><span class="s">${c.n <= readTo() ? "Read" : ok ? "Opened early" : "Not read yet: spoilers hidden"}${b != null ? ` · best check ${b}/8` : ""}</span></span></a>${c.n <= readTo() ? `<button class="btn ghost sm" data-act="quiz" data-arg="ch:${c.n}">Check</button>` : ""}</li>`;
-  }).join("")}</ul>`;
+function bookUnit(U, B, tab) {
+  const b = B.id, w = W(b);
+  const TABS = [["chapters", w.chs], ["characters", w.people], ["symbols", w.symbols], ["themes", "Themes"], b === "lotf" ? ["lenses", "Lenses"] : ["rhetoric", "Rhetoric"], ["context", "Context"]];
+  tab = TABS.some(t => t[0] === tab) ? tab : "chapters";
+  const body = {chapters: unitChapters, characters: unitCharacters, symbols: unitSymbols, themes: unitThemes, lenses: unitLenses, rhetoric: unitRhetoric, context: unitContext}[tab];
+  const note = CONTENT_NOTES[U.u];
+  return `<p class="crumb"><a href="#/learn">‹ Learn</a></p>
+  <div class="card unit" style="--u:${U.color}"><span class="pill" style="background:${U.color};color:#fff">Unit ${U.u} · ${esc(U.title)}</span>
+  <h2 style="margin-top:8px"><i>${esc(B.title)}</i></h2><p class="meta">${esc(B.author)} · ${B.year} · Product: ${esc(U.product)}</p>
+  <div class="row">${readSelect(b)}${S.set.unit === U.u ? "" : `<button class="btn ghost sm" data-act="setunit" data-arg="${U.u}">Make this my current unit</button>`}</div></div>
+  ${note ? `<div class="card note"><b>Content note.</b> ${esc(note)}</div>` : ""}
+  <div class="ltabs">${TABS.map(([k, t]) => `<a href="#/unit/${U.u}/${k}"${k === tab ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</div>${body(B)}`;
 }
-const gate = ch => `<span class="spoiler">Unlocks after chapter ${ch}.</span>`;
-function trackList(track) {
-  const seen = track.filter(([c]) => canSee(c)), hid = track.length - seen.length;
-  return `<ul class="track">${seen.map(([c, t]) => `<li><b>Ch. ${c}</b><span>${esc(t)}</span></li>`).join("")}${hid ? `<li><b></b>${gate(track[seen.length][0])}</li>` : ""}</ul>`;
+function bestCheck(ch, b = "lotf") { const q = S.quizzes.filter(x => x.kind === "ch" && (x.book || "lotf") === b && x.ch === ch); return q.length ? Math.max(...q.map(x => x.right)) : null; }
+function unitChapters(B) {
+  const b = B.id, w = W(b).ch.toLowerCase();
+  return `<ul class="list card">${B.chapters.map(c => {
+    const ok = canSee(c.n, b), best = bestCheck(c.n, b);
+    return `<li class="${ok ? "" : "locked"}"><a class="go" href="${chHref(b, c.n)}"><span class="n">${c.n}</span><span class="t">${esc(c.title)}<br><span class="s">${c.n <= readTo(b) ? "Read" : ok ? "Opened early" : "Not read yet: spoilers hidden"}${best != null ? ` · best check ${best}/8` : ""}</span></span></a>${c.n <= readTo(b) ? `<button class="btn ghost sm" data-act="quiz" data-arg="ch:${b}:${c.n}">Check</button>` : ""}</li>`;
+  }).join("")}</ul><div class="row"><button class="btn ghost sm" data-act="quiz" data-arg="mix:${b}"${readTo(b) ? "" : " disabled"}>Mixed review</button><button class="btn ghost sm" data-act="quiz" data-arg="who:${b}"${readTo(b) ? "" : " disabled"}>Who and what</button><button class="btn ghost sm" data-act="quiz" data-arg="unit:${B.unit}">Unit ${B.unit} test</button></div>`;
 }
-function unitCharacters() {
-  return `<div class="grid">${LOTF.characters.map(c => canSee(c.from) ? `<div class="card"><h3>${esc(c.name)}</h3><p>${esc(c.role)}</p>${c.traits.length ? `<div class="tags">${c.traits.map(t => `<span class="chip">${esc(t)}</span>`).join("")}</div>` : ""}${c.arc.length ? `<h4>Arc so far</h4>${trackList(c.arc)}` : ""}<h4>Through a lens</h4><p class="meta">${esc(c.lens)}</p></div>`
-    : `<div class="card locked"><h3>Another character</h3>${gate(c.from)}</div>`).join("")}</div>`;
+const gate = (ch, b = "lotf") => `<span class="spoiler">Unlocks after ${W(b).ch.toLowerCase()} ${ch}.</span>`;
+function trackList(track, b = "lotf") {
+  const seen = track.filter(([c]) => canSee(c, b)), hid = track.length - seen.length, w = b === "lotf" ? "Ch." : "Sec.";
+  return `<ul class="track">${seen.map(([c, t]) => `<li><b>${w} ${c}</b><span>${esc(t)}</span></li>`).join("")}${hid ? `<li><b></b>${gate(track[seen.length][0], b)}</li>` : ""}</ul>`;
 }
-function unitSymbols() {
-  return `<div class="grid">${LOTF.symbols.map(s => canSee(s.from) ? `<div class="card"><h3>${esc(s.name)}</h3><p>${esc(s.means)}</p><h4>Tracker</h4>${trackList(s.track)}</div>`
-    : `<div class="card locked"><h3>Another symbol</h3>${gate(s.from)}</div>`).join("")}</div>`;
+function unitCharacters(B) {
+  const b = B.id, one = b === "lotf" ? "Another character" : "Another voice";
+  return `<div class="grid">${B.characters.map(c => canSee(c.from, b) ? `<div class="card"><h3>${esc(c.name)}</h3><p>${esc(c.role)}</p>${c.traits.length ? `<div class="tags">${c.traits.map(t => `<span class="chip">${esc(t)}</span>`).join("")}</div>` : ""}${c.arc.length ? `<h4>${b === "lotf" ? "Arc so far" : "Where it appears"}</h4>${trackList(c.arc, b)}` : ""}<h4>${b === "lotf" ? "Through a lens" : "Rhetorical angle"}</h4><p class="meta">${esc(c.lens)}</p></div>`
+    : `<div class="card locked"><h3>${one}</h3>${gate(c.from, b)}</div>`).join("")}</div>`;
 }
-function unitThemes() {
-  return `<div class="grid">${LOTF.themes.map(t => `<div class="card"><h3>${esc(t.name)}</h3><p>${esc(t.what)}</p><h4>Where it shows</h4>${trackList(t.track)}</div>`).join("")}</div>`;
+function unitSymbols(B) {
+  const b = B.id, one = b === "lotf" ? "Another symbol" : "Another motif";
+  return `<div class="grid">${B.symbols.map(s => canSee(s.from, b) ? `<div class="card"><h3>${esc(s.name)}</h3><p>${esc(s.means)}</p><h4>Tracker</h4>${trackList(s.track, b)}</div>`
+    : `<div class="card locked"><h3>${one}</h3>${gate(s.from, b)}</div>`).join("")}</div>`;
 }
+function unitThemes(B) { return `<div class="grid">${B.themes.map(t => `<div class="card"><h3>${esc(t.name)}</h3><p>${esc(t.what)}</p><h4>Where it shows</h4>${trackList(t.track, B.id)}</div>`).join("")}</div>`; }
 function unitLenses() {
   return `<p class="lead">A critical lens is a set of questions you bring to a text. Each lens notices different things. Open one to see it applied to <i>Lord of the Flies</i>, then try the lens quiz in Test.</p>
   <div class="grid">${LENSES.map(l => `<a class="card" style="display:block;text-decoration:none;color:inherit;border-left:6px solid ${l.color}" href="#/lens/${l.id}"><h3>${esc(l.name)}${S.seen["lens:" + l.id] ? ` <span class="chip ok">opened</span>` : ""}</h3><p class="meta">${esc(l.q)}</p></a>`).join("")}</div>
   <div class="row"><button class="btn" data-act="quiz" data-arg="lens">Lens quiz</button><a class="btn ghost" href="#/guide/lens">Critical lens essay guide</a></div>`;
 }
-function unitContext() {
-  return `${LOTF.context.map(c => `<div class="card"><h3>${esc(c.h)}</h3><div class="prose">${c.p.map(p => `<p>${esc(p)}</p>`).join("")}</div></div>`).join("")}
-  <div class="card"><h3>${esc(BIG_IDEA.h)}</h3><div class="prose">${BIG_IDEA.p.map(p => `<p>${esc(p)}</p>`).join("")}</div></div>
-  <div class="card"><h3>Island words</h3><table class="tbl">${LOTF.slang.map(([w, m]) => `<tr><th>${esc(w)}</th><td>${esc(m)}</td></tr>`).join("")}</table></div>`;
+const SOAP_FIELDS = [["sp", "Speaker", "Who is speaking, and what do we know about them that matters?"], ["oc", "Occasion", "The time, place and event that prompted the text (its exigence)."], ["au", "Audience", "Who the text is written for; there may be more than one."], ["pu", "Purpose", "What the writer wants the audience to think, feel or do."], ["su", "Subject", "The topic, in a phrase."], ["to", "Tone", "The writer's attitude, in precise words: bitter, mocking, reverent..."]];
+const ASP_SOAP = {sp: "Jamaica Kincaid, born in colonial Antigua, who left as a teenager and writes as a native daughter with open anger.", oc: "Antigua in the 1980s: newly independent, living on tourism, with a government she sees as corrupt.", au: "Mainly white North American and European readers, the people most likely to visit Antigua as tourists.", pu: "To make readers see the history, poverty and corruption behind the vacation, and their own part in it.", su: "Tourism, colonialism and corruption in Antigua.", to: "Sarcastic and accusatory, bitter about the English, tender and lyrical by the end."};
+function unitRhetoric(B) {
+  return `<div class="card"><h3>SOAPSTone for <i>${esc(B.title)}</i></h3><p class="meta">A model analysis. Try your own first in the SOAPSTone tool, then compare.</p>
+  <table class="tbl">${SOAP_FIELDS.map(([k, t]) => `<tr><th>${t}</th><td>${esc(ASP_SOAP[k])}</td></tr>`).join("")}</table>
+  <div class="row"><a class="btn ghost sm" href="#/soap">SOAPSTone tool</a><a class="btn ghost sm" href="#/guide/rhetorical">Rhetorical analysis guide</a></div></div>
+  <div class="card"><h3>Kincaid's moves, section by section</h3><ul class="list">${B.chapters.map(c => canSee(c.n, B.id) ? `<li style="display:block"><b>${W(B.id).ch} ${c.n}: ${esc(c.move.name)}.</b> ${esc(c.move.text)}</li>` : `<li>${gate(c.n, B.id)}</li>`).join("")}</ul></div>
+  <div class="card"><h3>Devices to name</h3><div class="tags">${["Second-person address", "Sarcasm", "Rhetorical question", "Juxtaposition", "Hyperbole", "Tone", "Pathos", "Ethos", "Diction", "Connotation"].map(t => `<span class="chip ac">${esc(t)}</span>`).join("")}</div><p class="meta">Definitions and examples are in the <a href="#/terms">glossary</a>.</p></div>`;
+}
+function unitContext(B) {
+  return `${B.context.map(c => `<div class="card"><h3>${esc(c.h)}</h3><div class="prose">${c.p.map(p => `<p>${esc(p)}</p>`).join("")}</div></div>`).join("")}
+  ${B.id === "lotf" ? `<div class="card"><h3>${esc(BIG_IDEA.h)}</h3><div class="prose">${BIG_IDEA.p.map(p => `<p>${esc(p)}</p>`).join("")}</div></div>` : ""}
+  <div class="card"><h3>${B.id === "lotf" ? "Island words" : "Key words"}</h3><table class="tbl">${B.slang.map(([w, m]) => `<tr><th>${esc(w)}</th><td>${esc(m)}</td></tr>`).join("")}</table></div>`;
 }
 function unitSoon(U) {
   const E = ESSAY(U.essay), note = CONTENT_NOTES[U.u];
@@ -1699,32 +2014,71 @@ function unitSoon(U) {
 }
 ACT.setunit = a => { S.set.unit = Number(a); save(); toast(`Unit ${a} is now your current unit`); render(); };
 
-V.ch = n => {
-  n = Math.max(1, Math.min(12, Number(n) || 1)); const c = CH(n);
-  const nav = `<div class="row">${n > 1 ? `<a class="btn ghost sm" href="#/ch/${n - 1}">‹ Chapter ${n - 1}</a>` : ""}<span class="sp"></span>${n < 12 ? `<a class="btn ghost sm" href="#/ch/${n + 1}">Chapter ${n + 1} ›</a>` : ""}</div>`;
-  if (!canSee(n)) return `<p class="crumb"><a href="#/unit/4">‹ Lord of the Flies</a></p><div class="card"><h2>Chapter ${n}: ${esc(c.title)}</h2>
-    <p>You've marked ${readTo() ? `chapter ${readTo()}` : "no chapters"} as read, so this guide is hidden to keep the story unspoiled.</p>
-    <p class="meta">Read with page flags in three colors: character moments, symbols, and questions. Then come back for the guide and the reading check.</p>
-    <div class="row"><button class="btn" data-act="readch" data-arg="${n}">I've read chapter ${n}</button><button class="btn ghost" data-act="peek" data-arg="${n}">Show it anyway</button></div></div>${nav}`;
-  if (!S.seen["ch:" + n]) { S.seen["ch:" + n] = today(); addXP(5); }
+// ---------- The argument workshop (Unit 3)
+function argUnit(U, tab) {
+  const TABS = [["lessons", "Lessons"], ["fallacies", "Fallacies"], ["sources", "Sources"], ["debate", "Debate"]];
+  tab = TABS.some(t => t[0] === tab) ? tab : "lessons";
+  const seen = ARG.lessons.filter(l => S.seen["lesson:" + l.id]).length;
+  const body = {
+    lessons: () => `<ul class="list card">${ARG.lessons.map((l, i) => `<li><a class="go" href="#/lesson/${l.id}"><span class="n">${i + 1}</span><span class="t">${esc(l.title)}<br><span class="s">${S.seen["lesson:" + l.id] ? "Opened ✓" : esc(l.why.split(".")[0] + ".")}</span></span></a></li>`).join("")}</ul>
+      <div class="row"><button class="btn" data-act="quiz" data-arg="arg">Argument quiz</button><button class="btn ghost" data-act="quiz" data-arg="unit:3">Unit 3 test</button><a class="btn ghost" href="#/guide/argument">Argument essay guide</a></div>`,
+    fallacies: () => `<p class="lead">Fourteen errors in reasoning. Learn to spot them in others' arguments and keep them out of yours.</p>
+      <div class="grid">${ARG.fallacies.map(f => `<div class="card"><h3>${esc(f.name)}</h3><p>${esc(f.d)}</p><p class="model">${esc(f.ex)}</p><p class="meta"><b>Fix:</b> ${esc(f.fix)}</p></div>`).join("")}</div>
+      <div class="row"><button class="btn" data-act="quiz" data-arg="fallacies">Fallacy finder</button><a class="btn ghost" href="#/review">Review cards</a></div>`,
+    sources: () => `<p class="lead">Short public-domain passages to analyze, and two practice sources made up for judging credibility.</p>${ARG.sources.map(x => `<div class="card"><span class="pill">${esc(x.kind)}</span><h3 style="margin-top:8px">${esc(x.title)}</h3><p class="meta">${esc(x.author)}${x.year ? ", " + x.year : ""}</p><p class="model">${esc(x.text)}</p><p class="meta">${esc(x.note)}</p>
+      <div class="row"><button class="btn ghost sm" data-act="quiz" data-arg="arg:${x.id}">Practice questions</button>${x.year ? `<a class="btn ghost sm" href="#/soap/new/${x.id}">SOAPSTone it</a>` : ""}</div></div>`).join("")}`,
+    debate: () => `<div class="card"><h3>Format</h3><table class="tbl">${ARG.debate.format.map(([a, t, d]) => `<tr><th>${esc(a)}</th><td>${esc(t)}</td><td>${esc(d)}</td></tr>`).join("")}</table></div>
+      <div class="card"><h3>Practice motions</h3><ul class="list">${ARG.debate.motions.map((m, i) => `<li><span class="t">${esc(m)}</span><a class="btn ghost sm" href="#/debate/new/${i}">Prep it</a></li>`).join("")}</ul></div>
+      <div class="row"><a class="btn" href="#/debate">Debate prep</a><a class="btn ghost" href="#/lesson/debate">Debate lesson</a></div>`
+  }[tab];
+  return `<p class="crumb"><a href="#/learn">‹ Learn</a></p>
+  <div class="card unit" style="--u:${U.color}"><span class="pill" style="background:${U.color};color:#fff">Unit 3 · ${esc(U.title)}</span>
+  <h2 style="margin-top:8px">Argument workshop</h2><p class="meta">${seen} of ${ARG.lessons.length} lessons opened · Product: ${esc(U.product)}</p>
+  ${S.set.unit === U.u ? "" : `<div class="row"><button class="btn ghost sm" data-act="setunit" data-arg="3">Make this my current unit</button></div>`}</div>
+  <div class="ltabs">${TABS.map(([k, t]) => `<a href="#/unit/3/${k}"${k === tab ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</div>${body()}`;
+}
+V.lesson = id => {
+  const L = ARG.lessons.find(x => x.id === id); if (!L) return V.unit(3);
+  if (!S.seen["lesson:" + id]) { S.seen["lesson:" + id] = today(); addXP(5); checkBadges(); }
   goalTick("guide");
-  const L = LENS(c.lens.id);
-  return `<p class="crumb"><a href="#/unit/4">‹ Lord of the Flies</a></p>
-  <div class="card"><span class="pill">Chapter ${n}</span><h2 style="margin-top:8px">${esc(c.title)}</h2>${n > readTo() ? `<div class="row"><button class="btn sm" data-act="readch" data-arg="${n}">Mark chapter ${n} read</button></div>` : ""}
+  const i = ARG.lessons.indexOf(L), next = ARG.lessons[i + 1], qs = AQ.filter(q => q.src === id).length;
+  return `<p class="crumb"><a href="#/unit/3">‹ Argument workshop</a></p>
+  <div class="card"><span class="pill">Lesson ${i + 1} of ${ARG.lessons.length}</span><h2 style="margin-top:8px">${esc(L.title)}</h2><p class="prose">${esc(L.why)}</p></div>
+  <div class="card"><h3>Key points</h3><ul class="tight">${L.points.map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>
+  <div class="card"><h3>Example</h3>${L.example.map(e => `<p class="model">${esc(e)}</p>`).join("")}</div>
+  ${id === "fallacies" ? `<div class="row"><a class="btn ghost" href="#/unit/3/fallacies">Fallacy gallery</a></div>` : ""}
+  <div class="row">${qs ? `<button class="btn" data-act="quiz" data-arg="arg:${id}">${qs} practice questions</button>` : `<button class="btn" data-act="quiz" data-arg="fallacies">Fallacy finder</button>`}${next ? `<a class="btn ghost" href="#/lesson/${next.id}">Next: ${esc(next.title)} ›</a>` : `<a class="btn ghost" href="#/debate">Debate prep ›</a>`}</div>`;
+};
+
+V.ch = (a, b2) => {
+  const b = BOOKS[a] ? a : "lotf", B = BOOKS[b], N = B.chapters_n, w = W(b).ch;
+  const n = Math.max(1, Math.min(N, Number(BOOKS[a] ? b2 : a) || 1)), c = CH(n, b), back = `<p class="crumb"><a href="#/unit/${B.unit}">‹ ${esc(B.title)}</a></p>`;
+  const nav = `<div class="row">${n > 1 ? `<a class="btn ghost sm" href="${chHref(b, n - 1)}">‹ ${w} ${n - 1}</a>` : ""}<span class="sp"></span>${n < N ? `<a class="btn ghost sm" href="${chHref(b, n + 1)}">${w} ${n + 1} ›</a>` : ""}</div>`;
+  if (!canSee(n, b)) return `${back}<div class="card"><h2>${w} ${n}: ${esc(c.title)}</h2>
+    <p>You've marked ${readTo(b) ? `${w.toLowerCase()} ${readTo(b)}` : `no ${W(b).chs.toLowerCase()}`} as read, so this guide is hidden to keep it unspoiled.</p>
+    <p class="meta">Read with page flags in three colors: ${b === "lotf" ? "character moments, symbols" : "moves that persuade, moments that anger you"}, and questions. Then come back for the guide and the reading check.</p>
+    <div class="row"><button class="btn" data-act="readch" data-arg="${b}:${n}">I've read ${w.toLowerCase()} ${n}</button><button class="btn ghost" data-act="peek" data-arg="${b}:${n}">Show it anyway</button></div></div>${nav}`;
+  const key = b === "lotf" ? "ch:" + n : `ch:${b}:${n}`;
+  if (!S.seen[key]) { S.seen[key] = today(); addXP(5); }
+  goalTick("guide");
+  const L = c.lens ? LENS(c.lens.id) : null;
+  const moment = L ? `<div class="lensm" style="--l:${L.color}"><b><a href="#/lens/${L.id}">${esc(L.name)} lens</a>.</b> ${esc(c.lens.text)}</div>`
+    : `<div class="lensm"><b>Rhetorical move: ${esc(c.move.name)}.</b> ${esc(c.move.text)}</div>`;
+  return `${back}
+  <div class="card"><span class="pill">${w} ${n}</span><h2 style="margin-top:8px">${esc(c.title)}</h2>${n > readTo(b) ? `<div class="row"><button class="btn sm" data-act="readch" data-arg="${b}:${n}">Mark ${w.toLowerCase()} ${n} read</button></div>` : ""}
   <h4>Summary</h4><div class="prose">${c.sum.map(p => `<p>${esc(p)}</p>`).join("")}</div></div>
-  <div class="cols"><div class="card"><h3>Key events</h3><ul class="tight">${c.events.map(e => `<li>${esc(e)}</li>`).join("")}</ul></div>
-  <div class="card"><h3>Watch for</h3><ul class="tight">${c.watch.map(e => `<li>${esc(e)}</li>`).join("")}</ul>
-  <div class="lensm" style="--l:${L.color}"><b><a href="#/lens/${L.id}">${esc(L.name)} lens</a>.</b> ${esc(c.lens.text)}</div></div></div>
+  <div class="cols"><div class="card"><h3>Key ${b === "lotf" ? "events" : "points"}</h3><ul class="tight">${c.events.map(e => `<li>${esc(e)}</li>`).join("")}</ul></div>
+  <div class="card"><h3>Watch for</h3><ul class="tight">${c.watch.map(e => `<li>${esc(e)}</li>`).join("")}</ul>${moment}</div></div>
   <div class="card"><h3>Quote hunt</h3><p class="meta">Find these in your copy, then log the quotation with its page number.</p>
-  <ul class="list">${c.hunt.map((h, i) => `<li><span class="t">${esc(h)}</span><button class="btn ghost sm" data-act="huntq" data-arg="${n}:${i}">Log it</button></li>`).join("")}</ul></div>
+  <ul class="list">${c.hunt.map((h, i) => `<li><span class="t">${esc(h)}</span><button class="btn ghost sm" data-act="huntq" data-arg="${b}:${n}:${i}">Log it</button></li>`).join("")}</ul></div>
   <div class="card"><h3>Seminar questions</h3><ul class="list">${c.seminar.map((q, i) => `<li><span class="n">L${i + 1}</span><span class="t">${esc(q)}</span></li>`).join("")}</ul></div>
-  <div class="row"><button class="btn" data-act="quiz" data-arg="ch:${n}">Reading check (8 questions)</button><a class="btn ghost" href="#/seminar">Seminar prep</a></div>${nav}`;
+  <div class="row"><button class="btn" data-act="quiz" data-arg="ch:${b}:${n}">Reading check (8 questions)</button><a class="btn ghost" href="#/seminar">Seminar prep</a></div>${nav}`;
 };
 
 V.lens = id => {
   const l = LENS(id); if (!l) return V.unit(4, "lenses");
   if (!S.seen["lens:" + id]) { S.seen["lens:" + id] = today(); addXP(5); checkBadges(); }
-  const rd = l.lotf.map(([ch, t], i) => canSee(ch) ? `<li>${esc(t)}</li>` : `<li>${gate(ch)} <button class="btn ghost sm" data-act="peek" data-arg="${ch}">Show</button></li>`).join("");
+  const rd = l.lotf.map(([ch, t]) => canSee(ch) ? `<li>${esc(t)}</li>` : `<li>${gate(ch)} <button class="btn ghost sm" data-act="peek" data-arg="lotf:${ch}">Show</button></li>`).join("");
   return `<p class="crumb"><a href="#/unit/4/lenses">‹ Lenses</a></p>
   <div class="card" style="border-left:6px solid ${l.color}"><span class="pill">Critical lens</span><h2 style="margin-top:8px">${esc(l.name)}${l.alt ? ` <span class="quiet" style="font-weight:600;font-size:18px">(${esc(l.alt)})</span>` : ""}</h2>
   <p class="prose"><b>The core question:</b> ${esc(l.q)}</p></div>
@@ -1788,7 +2142,9 @@ V.write = () => {
   <h3>Tools</h3><div class="grid">
   <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/quotes"><h3>Quote Log</h3><p class="meta">${S.quotes.length} quotation${S.quotes.length === 1 ? "" : "s"} saved, with page numbers and MLA citations.</p></a>
   <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/drills"><h3>Writing drills</h3><p class="meta">${DRILLS.length} short drills: citations, embedding, commentary, thesis, counterclaims.</p></a>
-  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/seminar"><h3>Seminar prep</h3><p class="meta">Questions at three levels, quotations and sentence starters.</p></a></div>`;
+  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/seminar"><h3>Seminar prep</h3><p class="meta">Questions at three levels, quotations and sentence starters.</p></a>
+  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/soap"><h3>SOAPSTone</h3><p class="meta">Pin down a text's rhetorical situation before you analyze it. ${S.soaps.length} saved.</p></a>
+  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/debate"><h3>Debate prep</h3><p class="meta">Your case, their best arguments and your answers. ${S.debates.length} saved.</p></a></div>`;
 };
 
 // ---------- New assignment
@@ -1801,7 +2157,7 @@ V.asg = (id, tab) => {
   const body = {plan: asgPlan, thesis: asgThesis, outline: asgOutline, evidence: asgEvidence, draft: asgDraft}[tab](a);
   return `<p class="crumb"><a href="#/write">‹ Write</a></p>
   <div class="card"><span class="pill">${esc(ATYPE(a.type))}</span><h2 style="margin-top:8px">${esc(a.title)}</h2>
-  <p class="meta">${a.done ? "Finished " + nice(a.done) : `Due ${nice(a.due)} · ${dueWords(a.due)}`}${a.book ? " · <i>Lord of the Flies</i>" : ""}</p></div>
+  <p class="meta">${a.done ? "Finished " + nice(a.done) : `Due ${nice(a.due)} · ${dueWords(a.due)}`}${a.book && BOOKS[a.book] ? ` · <i>${esc(BOOKS[a.book].title)}</i>` : ""}</p></div>
   ${TABS.length > 1 ? `<div class="ltabs">${TABS.map(([k, t]) => `<a href="#/asg/${a.id}/${k}"${k === tab ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</div>` : ""}${body}`;
 };
 function newAsgForm() {
@@ -1810,13 +2166,13 @@ function newAsgForm() {
   <div class="card"><label class="f">Title<input type="text" id="na-title" placeholder="Critical lens essay" maxlength="80"></label>
   <label class="f">Type<select id="na-type">${ATYPES.map(([k, t]) => `<option value="${k}"${k === U.essay ? " selected" : ""}>${t}</option>`).join("")}</select></label>
   <label class="f">Due date<input type="date" id="na-due" value="${addD(today(), 7)}" min="${addD(today(), -30)}"></label>
-  <label class="tog"><input type="checkbox" id="na-book" ${S.set.unit === 4 ? "checked" : ""}> It's about <i>Lord of the Flies</i></label>
+  <label class="f">It's about<select id="na-book"><option value="">No class text, or another text</option>${Object.values(BOOKS).map(B => `<option value="${B.id}"${B.unit === S.set.unit ? " selected" : ""}>${esc(B.title)}</option>`).join("")}</select></label>
   <label class="f">The prompt <span class="h">Paste it from Canvas. Optional, but the app decodes it for you.</span><textarea id="na-prompt" rows="4"></textarea></label>
   <div class="row"><button class="btn" data-act="addasg">Add and plan it</button></div></div>`;
 }
 ACT.addasg = () => {
   const title = $("#na-title").value.trim() || ATYPE($("#na-type").value), due = $("#na-due").value || addD(today(), 7);
-  const a = {id: uid(), title, type: $("#na-type").value, due, created: today(), book: $("#na-book").checked ? "lotf" : "", prompt: $("#na-prompt").value.trim(), steps: {}, thesis: "", outline: {body: [{}, {}]}, draft: "", quotes: [], done: null};
+  const a = {id: uid(), title, type: $("#na-type").value, due, created: today(), book: $("#na-book").value, prompt: $("#na-prompt").value.trim(), steps: {}, thesis: "", outline: {body: [{}, {}]}, draft: "", quotes: [], done: null};
   makePlan(a); S.asg.push(a); addXP(10); checkBadges(); save();
   location.hash = `#/asg/${a.id}`;
 };
@@ -1852,7 +2208,7 @@ function asgPlan(a) {
 }
 
 // ---------- Thesis builder
-const ctxFor = a => ({type: a.type, title: a.book ? LOTF.title : "", author: a.book ? LOTF.author.split(" ").pop() : "", lenses: LENSES, names: a.book ? LOTF.characters.map(c => c.name.split(" ")[0]).filter(n => /^[A-Z]/.test(n) && n !== "The") : []});
+const ctxFor = a => { const B = BOOKS[a.book]; return {type: a.type, title: B ? B.title : "", author: B ? B.cite : "", lenses: LENSES, names: a.book === "lotf" ? LOTF.characters.map(c => c.name.split(" ")[0]).filter(n => /^[A-Z][a-z]+$/.test(n) && n !== "The") : []}; };
 function thesisHTML(a) {
   const r = Checker.thesisCheck(a.thesis || "", ctxFor(a));
   return `<ul class="tcheck">${r.parts.map(p => `<li><span class="${p.pass ? "y" : "x"}">${p.pass ? "✓" : "•"}</span><span>${esc(p.label)}${p.pass ? "" : `<span class="h">${esc(p.tip)}</span>`}</span></li>`).join("")}</ul>
@@ -1901,12 +2257,17 @@ function asgOutline(a) {
 }
 
 // ---------- Evidence tab and the Quote Log
-const QTAGS = [["ralph", "Ralph"], ["piggy", "Piggy"], ["jack", "Jack"], ["simon", "Simon"], ["roger", "Roger"], ["conch", "Conch"], ["glasses", "Glasses"], ["fire", "Fire"], ["beast", "Beast"], ["paint", "Mask"], ["civ", "Civilization"], ["power", "Power"], ["fear", "Fear"], ["evil", "Evil within"], ...LENSES.map(l => ["lens-" + l.id, l.name])];
+const QTAG_GROUPS = [
+  ["Lord of the Flies", [["ralph", "Ralph"], ["piggy", "Piggy"], ["jack", "Jack"], ["simon", "Simon"], ["roger", "Roger"], ["conch", "Conch"], ["glasses", "Glasses"], ["fire", "Fire"], ["beast", "Beast"], ["paint", "Mask"], ["civ", "Civilization"], ["power", "Power"], ["fear", "Fear"], ["evil", "Evil within"]]],
+  ["A Small Place", [["you", "You, the tourist"], ["tourism", "Tourism"], ["colonial", "Colonialism"], ["corruption", "Corruption"], ["library", "Library"], ["language", "Language"], ["beauty", "Beauty"]]],
+  ["Rhetoric", [["ethos", "Ethos"], ["pathos", "Pathos"], ["logos", "Logos"], ["sarcasm", "Sarcasm"], ["rq", "Rhetorical question"], ["juxt", "Juxtaposition"], ["tone", "Tone shift"]]],
+  ["Lenses", LENSES.map(l => ["lens-" + l.id, l.name])]];
+const QTAGS = QTAG_GROUPS.flatMap(g => g[1]);
 const qtag = id => (QTAGS.find(t => t[0] === id) || [id, id])[1];
-const mla = q => `"${q.text.trim().replace(/[.,]$/, "")}" (${q.book === "lotf" ? "Golding " : q.author ? q.author + " " : ""}${q.page || "page"})`;
+const mla = q => `"${q.text.trim().replace(/[.,]$/, "")}" (${BOOKS[q.book] ? BOOKS[q.book].cite + " " : q.author ? q.author + " " : ""}${q.page || "page"})`;
 function quoteCard(q, a) {
   const on = a && (a.quotes || []).includes(q.id);
-  return `<div class="qlog"><q>${esc(q.text)}</q><div class="meta">${q.book === "lotf" ? `Ch. ${q.ch || "?"}, ` : ""}p. ${esc(q.page || "?")}${q.who ? " · " + esc(q.who) : ""}</div>
+  return `<div class="qlog"><q>${esc(q.text)}</q><div class="meta">${BOOKS[q.book] ? `<i>${esc(BOOKS[q.book].title)}</i>, ${W(q.book).ch.toLowerCase()} ${q.ch || "?"}, ` : ""}p. ${esc(q.page || "?")}${q.who ? " · " + esc(q.who) : ""}</div>
   ${q.tags && q.tags.length ? `<div class="tags">${q.tags.map(t => `<span class="chip">${esc(qtag(t))}</span>`).join("")}</div>` : ""}${q.note ? `<p class="meta">Why it matters: ${esc(q.note)}</p>` : ""}
   <div class="row"><button class="btn ghost sm" data-act="copymla" data-arg="${q.id}">Copy citation</button>${a ? `<button class="btn ${on ? "" : "ghost "}sm" data-act="attachq" data-arg="${a.id}:${q.id}">${on ? "In this essay ✓" : "Use in this essay"}</button>` : ""}
   <details style="flex-basis:100%"><summary>Practice commentary</summary><p class="meta">Two sentences: what the words do, then why it matters.</p><textarea rows="3" data-in="qcomm" data-id="${q.id}">${esc(q.comm || "")}</textarea></details></div></div>`;
@@ -1923,12 +2284,12 @@ function copyText(t, msg) {
 function quoteForm(pre = {}) {
   return `<div class="card"><h3>Log a quotation</h3>${pre.hint ? `<p class="meta">Hunting for: ${esc(pre.hint)}</p>` : ""}
   <label class="f">The quotation <span class="h">Copy it exactly from your book.</span><textarea id="nq-text" rows="3"></textarea></label>
-  <div class="row"><label class="tog">Book <select id="nq-book"><option value="lotf"${pre.book !== "" ? " selected" : ""}>Lord of the Flies</option><option value=""${pre.book === "" ? " selected" : ""}>Another text</option></select></label>
-  <label class="tog">Chapter <select id="nq-ch">${Array.from({length: 13}, (_, i) => `<option value="${i || ""}"${(pre.ch || 0) === i ? " selected" : ""}>${i || "—"}</option>`).join("")}</select></label>
+  <div class="row"><label class="tog">Text <select id="nq-book">${Object.values(BOOKS).map(B => `<option value="${B.id}"${(pre.book || bookOfDefault()) === B.id ? " selected" : ""}>${esc(B.title)}</option>`).join("")}<option value=""${pre.book === "" ? " selected" : ""}>Another text</option></select></label>
+  <label class="tog">Chapter or section <select id="nq-ch">${Array.from({length: 13}, (_, i) => `<option value="${i || ""}"${(pre.ch || 0) === i ? " selected" : ""}>${i || "—"}</option>`).join("")}</select></label>
   <label class="tog">Page <input type="number" id="nq-page" min="1" max="999" style="width:6em"></label></div>
   <label class="f">Who says it, or whose moment <input type="text" id="nq-who" maxlength="40"></label>
   <label class="f">Author (if not Golding) <input type="text" id="nq-author" maxlength="40" placeholder="Last name"></label>
-  <div class="f">Tags</div><div class="tags" id="nq-tags">${QTAGS.map(([k, t]) => `<button type="button" class="tagb" data-act="qtag" data-arg="${k}">${esc(t)}</button>`).join("")}</div>
+  <div class="f">Tags</div><div id="nq-tags">${QTAG_GROUPS.map(([g, tags]) => `<p class="meta" style="margin:6px 0 2px">${esc(g)}</p><div class="tags">${tags.map(([k, t]) => `<button type="button" class="tagb" data-act="qtag" data-arg="${k}">${esc(t)}</button>`).join("")}</div>`).join("")}</div>
   <label class="f">Why it matters <span class="h">One sentence in your words.</span><textarea id="nq-note" rows="2"></textarea></label>
   <div class="row"><button class="btn" data-act="addquote" data-arg="${pre.asg || ""}">Save quotation</button></div></div>`;
 }
@@ -1940,12 +2301,13 @@ ACT.addquote = asgId => {
   if (asgId) { const a = getA(asgId); if (a) { a.quotes = (a.quotes || []).concat(q.id); if (a.quotes.length >= 2) stepDone(a, "evidence"); } }
   checkBadges(); save(); toast("Quotation saved"); render(); window.scrollTo(0, 0);
 };
-ACT.huntq = arg => { const [n, i] = arg.split(":"); location.hash = `#/quotes/new/${n}/${i}`; };
+const bookOfDefault = () => (bookOfUnit(S.set.unit) || LOTF).id;
+ACT.huntq = arg => { const [b, n, i] = arg.split(":"); location.hash = `#/quotes/new/${b}/${n}/${i}`; };
 ACT.delquote = id => { if (confirm("Delete this quotation?")) { S.quotes = S.quotes.filter(q => q.id !== id); save(); render(); } };
 let QFILTER = "";
 ACT.qfilter = a => { QFILTER = QFILTER === a ? "" : a; render(); };
-V.quotes = (mode, n, i) => {
-  if (mode === "new") { const c = CH(Number(n)); return `<p class="crumb"><a href="#/quotes">‹ Quote Log</a></p>${quoteForm({ch: Number(n) || 0, hint: c && i != null ? c.hunt[Number(i)] : ""})}`; }
+V.quotes = function (mode, n, i) {
+  if (mode === "new") { const b = BOOKS[n] ? n : "lotf", ch = Number(BOOKS[n] ? i : n) || 0, hi = BOOKS[n] ? arguments[3] : i, c = ch ? CH(ch, b) : null; return `<p class="crumb"><a href="#/quotes">‹ Quote Log</a></p>${quoteForm({book: b, ch, hint: c && hi != null ? c.hunt[Number(hi)] : ""})}`; }
   const list = S.quotes.filter(q => !QFILTER || (q.tags || []).includes(QFILTER)).slice().sort((a, b) => (a.ch || 99) - (b.ch || 99) || (Number(a.page) || 0) - (Number(b.page) || 0));
   const used = [...new Set(S.quotes.flatMap(q => q.tags || []))];
   return `<p class="crumb"><a href="#/write">‹ Write</a></p><h2>Quote Log</h2><p class="lead">Every quotation you might use, with its page number. Tag them so you can find evidence for any claim in seconds.</p>
@@ -1993,27 +2355,29 @@ V.guide = id => {
 
 // ---------- Seminar prep
 V.seminar = () => {
-  const from = Number(S.drafts.semFrom) || Math.max(1, readTo() - 1), to = Number(S.drafts.semTo) || Math.max(1, readTo());
-  const qs = LOTF.chapters.filter(c => c.n >= from && c.n <= to && canSee(c.n));
+  const b = S.drafts.semBook || bookOfDefault(), B = BOOKS[b], N = B.chapters_n;
+  const from = Math.min(N, Number(S.drafts.semFrom) || Math.max(1, readTo(b) - 1)), to = Math.min(N, Number(S.drafts.semTo) || Math.max(1, readTo(b)));
+  const qs = B.chapters.filter(c => c.n >= from && c.n <= to && canSee(c.n, b));
   const prep = S.drafts.sem || {q: ["", "", ""], quotes: ["", "", ""], conn: ""};
-  const sel = (id, v) => `<select data-in="semrange" data-k="${id}">${Array.from({length: 12}, (_, i) => `<option${i + 1 === v ? " selected" : ""}>${i + 1}</option>`).join("")}</select>`;
+  const sel = (id, v) => `<select data-in="semrange" data-k="${id}">${Array.from({length: N}, (_, i) => `<option${i + 1 === v ? " selected" : ""}>${i + 1}</option>`).join("")}</select>`;
   return `<p class="crumb"><a href="#/write">‹ Write</a></p><h2>Seminar prep</h2><p class="lead">Come with three questions, three quotations and one connection. Speak two or three times, and cite the text every time.</p>
   <div class="card"><h3>Three levels of questions</h3><ul class="list">${SEMINAR.levels.map(([h, d, ex]) => `<li style="display:block"><b>${esc(h)}</b>: ${esc(d)}<br><span class="quiet">Example: ${esc(ex)}</span></li>`).join("")}</ul></div>
-  <div class="card"><h3>Ideas from the chapter guides</h3><div class="row" style="margin:0">Chapters ${sel("semFrom", from)} to ${sel("semTo", to)}</div>
-  ${qs.length ? `<ul class="list">${qs.flatMap(c => c.seminar.map((q, i) => `<li><span class="n">L${i + 1}</span><span class="t">${esc(q)} <span class="s">Ch. ${c.n}</span></span></li>`)).join("")}</ul>` : `<p class="meta">Mark chapters as read to see their seminar questions.</p>`}</div>
+  <div class="card"><h3>Ideas from the guides</h3><div class="row" style="margin:0"><select data-in="semrange" data-k="semBook">${Object.values(BOOKS).map(x => `<option value="${x.id}"${x.id === b ? " selected" : ""}>${esc(x.title)}</option>`).join("")}</select> ${W(b).chs} ${sel("semFrom", from)} to ${sel("semTo", to)}</div>
+  ${qs.length ? `<ul class="list">${qs.flatMap(c => c.seminar.map((q, i) => `<li><span class="n">L${i + 1}</span><span class="t">${esc(q)} <span class="s">${W(b).ch} ${c.n}</span></span></li>`)).join("")}</ul>` : `<p class="meta">Mark ${W(b).chs.toLowerCase()} as read to see their seminar questions.</p>`}</div>
   <div class="card"><h3>My prep sheet</h3>${[0, 1, 2].map(i => `<label class="f">Question ${i + 1} <span class="h">${["Level 1, 2 or 3", "Make one a Level 2", "Make one a Level 3"][i]}</span><input type="text" data-in="semf" data-k="q.${i}" value="${esc(prep.q[i])}"></label>`).join("")}
   ${[0, 1, 2].map(i => `<label class="f">Quotation ${i + 1} with page <input type="text" data-in="semf" data-k="quotes.${i}" value="${esc(prep.quotes[i])}" placeholder="p. __: ..."></label>`).join("")}
   <label class="f">One connection to another text, history or life <textarea rows="2" data-in="semf" data-k="conn">${esc(prep.conn)}</textarea></label>
   <div class="row"><button class="btn" data-act="semsave">Save prep</button></div></div>
   <div class="card"><h3>Sentence starters</h3><div class="cols">${Object.entries(SEMINAR.starters).map(([k, list]) => `<div><h4>${esc(k)}</h4><ul class="tight">${list.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}</div></div>
-  ${S.sem.length ? `<details class="card"><summary>Past preps (${S.sem.length})</summary><ul class="list">${S.sem.slice().reverse().map(p => `<li style="display:block"><b>${nice(p.d)}</b> · chapters ${p.from}–${p.to}<br><span class="s">${p.q.filter(Boolean).map(esc).join(" · ")}</span></li>`).join("")}</ul></details>` : ""}`;
+  ${S.sem.length ? `<details class="card"><summary>Past preps (${S.sem.length})</summary><ul class="list">${S.sem.slice().reverse().map(p => `<li style="display:block"><b>${nice(p.d)}</b> · ${esc((BOOKS[p.book || "lotf"] || LOTF).title)} ${p.from}–${p.to}<br><span class="s">${p.q.filter(Boolean).map(esc).join(" · ")}</span></li>`).join("")}</ul></details>` : ""}`;
 };
-IN.semrange = el => { S.drafts[el.dataset.k] = el.value; save(); render(); };
+IN.semrange = el => { S.drafts[el.dataset.k] = el.value; if (el.dataset.k === "semBook") { delete S.drafts.semFrom; delete S.drafts.semTo; } save(); render(); };
 IN.semf = el => { const p = S.drafts.sem || (S.drafts.sem = {q: ["", "", ""], quotes: ["", "", ""], conn: ""}); setPath(p, el.dataset.k, el.value); saveSoon(); };
 ACT.semsave = () => {
   const p = S.drafts.sem || {q: [], quotes: [], conn: ""};
   if (!p.q.some(x => x && x.trim())) { toast("Write at least one question first"); return; }
-  S.sem.push({d: today(), from: Number(S.drafts.semFrom) || 1, to: Number(S.drafts.semTo) || Math.max(1, readTo()), q: p.q.slice(), quotes: p.quotes.slice(), conn: p.conn});
+  const b = S.drafts.semBook || bookOfDefault();
+  S.sem.push({d: today(), book: b, from: Number(S.drafts.semFrom) || 1, to: Number(S.drafts.semTo) || Math.max(1, readTo(b)), q: p.q.slice(), quotes: p.quotes.slice(), conn: p.conn});
   addXP(15); goalTick("seminar"); checkBadges(); save(); toast("Seminar prep saved"); render();
 };
 
@@ -2047,6 +2411,53 @@ IN.dtext = el => { if (DR) DR.text = el.value; };
 function drillDone(id, ok) { const r = S.drills[id] || (S.drills[id] = {n: 0, ok: 0}); r.n++; if (ok) r.ok++; r.last = today(); addXP(15); goalTick("drill"); checkBadges(); save(); }
 ACT.dpick = a => { if (!DR || DR.pick != null) return; DR.pick = Number(a); const ok = DR.order[DR.pick].ok; beep(ok); drillDone(DR.id, ok); render(); };
 ACT.dshow = () => { if (!DR) return; if (wcount(DR.text) < 5) { toast("Write your version first"); return; } DR.shown = true; drillDone(DR.id, true); render(); };
+
+// ---------- SOAPSTone tool (any text: the class books, the unit 3 speeches, an article)
+const soapSeed = id => { const x = ARG.sources.find(y => y.id === id); if (x) return {title: `${x.author}, "${x.title}" (${x.year})`}; const B = BOOKS[id]; return B ? {title: `${B.author}, ${B.title} (${B.year})`} : {title: ""}; };
+V.soap = (mode, id) => {
+  if (mode === "new" || !S.soaps.length) {
+    const d = S.drafts.soap && (!id || S.drafts.soap.seed === id) ? S.drafts.soap : (S.drafts.soap = {seed: id || "", title: soapSeed(id).title});
+    return `<p class="crumb"><a href="#/write">‹ Write</a></p><h2>SOAPSTone</h2><p class="lead">Before analyzing any text, pin down its rhetorical situation: Speaker, Occasion, Audience, Purpose, Subject, Tone. A strong rhetorical analysis thesis grows out of the Purpose and Audience rows.</p>
+    <div class="card"><label class="f">Text <input type="text" data-in="soapf" data-k="title" value="${esc(d.title)}" placeholder="Author, title (year)"></label>
+    ${SOAP_FIELDS.map(([k, t, h]) => `<label class="f">${t} <span class="h">${esc(h)}</span><textarea rows="2" data-in="soapf" data-k="${k}">${esc(d[k] || "")}</textarea></label>`).join("")}
+    <div class="row"><button class="btn" data-act="soapsave">Save</button>${id === "asp" ? `<a class="btn ghost" href="#/unit/2/rhetoric">Compare with the model</a>` : ""}</div></div>
+    ${S.soaps.length ? `<div class="row"><a class="btn ghost" href="#/soap">My SOAPSTones (${S.soaps.length})</a></div>` : ""}`;
+  }
+  return `<p class="crumb"><a href="#/write">‹ Write</a></p><h2>My SOAPSTones</h2><div class="row"><a class="btn" href="#/soap/new">+ New SOAPSTone</a><a class="btn ghost" href="#/soap/new/asp">For A Small Place</a></div>
+  ${S.soaps.slice().reverse().map(x => `<div class="card"><h3>${esc(x.title || "Untitled")}</h3><p class="meta">${nice(x.d)}</p><table class="tbl">${SOAP_FIELDS.map(([k, t]) => `<tr><th>${t}</th><td>${esc(x[k] || "")}</td></tr>`).join("")}</table></div>`).join("")}`;
+};
+IN.soapf = el => { const d = S.drafts.soap || (S.drafts.soap = {}); d[el.dataset.k] = el.value; saveSoon(); };
+ACT.soapsave = () => {
+  const d = S.drafts.soap || {}, filled = SOAP_FIELDS.filter(([k]) => (d[k] || "").trim()).length;
+  if (filled < 4) { toast("Fill in at least four of the six rows"); return; }
+  S.soaps.push({...d, d: today()}); S.drafts.soap = null; addXP(15); goalTick("draft"); checkBadges(); save(); toast("SOAPSTone saved"); location.hash = "#/soap";
+};
+
+// ---------- Debate prep
+V.debate = (mode, i) => {
+  if (mode === "new" || !S.debates.length) {
+    const m = i != null && ARG.debate.motions[Number(i)] ? ARG.debate.motions[Number(i)] : "";
+    const d = S.drafts.debate && (!m || S.drafts.debate.motion === m) ? S.drafts.debate : (S.drafts.debate = {motion: m, side: "for", args: [{}, {}, {}], opp: [{}, {}], cx: ["", ""], close: ""});
+    const f = (k, label, v, rows = 2) => `<label class="f">${esc(label)}<textarea rows="${rows}" data-in="debf" data-k="${k}">${esc(v || "")}</textarea></label>`;
+    return `<p class="crumb"><a href="#/unit/3/debate">‹ Debate</a></p><h2>Debate prep</h2><p class="lead">Build your case and your answers before the round. Prepare both sides when you can: you may not get to choose.</p>
+    <div class="card"><label class="f">Motion <input type="text" data-in="debf" data-k="motion" value="${esc(d.motion)}" placeholder="This house would..."></label>
+    <label class="tog">Side <select data-in="debside"><option value="for"${d.side === "for" ? " selected" : ""}>For (proposition)</option><option value="against"${d.side === "against" ? " selected" : ""}>Against (opposition)</option></select></label></div>
+    ${d.args.map((a, j) => `<div class="card outline"><fieldset><legend>Argument ${j + 1}</legend>${f(`args.${j}.claim`, "Claim", a.claim)}${f(`args.${j}.ev`, "Evidence (with its source)", a.ev)}${f(`args.${j}.why`, "Why it matters (impact)", a.why)}</fieldset></div>`).join("")}
+    ${d.opp.map((o, j) => `<div class="card outline"><fieldset><legend>Their likely argument ${j + 1}</legend>${f(`opp.${j}.arg`, "What they'll say (steelman it)", o.arg)}${f(`opp.${j}.ans`, "Your answer", o.ans)}</fieldset></div>`).join("")}
+    <div class="card">${f("cx.0", "Cross-examination question 1", d.cx[0], 1)}${f("cx.1", "Cross-examination question 2", d.cx[1], 1)}${f("close", "Closing line: why your side wins", d.close)}
+    <div class="row"><button class="btn" data-act="debsave">Save case</button><a class="btn ghost" href="#/lesson/debate">Debate lesson</a></div></div>`;
+  }
+  return `<p class="crumb"><a href="#/unit/3/debate">‹ Debate</a></p><h2>My debate cases</h2><div class="row"><a class="btn" href="#/debate/new">+ New case</a></div>
+  ${S.debates.slice().reverse().map(x => `<div class="card"><span class="pill">${x.side === "for" ? "For" : "Against"}</span><h3 style="margin-top:8px">${esc(x.motion)}</h3><p class="meta">${nice(x.d)}</p>
+  <ol class="tight">${x.args.filter(a => a.claim).map(a => `<li><b>${esc(a.claim)}</b>${a.ev ? `<br><span class="quiet">${esc(a.ev)}</span>` : ""}</li>`).join("")}</ol>${x.close ? `<p class="model">${esc(x.close)}</p>` : ""}</div>`).join("")}`;
+};
+IN.debf = el => { const d = S.drafts.debate || (S.drafts.debate = {motion: "", side: "for", args: [{}, {}, {}], opp: [{}, {}], cx: ["", ""], close: ""}); setPath(d, el.dataset.k, el.value); saveSoon(); };
+IN.debside = el => { const d = S.drafts.debate; if (d) { d.side = el.value; save(); } };
+ACT.debsave = () => {
+  const d = S.drafts.debate;
+  if (!d || !d.motion.trim() || d.args.filter(a => (a.claim || "").trim()).length < 2) { toast("Add the motion and at least two arguments"); return; }
+  S.debates.push({...JSON.parse(JSON.stringify(d)), d: today()}); S.drafts.debate = null; addXP(25); checkBadges(); save(); toast("Debate case saved"); location.hash = "#/debate";
+};
 
 // ===== js/40-check.js
 // ---------- Check: the offline draft checker with highlights, rubric self-scoring, and the Claude feedback hand-off
@@ -2183,21 +2594,28 @@ V.claude = (mode, id) => {
 // ===== js/50-test.js
 // ---------- Test: reading checks by chapter, quick quizzes, the unit test, My misses and timed writes
 let TWT = 0;
-function heatClass(ch) { const b = bestCheck(ch); return b == null ? "" : b >= 7 ? "g" : b >= 6 ? "m" : b >= 4 ? "w" : "r"; }
+function heatClass(ch, bk = "lotf") { const b = bestCheck(ch, bk); return b == null ? "" : b >= 7 ? "g" : b >= 6 ? "m" : b >= 4 ? "w" : "r"; }
+const heatRow = b => BOOKS[b].chapters.map(c => canSee(c.n, b) ? `<a class="${heatClass(c.n, b)}" href="#" data-act="quiz" data-arg="ch:${b}:${c.n}" title="${W(b).ch} ${c.n}${bestCheck(c.n, b) != null ? `: best ${bestCheck(c.n, b)}/8` : ""}">${c.n}</a>` : `<a href="${chHref(b, c.n)}" class="locked" title="Not read yet">${c.n}</a>`).join("");
+const promptOpen = p => { const b = p.book === undefined ? "lotf" : p.book; return !b || p.upto <= readTo(b) || readTo(b) >= BOOKS[b].chapters_n; };
 V.test = () => {
-  const r = readTo(), misses = Object.keys(S.miss).length;
-  const cells = LOTF.chapters.map(c => canSee(c.n) ? `<a class="${heatClass(c.n)}" href="#" data-act="quiz" data-arg="ch:${c.n}" title="Chapter ${c.n}${bestCheck(c.n) != null ? `: best ${bestCheck(c.n)}/8` : ""}">${c.n}</a>` : `<a href="#/ch/${c.n}" class="locked" title="Not read yet">${c.n}</a>`).join("");
+  const r = readTo(), ra = readTo("asp"), misses = Object.keys(S.miss).length;
   const quick = [
-    ["mix", "Mixed review", "15 questions from every chapter you've read.", r >= 1],
+    ["mix:lotf", "Mixed review: Lord of the Flies", "15 questions from every chapter you've read.", r >= 1],
+    ["mix:asp", "Mixed review: A Small Place", "15 questions from every section you've read.", ra >= 1],
     ["lens", "Lens quiz", "15 questions: name the lens, pick the evidence, spot the thesis.", true],
+    ["arg", "Argument quiz", "15 questions on claims, evidence, reasoning, sources and debate.", true],
+    ["fallacies", "Fallacy finder", "15 arguments: name the fallacy.", true],
     ["terms", "Terms quiz", "15 terms: definitions and examples.", true],
-    ["who", "Who and what", "Characters and symbols from their descriptions.", r >= 1],
-    ["unit", "Unit 4 test", "30 questions in 40 minutes, scored at the end like a real test.", true],
+    ["who:lotf", "Who and what", "Characters and symbols from their descriptions.", r >= 1],
+    ["unit:2", "Unit 2 test", "A Small Place and rhetoric: 40 minutes, scored at the end.", true],
+    ["unit:3", "Unit 3 test", "Argument: 30 questions in 40 minutes.", true],
+    ["unit:4", "Unit 4 test", "Lord of the Flies and lenses: 30 questions in 40 minutes.", true],
     ["miss", `My misses (${misses})`, "Every question you've missed. Get it right to clear it.", misses > 0]];
-  const prompts = PROMPTS.map(p => { const ok = p.upto <= r || r >= 12; return `<li class="${ok ? "" : "locked"}"><a class="go" href="${ok ? `#/tw/${p.id}` : `#/ch/${Math.min(12, r + 1)}`}"><span class="t">${esc(p.text)}<br><span class="s">${esc(ESSAY(p.type).name)} · ${p.min} minutes${ok ? "" : ` · after chapter ${p.upto}`}</span></span></a></li>`; }).join("");
+  const prompts = PROMPTS.map(p => { const ok = promptOpen(p), b = p.book === undefined ? "lotf" : p.book; return `<li class="${ok ? "" : "locked"}"><a class="go" href="${ok ? `#/tw/${p.id}` : chHref(b, Math.min(BOOKS[b].chapters_n, readTo(b) + 1))}"><span class="t">${esc(p.text)}<br><span class="s">${esc(ESSAY(p.type).name)} · ${p.min} minutes${ok ? "" : ` · after ${W(b).ch.toLowerCase()} ${p.upto} of ${esc(BOOKS[b].title)}`}</span></span></a></li>`; }).join("");
   const recent = S.quizzes.slice(-8).reverse();
   return `<h2>Test</h2><p class="lead">Reading checks for every chapter, quizzes on lenses and terms, a timed unit test, and timed writes under real conditions.</p>
-  <div class="card"><h3>Reading checks</h3><p class="meta">Tap a chapter. Colors show your best score: green 7 or 8, light green 6, amber 4 or 5, red below 4. Grey chapters are locked until you mark them read.</p><div class="heat">${cells}</div></div>
+  <div class="card"><h3>Reading checks</h3><p class="meta">Tap a chapter or section. Colors show your best score: green 7 or 8, light green 6, amber 4 or 5, red below 4. Grey ones stay locked until you mark them read.</p>
+  <h4><i>Lord of the Flies</i></h4><div class="heat">${heatRow("lotf")}</div><h4><i>A Small Place</i></h4><div class="heat">${heatRow("asp")}</div></div>
   <div class="grid">${quick.map(([k, t, d, ok]) => `<div class="card"><h3>${esc(t)}</h3><p class="meta">${esc(d)}</p><div class="row"><button class="btn sm${ok ? "" : " ghost"}" data-act="quiz" data-arg="${k}"${ok ? "" : " disabled"}>Start</button></div></div>`).join("")}</div>
   <div class="card"><h3>Timed writes</h3><p class="meta">Plan for five minutes, write, then check it and score it with the rubric.</p><ul class="list">${prompts}</ul>
   ${S.tw ? `<div class="row"><a class="btn" href="#/tw/${S.tw.id}">Resume your timed write</a></div>` : ""}</div>
@@ -2274,14 +2692,24 @@ function recs() {
     else if (d && d < k) add(90, `Catch up: ${ns[1].toLowerCase()} for "${a.title}"`, `Planned for ${nice(d)}; the assignment is ${dueWords(a.due)}.`, `#/asg/${a.id}`, "Open");
     else if (d === k) add(85, `Today: ${ns[1].toLowerCase()} for "${a.title}"`, `It's on today's plan; the assignment is ${dueWords(a.due)}.`, `#/asg/${a.id}`, "Open");
   }
-  const r = readTo();
-  if (S.set.unit === 4 && r > 0) {
-    const unchecked = LOTF.chapters.filter(c => c.n <= r && bestCheck(c.n) == null).pop();
-    if (unchecked) add(70, `Take the chapter ${unchecked.n} reading check`, "You've read it but haven't checked it. Reading checks are Prep points.", null, "Start", `ch:${unchecked.n}`);
-    const weak = LOTF.chapters.filter(c => c.n <= r && bestCheck(c.n) != null && bestCheck(c.n) < 6).sort((a, b) => bestCheck(a.n) - bestCheck(b.n))[0];
-    if (weak) add(60, `Retake the chapter ${weak.n} check`, `Your best is ${bestCheck(weak.n)} of 8. Reread the guide's key events first.`, `#/ch/${weak.n}`, "Open guide");
+  const B = bookOfUnit(S.set.unit);
+  if (B) {
+    const b = B.id, r = readTo(b), w = W(b).ch.toLowerCase();
+    if (r > 0) {
+      const unchecked = B.chapters.filter(c => c.n <= r && bestCheck(c.n, b) == null).pop();
+      if (unchecked) add(70, `Take the ${w} ${unchecked.n} reading check`, "You've read it but haven't checked it. Reading checks are Prep points.", null, "Start", `ch:${b}:${unchecked.n}`);
+      const weak = B.chapters.filter(c => c.n <= r && bestCheck(c.n, b) != null && bestCheck(c.n, b) < 6).sort((x, y) => bestCheck(x.n, b) - bestCheck(y.n, b))[0];
+      if (weak) add(60, `Retake the ${w} ${weak.n} check`, `Your best is ${bestCheck(weak.n, b)} of 8. Reread the guide's key points first.`, chHref(b, weak.n), "Open guide");
+    }
+    if (r < B.chapters_n) add(50, `Read ${w} ${r + 1} of ${B.title}`, r ? `You've read through ${w} ${r}.` : "Start reading; set your progress in Learn as you go.", chHref(b, r + 1), "Watch-for list");
+    if (b === "asp" && r >= 1 && !S.soaps.length) add(46, "Do a SOAPSTone for A Small Place", "The rhetorical situation is the base of a rhetorical analysis thesis.", "#/soap/new/asp", "SOAPSTone");
   }
-  if (S.set.unit === 4 && r < 12) add(50, `Read chapter ${r + 1}`, r ? `You've read through chapter ${r}.` : "Start the novel; set your progress in Learn as you go.", `#/ch/${r + 1}`, "Watch-for list");
+  if (S.set.unit === 3) {
+    const next = ARG.lessons.find(l => !S.seen["lesson:" + l.id]);
+    if (next) add(65, `Lesson: ${next.title}`, `${ARG.lessons.filter(l => S.seen["lesson:" + l.id]).length} of ${ARG.lessons.length} argument lessons opened.`, `#/lesson/${next.id}`, "Open");
+    if (!S.quizzes.some(q => q.kind === "fallacies")) add(54, "Try the fallacy finder", "Spotting fallacies is quick points on argument quizzes and in debate.", null, "Start", "fallacies");
+    if (!S.debates.length) add(44, "Prep a debate case", "Build three arguments and answers to the other side's best two.", "#/debate/new", "Debate prep");
+  }
   const misses = Object.keys(S.miss).length; if (misses >= 5) add(55, `Clear My misses (${misses})`, "Questions you missed come back until you get them right.", null, "Start", "miss");
   const cards = dueCards().due.length; if (cards >= 10) add(52, `Review ${cards} cards`, "They're due today; about one minute per ten cards.", "#/review", "Review");
   const rows = Object.entries(rowAverages()).filter(([, b]) => b.n >= 2).map(([kk, b]) => [kk, b.sum / b.n, b.name]).sort((a, b) => a[1] - b[1]);
@@ -2290,8 +2718,8 @@ function recs() {
   for (const c of recentChecks) for (const [a, v] of Object.entries(c.areas || {})) if (v === "fix") areaCount[a] = (areaCount[a] || 0) + 1;
   const topArea = Object.entries(areaCount).sort((a, b) => b[1] - a[1])[0];
   if (topArea && topArea[1] >= 2) { const d = DRILL[ROW_DRILL[topArea[0]]]; add(57, `Fix ${AREA_NAMES[topArea[0]].toLowerCase()} in your drafts`, `The checker flagged it in ${topArea[1]} of your last ${recentChecks.length} checks.`, d ? `#/drill/${d.id}` : "#/drills", "Drill"); }
-  for (const [kk, [ok, n]] of Object.entries(kindAccuracy())) if (n >= 6 && ok / n < 0.7) add(56, `Practice ${(KIND_NAMES[kk] || kk).toLowerCase()} questions`, `You're at ${pct(ok, n)}% on them.`, null, "Mixed review", kk === "lens" ? "lens" : kk === "term" ? "terms" : "mix");
-  if (r >= 4 && !S.quizzes.some(q => q.kind === "lens")) add(45, "Take the lens quiz", "Lenses are the core of this unit's essay.", null, "Start", "lens");
+  for (const [kk, [ok, n]] of Object.entries(kindAccuracy())) if (n >= 6 && ok / n < 0.7) add(56, `Practice ${(KIND_NAMES[kk] || kk).toLowerCase()} questions`, `You're at ${pct(ok, n)}% on them.`, null, "Practice", kk === "lens" ? "lens" : kk === "term" ? "terms" : kk === "fallacy" ? "fallacies" : ARG_KINDS.includes(kk) ? "arg" : `mix:${(B || LOTF).id}`);
+  if (S.set.unit === 4 && readTo() >= 4 && !S.quizzes.some(q => q.kind === "lens")) add(45, "Take the lens quiz", "Lenses are the core of this unit's essay.", null, "Start", "lens");
   if (!S.writes.length && ["lens", "lit", "argument"].includes((UNIT(S.set.unit) || {}).essay)) add(40, "Try a timed write", "Practice under the clock before the in-class one.", "#/test", "Test");
   if (!out.length) add(10, "Log a quotation from your last chapter", "Evidence collected now saves time on every essay.", "#/quotes", "Quote Log");
   return out.sort((a, b) => b.pri - a.pri).slice(0, 5);
@@ -2302,7 +2730,8 @@ V.coach = () => {
   return `<h2>Coach</h2><p class="lead">What to do next and why, based on your plan, quizzes, rubric scores and draft checks.</p>
   <div class="card hi"><h3>Do these next</h3><ul class="list">${R.map(recHTML).join("")}</ul></div>
   <div class="cols"><div class="card"><h3>Quiz accuracy</h3>${Object.keys(acc).length ? `<div class="bars">${Object.entries(acc).map(([k, [a, b]]) => `<span>${esc(KIND_NAMES[k] || k)}</span><span class="bar"><i style="width:${pct(a, b)}%"></i></span><span>${pct(a, b)}%</span>`).join("")}</div>` : `<p class="meta">Take a reading check to see this.</p>`}
-  <h4>Reading checks</h4><div class="heat">${LOTF.chapters.map(c => `<a class="${heatClass(c.n)}" href="#/ch/${c.n}">${c.n}</a>`).join("")}</div></div>
+  <h4>Reading checks: <i>Lord of the Flies</i></h4><div class="heat">${LOTF.chapters.map(c => `<a class="${heatClass(c.n)}" href="${chHref("lotf", c.n)}">${c.n}</a>`).join("")}</div>
+  <h4>Reading checks: <i>A Small Place</i></h4><div class="heat">${ASP.chapters.map(c => `<a class="${heatClass(c.n, "asp")}" href="${chHref("asp", c.n)}">${c.n}</a>`).join("")}</div></div>
   <div class="card"><h3>Rubric rows</h3>${Object.keys(rows).length ? `<div class="bars">${Object.values(rows).map(b => `<span>${esc(b.name)}</span><span class="bar"><i style="width:${pct(b.sum / b.n, 4)}%"></i></span><span>${(b.sum / b.n).toFixed(1)}</span>`).join("")}</div>` : `<p class="meta">Score a draft with the rubric in Check to see your strongest and weakest rows.</p>`}
   <h4>Draft checks</h4><p class="meta">${S.checks.length ? `${S.checks.length} checks · last: ${S.checks[S.checks.length - 1].fixes} to fix, ${S.checks[S.checks.length - 1].tips} to consider` : "None yet."}</p></div></div>
   <h3>Advice</h3><div class="grid">${ADVICE.map(a => `<a class="card" style="display:block;text-decoration:none;color:inherit" href="#/advice/${a.id}"><span class="pill">${esc(a.tag)}</span><h3 style="margin-top:8px">${esc(a.title)}</h3></a>`).join("")}</div>
@@ -2343,18 +2772,21 @@ V.today = () => {
   const h = new Date().getHours(), hello = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening", U = UNIT(S.set.unit);
   const setup = !S.seen.setup ? `<div class="card hi"><h3>Set up in a minute</h3>
     <label class="f">Your first name<input type="text" data-in="name" value="${esc(S.name)}" maxlength="30" autocomplete="given-name"></label>
-    <div class="row">${readSelect()}</div><p class="meta">Chapter guides, quizzes and review cards stay hidden past this point, so nothing gets spoiled.</p>
+    <div class="row">${readSelect("lotf")}</div><div class="row">${readSelect("asp")}</div><p class="meta">Guides, quizzes and review cards stay hidden past this point, so nothing gets spoiled.</p>
     <div class="row"><a class="btn ghost" href="#/asg/new">Add your next assignment</a><button class="btn" data-act="setupdone">Done</button></div></div>` : "";
   const R = recs().slice(0, 3);
   const soon = S.asg.filter(a => !a.done && daysTo(a.due) <= 7).sort((a, b) => a.due < b.due ? -1 : 1);
-  const G = goals(), dc = dueCards(), d = drillOfDay(), r = readTo();
-  return `<h2>${hello}${S.name ? ", " + esc(S.name) : ""}</h2><p class="lead">${nice(today())} · Unit ${U.u}: ${esc(U.title)}${U.u === 4 ? ` · <i>Lord of the Flies</i>, read through ${r ? "chapter " + r : "no chapters yet"}` : ""}</p>
+  const G = goals(), dc = dueCards(), d = drillOfDay(), B = bookOfUnit(U.u), b = B ? B.id : "lotf", r = readTo(b), w = W(b).ch.toLowerCase();
+  const seenL = ARG.lessons.filter(l => S.seen["lesson:" + l.id]).length, nextL = ARG.lessons.find(l => !S.seen["lesson:" + l.id]);
+  return `<h2>${hello}${S.name ? ", " + esc(S.name) : ""}</h2><p class="lead">${nice(today())} · Unit ${U.u}: ${esc(U.title)}${B ? ` · <i>${esc(B.title)}</i>, read through ${r ? w + " " + r : `no ${W(b).chs.toLowerCase()} yet`}` : U.workshop ? ` · ${seenL} of ${ARG.lessons.length} lessons opened` : ""}</p>
   ${setup}
   <div class="card"><h3>Do these next</h3><ul class="list">${R.map(recHTML).join("")}</ul><div class="row"><a class="btn ghost sm" href="#/coach">More in Coach</a></div></div>
   <div class="cols">
   <div class="card"><h3>Due this week</h3>${soon.length ? `<ul class="list">${soon.map(a => { const ns = nextStep(a); return `<li><a class="go" href="#/asg/${a.id}"><span class="t"><b>${esc(a.title)}</b><br><span class="s">${dueWords(a.due)}${ns ? " · next: " + esc(ns[1].toLowerCase()) : ""}</span></span></a>${daysTo(a.due) <= 1 ? `<span class="chip fix">soon</span>` : ""}</li>`; }).join("")}</ul>` : `<p class="meta">Nothing due in the next 7 days.</p>`}<div class="row"><a class="btn ghost sm" href="#/asg/new">+ Add assignment</a></div></div>
-  <div class="card"><h3>Reading</h3>${U.u === 4 ? `<div class="row" style="margin:0">${readSelect()}</div>
-    <div class="row">${r < 12 ? `<a class="btn sm" href="#/ch/${r + 1}">Chapter ${r + 1}: before you read</a>` : ""}${r ? `<button class="btn ghost sm" data-act="quiz" data-arg="ch:${r}">Chapter ${r} check</button>` : ""}</div>` : `<p class="meta">The reading guide for ${esc(U.text)} comes in phase ${U.phase}. Writing guides and drills are ready now.</p>`}</div>
+  <div class="card"><h3>${U.workshop ? "Workshop" : "Reading"}</h3>${B ? `<p class="meta"><i>${esc(B.title)}</i></p><div class="row" style="margin:0">${readSelect(b)}</div>
+    <div class="row">${r < B.chapters_n ? `<a class="btn sm" href="${chHref(b, r + 1)}">${W(b).ch} ${r + 1}: before you read</a>` : ""}${r ? `<button class="btn ghost sm" data-act="quiz" data-arg="ch:${b}:${r}">${W(b).ch} ${r} check</button>` : ""}</div>`
+    : U.workshop ? `<p class="meta">${seenL} of ${ARG.lessons.length} argument lessons opened.</p><div class="row">${nextL ? `<a class="btn sm" href="#/lesson/${nextL.id}">Next: ${esc(nextL.title)}</a>` : `<a class="btn sm" href="#/debate">Debate prep</a>`}<button class="btn ghost sm" data-act="quiz" data-arg="fallacies">Fallacy finder</button></div>`
+    : `<p class="meta">The reading guide for ${esc(U.text)} comes in phase ${U.phase}. Writing guides and drills are ready now.</p>`}</div>
   <div class="card"><h3>Review cards</h3><p class="meta">${dc.due.length} due · ${dc.fresh.length} new today</p><div class="row"><a class="btn sm${dc.all.length ? "" : " ghost"}" href="#/review">${dc.all.length ? `Review ${dc.all.length} cards` : "All caught up"}</a></div></div>
   <div class="card"><h3>Drill of the day</h3><p><b>${esc(d.title)}</b><br><span class="meta">${esc(SKILLS[d.skill])} · about two minutes</span></p><div class="row"><a class="btn sm" href="#/drill/${d.id}">Start</a></div></div>
   <div class="card"><h3>Today's goals</h3><ul class="goals">${G.list.map(id => { const [t, n] = GOALS[id], got = Math.min(n, G.got[id] || 0), ok = G.paid.includes(id); return `<li class="${ok ? "done" : ""}"><span>${ok ? "✓ " : ""}${esc(t)}</span><span class="gbar"><i style="width:${pct(got, n)}%"></i></span></li>`; }).join("")}</ul><p class="meta">+25 XP each, +40 for all three.</p></div>
@@ -2389,7 +2821,7 @@ V.me = () => {
   return `<h2>${S.name ? esc(S.name) : "Me"}</h2>
   <div class="card"><div class="row" style="margin:0;align-items:baseline"><span class="big">Level ${Lv}</span><span class="chip ac">${titleOf(Lv)}</span><span class="sp"></span><span class="meta">${S.xp} XP · ${hi - S.xp} to level ${Lv + 1}</span></div>
   <span class="bar"><i style="width:${pct(S.xp - lo, hi - lo)}%"></i></span></div>
-  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${stat(streak(), "day streak")}${stat(readTo() + "/12", "chapters read")}${stat(acc == null ? "–" : acc + "%", "reading-check accuracy")}${stat(S.quizzes.length, "quizzes finished")}
+  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${stat(streak(), "day streak")}${stat(readTo() + "/12", "Lord of the Flies chapters")}${stat(readTo("asp") + "/4", "A Small Place sections")}${stat(acc == null ? "–" : acc + "%", "reading-check accuracy")}${stat(S.quizzes.length, "quizzes finished")}
   ${stat(sum(Object.values(S.cards).map(c => c.n || 0)), "cards reviewed")}${stat(S.quotes.length, "quotations logged")}${stat(sum(Object.values(S.drills).map(d => d.n || 0)), "drills done")}${stat(S.writes.length, "timed writes")}${stat(S.asg.filter(a => a.done).length, "assignments finished")}${stat(S.rub.length, "rubric scores")}</div>
   <div class="card" style="margin-top:14px"><h3>Streak</h3>${calHTML()}</div>
   <div class="card"><h3>Badges · ${Object.keys(S.badges).length} of ${BADGES.length}</h3>${fams.map(f => `<h4>${esc(f)}</h4><div class="badges">${BADGES.filter(b => b.fam === f).map(b => `<span class="bdg${S.badges[b.id] ? " got" : ""}" title="${esc(b.rule)}">${S.badges[b.id] ? "★ " : ""}${esc(b.name)}</span>`).join("")}</div>`).join("")}</div>
@@ -2399,7 +2831,7 @@ V.me = () => {
 V.settings = () => `<p class="crumb"><a href="#/me">‹ Me</a></p><h2>Settings</h2>
   <div class="card"><label class="f">First name<input type="text" data-in="name" value="${esc(S.name)}" maxlength="30"></label>
   <label class="f">Current unit<select data-in="unit">${COURSE.units.map(U => `<option value="${U.u}"${U.u === S.set.unit ? " selected" : ""}>Unit ${U.u}: ${esc(U.title)} (${esc(U.text)})</option>`).join("")}</select></label>
-  <div class="row">${readSelect()}</div></div>
+  <div class="row">${readSelect("lotf")}</div><p class="meta" style="margin:0"><i>Lord of the Flies</i></p><div class="row">${readSelect("asp")}</div><p class="meta" style="margin:0"><i>A Small Place</i></p></div>
   <div class="card"><h3>Comfort</h3><div class="toggles">
   <label class="tog"><input type="checkbox" data-in="setflag" data-k="sound"${S.set.sound ? " checked" : ""}> Sounds for right and wrong answers</label>
   <label class="tog"><input type="checkbox" data-in="setflag" data-k="calm"${S.set.calm ? " checked" : ""}> Calm mode: no confetti, pops or sounds</label>
@@ -2424,7 +2856,7 @@ V.parent = () => {
   const checks = S.quizzes.filter(q => q.kind === "ch"), rows = rowAverages();
   return `<p class="crumb"><a href="#/me">‹ Me</a></p><h2>Parent view</h2><p class="lead">A summary only. Drafts and quotations stay private to the student.</p>
   <div class="cols"><div class="card"><h3>This week</h3><p>${mins} active minutes · streak ${streak()} days · ${wk.filter(d => d.done).length} days with all goals done</p>
-  <p>Reading: <i>Lord of the Flies</i> through chapter ${readTo()} of 12.</p><p>Reading checks: ${checks.length} taken${checks.length ? `, ${pct(sum(checks.map(q => q.right)), sum(checks.map(q => q.n)))}% right` : ""}.</p>
+  <p>Reading: <i>Lord of the Flies</i> through chapter ${readTo()} of 12; <i>A Small Place</i> through section ${readTo("asp")} of 4. Argument lessons opened: ${ARG.lessons.filter(l => S.seen["lesson:" + l.id]).length} of ${ARG.lessons.length}.</p><p>Reading checks: ${checks.length} taken${checks.length ? `, ${pct(sum(checks.map(q => q.right)), sum(checks.map(q => q.n)))}% right` : ""}.</p>
   <p>Timed writes: ${S.writes.length} · Drafts checked: ${S.checks.length} · Claude feedback used: ${S.ai.length}</p></div>
   <div class="card"><h3>Assignments</h3>${S.asg.length ? `<table class="tbl">${S.asg.slice().sort((a, b) => a.due < b.due ? 1 : -1).slice(0, 10).map(a => { const ns = nextStep(a); return `<tr><td>${esc(a.title)}</td><td>${a.done ? `done ${nice(a.done)}${a.done <= a.due ? "" : " (late)"}` : dueWords(a.due)}</td><td>${a.done ? "" : ns ? esc(ns[1]) : ""}</td></tr>`; }).join("")}</table>` : `<p class="meta">None added yet.</p>`}</div>
   <div class="card"><h3>Self-scored rubric rows</h3>${Object.keys(rows).length ? `<div class="bars">${Object.values(rows).map(b => `<span>${esc(b.name)}</span><span class="bar"><i style="width:${pct(b.sum / b.n, 4)}%"></i></span><span>${(b.sum / b.n).toFixed(1)}</span>`).join("")}</div>` : `<p class="meta">No rubric scores yet.</p>`}</div></div>`;
@@ -2433,7 +2865,7 @@ V.parent = () => {
 // ===== js/90-boot.js
 // ---------- Router, events, install note, backup and restore, offline copy
 const TABS = [["today", "Today"], ["learn", "Learn"], ["write", "Write"], ["check", "Check"], ["test", "Test"], ["coach", "Coach"], ["me", "Me"]];
-const TAB_OF = {unit: "learn", ch: "learn", lens: "learn", terms: "learn", asg: "write", guide: "write", quotes: "write", seminar: "write", drills: "write", drill: "write", rubric: "check", claude: "check", run: "test", tw: "test", advice: "coach", ailog: "coach", review: "today", settings: "me", parent: "me"};
+const TAB_OF = {unit: "learn", ch: "learn", lens: "learn", terms: "learn", lesson: "learn", soap: "write", debate: "write", asg: "write", guide: "write", quotes: "write", seminar: "write", drills: "write", drill: "write", rubric: "check", claude: "check", run: "test", tw: "test", advice: "coach", ailog: "coach", review: "today", settings: "me", parent: "me"};
 function route() {
   const parts = (location.hash.replace(/^#\/?/, "") || "today").split("/").map(decodeURIComponent);
   return V[parts[0]] ? parts : ["today"];
@@ -2441,7 +2873,8 @@ function route() {
 function renderStats() {
   const el = $("#stats"); if (!el) return;
   const Lv = levelOf(S.xp), lo = 50 * Lv * (Lv - 1), hi = 50 * (Lv + 1) * Lv;
-  el.innerHTML = `<div class="stat"><b>${streak()}</b><span>day streak</span></div><div class="stat"><b>${readTo()}/12</b><span>chapters</span></div><div class="stat"><b>Lv ${Lv}</b><span>${titleOf(Lv)} · ${S.xp} XP</span><span class="xpbar" aria-hidden="true"><i style="width:${Math.round(100 * (S.xp - lo) / (hi - lo))}%"></i></span></div>`;
+  const B = bookOfUnit(S.set.unit), prog = B ? `<div class="stat"><b>${readTo(B.id)}/${B.chapters_n}</b><span>${W(B.id).chs.toLowerCase()}</span></div>` : `<div class="stat"><b>${ARG.lessons.filter(l => S.seen["lesson:" + l.id]).length}/${ARG.lessons.length}</b><span>lessons</span></div>`;
+  el.innerHTML = `<div class="stat"><b>${streak()}</b><span>day streak</span></div>${prog}<div class="stat"><b>Lv ${Lv}</b><span>${titleOf(Lv)} · ${S.xp} XP</span><span class="xpbar" aria-hidden="true"><i style="width:${Math.round(100 * (S.xp - lo) / (hi - lo))}%"></i></span></div>`;
 }
 let CURNAME = "";
 function render() {

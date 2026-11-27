@@ -55,7 +55,7 @@ const MANIFEST = JSON.stringify({
   ]
 }, null, 1);
 
-const CONTENT = ["course.js", "lotf.js", "lenses.js", "terms.js", "writing.js", "coach.js"];
+const CONTENT = ["course.js", "lotf.js", "asp.js", "argument.js", "lenses.js", "terms.js", "writing.js", "coach.js"];
 const appFiles = fs.readdirSync(here("js")).filter(f => /^\d\d-[\w-]+\.js$/.test(f)).sort();
 const base = fs.readFileSync(here("app.html"), "utf8")
   .replace("/*__CONTENT__*/", () => CONTENT.map(f => `// ===== content/${f}\n` + strip("content/" + f)).join("\n"))

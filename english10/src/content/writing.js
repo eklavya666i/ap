@@ -166,6 +166,12 @@ const PROMPTS = [
   {id: "lens-gender", type: "lens", min: 45, upto: 8, text: "Using a gender lens, explain what the all-male world of the novel reveals about how the boys define strength and leadership."},
   {id: "lit-symbol", type: "lit", min: 45, upto: 11, text: "Trace one symbol (the conch, Piggy's glasses or the signal fire) across the novel. How does its change reveal a central theme?"},
   {id: "arg-rules", type: "argument", min: 45, upto: 12, text: "Golding suggests that without rules, people turn to violence. Do you agree? Take a position, using the novel and your own knowledge or observations."},
+  {id: "rhet-asp-you", type: "rhetorical", book: "asp", min: 40, upto: 1, text: "Analyze how Kincaid uses second-person address in the first section of A Small Place to achieve her purpose with her audience."},
+  {id: "rhet-asp-tone", type: "rhetorical", book: "asp", min: 40, upto: 4, text: "Analyze how Kincaid's shifts in tone across A Small Place help her achieve her purpose."},
+  {id: "rhet-douglass", type: "rhetorical", book: "", min: 40, upto: 0, text: "Read the excerpt from Frederick Douglass's 1852 speech in Unit 3's sources. Analyze how Douglass uses a rhetorical question to move his audience."},
+  {id: "arg-tourism", type: "argument", book: "asp", min: 45, upto: 1, text: "Does tourism do more good than harm for small island nations? Take a position, using A Small Place and your own knowledge or observations."},
+  {id: "arg-service", type: "argument", book: "", min: 45, upto: 0, text: "Should high schools require community service hours to graduate? Take a position and support it with reasoning and evidence."},
+  {id: "arg-phones", type: "argument", book: "", min: 45, upto: 0, text: "Should phones be banned for the whole school day, including lunch? Take a position and answer the strongest opposing argument."},
   {id: "arg-leaders", type: "argument", min: 45, upto: 8, text: "Should leaders be chosen for popularity or for competence? Argue your position using Lord of the Flies and at least one real-world example."}
 ];
 const TIMED_TIPS = ["Spend 5 minutes planning: thesis, two body claims, the evidence for each.", "Write the thesis first, then the body paragraphs. A short introduction is fine.", "Two well-developed body paragraphs beat three rushed ones.", "Keep 3 minutes at the end to reread and fix your thesis and topic sentences.", "No quotation memorized? Paraphrase precisely and cite the chapter."];

@@ -38,7 +38,9 @@ V.write = () => {
   <h3>Tools</h3><div class="grid">
   <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/quotes"><h3>Quote Log</h3><p class="meta">${S.quotes.length} quotation${S.quotes.length === 1 ? "" : "s"} saved, with page numbers and MLA citations.</p></a>
   <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/drills"><h3>Writing drills</h3><p class="meta">${DRILLS.length} short drills: citations, embedding, commentary, thesis, counterclaims.</p></a>
-  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/seminar"><h3>Seminar prep</h3><p class="meta">Questions at three levels, quotations and sentence starters.</p></a></div>`;
+  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/seminar"><h3>Seminar prep</h3><p class="meta">Questions at three levels, quotations and sentence starters.</p></a>
+  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/soap"><h3>SOAPSTone</h3><p class="meta">Pin down a text's rhetorical situation before you analyze it. ${S.soaps.length} saved.</p></a>
+  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/debate"><h3>Debate prep</h3><p class="meta">Your case, their best arguments and your answers. ${S.debates.length} saved.</p></a></div>`;
 };
 
 // ---------- New assignment
@@ -51,7 +53,7 @@ V.asg = (id, tab) => {
   const body = {plan: asgPlan, thesis: asgThesis, outline: asgOutline, evidence: asgEvidence, draft: asgDraft}[tab](a);
   return `<p class="crumb"><a href="#/write">‹ Write</a></p>
   <div class="card"><span class="pill">${esc(ATYPE(a.type))}</span><h2 style="margin-top:8px">${esc(a.title)}</h2>
-  <p class="meta">${a.done ? "Finished " + nice(a.done) : `Due ${nice(a.due)} · ${dueWords(a.due)}`}${a.book ? " · <i>Lord of the Flies</i>" : ""}</p></div>
+  <p class="meta">${a.done ? "Finished " + nice(a.done) : `Due ${nice(a.due)} · ${dueWords(a.due)}`}${a.book && BOOKS[a.book] ? ` · <i>${esc(BOOKS[a.book].title)}</i>` : ""}</p></div>
   ${TABS.length > 1 ? `<div class="ltabs">${TABS.map(([k, t]) => `<a href="#/asg/${a.id}/${k}"${k === tab ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</div>` : ""}${body}`;
 };
 function newAsgForm() {
@@ -60,13 +62,13 @@ function newAsgForm() {
   <div class="card"><label class="f">Title<input type="text" id="na-title" placeholder="Critical lens essay" maxlength="80"></label>
   <label class="f">Type<select id="na-type">${ATYPES.map(([k, t]) => `<option value="${k}"${k === U.essay ? " selected" : ""}>${t}</option>`).join("")}</select></label>
   <label class="f">Due date<input type="date" id="na-due" value="${addD(today(), 7)}" min="${addD(today(), -30)}"></label>
-  <label class="tog"><input type="checkbox" id="na-book" ${S.set.unit === 4 ? "checked" : ""}> It's about <i>Lord of the Flies</i></label>
+  <label class="f">It's about<select id="na-book"><option value="">No class text, or another text</option>${Object.values(BOOKS).map(B => `<option value="${B.id}"${B.unit === S.set.unit ? " selected" : ""}>${esc(B.title)}</option>`).join("")}</select></label>
   <label class="f">The prompt <span class="h">Paste it from Canvas. Optional, but the app decodes it for you.</span><textarea id="na-prompt" rows="4"></textarea></label>
   <div class="row"><button class="btn" data-act="addasg">Add and plan it</button></div></div>`;
 }
 ACT.addasg = () => {
   const title = $("#na-title").value.trim() || ATYPE($("#na-type").value), due = $("#na-due").value || addD(today(), 7);
-  const a = {id: uid(), title, type: $("#na-type").value, due, created: today(), book: $("#na-book").checked ? "lotf" : "", prompt: $("#na-prompt").value.trim(), steps: {}, thesis: "", outline: {body: [{}, {}]}, draft: "", quotes: [], done: null};
+  const a = {id: uid(), title, type: $("#na-type").value, due, created: today(), book: $("#na-book").value, prompt: $("#na-prompt").value.trim(), steps: {}, thesis: "", outline: {body: [{}, {}]}, draft: "", quotes: [], done: null};
   makePlan(a); S.asg.push(a); addXP(10); checkBadges(); save();
   location.hash = `#/asg/${a.id}`;
 };
@@ -102,7 +104,7 @@ function asgPlan(a) {
 }
 
 // ---------- Thesis builder
-const ctxFor = a => ({type: a.type, title: a.book ? LOTF.title : "", author: a.book ? LOTF.author.split(" ").pop() : "", lenses: LENSES, names: a.book ? LOTF.characters.map(c => c.name.split(" ")[0]).filter(n => /^[A-Z]/.test(n) && n !== "The") : []});
+const ctxFor = a => { const B = BOOKS[a.book]; return {type: a.type, title: B ? B.title : "", author: B ? B.cite : "", lenses: LENSES, names: a.book === "lotf" ? LOTF.characters.map(c => c.name.split(" ")[0]).filter(n => /^[A-Z][a-z]+$/.test(n) && n !== "The") : []}; };
 function thesisHTML(a) {
   const r = Checker.thesisCheck(a.thesis || "", ctxFor(a));
   return `<ul class="tcheck">${r.parts.map(p => `<li><span class="${p.pass ? "y" : "x"}">${p.pass ? "✓" : "•"}</span><span>${esc(p.label)}${p.pass ? "" : `<span class="h">${esc(p.tip)}</span>`}</span></li>`).join("")}</ul>
@@ -151,12 +153,17 @@ function asgOutline(a) {
 }
 
 // ---------- Evidence tab and the Quote Log
-const QTAGS = [["ralph", "Ralph"], ["piggy", "Piggy"], ["jack", "Jack"], ["simon", "Simon"], ["roger", "Roger"], ["conch", "Conch"], ["glasses", "Glasses"], ["fire", "Fire"], ["beast", "Beast"], ["paint", "Mask"], ["civ", "Civilization"], ["power", "Power"], ["fear", "Fear"], ["evil", "Evil within"], ...LENSES.map(l => ["lens-" + l.id, l.name])];
+const QTAG_GROUPS = [
+  ["Lord of the Flies", [["ralph", "Ralph"], ["piggy", "Piggy"], ["jack", "Jack"], ["simon", "Simon"], ["roger", "Roger"], ["conch", "Conch"], ["glasses", "Glasses"], ["fire", "Fire"], ["beast", "Beast"], ["paint", "Mask"], ["civ", "Civilization"], ["power", "Power"], ["fear", "Fear"], ["evil", "Evil within"]]],
+  ["A Small Place", [["you", "You, the tourist"], ["tourism", "Tourism"], ["colonial", "Colonialism"], ["corruption", "Corruption"], ["library", "Library"], ["language", "Language"], ["beauty", "Beauty"]]],
+  ["Rhetoric", [["ethos", "Ethos"], ["pathos", "Pathos"], ["logos", "Logos"], ["sarcasm", "Sarcasm"], ["rq", "Rhetorical question"], ["juxt", "Juxtaposition"], ["tone", "Tone shift"]]],
+  ["Lenses", LENSES.map(l => ["lens-" + l.id, l.name])]];
+const QTAGS = QTAG_GROUPS.flatMap(g => g[1]);
 const qtag = id => (QTAGS.find(t => t[0] === id) || [id, id])[1];
-const mla = q => `"${q.text.trim().replace(/[.,]$/, "")}" (${q.book === "lotf" ? "Golding " : q.author ? q.author + " " : ""}${q.page || "page"})`;
+const mla = q => `"${q.text.trim().replace(/[.,]$/, "")}" (${BOOKS[q.book] ? BOOKS[q.book].cite + " " : q.author ? q.author + " " : ""}${q.page || "page"})`;
 function quoteCard(q, a) {
   const on = a && (a.quotes || []).includes(q.id);
-  return `<div class="qlog"><q>${esc(q.text)}</q><div class="meta">${q.book === "lotf" ? `Ch. ${q.ch || "?"}, ` : ""}p. ${esc(q.page || "?")}${q.who ? " · " + esc(q.who) : ""}</div>
+  return `<div class="qlog"><q>${esc(q.text)}</q><div class="meta">${BOOKS[q.book] ? `<i>${esc(BOOKS[q.book].title)}</i>, ${W(q.book).ch.toLowerCase()} ${q.ch || "?"}, ` : ""}p. ${esc(q.page || "?")}${q.who ? " · " + esc(q.who) : ""}</div>
   ${q.tags && q.tags.length ? `<div class="tags">${q.tags.map(t => `<span class="chip">${esc(qtag(t))}</span>`).join("")}</div>` : ""}${q.note ? `<p class="meta">Why it matters: ${esc(q.note)}</p>` : ""}
   <div class="row"><button class="btn ghost sm" data-act="copymla" data-arg="${q.id}">Copy citation</button>${a ? `<button class="btn ${on ? "" : "ghost "}sm" data-act="attachq" data-arg="${a.id}:${q.id}">${on ? "In this essay ✓" : "Use in this essay"}</button>` : ""}
   <details style="flex-basis:100%"><summary>Practice commentary</summary><p class="meta">Two sentences: what the words do, then why it matters.</p><textarea rows="3" data-in="qcomm" data-id="${q.id}">${esc(q.comm || "")}</textarea></details></div></div>`;
@@ -173,12 +180,12 @@ function copyText(t, msg) {
 function quoteForm(pre = {}) {
   return `<div class="card"><h3>Log a quotation</h3>${pre.hint ? `<p class="meta">Hunting for: ${esc(pre.hint)}</p>` : ""}
   <label class="f">The quotation <span class="h">Copy it exactly from your book.</span><textarea id="nq-text" rows="3"></textarea></label>
-  <div class="row"><label class="tog">Book <select id="nq-book"><option value="lotf"${pre.book !== "" ? " selected" : ""}>Lord of the Flies</option><option value=""${pre.book === "" ? " selected" : ""}>Another text</option></select></label>
-  <label class="tog">Chapter <select id="nq-ch">${Array.from({length: 13}, (_, i) => `<option value="${i || ""}"${(pre.ch || 0) === i ? " selected" : ""}>${i || "—"}</option>`).join("")}</select></label>
+  <div class="row"><label class="tog">Text <select id="nq-book">${Object.values(BOOKS).map(B => `<option value="${B.id}"${(pre.book || bookOfDefault()) === B.id ? " selected" : ""}>${esc(B.title)}</option>`).join("")}<option value=""${pre.book === "" ? " selected" : ""}>Another text</option></select></label>
+  <label class="tog">Chapter or section <select id="nq-ch">${Array.from({length: 13}, (_, i) => `<option value="${i || ""}"${(pre.ch || 0) === i ? " selected" : ""}>${i || "—"}</option>`).join("")}</select></label>
   <label class="tog">Page <input type="number" id="nq-page" min="1" max="999" style="width:6em"></label></div>
   <label class="f">Who says it, or whose moment <input type="text" id="nq-who" maxlength="40"></label>
   <label class="f">Author (if not Golding) <input type="text" id="nq-author" maxlength="40" placeholder="Last name"></label>
-  <div class="f">Tags</div><div class="tags" id="nq-tags">${QTAGS.map(([k, t]) => `<button type="button" class="tagb" data-act="qtag" data-arg="${k}">${esc(t)}</button>`).join("")}</div>
+  <div class="f">Tags</div><div id="nq-tags">${QTAG_GROUPS.map(([g, tags]) => `<p class="meta" style="margin:6px 0 2px">${esc(g)}</p><div class="tags">${tags.map(([k, t]) => `<button type="button" class="tagb" data-act="qtag" data-arg="${k}">${esc(t)}</button>`).join("")}</div>`).join("")}</div>
   <label class="f">Why it matters <span class="h">One sentence in your words.</span><textarea id="nq-note" rows="2"></textarea></label>
   <div class="row"><button class="btn" data-act="addquote" data-arg="${pre.asg || ""}">Save quotation</button></div></div>`;
 }
@@ -190,12 +197,13 @@ ACT.addquote = asgId => {
   if (asgId) { const a = getA(asgId); if (a) { a.quotes = (a.quotes || []).concat(q.id); if (a.quotes.length >= 2) stepDone(a, "evidence"); } }
   checkBadges(); save(); toast("Quotation saved"); render(); window.scrollTo(0, 0);
 };
-ACT.huntq = arg => { const [n, i] = arg.split(":"); location.hash = `#/quotes/new/${n}/${i}`; };
+const bookOfDefault = () => (bookOfUnit(S.set.unit) || LOTF).id;
+ACT.huntq = arg => { const [b, n, i] = arg.split(":"); location.hash = `#/quotes/new/${b}/${n}/${i}`; };
 ACT.delquote = id => { if (confirm("Delete this quotation?")) { S.quotes = S.quotes.filter(q => q.id !== id); save(); render(); } };
 let QFILTER = "";
 ACT.qfilter = a => { QFILTER = QFILTER === a ? "" : a; render(); };
-V.quotes = (mode, n, i) => {
-  if (mode === "new") { const c = CH(Number(n)); return `<p class="crumb"><a href="#/quotes">‹ Quote Log</a></p>${quoteForm({ch: Number(n) || 0, hint: c && i != null ? c.hunt[Number(i)] : ""})}`; }
+V.quotes = function (mode, n, i) {
+  if (mode === "new") { const b = BOOKS[n] ? n : "lotf", ch = Number(BOOKS[n] ? i : n) || 0, hi = BOOKS[n] ? arguments[3] : i, c = ch ? CH(ch, b) : null; return `<p class="crumb"><a href="#/quotes">‹ Quote Log</a></p>${quoteForm({book: b, ch, hint: c && hi != null ? c.hunt[Number(hi)] : ""})}`; }
   const list = S.quotes.filter(q => !QFILTER || (q.tags || []).includes(QFILTER)).slice().sort((a, b) => (a.ch || 99) - (b.ch || 99) || (Number(a.page) || 0) - (Number(b.page) || 0));
   const used = [...new Set(S.quotes.flatMap(q => q.tags || []))];
   return `<p class="crumb"><a href="#/write">‹ Write</a></p><h2>Quote Log</h2><p class="lead">Every quotation you might use, with its page number. Tag them so you can find evidence for any claim in seconds.</p>
@@ -243,27 +251,29 @@ V.guide = id => {
 
 // ---------- Seminar prep
 V.seminar = () => {
-  const from = Number(S.drafts.semFrom) || Math.max(1, readTo() - 1), to = Number(S.drafts.semTo) || Math.max(1, readTo());
-  const qs = LOTF.chapters.filter(c => c.n >= from && c.n <= to && canSee(c.n));
+  const b = S.drafts.semBook || bookOfDefault(), B = BOOKS[b], N = B.chapters_n;
+  const from = Math.min(N, Number(S.drafts.semFrom) || Math.max(1, readTo(b) - 1)), to = Math.min(N, Number(S.drafts.semTo) || Math.max(1, readTo(b)));
+  const qs = B.chapters.filter(c => c.n >= from && c.n <= to && canSee(c.n, b));
   const prep = S.drafts.sem || {q: ["", "", ""], quotes: ["", "", ""], conn: ""};
-  const sel = (id, v) => `<select data-in="semrange" data-k="${id}">${Array.from({length: 12}, (_, i) => `<option${i + 1 === v ? " selected" : ""}>${i + 1}</option>`).join("")}</select>`;
+  const sel = (id, v) => `<select data-in="semrange" data-k="${id}">${Array.from({length: N}, (_, i) => `<option${i + 1 === v ? " selected" : ""}>${i + 1}</option>`).join("")}</select>`;
   return `<p class="crumb"><a href="#/write">‹ Write</a></p><h2>Seminar prep</h2><p class="lead">Come with three questions, three quotations and one connection. Speak two or three times, and cite the text every time.</p>
   <div class="card"><h3>Three levels of questions</h3><ul class="list">${SEMINAR.levels.map(([h, d, ex]) => `<li style="display:block"><b>${esc(h)}</b>: ${esc(d)}<br><span class="quiet">Example: ${esc(ex)}</span></li>`).join("")}</ul></div>
-  <div class="card"><h3>Ideas from the chapter guides</h3><div class="row" style="margin:0">Chapters ${sel("semFrom", from)} to ${sel("semTo", to)}</div>
-  ${qs.length ? `<ul class="list">${qs.flatMap(c => c.seminar.map((q, i) => `<li><span class="n">L${i + 1}</span><span class="t">${esc(q)} <span class="s">Ch. ${c.n}</span></span></li>`)).join("")}</ul>` : `<p class="meta">Mark chapters as read to see their seminar questions.</p>`}</div>
+  <div class="card"><h3>Ideas from the guides</h3><div class="row" style="margin:0"><select data-in="semrange" data-k="semBook">${Object.values(BOOKS).map(x => `<option value="${x.id}"${x.id === b ? " selected" : ""}>${esc(x.title)}</option>`).join("")}</select> ${W(b).chs} ${sel("semFrom", from)} to ${sel("semTo", to)}</div>
+  ${qs.length ? `<ul class="list">${qs.flatMap(c => c.seminar.map((q, i) => `<li><span class="n">L${i + 1}</span><span class="t">${esc(q)} <span class="s">${W(b).ch} ${c.n}</span></span></li>`)).join("")}</ul>` : `<p class="meta">Mark ${W(b).chs.toLowerCase()} as read to see their seminar questions.</p>`}</div>
   <div class="card"><h3>My prep sheet</h3>${[0, 1, 2].map(i => `<label class="f">Question ${i + 1} <span class="h">${["Level 1, 2 or 3", "Make one a Level 2", "Make one a Level 3"][i]}</span><input type="text" data-in="semf" data-k="q.${i}" value="${esc(prep.q[i])}"></label>`).join("")}
   ${[0, 1, 2].map(i => `<label class="f">Quotation ${i + 1} with page <input type="text" data-in="semf" data-k="quotes.${i}" value="${esc(prep.quotes[i])}" placeholder="p. __: ..."></label>`).join("")}
   <label class="f">One connection to another text, history or life <textarea rows="2" data-in="semf" data-k="conn">${esc(prep.conn)}</textarea></label>
   <div class="row"><button class="btn" data-act="semsave">Save prep</button></div></div>
   <div class="card"><h3>Sentence starters</h3><div class="cols">${Object.entries(SEMINAR.starters).map(([k, list]) => `<div><h4>${esc(k)}</h4><ul class="tight">${list.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}</div></div>
-  ${S.sem.length ? `<details class="card"><summary>Past preps (${S.sem.length})</summary><ul class="list">${S.sem.slice().reverse().map(p => `<li style="display:block"><b>${nice(p.d)}</b> · chapters ${p.from}–${p.to}<br><span class="s">${p.q.filter(Boolean).map(esc).join(" · ")}</span></li>`).join("")}</ul></details>` : ""}`;
+  ${S.sem.length ? `<details class="card"><summary>Past preps (${S.sem.length})</summary><ul class="list">${S.sem.slice().reverse().map(p => `<li style="display:block"><b>${nice(p.d)}</b> · ${esc((BOOKS[p.book || "lotf"] || LOTF).title)} ${p.from}–${p.to}<br><span class="s">${p.q.filter(Boolean).map(esc).join(" · ")}</span></li>`).join("")}</ul></details>` : ""}`;
 };
-IN.semrange = el => { S.drafts[el.dataset.k] = el.value; save(); render(); };
+IN.semrange = el => { S.drafts[el.dataset.k] = el.value; if (el.dataset.k === "semBook") { delete S.drafts.semFrom; delete S.drafts.semTo; } save(); render(); };
 IN.semf = el => { const p = S.drafts.sem || (S.drafts.sem = {q: ["", "", ""], quotes: ["", "", ""], conn: ""}); setPath(p, el.dataset.k, el.value); saveSoon(); };
 ACT.semsave = () => {
   const p = S.drafts.sem || {q: [], quotes: [], conn: ""};
   if (!p.q.some(x => x && x.trim())) { toast("Write at least one question first"); return; }
-  S.sem.push({d: today(), from: Number(S.drafts.semFrom) || 1, to: Number(S.drafts.semTo) || Math.max(1, readTo()), q: p.q.slice(), quotes: p.quotes.slice(), conn: p.conn});
+  const b = S.drafts.semBook || bookOfDefault();
+  S.sem.push({d: today(), book: b, from: Number(S.drafts.semFrom) || 1, to: Number(S.drafts.semTo) || Math.max(1, readTo(b)), q: p.q.slice(), quotes: p.quotes.slice(), conn: p.conn});
   addXP(15); goalTick("seminar"); checkBadges(); save(); toast("Seminar prep saved"); render();
 };
 
@@ -297,3 +307,50 @@ IN.dtext = el => { if (DR) DR.text = el.value; };
 function drillDone(id, ok) { const r = S.drills[id] || (S.drills[id] = {n: 0, ok: 0}); r.n++; if (ok) r.ok++; r.last = today(); addXP(15); goalTick("drill"); checkBadges(); save(); }
 ACT.dpick = a => { if (!DR || DR.pick != null) return; DR.pick = Number(a); const ok = DR.order[DR.pick].ok; beep(ok); drillDone(DR.id, ok); render(); };
 ACT.dshow = () => { if (!DR) return; if (wcount(DR.text) < 5) { toast("Write your version first"); return; } DR.shown = true; drillDone(DR.id, true); render(); };
+
+// ---------- SOAPSTone tool (any text: the class books, the unit 3 speeches, an article)
+const soapSeed = id => { const x = ARG.sources.find(y => y.id === id); if (x) return {title: `${x.author}, "${x.title}" (${x.year})`}; const B = BOOKS[id]; return B ? {title: `${B.author}, ${B.title} (${B.year})`} : {title: ""}; };
+V.soap = (mode, id) => {
+  if (mode === "new" || !S.soaps.length) {
+    const d = S.drafts.soap && (!id || S.drafts.soap.seed === id) ? S.drafts.soap : (S.drafts.soap = {seed: id || "", title: soapSeed(id).title});
+    return `<p class="crumb"><a href="#/write">‹ Write</a></p><h2>SOAPSTone</h2><p class="lead">Before analyzing any text, pin down its rhetorical situation: Speaker, Occasion, Audience, Purpose, Subject, Tone. A strong rhetorical analysis thesis grows out of the Purpose and Audience rows.</p>
+    <div class="card"><label class="f">Text <input type="text" data-in="soapf" data-k="title" value="${esc(d.title)}" placeholder="Author, title (year)"></label>
+    ${SOAP_FIELDS.map(([k, t, h]) => `<label class="f">${t} <span class="h">${esc(h)}</span><textarea rows="2" data-in="soapf" data-k="${k}">${esc(d[k] || "")}</textarea></label>`).join("")}
+    <div class="row"><button class="btn" data-act="soapsave">Save</button>${id === "asp" ? `<a class="btn ghost" href="#/unit/2/rhetoric">Compare with the model</a>` : ""}</div></div>
+    ${S.soaps.length ? `<div class="row"><a class="btn ghost" href="#/soap">My SOAPSTones (${S.soaps.length})</a></div>` : ""}`;
+  }
+  return `<p class="crumb"><a href="#/write">‹ Write</a></p><h2>My SOAPSTones</h2><div class="row"><a class="btn" href="#/soap/new">+ New SOAPSTone</a><a class="btn ghost" href="#/soap/new/asp">For A Small Place</a></div>
+  ${S.soaps.slice().reverse().map(x => `<div class="card"><h3>${esc(x.title || "Untitled")}</h3><p class="meta">${nice(x.d)}</p><table class="tbl">${SOAP_FIELDS.map(([k, t]) => `<tr><th>${t}</th><td>${esc(x[k] || "")}</td></tr>`).join("")}</table></div>`).join("")}`;
+};
+IN.soapf = el => { const d = S.drafts.soap || (S.drafts.soap = {}); d[el.dataset.k] = el.value; saveSoon(); };
+ACT.soapsave = () => {
+  const d = S.drafts.soap || {}, filled = SOAP_FIELDS.filter(([k]) => (d[k] || "").trim()).length;
+  if (filled < 4) { toast("Fill in at least four of the six rows"); return; }
+  S.soaps.push({...d, d: today()}); S.drafts.soap = null; addXP(15); goalTick("draft"); checkBadges(); save(); toast("SOAPSTone saved"); location.hash = "#/soap";
+};
+
+// ---------- Debate prep
+V.debate = (mode, i) => {
+  if (mode === "new" || !S.debates.length) {
+    const m = i != null && ARG.debate.motions[Number(i)] ? ARG.debate.motions[Number(i)] : "";
+    const d = S.drafts.debate && (!m || S.drafts.debate.motion === m) ? S.drafts.debate : (S.drafts.debate = {motion: m, side: "for", args: [{}, {}, {}], opp: [{}, {}], cx: ["", ""], close: ""});
+    const f = (k, label, v, rows = 2) => `<label class="f">${esc(label)}<textarea rows="${rows}" data-in="debf" data-k="${k}">${esc(v || "")}</textarea></label>`;
+    return `<p class="crumb"><a href="#/unit/3/debate">‹ Debate</a></p><h2>Debate prep</h2><p class="lead">Build your case and your answers before the round. Prepare both sides when you can: you may not get to choose.</p>
+    <div class="card"><label class="f">Motion <input type="text" data-in="debf" data-k="motion" value="${esc(d.motion)}" placeholder="This house would..."></label>
+    <label class="tog">Side <select data-in="debside"><option value="for"${d.side === "for" ? " selected" : ""}>For (proposition)</option><option value="against"${d.side === "against" ? " selected" : ""}>Against (opposition)</option></select></label></div>
+    ${d.args.map((a, j) => `<div class="card outline"><fieldset><legend>Argument ${j + 1}</legend>${f(`args.${j}.claim`, "Claim", a.claim)}${f(`args.${j}.ev`, "Evidence (with its source)", a.ev)}${f(`args.${j}.why`, "Why it matters (impact)", a.why)}</fieldset></div>`).join("")}
+    ${d.opp.map((o, j) => `<div class="card outline"><fieldset><legend>Their likely argument ${j + 1}</legend>${f(`opp.${j}.arg`, "What they'll say (steelman it)", o.arg)}${f(`opp.${j}.ans`, "Your answer", o.ans)}</fieldset></div>`).join("")}
+    <div class="card">${f("cx.0", "Cross-examination question 1", d.cx[0], 1)}${f("cx.1", "Cross-examination question 2", d.cx[1], 1)}${f("close", "Closing line: why your side wins", d.close)}
+    <div class="row"><button class="btn" data-act="debsave">Save case</button><a class="btn ghost" href="#/lesson/debate">Debate lesson</a></div></div>`;
+  }
+  return `<p class="crumb"><a href="#/unit/3/debate">‹ Debate</a></p><h2>My debate cases</h2><div class="row"><a class="btn" href="#/debate/new">+ New case</a></div>
+  ${S.debates.slice().reverse().map(x => `<div class="card"><span class="pill">${x.side === "for" ? "For" : "Against"}</span><h3 style="margin-top:8px">${esc(x.motion)}</h3><p class="meta">${nice(x.d)}</p>
+  <ol class="tight">${x.args.filter(a => a.claim).map(a => `<li><b>${esc(a.claim)}</b>${a.ev ? `<br><span class="quiet">${esc(a.ev)}</span>` : ""}</li>`).join("")}</ol>${x.close ? `<p class="model">${esc(x.close)}</p>` : ""}</div>`).join("")}`;
+};
+IN.debf = el => { const d = S.drafts.debate || (S.drafts.debate = {motion: "", side: "for", args: [{}, {}, {}], opp: [{}, {}], cx: ["", ""], close: ""}); setPath(d, el.dataset.k, el.value); saveSoon(); };
+IN.debside = el => { const d = S.drafts.debate; if (d) { d.side = el.value; save(); } };
+ACT.debsave = () => {
+  const d = S.drafts.debate;
+  if (!d || !d.motion.trim() || d.args.filter(a => (a.claim || "").trim()).length < 2) { toast("Add the motion and at least two arguments"); return; }
+  S.debates.push({...JSON.parse(JSON.stringify(d)), d: today()}); S.drafts.debate = null; addXP(25); checkBadges(); save(); toast("Debate case saved"); location.hash = "#/debate";
+};

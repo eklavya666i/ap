@@ -3,6 +3,7 @@ const assert = require("assert");
 const {COURSE} = require("./content/course.js"), {LOTF} = require("./content/lotf.js"), {LENSES, LENS_QS, BIG_IDEA} = require("./content/lenses.js");
 const {TERMS, TERM_GROUPS} = require("./content/terms.js"), {ESSAYS, DRILLS, PROMPTS, TIMED_TIPS, LEVELS} = require("./content/writing.js");
 const {ADVICE, CONTENT_NOTES, SEMINAR, EMAILS, INTEGRITY} = require("./content/coach.js"), {Checker} = require("./lib/checker.js");
+const {ASP} = require("./content/asp.js"), {ARG} = require("./content/argument.js");
 let n = 0; const ok = (c, m) => { n++; assert.ok(c, m); };
 const distinct = a => new Set(a.map(x => String(x).trim().toLowerCase())).size === a.length;
 
@@ -71,8 +72,44 @@ for (const d of DRILLS) {
   else ok(d.model && d.check.length >= 2 && d.q, `drill ${d.id}`);
 }
 const wp = DRILLS.find(d => d.id === "w-present"); ok(wp.absent.every(w => !new RegExp(`\\b${w}\\b`).test(wp.model)), "present-tense model has none of the past verbs");
-for (const p of PROMPTS) ok(p.upto >= 1 && p.upto <= 12 && ESSAYS.some(e => e.id === p.type) && p.min >= 30, `prompt ${p.id}`);
+for (const p of PROMPTS) {
+  const b = p.book === undefined ? "lotf" : p.book, max = b === "lotf" ? 12 : b === "asp" ? 4 : 0;
+  ok((b ? p.upto >= 1 && p.upto <= max : p.upto === 0) && ESSAYS.some(e => e.id === p.type) && p.min >= 30, `prompt ${p.id}`);
+}
+ok(new Set(PROMPTS.map(p => p.id)).size === PROMPTS.length, "prompt ids unique");
 ok(TIMED_TIPS.length >= 4, "timed tips");
+// ---- A Small Place (Unit 2)
+ok(ASP.chapters.length === 4 && ASP.chapters_n === 4 && ASP.cite === "Kincaid" && ASP.unit === 2, "A Small Place: 4 sections");
+for (const c of ASP.chapters) {
+  ok(c.sum.length === 2 && c.sum.every(p => p.split(/\s+/).length >= 45), `asp ${c.n}: two full summary paragraphs`);
+  ok(c.events.length >= 5 && c.watch.length >= 3 && c.hunt.length === 3 && c.seminar.length === 3 && c.move && c.move.name && c.move.text.length > 60, `asp ${c.n}: parts`);
+  for (const t of [...c.sum, ...c.events, ...c.watch, ...c.hunt, ...c.seminar, c.move.text]) ok(!/["“”]/.test(t), `asp ${c.n}: no quotation marks in "${t.slice(0, 40)}"`);
+}
+const aspBy = {}; for (const q of ASP.questions) (aspBy[q[0]] = aspBy[q[0]] || []).push(q);
+ok(ASP.questions.length === 32 && Object.values(aspBy).every(a => a.length === 8), "32 A Small Place questions, 8 per section");
+for (const [ch, kind, q, c, why] of ASP.questions) {
+  ok(["plot", "character", "symbol", "theme", "inference", "rhetoric"].includes(kind) && c.length === 4 && distinct(c) && /\?$/.test(q) && why.length > 20, `asp q: ${q}`);
+  for (const v of ASP.characters.filter(x => x.from > ch)) ok(![q, ...c].some(t => t.includes(v.name)), `asp section ${ch} names ${v.name}: ${q}`);
+}
+for (const x of [...ASP.characters, ...ASP.symbols]) ok(x.from >= 1 && x.from <= 4 && (x.arc || x.track).every(([k]) => k >= x.from && k <= 4), `asp ${x.id}`);
+ok(ASP.themes.length >= 5 && ASP.context.length >= 3, "asp themes and context");
+// ---- Argument workshop (Unit 3)
+const lessonIds = ARG.lessons.map(l => l.id), srcIds = ARG.sources.map(x => x.id);
+ok(ARG.lessons.length === 8 && distinct(lessonIds) && ARG.lessons.every(l => l.points.length >= 3 && l.example.length >= 1 && l.why.length > 40), "8 argument lessons");
+ok(ARG.fallacies.length === 14 && distinct(ARG.fallacies.map(f => f.name)) && ARG.fallacies.every(f => f.d && f.ex && f.fix), "14 fallacies");
+ok(ARG.sources.length === 5 && ARG.sources.filter(x => x.year).every(x => x.year < 1929), "public-domain sources are pre-1929");
+ok(ARG.sources.filter(x => !x.year).every(x => /hypothetical/i.test(x.kind) && /made up/i.test(x.author)), "practice sources are labeled made up");
+ok(ARG.debate.motions.length >= 5 && ARG.debate.format.length === 4, "debate motions and format");
+for (const [src, kind, q, c, why] of ARG.questions) ok((lessonIds.includes(src) || srcIds.includes(src)) && ["claim", "evidence", "reasoning", "sources", "counter", "fallacy", "appeal", "debate", "rhetoric"].includes(kind) && c.length === 4 && distinct(c) && /\?$/.test(q.trim()) && why.length > 10, `arg q: ${q}`);
+ok(ARG.questions.length >= 50, "50+ argument questions");
+for (const l of ARG.lessons) ok(ARG.questions.some(q => q[0] === l.id), `lesson ${l.id} has questions`);
+// The fallacy names in questions match the gallery, so generated and written items agree
+for (const [src, kind, q, c] of ARG.questions.filter(x => x[1] === "fallacy")) ok(c.every(name => ARG.fallacies.some(f => f.name === name)), `fallacy names: ${q}`);
+let lr2 = 0; const both = ASP.questions.concat(ARG.questions);
+for (const q of both) if (q[3][0].length > Math.max(...q[3].slice(1).map(x => x.length))) lr2++;
+console.log(`Units 2 and 3: right answer longest in ${lr2}/${both.length}`);
+ok(lr2 / both.length >= 0.1 && lr2 / both.length <= 0.45, "units 2 and 3: answer length gives nothing away");
+
 // ---- Coach
 ok(distinct(ADVICE.map(a => a.id)) && ADVICE.every(a => a.body.length >= 2), "advice");
 ok(ADVICE.find(a => a.id === "heavy").body.join(" ").includes("988") && CONTENT_NOTES[1].includes("988"), "crisis line in the content note");

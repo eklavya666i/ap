@@ -28,23 +28,29 @@ const daysTo = k => dn(k) - dn(today());
 const dueWords = k => { const n = daysTo(k); return n < 0 ? `${-n} day${n === -1 ? "" : "s"} late` : n === 0 ? "due today" : n === 1 ? "due tomorrow" : `due in ${n} days`; };
 
 // ---------- Content lookups
-const BOOK = LOTF, UNIT = n => COURSE.units.find(u => u.u === n);
+const BOOKS = {lotf: LOTF, asp: ASP}, UNIT = n => COURSE.units.find(u => u.u === n);
+const bookOfUnit = n => { const U = UNIT(n); return U && U.book ? BOOKS[U.book] : null; };
+const W = b => BOOKS[b].word || {ch: "Chapter", chs: "Chapters", people: "Characters", symbols: "Symbols"};
 const ESSAY = id => ESSAYS.find(e => e.id === id);
 const LENS = id => LENSES.find(l => l.id === id);
-const RQ = [];   // reading checks
-{ const k = {}; for (const [ch, kind, q, c, why] of LOTF.questions) { k[ch] = (k[ch] || 0) + 1; RQ.push({id: `lotf.${ch}.${k[ch]}`, set: "read", ch, kind, q, c, why}); } }
+const RQ = [];   // reading checks for every book: ids like lotf.3.2 and asp.1.4
+for (const B of Object.values(BOOKS)) { const k = {}; for (const [ch, kind, q, c, why] of B.questions) { k[ch] = (k[ch] || 0) + 1; RQ.push({id: `${B.id}.${ch}.${k[ch]}`, set: "read", book: B.id, ch, kind, q, c, why}); } }
 const LQ = [];   // lens questions
 { const k = {}; for (const [lens, q, c, why] of LENS_QS) { k[lens] = (k[lens] || 0) + 1; LQ.push({id: `lens.${lens}.${k[lens]}`, set: "lens", lens, kind: "lens", q, c, why}); } }
 const TERM = {}; for (const t of TERMS) TERM[slug(t.t)] = t;
 const DRILL = {}; for (const d of DRILLS) DRILL[d.id] = d;
-const ALLQ = {}; for (const x of RQ.concat(LQ)) ALLQ[x.id] = x;
-const CH = n => LOTF.chapters[n - 1];
-const KIND_NAMES = {plot: "Plot", character: "Character", symbol: "Symbol", theme: "Theme", inference: "Inference", lens: "Lenses", term: "Terms", who: "Who and what"};
+const AQ = [];   // argument workshop questions
+{ const k = {}; for (const [src, kind, q, c, why] of ARG.questions) { k[src] = (k[src] || 0) + 1; AQ.push({id: `arg.${src}.${k[src]}`, set: "arg", src, kind, q, c, why}); } }
+const ALLQ = {}; for (const x of RQ.concat(LQ, AQ)) ALLQ[x.id] = x;
+const CH = (n, b = "lotf") => BOOKS[b].chapters[n - 1];
+const KIND_NAMES = {plot: "Plot", character: "Character", symbol: "Symbol", theme: "Theme", inference: "Inference", rhetoric: "Rhetoric", lens: "Lenses", term: "Terms", who: "Who and what",
+  claim: "Claims", evidence: "Evidence", reasoning: "Reasoning", sources: "Sources", counter: "Counterclaims", fallacy: "Fallacies", appeal: "Appeals", debate: "Debate"};
+const ARG_KINDS = ["claim", "evidence", "reasoning", "sources", "counter", "fallacy", "appeal", "debate"];
 
 // ---------- Saved progress (key eng10h.v1)
 const fresh = () => ({
   v: 1, upd: 0, name: "", days: {}, xp: 0,
-  read: {lotf: 0}, peek: {}, readLog: [],
+  read: {lotf: 0, asp: 0}, peek: {}, readLog: [], soaps: [], debates: [],
   qs: {}, miss: {}, fixed: 0, quizzes: [],
   cards: {}, newDay: null, newCount: 0,
   drills: {}, asg: [], quotes: [], sem: [], rub: [], checks: [], writes: [], tw: null, ai: [], drafts: {}, seen: {},
@@ -59,8 +65,8 @@ function loadState(j) {
 try { const j = JSON.parse(localStorage.getItem(LS) || "null"); if (j && j.v === 1) loadState(j); } catch (e) {}
 function save() { S.upd = Date.now(); try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
 let saveT = 0; function saveSoon() { clearTimeout(saveT); saveT = setTimeout(save, 400); }
-const readTo = () => S.read.lotf || 0;
-const canSee = ch => ch <= readTo() || !!S.peek[ch];
+const readTo = (b = "lotf") => S.read[b] || 0;
+const canSee = (ch, b = "lotf") => ch <= readTo(b) || !!S.peek[b + ":" + ch] || (b === "lotf" && !!S.peek[ch]);
 
 // ---------- Days, active minutes and streak (from Math 6)
 function day(k = today()) { return S.days[k] || (S.days[k] = {min: 0, done: 0, xp: 0}); }
@@ -130,9 +136,11 @@ for (const n of [3, 7, 14, 30, 60, 100]) BADGES.push({id: `streak-${n}`, fam: "S
 BADGES.push({id: "read-1", fam: "Reading", name: "Washed ashore", rule: "Finish chapter 1", test: () => readTo() >= 1});
 BADGES.push({id: "read-6", fam: "Reading", name: "Halfway across", rule: "Read through chapter 6", test: () => readTo() >= 6});
 BADGES.push({id: "read-12", fam: "Reading", name: "Rescued", rule: "Finish Lord of the Flies", test: () => readTo() >= 12});
+BADGES.push({id: "asp-4", fam: "Reading", name: "Small place, big ideas", rule: "Finish A Small Place", test: () => readTo("asp") >= 4});
 BADGES.push({id: "perfect", fam: "Quizzes", name: "Perfect check", rule: "100% on a reading check", test: () => S.quizzes.some(q => q.kind === "ch" && q.right === q.n)});
 BADGES.push({id: "perfect5", fam: "Quizzes", name: "Five perfect checks", rule: "100% on five reading checks", test: () => new Set(S.quizzes.filter(q => q.kind === "ch" && q.right === q.n).map(q => q.ch)).size >= 5});
-BADGES.push({id: "allch", fam: "Quizzes", name: "Every chapter checked", rule: "Pass all 12 reading checks (6 of 8 or better)", test: () => LOTF.chapters.every(c => S.quizzes.some(q => q.kind === "ch" && q.ch === c.n && q.right >= 6))});
+BADGES.push({id: "allch", fam: "Quizzes", name: "Every chapter checked", rule: "Pass all 12 Lord of the Flies reading checks (6 of 8 or better)", test: () => LOTF.chapters.every(c => S.quizzes.some(q => q.kind === "ch" && (q.book || "lotf") === "lotf" && q.ch === c.n && q.right >= 6))});
+BADGES.push({id: "fallacy90", fam: "Quizzes", name: "Fallacy finder", rule: "90% or better on the fallacy finder", test: () => S.quizzes.some(q => q.kind === "fallacies" && q.right >= 0.9 * q.n)});
 BADGES.push({id: "lens90", fam: "Quizzes", name: "Lens spotter", rule: "90% or better on a lens quiz", test: () => S.quizzes.some(q => q.kind === "lens" && q.right >= 0.9 * q.n)});
 BADGES.push({id: "term90", fam: "Quizzes", name: "Word smith", rule: "90% or better on a terms quiz", test: () => S.quizzes.some(q => q.kind === "terms" && q.right >= 0.9 * q.n)});
 BADGES.push({id: "unit90", fam: "Quizzes", name: "Unit champion", rule: "90% or better on a unit test", test: () => S.quizzes.some(q => q.kind === "unit" && q.right >= 0.9 * q.n)});
@@ -149,6 +157,9 @@ BADGES.push({id: "timed1", fam: "Writing", name: "Under the clock", rule: "Finis
 BADGES.push({id: "timed5", fam: "Writing", name: "Clock master", rule: "Finish 5 timed writes", test: () => S.writes.length >= 5});
 BADGES.push({id: "planner", fam: "Habits", name: "Planner", rule: "Add an assignment 4 or more days before it's due", test: () => S.asg.some(a => a.created && a.due && dn(a.due) - dn(a.created) >= 4)});
 BADGES.push({id: "ontime5", fam: "Habits", name: "On time", rule: "Finish 5 assignments on or before the due date", test: () => S.asg.filter(a => a.done && a.due && a.done <= a.due).length >= 5});
+BADGES.push({id: "lessons", fam: "Learning", name: "Workshop graduate", rule: "Open all eight argument lessons", test: () => ARG.lessons.every(l => S.seen["lesson:" + l.id])});
+BADGES.push({id: "soap3", fam: "Writing", name: "SOAPSTone pro", rule: "Complete 3 SOAPSTone analyses", test: () => S.soaps.length >= 3});
+BADGES.push({id: "debate1", fam: "Habits", name: "Ready to debate", rule: "Prepare a debate case", test: () => S.debates.length >= 1});
 BADGES.push({id: "seminar3", fam: "Habits", name: "Seminar ready", rule: "Prepare for 3 seminars", test: () => S.sem.length >= 3});
 const badge = id => BADGES.find(b => b.id === id);
 function checkBadges() {
@@ -158,10 +169,15 @@ function checkBadges() {
 // ---------- Review cards (Leitner boxes: 1, 3, 7, 21, 60 days). New cards come in at 8 a day.
 const BOX_DAYS = [0, 1, 3, 7, 21, 60];
 function allCards() {
-  const out = [];
-  for (const l of LENSES) out.push({id: "l:" + l.id, kind: "Lens", front: l.name + " lens", back: l.q, extra: "Key terms: " + l.terms.slice(0, 5).join(", ")});
-  for (const c of LOTF.characters) if (canSee(c.from)) out.push({id: "c:" + c.id, kind: "Character", front: c.name, back: c.role});
-  for (const s of LOTF.symbols) if (canSee(s.from)) out.push({id: "s:" + s.id, kind: "Symbol", front: s.name, back: s.means});
+  const groups = {4: [], 2: [], 3: []};
+  for (const l of LENSES) groups[4].push({id: "l:" + l.id, kind: "Lens", front: l.name + " lens", back: l.q, extra: "Key terms: " + l.terms.slice(0, 5).join(", ")});
+  for (const c of LOTF.characters) if (canSee(c.from)) groups[4].push({id: "c:" + c.id, kind: "Character", front: c.name, back: c.role});
+  for (const s of LOTF.symbols) if (canSee(s.from)) groups[4].push({id: "s:" + s.id, kind: "Symbol", front: s.name, back: s.means});
+  for (const c of ASP.characters) if (canSee(c.from, "asp")) groups[2].push({id: "ac:" + c.id, kind: "Voice", front: c.name, back: c.role});
+  for (const s of ASP.symbols) if (canSee(s.from, "asp")) groups[2].push({id: "as:" + s.id, kind: "Motif", front: s.name, back: s.means});
+  for (const f of ARG.fallacies) groups[3].push({id: "f:" + slug(f.name), kind: "Fallacy", front: f.name, back: f.d, extra: "Example: " + f.ex});
+  const first = groups[S.set.unit] ? [S.set.unit] : [];
+  const out = [...first, ...[4, 2, 3].filter(u => !first.includes(u))].flatMap(u => groups[u]);
   const order = {write: 0, lit: 1, narr: 2, arg: 3, drama: 4};
   for (const t of TERMS.slice().sort((a, b) => order[a.g] - order[b.g])) out.push({id: "t:" + slug(t.t), kind: TERM_GROUPS[t.g], front: t.t, back: t.d, extra: t.ex});
   return out;

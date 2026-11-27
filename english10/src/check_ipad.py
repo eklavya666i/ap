@@ -27,7 +27,9 @@ ROUTES = ["today", "learn", "unit/4", "unit/4/characters", "unit/4/symbols", "un
           "unit/5", "unit/6", "unit/7", "ch/1", "ch/4", "ch/9", "lens/marx", "lens/eco", "terms", "write", "asg/new", "guide/lens", "guide/lit", "guide/argument",
           "guide/rhetorical", "guide/synthesis", "guide/narrative", "quotes", "quotes/new/3/1", "seminar", "drills", "drill/mla2", "drill/w-embed", "check",
           "check/t/argument", "rubric/t/lens", "claude/t/lens", "test", "tw/lens-any", "coach", "advice/teacher", "advice/heavy", "advice/ai", "ailog", "review",
-          "me", "settings", "parent"]
+          "me", "settings", "parent", "unit/2/characters", "unit/2/symbols", "unit/2/themes", "unit/2/rhetoric", "unit/2/context", "ch/asp/1", "ch/asp/4",
+          "unit/3/fallacies", "unit/3/sources", "unit/3/debate", "lesson/claims", "lesson/fallacies", "lesson/debate", "soap", "soap/new/asp", "debate",
+          "debate/new/0", "quotes/new/asp/1/0", "tw/arg-service"]
 
 def ipad(w, h, **kw):
     return dict(viewport={"width": w, "height": h}, device_scale_factor=2, is_mobile=True, has_touch=True, user_agent=UA, **kw)
@@ -70,7 +72,7 @@ async def main():
             # Setup: name and how far she has read
             await go("today")
             await pg.fill("input[data-in=name]", "Ira")
-            await pg.select_option("select[data-in=readto]", "4"); await pg.wait_for_timeout(150)
+            await pg.select_option("select[data-in=readto][data-b=lotf]", "4"); await pg.wait_for_timeout(150)
             await tap("[data-act=setupdone]")
             R["setup"] = await S("[S.name, S.read.lotf, !!S.seen.setup]")
             # Spoilers stay hidden past chapter 4
@@ -80,7 +82,7 @@ async def main():
             R["hidden_characters"] = await pg.locator("text=Another character").count()
 
             # A perfect reading check on chapter 1, through the real buttons
-            await go("test"); await tap('[data-act=quiz][data-arg="ch:1"]')
+            await go("test"); await tap('[data-act=quiz][data-arg="ch:lotf:1"]')
             for i in range(8):
                 right = await pg.evaluate("E10.SES.items[E10.SES.i].choices.findIndex(c => c.ok)")
                 await tap(f'[data-act=pick][data-arg="{right}"]')
@@ -89,7 +91,7 @@ async def main():
             R["ch1_badge"] = await S("!!S.badges.perfect")
             await pg.screenshot(path=str(OUT / "results.png"))
             # A wrong answer goes to My misses, and getting it right clears it
-            await go("test"); await tap('[data-act=quiz][data-arg="ch:2"]')
+            await go("test"); await tap('[data-act=quiz][data-arg="ch:lotf:2"]')
             wrong = await pg.evaluate("E10.SES.items[0].choices.findIndex(c => !c.ok)")
             await tap(f'[data-act=pick][data-arg="{wrong}"]')
             R["miss_saved"] = await S("Object.keys(S.miss).length")
@@ -98,7 +100,7 @@ async def main():
             await tap(f'[data-act=pick][data-arg="{right}"]')
             R["miss_cleared"] = await S("[Object.keys(S.miss).length, S.fixed]")
             # The unit test: timed, scored at the end
-            await go("test"); await tap('[data-act=quiz][data-arg="unit"]')
+            await go("test"); await tap('[data-act=quiz][data-arg="unit:4"]')
             R["unit_timer"] = await pg.inner_text("#timer")
             n = await pg.evaluate("E10.SES.items.length")
             for i in range(n):
@@ -111,7 +113,7 @@ async def main():
             # A whole assignment
             await go("asg/new")
             await pg.fill("#na-title", "Critical lens essay")
-            await pg.select_option("#na-type", "lens")
+            await pg.select_option("#na-type", "lens"); await pg.select_option("#na-book", "lotf")
             await pg.fill("#na-prompt", "Choose one critical lens and analyze how it reveals a meaning in Lord of the Flies. Use at least two quotations and MLA citations.")
             await tap("[data-act=addasg]")
             aid = await S("S.asg[0].id")
@@ -175,7 +177,7 @@ async def main():
             R["seminar"] = await S("S.sem.length")
 
             # A timed write after finishing the book
-            await go("unit/4"); await pg.select_option("select[data-in=readto]", "12"); await pg.wait_for_timeout(200)
+            await go("unit/4"); await pg.select_option("select[data-in=readto][data-b=lotf]", "12"); await pg.wait_for_timeout(200)
             await go("tw/lens-any"); await tap('[data-act=twstart]')
             R["tw_timer"] = await pg.inner_text("#twtimer")
             await pg.fill("textarea[data-in=twtext]", " ".join(["The conch loses its power as fear grows, and Golding shows that order lives only in belief."] * 5))
@@ -186,6 +188,77 @@ async def main():
             await pg.screenshot(path=str(OUT / "coach.png"), full_page=True)
             await go("today"); await pg.screenshot(path=str(OUT / "today.png"), full_page=True)
             await go("ch/1"); await pg.screenshot(path=str(OUT / "chapter.png"), full_page=True)
+
+            # Unit 2: A Small Place, spoiler gating by section, a reading check, a rhetorical analysis assignment
+            async def perfect(selector):
+                await tap(selector)
+                n = await pg.evaluate("E10.SES.items.length")
+                for i in range(n):
+                    right = await pg.evaluate("E10.SES.items[E10.SES.i].choices.findIndex(c => c.ok)")
+                    await pg.locator(f'[data-act=pick][data-arg="{right}"]').click()
+                    if await pg.evaluate("E10.SES.mode") == "test":
+                        if i < n - 1: await pg.locator("[data-act=qnext]").click()
+                    else: await pg.locator("[data-act=qnext]").click()
+                if await pg.evaluate("!E10.SES.done"): await tap("[data-act=qsubmit]")
+                return [n, await S("S.quizzes[S.quizzes.length - 1].right")]
+            await go("unit/2")
+            R["u2_tabs"] = await pg.locator(".ltabs a").all_inner_texts()
+            await pg.select_option("select[data-in=readto][data-b=asp]", "2"); await pg.wait_for_timeout(200)
+            await go("ch/asp/4")
+            R["asp4_locked"] = "Show it anyway" in await pg.inner_text("#view") and "prose poem" not in await pg.inner_text("#view")
+            await go("ch/asp/1")
+            R["asp1_move"] = "Second-person address" in await pg.inner_text("#view")
+            await go("test")
+            R["asp_check"] = await perfect('[data-act=quiz][data-arg="ch:asp:1"]')
+            await go("unit/2/rhetoric")
+            R["asp_rhetoric"] = await pg.locator(".tbl tr").count()
+            await go("soap/new/asp")
+            for k, v in [("sp", "Kincaid, a native Antiguan"), ("au", "Tourists and readers from the US and Europe"), ("pu", "To make readers see the costs of tourism"), ("to", "Sarcastic, then lyrical")]:
+                await pg.fill(f'textarea[data-in=soapf][data-k="{k}"]', v)
+            await pg.wait_for_timeout(500); await tap("[data-act=soapsave]")
+            R["soap"] = [await S("S.soaps.length"), await pg.evaluate("location.hash")]
+            await go("quotes/new/asp/1/0")
+            await pg.fill("#nq-text", "a practice line from the reader's own copy"); await pg.fill("#nq-page", "12")
+            await tap('#nq-tags [data-arg="you"]'); await tap("[data-act=addquote]")
+            R["asp_quote"] = await pg.evaluate("(() => { const q = E10.S.quotes[E10.S.quotes.length - 1]; return [q.book, q.ch, q.tags.join(',')]; })()")
+            await go("asg/new")
+            await pg.fill("#na-title", "Rhetorical analysis"); await pg.select_option("#na-type", "rhetorical"); await pg.select_option("#na-book", "asp")
+            await tap("[data-act=addasg]")
+            aid2 = await S("S.asg[S.asg.length - 1].id")
+            await go(f"asg/{aid2}/thesis")
+            await pg.fill("#thesisbox", "In A Small Place, Kincaid casts the reader as a tourist to expose how a vacation depends on not seeing the people who make it possible.")
+            await pg.wait_for_timeout(150)
+            R["asp_thesis"] = [await pg.locator("#tcheck .y").count(), await pg.locator("#tcheck li").count()]
+            await go("test")
+            R["unit2_test"] = await perfect('[data-act=quiz][data-arg="unit:2"]')
+
+            # Unit 3: the argument workshop, the fallacy finder, a debate case, the unit test
+            await go("unit/3"); await tap('[data-act=setunit][data-arg="3"]')
+            R["u3_stat"] = await pg.inner_text("#stats")
+            await go("lesson/claims")
+            R["lesson"] = [await S("!!S.seen['lesson:claims']"), "Key points" in await pg.inner_text("#view")]
+            await go("unit/3/fallacies")
+            R["fallacy_cards"] = await pg.locator("#view .grid .card").count()
+            R["fallacy_finder"] = await perfect('[data-act=quiz][data-arg="fallacies"]')
+            R["fallacy_badge"] = await S("!!S.badges.fallacy90")
+            await go("unit/3/sources")
+            R["douglass"] = await perfect('[data-act=quiz][data-arg="arg:douglass"]')
+            await go("debate/new/0")
+            await pg.fill('textarea[data-in=debf][data-k="args.0.claim"]', "Later starts protect sleep.")
+            await pg.fill('textarea[data-in=debf][data-k="args.1.claim"]', "Rested students learn more.")
+            await pg.wait_for_timeout(500); await tap("[data-act=debsave]")
+            R["debate"] = [await S("S.debates.length"), await S("S.debates[0].motion"), await pg.evaluate("location.hash")]
+            await go("test")
+            R["unit3_test"] = await perfect('[data-act=quiz][data-arg="unit:3"]')
+            await go("today")
+            R["today_u3"] = "Workshop" in await pg.inner_text("#view")
+            await go("coach")
+            R["coach_u3"] = await pg.locator(".card.hi .list li").count()
+            await go("review")
+            R["review_first"] = await pg.inner_text(".tesbar .chip")
+            await go("unit/3/fallacies"); await pg.screenshot(path=str(OUT / "unit3.png"), full_page=True)
+            await go("ch/asp/1"); await pg.screenshot(path=str(OUT / "asp1.png"), full_page=True)
+            await go("unit/4"); await tap('[data-act=setunit][data-arg="4"]')
 
             # Network off: the app still opens
             await go("today"); await ctx.set_offline(True)
@@ -256,9 +329,25 @@ async def main():
     need(R["tw_done"][0] == "#/check/tw/0" and R["tw_done"][1] == 1 and R["tw_done"][2] is None, f"timed write {R['tw_done']}")
     need(R["coach_recs"] >= 1, "coach recommendations")
     need(R["offline"], "offline reload")
-    need(R["backup"] == [True, "Ira"] and R["restored"] == ["Ira", 1, 1], f"backup {R['backup']} restore {R['restored']}")
+    need(R["backup"] == [True, "Ira"] and R["restored"] == ["Ira", 2, 2], f"backup {R['backup']} restore {R['restored']}")
     need(R["after_world_history"] == "English 10H", f"World History's worker served /english10/: {R['after_world_history']}")
     for tag, over in R["sizes"].items(): need(not over, f"{tag}: wider than the screen on {over}")
+    need(R["u2_tabs"] == ["Sections", "Voices", "Motifs", "Themes", "Rhetoric", "Context"], f"unit 2 tabs {R['u2_tabs']}")
+    need(R["asp4_locked"] and R["asp1_move"], "A Small Place gating or guide")
+    need(R["asp_check"] == [8, 8], f"A Small Place check {R['asp_check']}")
+    need(R["asp_rhetoric"] >= 6, "SOAPSTone model")
+    need(R["soap"] == [1, "#/soap"], f"SOAPSTone {R['soap']}")
+    need(R["asp_quote"] == ["asp", 1, "you"], f"A Small Place quote {R['asp_quote']}")
+    need(R["asp_thesis"][0] == R["asp_thesis"][1] and R["asp_thesis"][1] >= 6, f"A Small Place thesis {R['asp_thesis']}")
+    need(R["unit2_test"][0] == R["unit2_test"][1] and R["unit2_test"][0] >= 25, f"unit 2 test {R['unit2_test']}")
+    need("lessons" in R["u3_stat"], f"unit 3 header {R['u3_stat']}")
+    need(R["lesson"] == [True, True] and R["fallacy_cards"] == 14, f"lessons {R['lesson']} fallacies {R['fallacy_cards']}")
+    need(R["fallacy_finder"][0] == 15 and R["fallacy_finder"][1] == 15 and R["fallacy_badge"], f"fallacy finder {R['fallacy_finder']}")
+    need(R["douglass"] == [2, 2], f"source practice {R['douglass']}")
+    need(R["debate"][0] == 1 and R["debate"][1].startswith("High schools") and R["debate"][2] == "#/debate", f"debate {R['debate']}")
+    need(R["unit3_test"] == [30, 30], f"unit 3 test {R['unit3_test']}")
+    need(R["today_u3"] and R["coach_u3"] >= 1, "today and coach for unit 3")
+    need(R["review_first"] == "Fallacy", f"review cards for the current unit first: {R['review_first']}")
     need(not [e for e in errs if "favicon" not in e], f"console errors: {errs[:5]}")
     R["ch1_result"] = R["ch1_result"][:60]
     print(json.dumps(R, default=str)[:2500])

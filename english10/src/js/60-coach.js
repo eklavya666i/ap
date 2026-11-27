@@ -19,14 +19,24 @@ function recs() {
     else if (d && d < k) add(90, `Catch up: ${ns[1].toLowerCase()} for "${a.title}"`, `Planned for ${nice(d)}; the assignment is ${dueWords(a.due)}.`, `#/asg/${a.id}`, "Open");
     else if (d === k) add(85, `Today: ${ns[1].toLowerCase()} for "${a.title}"`, `It's on today's plan; the assignment is ${dueWords(a.due)}.`, `#/asg/${a.id}`, "Open");
   }
-  const r = readTo();
-  if (S.set.unit === 4 && r > 0) {
-    const unchecked = LOTF.chapters.filter(c => c.n <= r && bestCheck(c.n) == null).pop();
-    if (unchecked) add(70, `Take the chapter ${unchecked.n} reading check`, "You've read it but haven't checked it. Reading checks are Prep points.", null, "Start", `ch:${unchecked.n}`);
-    const weak = LOTF.chapters.filter(c => c.n <= r && bestCheck(c.n) != null && bestCheck(c.n) < 6).sort((a, b) => bestCheck(a.n) - bestCheck(b.n))[0];
-    if (weak) add(60, `Retake the chapter ${weak.n} check`, `Your best is ${bestCheck(weak.n)} of 8. Reread the guide's key events first.`, `#/ch/${weak.n}`, "Open guide");
+  const B = bookOfUnit(S.set.unit);
+  if (B) {
+    const b = B.id, r = readTo(b), w = W(b).ch.toLowerCase();
+    if (r > 0) {
+      const unchecked = B.chapters.filter(c => c.n <= r && bestCheck(c.n, b) == null).pop();
+      if (unchecked) add(70, `Take the ${w} ${unchecked.n} reading check`, "You've read it but haven't checked it. Reading checks are Prep points.", null, "Start", `ch:${b}:${unchecked.n}`);
+      const weak = B.chapters.filter(c => c.n <= r && bestCheck(c.n, b) != null && bestCheck(c.n, b) < 6).sort((x, y) => bestCheck(x.n, b) - bestCheck(y.n, b))[0];
+      if (weak) add(60, `Retake the ${w} ${weak.n} check`, `Your best is ${bestCheck(weak.n, b)} of 8. Reread the guide's key points first.`, chHref(b, weak.n), "Open guide");
+    }
+    if (r < B.chapters_n) add(50, `Read ${w} ${r + 1} of ${B.title}`, r ? `You've read through ${w} ${r}.` : "Start reading; set your progress in Learn as you go.", chHref(b, r + 1), "Watch-for list");
+    if (b === "asp" && r >= 1 && !S.soaps.length) add(46, "Do a SOAPSTone for A Small Place", "The rhetorical situation is the base of a rhetorical analysis thesis.", "#/soap/new/asp", "SOAPSTone");
   }
-  if (S.set.unit === 4 && r < 12) add(50, `Read chapter ${r + 1}`, r ? `You've read through chapter ${r}.` : "Start the novel; set your progress in Learn as you go.", `#/ch/${r + 1}`, "Watch-for list");
+  if (S.set.unit === 3) {
+    const next = ARG.lessons.find(l => !S.seen["lesson:" + l.id]);
+    if (next) add(65, `Lesson: ${next.title}`, `${ARG.lessons.filter(l => S.seen["lesson:" + l.id]).length} of ${ARG.lessons.length} argument lessons opened.`, `#/lesson/${next.id}`, "Open");
+    if (!S.quizzes.some(q => q.kind === "fallacies")) add(54, "Try the fallacy finder", "Spotting fallacies is quick points on argument quizzes and in debate.", null, "Start", "fallacies");
+    if (!S.debates.length) add(44, "Prep a debate case", "Build three arguments and answers to the other side's best two.", "#/debate/new", "Debate prep");
+  }
   const misses = Object.keys(S.miss).length; if (misses >= 5) add(55, `Clear My misses (${misses})`, "Questions you missed come back until you get them right.", null, "Start", "miss");
   const cards = dueCards().due.length; if (cards >= 10) add(52, `Review ${cards} cards`, "They're due today; about one minute per ten cards.", "#/review", "Review");
   const rows = Object.entries(rowAverages()).filter(([, b]) => b.n >= 2).map(([kk, b]) => [kk, b.sum / b.n, b.name]).sort((a, b) => a[1] - b[1]);
@@ -35,8 +45,8 @@ function recs() {
   for (const c of recentChecks) for (const [a, v] of Object.entries(c.areas || {})) if (v === "fix") areaCount[a] = (areaCount[a] || 0) + 1;
   const topArea = Object.entries(areaCount).sort((a, b) => b[1] - a[1])[0];
   if (topArea && topArea[1] >= 2) { const d = DRILL[ROW_DRILL[topArea[0]]]; add(57, `Fix ${AREA_NAMES[topArea[0]].toLowerCase()} in your drafts`, `The checker flagged it in ${topArea[1]} of your last ${recentChecks.length} checks.`, d ? `#/drill/${d.id}` : "#/drills", "Drill"); }
-  for (const [kk, [ok, n]] of Object.entries(kindAccuracy())) if (n >= 6 && ok / n < 0.7) add(56, `Practice ${(KIND_NAMES[kk] || kk).toLowerCase()} questions`, `You're at ${pct(ok, n)}% on them.`, null, "Mixed review", kk === "lens" ? "lens" : kk === "term" ? "terms" : "mix");
-  if (r >= 4 && !S.quizzes.some(q => q.kind === "lens")) add(45, "Take the lens quiz", "Lenses are the core of this unit's essay.", null, "Start", "lens");
+  for (const [kk, [ok, n]] of Object.entries(kindAccuracy())) if (n >= 6 && ok / n < 0.7) add(56, `Practice ${(KIND_NAMES[kk] || kk).toLowerCase()} questions`, `You're at ${pct(ok, n)}% on them.`, null, "Practice", kk === "lens" ? "lens" : kk === "term" ? "terms" : kk === "fallacy" ? "fallacies" : ARG_KINDS.includes(kk) ? "arg" : `mix:${(B || LOTF).id}`);
+  if (S.set.unit === 4 && readTo() >= 4 && !S.quizzes.some(q => q.kind === "lens")) add(45, "Take the lens quiz", "Lenses are the core of this unit's essay.", null, "Start", "lens");
   if (!S.writes.length && ["lens", "lit", "argument"].includes((UNIT(S.set.unit) || {}).essay)) add(40, "Try a timed write", "Practice under the clock before the in-class one.", "#/test", "Test");
   if (!out.length) add(10, "Log a quotation from your last chapter", "Evidence collected now saves time on every essay.", "#/quotes", "Quote Log");
   return out.sort((a, b) => b.pri - a.pri).slice(0, 5);
@@ -47,7 +57,8 @@ V.coach = () => {
   return `<h2>Coach</h2><p class="lead">What to do next and why, based on your plan, quizzes, rubric scores and draft checks.</p>
   <div class="card hi"><h3>Do these next</h3><ul class="list">${R.map(recHTML).join("")}</ul></div>
   <div class="cols"><div class="card"><h3>Quiz accuracy</h3>${Object.keys(acc).length ? `<div class="bars">${Object.entries(acc).map(([k, [a, b]]) => `<span>${esc(KIND_NAMES[k] || k)}</span><span class="bar"><i style="width:${pct(a, b)}%"></i></span><span>${pct(a, b)}%</span>`).join("")}</div>` : `<p class="meta">Take a reading check to see this.</p>`}
-  <h4>Reading checks</h4><div class="heat">${LOTF.chapters.map(c => `<a class="${heatClass(c.n)}" href="#/ch/${c.n}">${c.n}</a>`).join("")}</div></div>
+  <h4>Reading checks: <i>Lord of the Flies</i></h4><div class="heat">${LOTF.chapters.map(c => `<a class="${heatClass(c.n)}" href="${chHref("lotf", c.n)}">${c.n}</a>`).join("")}</div>
+  <h4>Reading checks: <i>A Small Place</i></h4><div class="heat">${ASP.chapters.map(c => `<a class="${heatClass(c.n, "asp")}" href="${chHref("asp", c.n)}">${c.n}</a>`).join("")}</div></div>
   <div class="card"><h3>Rubric rows</h3>${Object.keys(rows).length ? `<div class="bars">${Object.values(rows).map(b => `<span>${esc(b.name)}</span><span class="bar"><i style="width:${pct(b.sum / b.n, 4)}%"></i></span><span>${(b.sum / b.n).toFixed(1)}</span>`).join("")}</div>` : `<p class="meta">Score a draft with the rubric in Check to see your strongest and weakest rows.</p>`}
   <h4>Draft checks</h4><p class="meta">${S.checks.length ? `${S.checks.length} checks · last: ${S.checks[S.checks.length - 1].fixes} to fix, ${S.checks[S.checks.length - 1].tips} to consider` : "None yet."}</p></div></div>
   <h3>Advice</h3><div class="grid">${ADVICE.map(a => `<a class="card" style="display:block;text-decoration:none;color:inherit" href="#/advice/${a.id}"><span class="pill">${esc(a.tag)}</span><h3 style="margin-top:8px">${esc(a.title)}</h3></a>`).join("")}</div>

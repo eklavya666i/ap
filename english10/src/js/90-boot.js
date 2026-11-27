@@ -1,6 +1,6 @@
 // ---------- Router, events, install note, backup and restore, offline copy
 const TABS = [["today", "Today"], ["learn", "Learn"], ["write", "Write"], ["check", "Check"], ["test", "Test"], ["coach", "Coach"], ["me", "Me"]];
-const TAB_OF = {unit: "learn", ch: "learn", lens: "learn", terms: "learn", asg: "write", guide: "write", quotes: "write", seminar: "write", drills: "write", drill: "write", rubric: "check", claude: "check", run: "test", tw: "test", advice: "coach", ailog: "coach", review: "today", settings: "me", parent: "me"};
+const TAB_OF = {unit: "learn", ch: "learn", lens: "learn", terms: "learn", lesson: "learn", soap: "write", debate: "write", asg: "write", guide: "write", quotes: "write", seminar: "write", drills: "write", drill: "write", rubric: "check", claude: "check", run: "test", tw: "test", advice: "coach", ailog: "coach", review: "today", settings: "me", parent: "me"};
 function route() {
   const parts = (location.hash.replace(/^#\/?/, "") || "today").split("/").map(decodeURIComponent);
   return V[parts[0]] ? parts : ["today"];
@@ -8,7 +8,8 @@ function route() {
 function renderStats() {
   const el = $("#stats"); if (!el) return;
   const Lv = levelOf(S.xp), lo = 50 * Lv * (Lv - 1), hi = 50 * (Lv + 1) * Lv;
-  el.innerHTML = `<div class="stat"><b>${streak()}</b><span>day streak</span></div><div class="stat"><b>${readTo()}/12</b><span>chapters</span></div><div class="stat"><b>Lv ${Lv}</b><span>${titleOf(Lv)} · ${S.xp} XP</span><span class="xpbar" aria-hidden="true"><i style="width:${Math.round(100 * (S.xp - lo) / (hi - lo))}%"></i></span></div>`;
+  const B = bookOfUnit(S.set.unit), prog = B ? `<div class="stat"><b>${readTo(B.id)}/${B.chapters_n}</b><span>${W(B.id).chs.toLowerCase()}</span></div>` : `<div class="stat"><b>${ARG.lessons.filter(l => S.seen["lesson:" + l.id]).length}/${ARG.lessons.length}</b><span>lessons</span></div>`;
+  el.innerHTML = `<div class="stat"><b>${streak()}</b><span>day streak</span></div>${prog}<div class="stat"><b>Lv ${Lv}</b><span>${titleOf(Lv)} · ${S.xp} XP</span><span class="xpbar" aria-hidden="true"><i style="width:${Math.round(100 * (S.xp - lo) / (hi - lo))}%"></i></span></div>`;
 }
 let CURNAME = "";
 function render() {
