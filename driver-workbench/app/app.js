@@ -14,7 +14,7 @@ const num = WB.num;
 function importWeeksOf(imports, target) {
   const groups = new Map();
   imports.forEach((i) => { if (Number.isInteger(i.week) && Math.abs(i.week) <= 260) { const g = groups.get(i.week) || []; g.push(i); groups.set(i.week, g); } });
-  const PT = ['carry', 'offline', 'hla', 'axis', 'face', 'path', 'f2p', 'attack', 'peak', 'descent', 'launch', 'spin', 'club_speed', 'ball_speed'];
+  const PT = ['carry', 'offline', 'hla', 'axis', 'face', 'path', 'f2p', 'attack', 'dyn_loft', 'peak', 'descent', 'launch', 'spin', 'club_speed', 'ball_speed'];
   return [...groups.entries()].map(([week, g]) => {
     const cols = WB.COLS.filter((c) => g.some((i) => i.cols.includes(c)));
     const rows = g.flatMap((i) => { const at = cols.map((c) => i.cols.indexOf(c)); return i.shots.map((r) => at.map((k) => (k < 0 ? null : r[k]))); });
@@ -953,12 +953,16 @@ dash.draw('disptext', (el) => {
 });
 
 /* Shot shape and delivery from GSPro's direction, curve, face and path data. Directions assume a right-handed golfer. */
-const SHAPE = [['hla', 'Start direction'], ['axis', 'Curve (spin axis)'], ['face', 'Face to target'], ['path', 'Club path'], ['f2p', 'Face to path'], ['attack', 'Attack angle'], ['peak', 'Peak height'], ['descent', 'Descent angle']];
+const SHAPE = [['hla', 'Start direction'], ['axis', 'Curve (spin axis)'], ['face', 'Face to target'], ['path', 'Club path'], ['f2p', 'Face to path'], ['attack', 'Attack angle'], ['dyn_loft', 'Dynamic loft'], ['spin_loft', 'Spin loft (loft minus attack angle)'], ['peak', 'Peak height'], ['descent', 'Descent angle']];
 dash.calc('shape', {
   inputs: ['csvweeks'],
   fn: (csv) => csv.slice(-2).map((c) => {
     const o = {week: c.week};
-    SHAPE.forEach(([k]) => { const v = c.pts.filter((p) => p.used && p[k] !== null).map((p) => p[k]); o[k] = mean(v); o[k + '_sd'] = stdev(v); });
+    const val = (p, k) => {
+      if (k === 'spin_loft') return typeof p.dyn_loft === 'number' && typeof p.attack === 'number' ? p.dyn_loft - p.attack : null;
+      return typeof p[k] === 'number' ? p[k] : null;
+    };
+    SHAPE.forEach(([k]) => { const v = c.pts.filter((p) => p.used && val(p, k) !== null).map((p) => val(p, k)); o[k] = mean(v); o[k + '_sd'] = stdev(v); });
     return o;
   }),
 });
@@ -982,6 +986,7 @@ dash.draw('shapetext', (el) => {
   let t = parts.length ? `Week ${WB.wk(r.week)}: ${parts.join(' and ')}.` : `Week ${WB.wk(r.week)}: no direction data in the file.`;
   if (r.f2p !== null) t += ` The face is ${Math.abs(r.f2p).toFixed(1)}° ${r.f2p < 0 ? 'closed' : 'open'} to the path.`;
   if (r.hla_sd !== null) t += ` Start-line spread ±${r.hla_sd.toFixed(1)}°.`;
+  if (r.spin_loft !== null && r.spin_loft !== undefined) t += ` Spin loft ${r.spin_loft.toFixed(1)}°: dynamic loft minus attack angle, the main driver of spin.`;
   el.textContent = t;
 });
 dash.draw('shaperows', (el) => {
