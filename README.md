@@ -10,6 +10,7 @@ Offline iPad apps. Each saves its own progress and works without a connection on
 | Algebra 2: Rational Expressions (4.3–4.5) | https://eklavya666i.github.io/ap/alg2-rational/ |
 | Algebra 2: Topic 4 Prep (Rational Functions) | https://eklavya666i.github.io/ap/alg2-topic4/ |
 | Algebra 2: Rational Expressions, Detailed | https://eklavya666i.github.io/ap/alg2-detailed/ |
+| Chemistry (SC300A/B, all 10 units) | https://eklavya666i.github.io/ap/chem/ |
 | English 10H (Honors Lit Analysis & Composition 2) | https://eklavya666i.github.io/ap/english10/ |
 | Driver Workbench (golf: GSPro driver and whole-bag analysis) | Runs in Claude, not on this site: [driver-workbench](driver-workbench/README.md) |
 
@@ -52,6 +53,20 @@ Offline iPad apps. Each saves its own progress and works without a connection on
 - a PIN-locked parent page, plus Back up progress and Restore
 
 Source and build scripts are in [alg2-detailed/src](alg2-detailed/src).
+
+**Chemistry.** Chemistry SC300A/B, all 10 units, in the same style as Rational Expressions, Detailed. It keeps its own progress. It has:
+- 38 voice lessons in course order that highlight each step as they're read, with worked examples, traps, "Explain it another way" and two We-do checks
+- typed answers: a keypad for numbers (with scientific notation and sig figs), boxes for balancing coefficients, and the keyboard for formulas, names and electron configurations; common mistakes are named, and choices are one tap away
+- fresh numbers on every question from 124 templates, plus 61 concept questions that explain every wrong choice
+- hints in three steps and My Mistakes, where every miss comes back with new numbers
+- mastery (3 right in a row without hints) with reviews on days 1, 3, 7 and 21
+- a daily 5-minute test, lesson quizzes, 10 unit tests, SC300A and SC300B finals, a course final, a concept test, a problem workshop and a boss challenge
+- a reference with a tap-for-details periodic table, common ions, an equation sheet and constants, also one tap away from any question
+- 20 speed drills in three formats with medals, and a Daily Dash
+- XP, levels, coins, daily quests, badges, streaks and rest days
+- a PIN-locked parent page, plus Back up progress and Restore
+
+Source and build scripts are in [chem/src](chem/src).
 
 **English 10H.** Honors English 10 at Issaquah High (Honors Lit Analysis & Composition 2), built around the IHS unit order. Units 2, 3 and 4 are built, plus the writing tools for every unit. It has:
 - Unit 4, Lord of the Flies: 12 chapter guides with summaries, key events, symbols to watch, quote hunts and seminar questions, hidden past the chapter Ira has read
