@@ -141,6 +141,8 @@ input:focus-visible,select:focus-visible,button:focus-visible,.wb-drop:focus-vis
 .wb-legend i.wb-sw-total{background:var(--cds-chart-muted)}
 .wb-legend i.wb-sw-band{background:transparent;border:2px solid var(--accent)}
 .wb-copyrow{margin:0 0 12px}
+.wb-restore{display:block;margin:16px 0 6px;font-size:14px;color:var(--color-fg-muted)}
+#backup-box .wb-card{margin-top:8px}
 @media (max-width:600px){.wb-gap-row{grid-template-columns:72px minmax(0,1fr) 86px;gap:8px}.wb-gap-step{padding-left:80px}}
 .wb-head-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .wb-seg-sm{min-height:40px;padding:6px 14px;font-size:14px}

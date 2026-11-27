@@ -43,9 +43,10 @@
     if (c['\t'] > c[','] && c['\t'] >= c[';']) return '\t';
     return c[';'] > c[','] ? ';' : ',';
   }
+  /* Rows as trimmed cells, each with its original line so the source can be kept beside the parsed shots. */
   function splitRows(text, d) {
     const rows = [];
-    let row = [], cell = '', q = false;
+    let row = [], cell = '', q = false, start = 0;
     for (let i = 0; i < text.length; i++) {
       const ch = text[i];
       if (q) {
@@ -53,13 +54,14 @@
       } else if (ch === '"') q = true;
       else if (ch === d) { row.push(cell); cell = ''; }
       else if (ch === '\n' || ch === '\r') {
+        const end = i;
         if (ch === '\r' && text[i + 1] === '\n') i++;
-        row.push(cell); cell = ''; rows.push(row); row = [];
+        row.push(cell); cell = ''; rows.push({c: row, raw: text.slice(start, end)}); row = []; start = i + 1;
         if (rows.length > MAX_ROWS) break;
       } else cell += ch;
     }
-    if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
-    return rows.map((r) => r.map((c) => c.trim())).filter((r) => r.some((c) => c !== ''));
+    if (cell !== '' || row.length) { row.push(cell); rows.push({c: row, raw: text.slice(start)}); }
+    return rows.map((r) => ({c: r.c.map((x) => x.trim()), raw: r.raw})).filter((r) => r.c.some((x) => x !== ''));
   }
   function normHeader(h) {
     let b = String(h || '').replace(/[\[(][^\])]*[\])]/g, ' ').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -147,20 +149,20 @@
     let hi = -1, map = null;
     for (let r = 0; r < Math.min(rows.length, 12); r++) {
       const m = {};
-      rows[r].forEach((h, k) => { const nh = normHeader(h), f = SYN.get(nh); if (f && (m[f] === undefined || nh === 'globalshotnumber')) m[f] = k; });
+      rows[r].c.forEach((h, k) => { const nh = normHeader(h), f = SYN.get(nh); if (f && (m[f] === undefined || nh === 'globalshotnumber')) m[f] = k; });
       if (m.ball_speed !== undefined && Object.keys(m).length >= 3) { hi = r; map = m; break; }
     }
     if (hi < 0) return {error: 'No ball-speed column found. Is this a GSPro shot export?'};
-    const header = rows[hi];
-    let start = hi + 1, unitRow = null;
-    const nxt = rows[start];
+    const header = rows[hi].c, headerRaw = rows[hi].raw;
+    let start = hi + 1, unitRow = null, unitRaw = '';
+    const nxt = rows[start] ? rows[start].c : null;
     if (nxt) {
       const filled = nxt.filter((c) => c !== '');
       const textOnly = filled.filter((c) => !/\d/.test(c) || /^\[.*\]$/.test(c));
-      if (filled.length && textOnly.length / filled.length > 0.6 && filled.some((c) => /mph|deg|rpm|yds?|m\/s|km\/h|°|\[/.test(c.toLowerCase()))) { unitRow = nxt; start++; }
+      if (filled.length && textOnly.length / filled.length > 0.6 && filled.some((c) => /mph|deg|rpm|yds?|m\/s|km\/h|°|\[/.test(c.toLowerCase()))) { unitRow = nxt; unitRaw = rows[start].raw; start++; }
     }
     let dots = 0, commas = 0;
-    rows.slice(start, start + 30).forEach((r) => r.forEach((c) => { if (/^[+-]?\d+,\d+$/.test(c)) commas++; else if (/^[+-]?\d+\.\d+$/.test(c)) dots++; }));
+    rows.slice(start, start + 30).forEach((r) => r.c.forEach((c) => { if (/^[+-]?\d+,\d+$/.test(c)) commas++; else if (/^[+-]?\d+\.\d+$/.test(c)) dots++; }));
     const dec = delim !== ',' && commas > dots ? ',' : '.';
     const unitText = (f) => (map[f] === undefined ? '' : header[map[f]] + ' ' + (unitRow ? unitRow[map[f]] || '' : ''));
     const detected = {};
@@ -169,7 +171,7 @@
     const shots = [], clubs = new Map();
     let summary = 0;
     for (let r = start; r < rows.length; r++) {
-      const row = rows[r];
+      const row = rows[r].c, rawLine = rows[r].raw;
       const label = [map.club, map.shotno, 0].map((k) => (k === undefined ? '' : row[k] || '')).join(' ').toLowerCase();
       if (/\b(avg|average|averages|mean|median|std|stdev|deviation|min|max|total|totals|summary|consistency)\b/.test(label)) { summary++; continue; }
       const ball = toNum(row[map.ball_speed], dec);
@@ -177,13 +179,13 @@
       const v = {};
       Object.keys(map).forEach((f) => { if (f !== 'club' && f !== 'shotno' && f !== 'date') v[f] = toNum(row[map[f]], dec); });
       const club = map.club !== undefined ? (row[map.club] || '').trim().slice(0, 30) || 'Unlabelled' : 'All shots';
-      shots.push({club, v, n: map.shotno !== undefined ? toNum(row[map.shotno], dec) : null, d: map.date !== undefined ? parseDate(row[map.date]) : null});
+      shots.push({club, v, raw: rawLine, n: map.shotno !== undefined ? toNum(row[map.shotno], dec) : null, d: map.date !== undefined ? parseDate(row[map.date]) : null});
       clubs.set(club, (clubs.get(club) || 0) + 1);
     }
     if (!shots.length) return {error: 'No shots found in this file.'};
     if (shots.every((s) => s.n !== null)) shots.sort((a, b) => (a.d || '').localeCompare(b.d || '') || a.n - b.n);
     const unmapped = header.filter((h, k) => h && !Object.values(map).includes(k)).slice(0, 30);
-    return {delim, dec, map, mapped: Object.keys(map), unmapped, detected, unitRow: !!unitRow, shots, clubs, summary};
+    return {delim, dec, map, mapped: Object.keys(map), unmapped, detected, unitRow: !!unitRow, shots, clubs, summary, headerRaw, unitRaw};
   }
 
   const MODES = {imperial: ['mph', 'yd'], ms: ['ms', 'm'], kmh: ['kmh', 'm']};
@@ -207,7 +209,7 @@
       return Math.round(v * Math.pow(10, d)) / Math.pow(10, d);
     })));
     const su = unitOf('ball_speed'), du = p.map.carry !== undefined ? unitOf('carry') : 'yd';
-    return {cols, rows, dates: p.shots.map((s) => s.d), units: {mph: 'mph', ms: 'm/s', kmh: 'km/h'}[su] + ' and ' + {yd: 'yards', m: 'meters', ft: 'feet'}[du], assumed};
+    return {cols, rows, raws: p.shots.map((s) => s.raw), dates: p.shots.map((s) => s.d), units: {mph: 'mph', ms: 'm/s', kmh: 'km/h'}[su] + ' and ' + {yd: 'yards', m: 'meters', ft: 'feet'}[du], assumed};
   }
 
   /* Best split of speeds into a slower and a faster group; a session is mixed when the groups sit well apart. */
@@ -257,21 +259,24 @@
 
   /* Files to sessions (one per date), each with a fingerprint, a driver speed, and a golfer guess. */
   function build() {
-    const out = [], fps = WB.knownFps(), seen = new Set();
+    const out = [], saved = WB.knownSessions(), seen = new Set();
     S.files.filter((f) => f.parsed).forEach((f) => {
       const st = standardize(f.parsed, S.units), fd = fileDateInfo(f);
       const groups = new Map();
-      st.rows.forEach((r, i) => { const d = st.dates[i] || fd.date; if (!groups.has(d)) groups.set(d, []); groups.get(d).push(r); });
+      st.rows.forEach((r, i) => { const d = st.dates[i] || fd.date; if (!groups.has(d)) groups.set(d, []); groups.get(d).push(i); });
       const multi = groups.size > 1;
-      [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0])).forEach(([date, rowsAll]) => {
-        const rows = rowsAll.slice(-MAX_KEEP);
+      const head = f.parsed.headerRaw + (f.parsed.unitRaw ? '\n' + f.parsed.unitRaw : '');
+      [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0])).forEach(([date, idxAll]) => {
+        const idx = idxAll.slice(-MAX_KEEP), rows = idx.map((i) => st.rows[i]), rawLines = idx.map((i) => st.raws[i]);
         const clubs = new Map();
         rows.forEach((r) => clubs.set(r[0], (clubs.get(r[0]) || 0) + 1));
         const driver = driverOf(clubs);
         const dvals = rows.filter((r) => r[0] === driver).map((r) => validClubSpeed(r, st.cols)).filter((v) => v !== null);
         const fp = WB.fp(date, rows, ['club'].concat(st.cols));
         const s = {key: f.name + '|' + date, file: f.name, label: multi ? f.name + ' · ' + date : f.name, date, dateFrom: st.dates.some(Boolean) ? 'file' : fd.from,
-          cols: st.cols, rows, units: st.units, assumed: st.assumed, dropped: rowsAll.length - rows.length, clubs, driver, dvals, dspeed: median(dvals), fp, dup: fps.has(fp) || seen.has(fp)};
+          cols: st.cols, rows, rawLines, head, units: st.units, assumed: st.assumed, dropped: idxAll.length - rows.length, clubs, driver, dvals, dspeed: median(dvals), fp, dup: saved.has(fp) || seen.has(fp)};
+        const k = saved.get(fp);
+        s.attachTo = k && k.whole && !k.has_raw && !seen.has(fp) ? k : null;
         seen.add(fp);
         let mix = dvals.length >= 6 ? split2(dvals) : null;
         if (!mix) {
@@ -310,7 +315,7 @@
       }
       const fallback = top ? top[0] : s.guess && s.guess !== 'split' ? s.guess : null;
       s.parts = {};
-      s.rows.forEach((r, i) => { const o = s.owner[i] || fallback; if (!o) return; (s.parts[o] = s.parts[o] || []).push(r); });
+      s.rows.forEach((r, i) => { const o = s.owner[i] || fallback; if (!o) return; (s.parts[o] = s.parts[o] || []).push(i); });
     });
     S.sessions = out;
     S.prof = prof;
@@ -443,10 +448,11 @@
     const pr = (S.prof || []).filter((p) => p.d !== null).map((p) => `${p.name} ${p.d.toFixed(1)} mph${p.learned ? ' (from these files)' : ''}`);
     if (pr.length) { const p = document.createElement('p'); p.className = 'wb-sub'; p.textContent = 'Typical driver club speed used for sorting: ' + pr.join(', ') + '.'; el.append(p); }
     if (single) singleView(el, S.sessions[0]); else batchView(el);
-    const jobs = plan();
+    const jobs = plan(), saves = jobs.filter((j) => j.kind === 'save'), atts = jobs.length - saves.length;
     if (sb) {
       sb.disabled = !jobs.length;
-      sb.textContent = !jobs.length ? 'Nothing new to save' : single && jobs.length === 1 ? `Save to ${golferName(jobs[0].gid)} · week ${WB.wk(jobs[0].week)}` : `Save ${jobs.length} session${jobs.length === 1 ? '' : 's'}`;
+      const attTxt = atts ? `attach ${atts} original file${atts === 1 ? '' : 's'}` : '';
+      sb.textContent = !jobs.length ? 'Nothing new to save' : !saves.length ? attTxt.charAt(0).toUpperCase() + attTxt.slice(1) : (single && saves.length === 1 ? `Save to ${golferName(saves[0].gid)} · week ${WB.wk(saves[0].week)}` : `Save ${saves.length} session${saves.length === 1 ? '' : 's'}`) + (atts ? ' · ' + attTxt : '');
     }
   });
 
@@ -466,7 +472,7 @@
     const p = document.createElement('p');
     p.textContent = `${s.label} · ${s.date}${s.dateFrom === 'saved' ? ' (when the file was saved)' : ''} · ${s.rows.length} shots (${[...s.clubs.entries()].map(([c, n]) => c + ' ' + n).join(', ')}). Driver analysis uses ${st.n_used} ${s.driver || 'driver'} shots` + (st.n_left ? `; ${st.n_left} left out as likely misreads or tops` : '') + '. Every club is saved for history.';
     el.append(p);
-    if (s.dup) { const d = document.createElement('p'); d.className = 'wb-warnc'; d.textContent = 'This session is already saved, so it will be skipped.'; el.append(d); }
+    if (s.dup) { const d = document.createElement('p'); d.className = 'wb-warnc'; d.textContent = s.attachTo ? 'This session is already saved. Saving attaches the original file to it; nothing is duplicated.' : 'This session is already saved, so it will be skipped.'; el.append(d); }
     const grid = document.createElement('div'); grid.className = 'wb-grid wb-pv-tiles';
     const ratio = st.club_speed && st.ball_speed ? st.ball_speed / st.club_speed : null;
     tile(grid, 'Club speed (mph)', F.mph(st.club_speed)); tile(grid, 'Ball speed (mph)', F.mph(st.ball_speed)); tile(grid, 'Ball ÷ club', F.sm(ratio)); tile(grid, 'Launch', F.deg(st.launch)); tile(grid, 'Spin (rpm)', F.int(st.spin)); tile(grid, 'Carry (yd)', F.int(st.carry)); tile(grid, 'Smash spread', F.pm(st.sd_smash, 3));
@@ -492,11 +498,12 @@
 
   function batchView(el) {
     const jobs = plan(), counts = {};
-    jobs.forEach((j) => { counts[j.gid] = (counts[j.gid] || 0) + 1; });
-    const dups = S.sessions.filter((s) => s.dup).length, open = S.sessions.filter((s) => !s.dup && !golferOf(s)).length;
+    jobs.filter((j) => j.kind === 'save').forEach((j) => { counts[j.gid] = (counts[j.gid] || 0) + 1; });
+    const att = jobs.filter((j) => j.kind === 'attach').length;
+    const dups = S.sessions.filter((s) => s.dup && !s.attachTo).length, open = S.sessions.filter((s) => !s.dup && !golferOf(s)).length;
     const fromSaved = S.sessions.filter((s) => s.dateFrom === 'saved').length;
     const p = document.createElement('p');
-    p.textContent = 'To save: ' + (Object.entries(counts).map(([g, n]) => `${golferName(g)} ${n}`).join(', ') || 'none') + '.' + (dups ? ` ${dups} already saved, skipped.` : '') + (open ? ` ${open} need a golfer.` : '');
+    p.textContent = 'To save: ' + (Object.entries(counts).map(([g, n]) => `${golferName(g)} ${n}`).join(', ') || 'none') + '.' + (att ? ` ${att} already saved: their original files will be attached, nothing duplicated.` : '') + (dups ? ` ${dups} already saved, skipped.` : '') + (open ? ` ${open} need a golfer.` : '');
     el.append(p);
     if (fromSaved) { const w = document.createElement('p'); w.className = 'wb-warnc'; w.textContent = `${fromSaved} session${fromSaved === 1 ? ' has' : 's have'} no date in the file or its name, so the date is when the file was saved. Check those weeks after saving.`; el.append(w); }
     const wrap = document.createElement('div'); wrap.className = 'wb-scroll';
@@ -510,7 +517,7 @@
       const cells = [s.date + (s.dateFrom === 'saved' ? '*' : ''), s.label, `${s.rows.length} (${s.driver ? (s.clubs.get(s.driver) || 0) + ' ' + s.driver : 'no driver'})`, s.dspeed === null ? '—' : s.dspeed.toFixed(1)];
       cells.forEach((t, i) => { const td = document.createElement('td'); td.textContent = t; if (i === 1) td.className = 'wb-wrap'; tr.append(td); });
       const tdg = document.createElement('td'); tdg.className = 'wb-l';
-      if (s.dup) tdg.textContent = 'Already saved'; else tdg.append(golferSelect(s, () => dash.redraw('importpreview')));
+      if (s.dup) tdg.textContent = s.attachTo ? 'Saved; attach file' : 'Already saved'; else tdg.append(golferSelect(s, () => dash.redraw('importpreview')));
       tr.append(tdg);
       const tdw = document.createElement('td'); tdw.textContent = s.dup || !g || g === 'skip' ? '—' : g === 'split' ? Object.keys(s.parts).map((x) => WB.wk(weekFor(x, s.date))).join(' / ') : WB.wk(weekFor(g, s.date)); tr.append(tdw);
       const tdn = document.createElement('td'); tdn.className = 'wb-wrap'; tdn.textContent = s.dup ? '' : g === 'split' ? 'Split: ' + splitText(s) : s.flag; tr.append(tdn);
@@ -519,29 +526,50 @@
     table.append(tb); wrap.append(table); el.append(wrap);
   }
 
-  /* What a save would write: one job per golfer per session. */
+  /* What a save would write: one job per golfer per session, plus originals attached to sessions saved before files were kept. */
   function plan() {
     const jobs = [], single = S.sessions.length === 1;
     S.sessions.forEach((s) => {
+      if (s.dup) { if (s.attachTo) jobs.push({kind: 'attach', s, gid: s.attachTo.gid, id: s.attachTo.id, raws: s.rawLines}); return; }
       const g = golferOf(s);
-      if (s.dup || !g || g === 'skip') return;
-      if (g === 'split') Object.entries(s.parts).forEach(([gid, rows]) => { if (rows.length) jobs.push({s, gid, rows, part: true, week: single && S.week !== null ? S.week : weekFor(gid, s.date)}); });
-      else jobs.push({s, gid: g, rows: s.rows, part: false, week: single && S.week !== null ? S.week : weekFor(g, s.date)});
+      if (!g || g === 'skip') return;
+      const wk = (gid) => (single && S.week !== null ? S.week : weekFor(gid, s.date));
+      if (g === 'split') Object.entries(s.parts).forEach(([gid, idx]) => { if (idx.length) jobs.push({kind: 'save', s, gid, rows: idx.map((i) => s.rows[i]), raws: idx.map((i) => s.rawLines[i]), part: true, week: wk(gid)}); });
+      else jobs.push({kind: 'save', s, gid: g, rows: s.rows, raws: s.rawLines, part: false, week: wk(g)});
     });
-    return jobs.filter((j) => Number.isInteger(j.week) && Math.abs(j.week) <= 260);
+    return jobs.filter((j) => j.kind === 'attach' || (Number.isInteger(j.week) && Math.abs(j.week) <= 260));
   }
-  function docFor(j, now) {
+  function docFor(j, now, rawOk) {
     const s = j.s, target = Number(dash.params().smash_target);
     const drows = j.rows.filter((r) => r[0] === s.driver).map((r) => r.slice(1));
     const ds = WB.shotStats(s.cols, drows, target);
     const clubs = new Map();
     j.rows.forEach((r) => clubs.set(r[0], (clubs.get(r[0]) || 0) + 1));
     return {
-      week: j.week, date: s.date, date_from: s.dateFrom, file: s.label + (j.part ? ' (split by speed)' : ''), units: s.units, imported_at: now, driver: s.driver,
+      schema: 2, week: j.week, date: s.date, date_from: s.dateFrom, file: s.label + (j.part ? ' (split by speed)' : ''), units: s.units, imported_at: now, driver: s.driver,
       clubs: [...clubs.entries()].map(([club, n]) => ({club, n})), n_total: j.rows.length,
       summary: {driver_used: ds.n_used, driver_left: ds.n_left, club_speed: ds.club_speed, ball_speed: ds.ball_speed, launch: ds.launch, spin: ds.spin, carry: ds.carry, total: ds.total},
-      cols: ['club'].concat(s.cols), shots_json: JSON.stringify(j.rows), fp: j.part ? s.fp + ':' + j.gid : s.fp, src_fp: s.fp, peak_unit: 'yd',
+      cols: ['club'].concat(s.cols), shots_json: JSON.stringify(j.rows), fp: j.part ? s.fp + ':' + j.gid : s.fp, src_fp: s.fp, peak_unit: 'yd', has_raw: !!rawOk,
     };
+  }
+  /* The session's original CSV lines, in pieces under 200,000 characters: golfers/{id}/raw/{session}, then {session}-p2 and on. */
+  function rawPieces(head, lines) {
+    const out = [];
+    let cur = [], size = 0;
+    lines.forEach((l) => {
+      if (size + l.length + 1 > 200000 && cur.length) { out.push(cur); cur = []; size = 0; }
+      cur.push(l); size += l.length + 1;
+    });
+    if (cur.length) out.push(cur);
+    return out.map((ls, k) => ({head, text: ls.join('\n'), part: k + 1, parts: out.length}));
+  }
+  async function saveRaw(gid, sid, s, lines, now) {
+    const pieces = rawPieces(s.head, lines);
+    for (const pc of pieces) {
+      const doc = Object.assign({schema: 2, session: sid, file: s.label, date: s.date, saved_at: now}, pc);
+      if (!(await saveOne('golfers/' + gid + '/raw/' + sid + (pc.part > 1 ? '-p' + pc.part : ''), doc))) return false;
+    }
+    return true;
   }
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   async function saveOne(path, doc) {
@@ -562,26 +590,35 @@
     const sb = $('csvsave'), prog = $('imp-progress');
     if (sb) sb.disabled = true;
     const now = new Date().toISOString(), counts = {};
-    let ok = 0, failed = 0;
+    let ok = 0, failed = 0, attached = 0;
     for (let i = 0; i < jobs.length; i++) {
+      const j = jobs[i];
       if (prog) { prog.hidden = false; prog.textContent = `Saving ${i + 1} of ${jobs.length}…`; }
-      const doc = docFor(jobs[i], now);
-      if (JSON.stringify(doc).length > 240000) { failed++; continue; }
-      if (await saveOne('golfers/' + jobs[i].gid + '/sessions/' + WB.newId('s'), doc)) { ok++; counts[jobs[i].gid] = (counts[jobs[i].gid] || 0) + 1; } else failed++;
+      if (j.kind === 'attach') {
+        if (await saveRaw(j.gid, j.id, j.s, j.raws, now)) {
+          try { await WB.patch('golfers/' + j.gid + '/sessions/' + j.id, {has_raw: true}); attached++; } catch (e) { failed++; }
+        } else failed++;
+      } else {
+        const sid = WB.newId('s');
+        const rawOk = await saveRaw(j.gid, sid, j.s, j.raws, now);
+        const doc = docFor(j, now, rawOk);
+        if (JSON.stringify(doc).length > 240000) failed++;
+        else if (await saveOne('golfers/' + j.gid + '/sessions/' + sid, doc)) { ok++; counts[j.gid] = (counts[j.gid] || 0) + 1; } else failed++;
+      }
       if (jobs.length > 1) await wait(120);
     }
     S.busy = false;
     if (prog) prog.hidden = true;
     if (sb) sb.disabled = false;
-    if (!ok) {
+    if (!ok && !attached) {
       const u = $('imp-unsaved');
       if (u) u.textContent = WB.noDb ? 'Saving is off in this view. Open the workbench in the Claude app or on claude.ai while signed in.' : WB.canWrite === false ? 'Not saved. Only the owner can import.' : 'Not saved. Try again in a moment.';
       msg('imp-unsaved');
       return;
     }
-    const dups = S.sessions.filter((s) => s.dup).length;
+    const dups = S.sessions.filter((s) => s.dup && !s.attachTo).length;
     const sv = $('imp-saved');
-    if (sv) sv.textContent = `Saved ${ok} session${ok === 1 ? '' : 's'}: ` + Object.entries(counts).map(([g, n]) => `${golferName(g)} ${n}`).join(', ') + '.' + (dups ? ` ${dups} already saved were skipped.` : '') + (failed ? ` ${failed} didn’t save; drop those files again.` : '');
+    if (sv) sv.textContent = (ok ? `Saved ${ok} session${ok === 1 ? '' : 's'}: ` + Object.entries(counts).map(([g, n]) => `${golferName(g)} ${n}`).join(', ') + '.' : '') + (attached ? ` Attached the original file to ${attached} saved session${attached === 1 ? '' : 's'}.` : '') + (dups ? ` ${dups} already saved were skipped.` : '') + (failed ? ` ${failed} didn’t save; drop those files again.` : '');
     msg('imp-saved');
     const only = Object.keys(counts);
     S.files = []; S.sessions = []; S.choice = {}; S.week = null; S.club = null;

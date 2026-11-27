@@ -51,7 +51,7 @@
 <ol class="wb-steps">
 <li>In GSPro, export the shot data (Practice Range: the clipboard icon at the top left, then Export CSV). Older exports work too, any number at once.</li>
 <li>Drop the files on <b>Sort by club speed</b>, or on a golfer’s card when you know whose they are. Files are split into sessions by date; a session where both golfers hit is split by club speed.</li>
-<li>Check the preview and save. Sessions already saved are skipped, so dropping a folder twice is safe. Files are read on this computer; only the shot numbers are stored, private to your Claude account.</li>
+<li>Check the preview and save. Sessions already saved are skipped, so dropping a folder twice is safe; sessions saved before original files were kept get theirs attached. Files are read on this computer and stored with their shot numbers, private to your Claude account.</li>
 </ol>
 <div class="wb-drops" data-draw="dropcards"></div>
 <span data-draw="pvstate"></span>
@@ -78,6 +78,16 @@
 <div class="wb-actions"><button type="submit" class="wb-btn wb-btn-main">Save settings</button><span class="wb-msg" id="gsettings-msg" hidden></span></div>
 </form>
 <form id="addgolfer" class="wb-inline"><label class="wb-visually-hidden" for="gname-in">New golfer’s name</label><input id="gname-in" name="gname" type="text" maxlength="30" placeholder="New golfer’s name" autocomplete="off"><button type="submit" class="wb-btn">Add golfer</button><span class="wb-msg wb-badc" id="addgolfer-msg" hidden></span></form>
+</details>
+
+<details class="wb-more wb-write" id="backup-box"><summary>Backup and restore</summary>
+<div class="wb-card">
+<p class="wb-note">A backup holds every golfer, typed week, imported session (all clubs and all shots) and backlog item. Copy one now and then, and keep it with the GSPro export folders. The original CSV files aren’t in it: keep the folders too.</p>
+<div class="wb-actions"><button type="button" id="backup-copy" class="wb-btn">Copy full backup (JSON)</button><span class="wb-msg" id="backup-msg" hidden></span></div>
+<label class="wb-restore" for="restore-text">Restore: paste a backup. Only missing items are added; nothing already here is changed.</label>
+<textarea id="restore-text" rows="4" placeholder="Paste a backup here"></textarea>
+<div class="wb-actions"><button type="button" id="restore-go" class="wb-btn">Restore missing items</button><span class="wb-msg" id="restore-msg" hidden></span></div>
+</div>
 </details>
 
 <h2>Imported files</h2>

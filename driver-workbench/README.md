@@ -20,6 +20,14 @@ Live app: **Driver Workbench** in the owner's Claude artifacts (private to the o
 
 The installed app asks for no access to your disk: it reads only the files you drop on it or pick.
 
+### Mac
+
+1. Install the Claude desktop app for Mac from https://claude.ai/download and sign in with the same account.
+2. Open the Driver Workbench and click **Install as desktop app** (or **Install as app** from the artifact's menu).
+3. It opens in its own window. Switch to **Analysis** at the top right; the Mac remembers the choice.
+
+To keep the code on the Mac: `git clone https://github.com/eklavya666i/driver-workbench.git` in Terminal (or *Clone repository* in GitHub Desktop).
+
 ### iPad: analysis
 
 1. Install the Claude app from the App Store and sign in with the same account.
@@ -82,8 +90,23 @@ Database layout:
 | --- | --- |
 | `config/golfers` | Golfer list: id, name, week-1 Monday, typical driver speed |
 | `golfers/{id}/sessions/{session}` | One GSPro session: date, week, file, driver label, all shots of all clubs (`shots_json`), a summary, a fingerprint for duplicates |
+| `golfers/{id}/raw/{session}` | The session's original CSV header and lines (`-p2`, `-p3`… when longer than 200,000 characters); never loaded by the analysis |
 | `golfers/{id}/weeks/w{NN}` | A week typed by hand: averages, conditions, notes |
 | `backlog/{id}` | Backlog items: title, area, priority, status |
+
+## Keeping history safe as the app is upgraded
+
+- **Upgrades never touch the data.** Each upgrade publishes a new version of the same Claude artifact; its database stays as it is. Only deleting the artifact would erase it, so it is never deleted or replaced by a new artifact.
+- **Everything is kept at full detail.** Each session stores every club and every shot. From this version on it also keeps the session's original CSV lines (`golfers/{id}/raw/{session}`), so later features can read columns the app doesn't use yet, such as course, hole and round data.
+- **Older sessions can get their originals too.** Sessions saved before originals were kept show as already saved; dropping the same export folders again attaches the original lines to them, without duplicating anything.
+- **Backups.** On the import station, *Backup and restore* copies everything as one JSON file (golfers, typed weeks, sessions, backlog). Restoring adds only what is missing and never overwrites. Keep a recent backup and the GSPro export folders together.
+
+Rules every upgrade follows (for whoever changes the code, including Claude):
+
+1. Never rename or remove a stored field, and never rewrite stored documents to a new shape. Add new fields as optional.
+2. Readers handle every older document shape. Today's differences: schema 1 sessions have no `schema`, `peak_unit` or `has_raw`; their peak height is in feet, and monitors' zero-filled club data counts as not measured.
+3. New documents carry `schema: 2` (raise it when the shape changes, and add the reader for it here).
+4. Run `npm test` in `tests/` before publishing. It checks importing, sorting, attaching originals, backup and restore, and the analysis on sample data.
 
 ## Repository layout
 

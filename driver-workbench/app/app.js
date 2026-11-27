@@ -1253,3 +1253,53 @@ dash.draw('bagrows', (el) => {
     }
   });
 })();
+
+/* Backup and restore. A backup is every golfer, typed week, session and backlog item as JSON;
+   a restore adds only what is missing, so it can never overwrite or duplicate what is already here. */
+(function () {
+  const copyBtn = document.getElementById('backup-copy'), copyMsg = document.getElementById('backup-msg');
+  const goBtn = document.getElementById('restore-go'), box = document.getElementById('restore-text'), rMsg = document.getElementById('restore-msg');
+  const say = (el, t, ok) => { if (el) { el.textContent = t; el.className = 'wb-msg ' + (ok ? 'wb-good' : 'wb-badc'); el.hidden = false; } };
+  const plain = (o) => !!o && typeof o === 'object' && !Array.isArray(o);
+  const ID = /^[A-Za-z0-9_.~:@+-]{1,120}$/, GID = /^[a-z0-9][a-z0-9_-]{0,30}$/;
+  if (copyBtn) copyBtn.addEventListener('click', async () => {
+    const b = WB.backup(), gs = Object.values(b.golfers);
+    const nS = gs.reduce((a, g) => a + g.sessions.length, 0), nW = gs.reduce((a, g) => a + g.weeks.length, 0);
+    const text = JSON.stringify(b);
+    try {
+      await navigator.clipboard.writeText(text);
+      say(copyMsg, `Copied ${gs.length} golfers, ${nS} sessions, ${nW} typed weeks and ${b.backlog.length} backlog items (${(text.length / 1e6).toFixed(1)} MB). Paste into a text file named driver-workbench-backup-${new Date().toISOString().slice(0, 10)}.json and keep it with the GSPro export folders.`, true);
+    } catch (e) { say(copyMsg, 'Copying was blocked here. Try again from the app window.', false); }
+  });
+  if (goBtn && box) goBtn.addEventListener('click', async () => {
+    let b;
+    try { b = JSON.parse(box.value); } catch (e) { say(rMsg, 'That isn’t a backup: the text isn’t valid JSON.', false); return; }
+    if (!plain(b) || b.app !== 'driver-workbench' || !plain(b.golfers)) { say(rMsg, 'That isn’t a Driver Workbench backup.', false); return; }
+    const jobs = [], cur = WB.golfers();
+    const list = plain(b.config) && Array.isArray(b.config.list) ? b.config.list.filter((g) => plain(g) && typeof g.id === 'string' && GID.test(g.id) && typeof g.name === 'string') : [];
+    const addG = list.filter((g) => !cur.some((c) => c.id === g.id));
+    if (addG.length) jobs.push({path: 'config/golfers', data: {list: cur.map((c) => ({id: c.id, name: c.name, start: c.start, speed: c.speed})).concat(addG.map((g) => ({id: g.id, name: g.name.slice(0, 30), start: typeof g.start === 'string' ? g.start : null, speed: WB.num(g.speed)})))}});
+    const known = WB.knownSessions();
+    Object.entries(b.golfers).forEach(([gid, g]) => {
+      if (!GID.test(gid) || !plain(g)) return;
+      const r = WB.rawFor(gid) || {typed: [], imports: []};
+      const haveW = new Set((r.typed || []).map((t) => t.id)), haveS = new Set((r.imports || []).map((x) => x.id));
+      (Array.isArray(g.weeks) ? g.weeks : []).forEach((w) => { if (plain(w) && ID.test(String(w.id)) && plain(w.data) && !haveW.has(w.id) && WB.num(w.data.week) !== null) jobs.push({path: `golfers/${gid}/weeks/${w.id}`, data: w.data}); });
+      (Array.isArray(g.sessions) ? g.sessions : []).forEach((x) => { if (plain(x) && ID.test(String(x.id)) && plain(x.data) && typeof x.data.shots_json === 'string' && !haveS.has(x.id) && !(typeof x.data.fp === 'string' && known.has(x.data.fp))) jobs.push({path: `golfers/${gid}/sessions/${x.id}`, data: x.data}); });
+    });
+    const bl = dash.data('backlog'), haveB = new Set((bl.status === 'ok' ? bl.data : []).map((x) => x.id));
+    (Array.isArray(b.backlog) ? b.backlog : []).forEach((x) => { if (plain(x) && ID.test(String(x.id)) && plain(x.data) && typeof x.data.title === 'string' && !haveB.has(x.id)) jobs.push({path: 'backlog/' + x.id, data: x.data}); });
+    if (!jobs.length) { say(rMsg, 'Nothing to restore: everything in that backup is already here.', true); return; }
+    goBtn.disabled = true;
+    let ok = 0, bad = 0;
+    for (let i = 0; i < jobs.length; i++) {
+      say(rMsg, `Restoring ${i + 1} of ${jobs.length}…`, true);
+      if (JSON.stringify(jobs[i].data).length > 250000) { bad++; continue; }
+      try { await WB.save(jobs[i].path, jobs[i].data); ok++; } catch (e) { bad++; }
+      await new Promise((r) => setTimeout(r, 120));
+    }
+    goBtn.disabled = false;
+    say(rMsg, `Restored ${ok} item${ok === 1 ? '' : 's'}${bad ? `; ${bad} couldn’t be saved` : ''}. Nothing already here was changed.`, !bad);
+    if (ok) box.value = '';
+  });
+})();

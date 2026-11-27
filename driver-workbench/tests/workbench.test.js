@@ -108,11 +108,41 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   const saved = [...M.docs.keys()].filter((k) => k.includes('/sessions/'));
   check(saved.filter((k) => k.startsWith('golfers/a/')).length === 5 && saved.filter((k) => k.startsWith('golfers/b/')).length === 3, 'saves 5 sessions for A and 3 for B');
 
+  const sessDocs = saved.map((k) => M.docs.get(k));
+  check(sessDocs.every((d) => d.has_raw === true && d.schema === 2), 'every new session keeps its original CSV lines');
+  check([...M.docs.keys()].filter((k) => k.includes('/raw/')).length === 8, 'one original-file record per session');
+
   P.start('auto', null, [file('fast_2026-11-10.csv', FILES['fast_2026-11-10.csv'])]);
   await sleep(150);
   check(P.state.sessions[0].dup && doc.getElementById('csvsave').disabled, 'skips a session that is already saved');
   doc.getElementById('csvcancel').click();
   await sleep(30);
+
+  // A session saved before originals were kept: same file dropped again attaches the original, adds no session.
+  const fastPath = saved.find((k) => M.docs.get(k).file === 'fast_2026-11-10.csv');
+  const legacy = Object.assign({}, M.docs.get(fastPath));
+  delete legacy.has_raw; delete legacy.schema;
+  await M.db.doc(fastPath).set(legacy);
+  await M.db.doc(fastPath.replace('/sessions/', '/raw/')).delete();
+  await sleep(80);
+  const nBefore = [...M.docs.keys()].filter((k) => k.includes('/sessions/')).length;
+  P.start('auto', null, [file('fast_2026-11-10.csv', FILES['fast_2026-11-10.csv'])]);
+  await sleep(150);
+  check(P.plan().length === 1 && P.plan()[0].kind === 'attach', 'offers to attach the original to the older session');
+  await P.save();
+  await sleep(150);
+  check(M.docs.get(fastPath).has_raw === true && M.docs.has(fastPath.replace('/sessions/', '/raw/')) && [...M.docs.keys()].filter((k) => k.includes('/sessions/')).length === nBefore, 'attaches the original without a duplicate session');
+
+  // Backup, lose some data, restore: only the missing items come back.
+  const backup = JSON.stringify(w.WB.backup());
+  const lost = saved.slice(0, 2);
+  for (const k of lost) await M.db.doc(k).delete();
+  await sleep(80);
+  doc.getElementById('restore-text').value = backup;
+  doc.getElementById('restore-go').click();
+  await sleep(600);
+  check(lost.every((k) => M.docs.has(k)) && [...M.docs.keys()].filter((k) => k.includes('/sessions/')).length === nBefore, 'restore brings back exactly the missing sessions');
+
 
   P.start('card', 'a', [file('wrong_2026-11-26.csv', [HDR, ...rows(12, 86.2, 1)].join('\n'))]);
   await sleep(150);

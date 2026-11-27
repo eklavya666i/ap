@@ -12,7 +12,7 @@
   } catch (e) { /* defaults */ }
 
   /* Golfers: each has typed weeks and imported sessions, all subscribed at once so switching is instant. */
-  var golfers = [], configLoaded = false, selected = store('wb-golfer'), raw = {}, subs = {};
+  var golfers = [], configLoaded = false, configDoc = null, selected = store('wb-golfer'), raw = {}, subs = {};
   var ID_RE = /^[a-z0-9][a-z0-9_-]{0,30}$/;
 
   function golferData(id) {
@@ -93,10 +93,32 @@
     for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
     return 'f' + h.toString(16).padStart(8, '0');
   };
-  WB.knownFps = function () {
-    var set = new Set();
-    Object.keys(raw).forEach(function (gid) { (raw[gid].imports || []).forEach(function (s) { if (s.fp) set.add(s.fp); if (s.src_fp) set.add(s.src_fp); }); });
-    return set;
+  /* Saved sessions by fingerprint, so a file dropped again is recognized; whole sessions saved without their original file can have it attached. */
+  WB.knownSessions = function () {
+    var map = new Map();
+    Object.keys(raw).forEach(function (gid) {
+      (raw[gid].imports || []).forEach(function (s) {
+        var whole = !s.src_fp || s.src_fp === s.fp;
+        if (s.fp) map.set(s.fp, {gid: gid, id: s.id, has_raw: s.has_raw, whole: whole});
+        if (s.src_fp && !map.has(s.src_fp)) map.set(s.src_fp, {gid: gid, id: s.id, has_raw: s.has_raw, whole: false});
+      });
+    });
+    return map;
+  };
+  /* Everything saved, as one JSON-ready object: golfers, typed weeks, sessions (all clubs and shots) and the backlog.
+     Original CSV files stay out: they live in the raw collections and in the export folders. */
+  WB.backup = function () {
+    var out = {app: 'driver-workbench', format: 1, exported_at: new Date().toISOString(), config: configDoc, golfers: {}, backlog: []};
+    Object.keys(raw).forEach(function (gid) {
+      var g = raw[gid];
+      out.golfers[gid] = {
+        weeks: (g.typed || []).map(function (t) { var o = Object.assign({}, t); var id = o.id; delete o.id; return {id: id, data: o}; }),
+        sessions: (g.imports || []).map(function (x) { return {id: x.id, data: x._doc}; }),
+      };
+    });
+    var bl = datasets.backlog && datasets.backlog.data;
+    if (bl) out.backlog = bl.map(function (r) { var o = Object.assign({}, r); var id = o.id; delete o.id; return {id: id, data: o}; });
+    return out;
   };
   /* A golfer's typical driver club speed: the speed set for them, else learned from their recent sessions or typed weeks. */
   WB.profileSpeed = function (gid, learnedOnly) {
@@ -274,6 +296,7 @@
       id: d.id, week: WB.num(b.week), date: str(b.date, 10), file: str(b.file, 160), units: str(b.units, 40), imported_at: str(b.imported_at, 40),
       driver: driver, clubs: clubs, n_all: shots.length, cols: dcols, shots: drows, arows: arows,
       fp: str(b.fp, 60) || WB.fp(str(b.date, 10), shots, cols), src_fp: str(b.src_fp, 60), date_from: str(b.date_from, 10),
+      has_raw: b.has_raw === true, schema: WB.num(b.schema) || 1, _doc: b,
     };
     if (parsedCache) parsedCache.set(d, row);
     return row;
@@ -372,7 +395,8 @@
       if (!configLoaded || (g && (g.typed === null || g.imports === null))) note('db-note', true, 'Your saved data can’t be reached yet. Anything shown may be out of date.');
     }, 10000);
     db.doc('config/golfers').onSnapshot(function (snap) {
-      var list = snap.exists && snap.data() && Array.isArray(snap.data().list) ? snap.data().list : [];
+      configDoc = snap.exists ? snap.data() : null;
+      var list = configDoc && Array.isArray(configDoc.list) ? configDoc.list : [];
       golfers = list.filter(function (g) { return g && typeof g.id === 'string' && ID_RE.test(g.id) && typeof g.name === 'string'; })
         .map(function (g) {
           var sp = WB.num(g.speed);
