@@ -34,8 +34,8 @@ self.addEventListener('fetch', function (e) {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-  /* AP Cybersecurity (/cyber/), SAT Daily (/sat/), Rational Expressions Prep (/alg2-rational/), Topic 4 Prep (/alg2-topic4/), Rational Expressions Detailed (/alg2-detailed/), Math 6 (/math6/) and English 10H (/english10/) have their own offline copies; leave their pages alone. */
-  if (url.pathname.indexOf('/cyber/') !== -1 || url.pathname.indexOf('/sat/') !== -1 || url.pathname.indexOf('/alg2-rational') !== -1 || url.pathname.indexOf('/alg2-topic4') !== -1 || url.pathname.indexOf('/alg2-detailed') !== -1 || url.pathname.indexOf('/math6/') !== -1 || url.pathname.indexOf('/english10/') !== -1) return;
+  /* AP Cybersecurity (/cyber/), SAT Daily (/sat/), Rational Expressions Prep (/alg2-rational/), Topic 4 Prep (/alg2-topic4/), Rational Expressions Detailed (/alg2-detailed/), Chemistry (/chem/), Math 6 (/math6/), English 10H (/english10/) and Golf notes (/driver-workbench/notes/) have their own offline copies; leave their pages alone. */
+  if (url.pathname.indexOf('/cyber/') !== -1 || url.pathname.indexOf('/sat/') !== -1 || url.pathname.indexOf('/alg2-rational') !== -1 || url.pathname.indexOf('/alg2-topic4') !== -1 || url.pathname.indexOf('/alg2-detailed') !== -1 || url.pathname.indexOf('/chem') !== -1 || url.pathname.indexOf('/math6/') !== -1 || url.pathname.indexOf('/english10/') !== -1 || url.pathname.indexOf('/driver-workbench/') !== -1) return;
   if (req.mode === 'navigate') {
     e.respondWith(caches.open(CACHE).then(function (cache) {
       return cache.match('./').then(function (hit) {
