@@ -118,6 +118,7 @@
 </table></div>
 </section>
 
+<p class="wb-trust" data-draw="trust" data-only="analysis" aria-label="What the monitor data can be trusted for"></p>
 <div class="wb-card wb-filters" data-only="analysis" role="group" aria-label="Filters for every view">
 <label>Dates<select data-param="range"><option value="all">All weeks</option><option value="2">Last 2 weeks</option><option value="4">Last 4 weeks</option><option value="12">Last 12 weeks</option><option value="26">Last 26 weeks</option></select></label>
 <label>Fairway width<select data-param="corridor" data-num="1"><option value="20">20 yd</option><option value="25">25 yd</option><option value="30">30 yd</option><option value="35">35 yd</option><option value="40">40 yd</option></select></label>
@@ -130,6 +131,7 @@
 </section>
 
 <section id="dashboard" data-only="analysis" data-view="command">
+<p class="wb-msg wb-badc wb-trust-banner" data-draw="trustbanner" data-need="club"></p>
 <h2>Driver dashboard</h2>
 <p class="wb-note">Weekly averages for <b data-draw="gname">—</b> by program week. Shaded bars show the spread of shots around each average in imported weeks; green bands are launch and spin windows for this golfer’s club speed (<b data-draw="win" data-w="l_lo">—</b>–<b data-draw="win" data-w="l_hi">—</b>°, <b data-draw="win" data-w="s_lo">—</b>–<b data-draw="win" data-w="s_hi">—</b> rpm); the dashed line is the target smash. A hollow red point is a week whose numbers don’t add up.</p>
 <p class="wb-note" data-draw="alttext"></p>
@@ -240,6 +242,7 @@
 </section>
 
 <section id="realistic" data-only="analysis" data-view="driver">
+<p class="wb-msg wb-badc wb-trust-banner" data-draw="trustbanner" data-need="spin"></p>
 <h2>Realistic look at the latest week</h2>
 <p class="wb-note">Carry and total from a ball-flight model calibrated to TrackMan data, at the latest week’s club speed. Each step adds one fix to the one before it. Change the targets to see what each is worth.</p>
 <div class="wb-controls">
@@ -266,6 +269,7 @@
 </section>
 
 <section id="goals" data-only="analysis" data-view="progress">
+<p class="wb-msg wb-badc wb-trust-banner" data-draw="trustbanner" data-need="spin"></p>
 <h2>Goal tracker</h2>
 <div class="wb-cmd" data-draw="goals"></div>
 </section>
@@ -448,6 +452,7 @@
 <script src="shots.js"></script>
 <script src="command.js"></script>
 <script src="goals.js"></script>
+<script src="trust.js"></script>
 <script>dash.start();</script>
 </body>
 </html>

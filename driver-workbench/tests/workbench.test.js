@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -234,6 +234,10 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   // Goal tracker: 260 median restated total and long-and-straight share, with the speed 260 needs.
   const gl = doc.querySelector('[data-draw="goals"]').textContent;
   check(/: 260 yards\d+ yd/.test(gl) && gl.includes('Long and straight') && /\d+ of \d+ drives in the last 2 weeks/.test(gl) && /260 needs about \d+\.\d mph/.test(gl), 'goal tracker shows 260, long-and-straight and the speed needed');
+
+  // Data trust: a chip says what the monitor data can be trusted for.
+  const trust = doc.querySelector('[data-draw="trust"]').textContent;
+  check(/Ball data: (good|patchy)/.test(trust) && /Spin: (good|check|missing)/.test(trust) && /Club data: (measured|partly measured|not measured)/.test(trust), 'data trust chip shows ball, spin and club data');
 
   // Every chart has a table view and Copy as CSV.
   w.WB.setMode('analysis');

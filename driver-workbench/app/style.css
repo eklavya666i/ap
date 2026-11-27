@@ -301,3 +301,7 @@ input:not([type=checkbox]):not([type=radio]),select{min-height:44px}
 .wb-goal-line{stroke:var(--accent);stroke-width:1.5;stroke-dasharray:5 4}
 .wb-goal .wb-num{margin:2px 0 6px}
 .wb-goal svg{width:100%;height:auto;display:block}
+.wb-trust{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0 0}
+.wb-trust-lead{font-size:13px;color:var(--color-fg-muted);margin-right:2px}
+.wb-trust-banner{display:block;margin:6px 0 10px}
+.wb-trust-banner:empty{display:none}

@@ -128,6 +128,7 @@ app/
   rounds.js     round notes, voice notes and scorecard photos
   shots.js      drill-down from golfer to week, session and shot, with the shot inspector
   goals.js      the goal tracker: 260 and long-and-straight, restated at sea level, and the club speed 260 needs
+  trust.js      data trust: what the monitor's data can be trusted for, with banners where spin or club data matter
   command.js    the Command center: what's happening, how it's moving, what needs to happen, the week's fairway, alerts
 tests/
   workbench.test.js   end-to-end test in jsdom with an in-memory database
