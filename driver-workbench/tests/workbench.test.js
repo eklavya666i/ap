@@ -274,9 +274,19 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   for (let i = 0; i < 40 && (!drill.querySelector('.wb-line') || drill.querySelector('.wb-line').textContent === 'Loading…'); i++) await sleep(100);
   const crumbs = doc.querySelector('[data-draw="crumbs"]').textContent;
   check(nShotRows > 0 && /Week .*›.*›.*Shot 1/.test(crumbs) && drill.textContent.includes('Ball speed') && drill.querySelector('svg') && /\d/.test(drill.querySelector('.wb-line').textContent), 'drills down to one shot with its fields, flight and original line');
+  doc.querySelectorAll('[data-draw="crumbs"] button')[2].click();
+  await sleep(150);
+  const tb = drill.querySelector('.wb-tagbox');
+  tb.open = true;
+  const ti = tb.querySelectorAll('input'), ts = tb.querySelectorAll('select');
+  ti[0].value = '1'; ti[1].value = '3'; ts[0].value = 'Wedge clock ladder'; ts[1].value = '½';
+  [...tb.querySelectorAll('button')].find((b) => b.textContent === 'Save tag').click();
+  await sleep(300);
+  const tagged = [...M.docs.values()].find((d) => Array.isArray(d.tags) && d.tags.length);
+  check(tagged && tagged.tags[0].from === 0 && tagged.tags[0].to === 2 && tagged.tags[0].swing === '½' && drill.textContent.includes('½ swing · Wedge clock ladder'), 'tags a range of shots');
   doc.querySelector('[data-draw="crumbs"] button').click();
   await sleep(120);
-  check(drill.querySelector('thead th').textContent === 'Week', 'the breadcrumb goes back to the weeks');
+  check(drill.querySelector('thead th').textContent === 'Week' && drill.textContent.includes('Review queue'), 'the breadcrumb goes back to the weeks, with the review queue');
 
   // Skipped rows are listed with their reason; the last import can be undone in one step.
   w.WB.setMode('ingest');

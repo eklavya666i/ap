@@ -9,6 +9,16 @@
     hla: ['Start direction (HLA)', '°', 1], spin: ['Spin', 'rpm', 0], axis: ['Spin axis', '°', 1], carry: ['Carry', 'yd', 1], total: ['Total', 'yd', 1],
     offline: ['Offline (+ is right)', 'yd', 1], peak: ['Peak height', 'yd', 1], descent: ['Descent', '°', 1], attack: ['Attack angle', '°', 1],
     path: ['Club path', '°', 1], face: ['Face to target', '°', 1], f2p: ['Face to path', '°', 1], dyn_loft: ['Dynamic loft', '°', 1]};
+  /* Shot tags (FR-03): ranges of shots in a session, stored on the session as an optional "tags" list. */
+  const DRILLS = ['Speed ladder', 'Centered strike (face spray)', 'Tee height and attack angle ladder', 'Start-line gate', 'Stock shape window', 'Fairway finder',
+    'Long-drive benchmark', 'Wedge clock ladder', 'Random distance test', 'Carry book calibration', 'Flight window (stock vs knockdown)', 'Pressure combine'];
+  const SWINGS = ['Full', '¾', '½', '¼'], TEES = ['Low', 'Normal', 'High'], INTENTS = ['Stock', 'Speed', 'Fade', 'Draw', 'High', 'Low', 'Start line', 'Strike'];
+  function tagsOf(s) {
+    const t = s && s._doc && Array.isArray(s._doc.tags) ? s._doc.tags : [];
+    return t.filter((x) => x && Number.isInteger(x.from) && Number.isInteger(x.to) && x.from >= 0 && x.to >= x.from && x.to < s.arows.length).slice(0, 200);
+  }
+  const tagText = (x) => [x.swing && x.swing !== 'Full' ? x.swing + ' swing' : '', x.drill, x.intent, x.tee ? x.tee + ' tee' : '', x.target].filter(Boolean).join(' · ');
+  const tagsAt = (s, k) => tagsOf(s).filter((x) => k >= x.from && k <= x.to);
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
   const go = (o) => { Object.assign(D, o); dash.schedule(); const s = document.getElementById('shots'); if (s && s.scrollIntoView) s.scrollIntoView({block: 'start'}); };
   const fmt = (k, v) => { if (typeof v !== 'number' || !isFinite(v)) return '—'; const f = FIELDS[k]; const d = f ? f[2] : 1; return (Math.round(v * Math.pow(10, d)) / Math.pow(10, d)).toLocaleString('en-US') + (f && f[1] ? (f[1] === '°' ? '°' : ' ' + f[1]) : ''); };
@@ -72,6 +82,16 @@
       im.forEach((i) => { if (!Number.isInteger(i.week)) return; const w = by.get(i.week) || {n: 0, shots: 0, drv: 0, dates: new Set()}; w.n++; w.shots += i.n_all || i.arows.length; w.drv += i.shots.length; if (i.date) w.dates.add(i.date); by.set(i.week, w); });
       const rows = [...by.entries()].sort((a, b) => b[0] - a[0]).map(([wk, w]) => ({key: wk, cells: ['Week ' + WB.wk(wk), [...w.dates].sort().join(', '), w.n, w.shots, w.drv]}));
       box.append(table(['Week', 'Dates', 'Sessions', 'Shots', 'Driver shots'], rows, (wk) => go({week: wk})));
+      const open = im.filter((i) => { const n = i.arows.length, cov = new Set(); tagsOf(i).forEach((x) => { for (let k = x.from; k <= x.to; k++) cov.add(k); }); return cov.size < n; })
+        .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+      if (open.length) {
+        const q = el('div', 'wb-queue wb-write');
+        q.append(el('h3', '', 'Review queue'), el('p', 'wb-note', `${open.length} session${open.length === 1 ? ' has' : 's have'} untagged shots in this date range. Tag drills, swing length, tee height, intent and target so partial shots and drills can be measured.`));
+        const ul = el('ul', 'wb-files');
+        open.slice(0, 8).forEach((i) => { const li = el('li'); const b = el('button', 'wb-crumb', (i.date || '') + ' · ' + (i.file || 'Session')); b.type = 'button'; b.addEventListener('click', () => go({week: i.week, sid: i.id, shot: null})); li.append(b); ul.append(li); });
+        q.append(ul);
+        box.append(q);
+      }
       return;
     }
     if (!D.sid) {
@@ -83,9 +103,10 @@
     }
     const s = session();
     if (D.shot === null) {
-      const rows = s.arows.map((r, k) => { const o = rowOf(s, k), f = flagOf(o); return {key: k, flag: !!f, cells: [k + 1, o.club, fmt('club_speed', o.club_speed), fmt('ball_speed', o.ball_speed), fmt('smash', o.smash), fmt('launch', o.launch), fmt('spin', o.spin), fmt('carry', o.carry), fmt('offline', o.offline), f ? 'Check' : '']}; });
+      const rows = s.arows.map((r, k) => { const o = rowOf(s, k), f = flagOf(o); return {key: k, flag: !!f, cells: [k + 1, o.club, fmt('club_speed', o.club_speed), fmt('ball_speed', o.ball_speed), fmt('smash', o.smash), fmt('launch', o.launch), fmt('spin', o.spin), fmt('carry', o.carry), fmt('offline', o.offline), f ? 'Check' : '', tagsAt(s, k).map(tagText).join('; ')]}; });
+      box.append(tagForm(g, s));
       box.append(el('p', 'wb-note', 'Rows marked Check sit outside the misread limits for their club and are left out of the analysis.'));
-      box.append(table(['Shot', 'Club', 'Club', 'Ball', 'Smash', 'Launch', 'Spin', 'Carry', 'Offline', ''], rows, (k) => go({shot: k})));
+      box.append(table(['Shot', 'Club', 'Club speed', 'Ball', 'Smash', 'Launch', 'Spin', 'Carry', 'Offline', '', 'Tags'], rows, (k) => go({shot: k})));
       return;
     }
     inspector(box, g, s, D.shot);
@@ -101,6 +122,8 @@
     const dl = el('dl', 'wb-fields-list');
     Object.keys(FIELDS).forEach((c) => { if (!s.cols.includes(c) && c !== 'smash') return; dl.append(el('dt', '', FIELDS[c][0]), el('dd', '', fmt(c, o[c]))); });
     card.append(dl);
+    const tg = tagsAt(s, k);
+    if (tg.length) card.append(el('p', 'wb-note', 'Tags: ' + tg.map(tagText).join('; ')));
     card.append(flight(o));
     const src = el('div', 'wb-source');
     src.append(el('h4', '', 'Line in the GSPro file'));
@@ -113,6 +136,43 @@
     card.append(nav);
     box.append(card);
     if (s.has_raw) originalLine(g.id, s.id, k).then((t) => { line.textContent = t || 'Not found in the kept file.'; });
+  }
+
+  function tagForm(g, s) {
+    const box = el('details', 'wb-card wb-tagbox wb-write');
+    const existing = tagsOf(s);
+    box.append(el('summary', '', existing.length ? `Tags (${existing.length})` : 'Tag shots'));
+    const grid = el('div', 'wb-cond-grid wb-tag-grid');
+    const field = (label, ctl) => { const l = el('label', '', label); l.append(ctl); grid.append(l); return ctl; };
+    const num = (v) => Object.assign(el('input'), {type: 'number', min: 1, max: s.arows.length, value: v, inputMode: 'numeric'});
+    const sel = (opts, first) => { const x = el('select'); [first].concat(opts).forEach((t, i) => { const o = el('option', '', t); o.value = i ? t : ''; x.append(o); }); return x; };
+    const from = field('From shot', num(1)), to = field('To shot', num(s.arows.length));
+    const drill = field('Drill', sel(DRILLS, 'None')), swing = field('Swing length', sel(SWINGS, '—')), tee = field('Tee height', sel(TEES, '—')), intent = field('Intent', sel(INTENTS, '—'));
+    const target = field('Target', Object.assign(el('input'), {type: 'text', maxLength: 40, placeholder: 'e.g. 150 yd flag'}));
+    const save = el('button', 'wb-btn wb-btn-sm', 'Save tag'); save.type = 'button';
+    const msg = el('span', 'wb-msg', ''); msg.hidden = true;
+    const path = 'golfers/' + g.id + '/sessions/' + s.id;
+    save.addEventListener('click', async () => {
+      const a = Math.round(Number(from.value)) - 1, b = Math.round(Number(to.value)) - 1;
+      if (!(a >= 0 && b >= a && b < s.arows.length)) { msg.textContent = `Shots run 1 to ${s.arows.length}.`; msg.className = 'wb-msg wb-badc'; msg.hidden = false; return; }
+      const t = {from: a, to: b, drill: drill.value, swing: swing.value, tee: tee.value, intent: intent.value, target: target.value.trim().slice(0, 40), at: new Date().toISOString()};
+      if (!t.drill && !t.swing && !t.tee && !t.intent && !t.target) { msg.textContent = 'Pick at least one tag.'; msg.className = 'wb-msg wb-badc'; msg.hidden = false; return; }
+      save.disabled = true;
+      try { await WB.patch(path, {tags: existing.concat([t])}); } catch (e) { msg.textContent = 'Not saved.'; msg.className = 'wb-msg wb-badc'; msg.hidden = false; }
+      save.disabled = false;
+    });
+    const acts = el('div', 'wb-actions'); acts.append(save, msg);
+    box.append(grid, acts);
+    if (existing.length) {
+      const ul = el('ul', 'wb-files');
+      existing.forEach((x, i) => {
+        const li = el('li', '', `Shots ${x.from + 1}–${x.to + 1}: ${tagText(x) || 'no detail'} `);
+        if (typeof confirmButton === 'function') li.append(confirmButton('Remove', 'Remove tag', () => WB.patch(path, {tags: existing.filter((_, j) => j !== i)})));
+        ul.append(li);
+      });
+      box.append(ul);
+    }
+    return box;
   }
 
   /* The kept original file: golfers/{gid}/raw/{sid}, with -p2, -p3… for long files; its lines follow the session's shots. */

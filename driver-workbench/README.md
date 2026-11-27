@@ -97,6 +97,7 @@ Database layout:
 | `golfers/{id}/sessions/{session}` | One GSPro session: date, week, file, driver label, all shots of all clubs (`shots_json`), a summary, a fingerprint for duplicates |
 | `golfers/{id}/raw/{session}` | The session's original CSV header and lines (`-p2`, `-p3`… when longer than 200,000 characters); never loaded by the analysis |
 | `golfers/{id}/weeks/w{NN}` | A week typed by hand: averages, conditions, notes |
+| `golfers/{id}/sessions/{session}` → `tags` | Optional list of shot ranges with drill, swing length, tee height, intent and target |
 | `golfers/{id}/rounds/{round}` | A round's notes: date, course, kind, score, ratings, what happened, what to work on, hole-by-hole scores, and the scorecard photo's asset id (the photo itself is an artifact asset, never in git) |
 | `backlog/{id}` | Backlog items: title, area, priority, status |
 
