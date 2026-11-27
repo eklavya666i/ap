@@ -67,6 +67,7 @@ On the import station, under **Golfer settings**:
 - **Consistency**: spread of each imported week, the share of shots at the target smash, and smash shot by shot.
 - **Check**: whether ball speed ÷ club speed matches the device's smash.
 - **Realistic look** and **Outlook**: carry and total from a ball-flight model calibrated to TrackMan data, step by step (strike, attack angle, speed), and the speed outlook with a range.
+- **Rounds**: notes from rounds and practice rounds, made for the phone: ratings for driving, approach, short game, putting and the mental game, what happened, what to work on, voice notes (Claude dictation where the device offers it, else the keyboard's mic) and a scorecard photo that Claude can read into hole-by-hole scores to check and save.
 - **Topics**, **History**, **Log a week by hand**, **Data to capture**, **Benchmarks**, **Backlog**.
 
 Launch and spin targets follow each golfer's own club speed: the model's best launch and spin at that speed, the target smash and the target attack angle, widened to a window.
@@ -92,6 +93,7 @@ Database layout:
 | `golfers/{id}/sessions/{session}` | One GSPro session: date, week, file, driver label, all shots of all clubs (`shots_json`), a summary, a fingerprint for duplicates |
 | `golfers/{id}/raw/{session}` | The session's original CSV header and lines (`-p2`, `-p3`… when longer than 200,000 characters); never loaded by the analysis |
 | `golfers/{id}/weeks/w{NN}` | A week typed by hand: averages, conditions, notes |
+| `golfers/{id}/rounds/{round}` | A round's notes: date, course, kind, score, ratings, what happened, what to work on, hole-by-hole scores, and the scorecard photo's asset id (the photo itself is an artifact asset, never in git) |
 | `backlog/{id}` | Backlog items: title, area, priority, status |
 
 ## Keeping history safe as the app is upgraded
@@ -118,6 +120,7 @@ app/
   import.js     GSPro CSV reading, session split, sorting by club speed, saving
   app.js        analysis: weeks, checks, scenarios, dashboard, topics, settings
   model.js      ball-flight and roll model
+  rounds.js     round notes, voice notes and scorecard photos
 tests/
   workbench.test.js   end-to-end test in jsdom with an in-memory database
   sample-data/        synthetic GSPro range exports

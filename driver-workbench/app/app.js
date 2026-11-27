@@ -1264,11 +1264,11 @@ dash.draw('bagrows', (el) => {
   const ID = /^[A-Za-z0-9_.~:@+-]{1,120}$/, GID = /^[a-z0-9][a-z0-9_-]{0,30}$/;
   if (copyBtn) copyBtn.addEventListener('click', async () => {
     const b = WB.backup(), gs = Object.values(b.golfers);
-    const nS = gs.reduce((a, g) => a + g.sessions.length, 0), nW = gs.reduce((a, g) => a + g.weeks.length, 0);
+    const nS = gs.reduce((a, g) => a + g.sessions.length, 0), nW = gs.reduce((a, g) => a + g.weeks.length, 0), nR = gs.reduce((a, g) => a + (g.rounds || []).length, 0);
     const text = JSON.stringify(b);
     try {
       await navigator.clipboard.writeText(text);
-      say(copyMsg, `Copied ${gs.length} golfers, ${nS} sessions, ${nW} typed weeks and ${b.backlog.length} backlog items (${(text.length / 1e6).toFixed(1)} MB). Paste into a text file named driver-workbench-backup-${new Date().toISOString().slice(0, 10)}.json and keep it with the GSPro export folders.`, true);
+      say(copyMsg, `Copied ${gs.length} golfers, ${nS} sessions, ${nR} rounds, ${nW} typed weeks and ${b.backlog.length} backlog items (${(text.length / 1e6).toFixed(1)} MB). Paste into a text file named driver-workbench-backup-${new Date().toISOString().slice(0, 10)}.json and keep it with the GSPro export folders.`, true);
     } catch (e) { say(copyMsg, 'Copying was blocked here. Try again from the app window.', false); }
   });
   if (goBtn && box) goBtn.addEventListener('click', async () => {
@@ -1284,6 +1284,8 @@ dash.draw('bagrows', (el) => {
       if (!GID.test(gid) || !plain(g)) return;
       const r = WB.rawFor(gid) || {typed: [], imports: []};
       const haveW = new Set((r.typed || []).map((t) => t.id)), haveS = new Set((r.imports || []).map((x) => x.id));
+      const haveR = new Set((WB.roundsFor(gid) || []).map((x) => x.id));
+      (Array.isArray(g.rounds) ? g.rounds : []).forEach((x) => { if (plain(x) && ID.test(String(x.id)) && plain(x.data) && typeof x.data.date === 'string' && !haveR.has(x.id)) jobs.push({path: `golfers/${gid}/rounds/${x.id}`, data: x.data}); });
       (Array.isArray(g.weeks) ? g.weeks : []).forEach((w) => { if (plain(w) && ID.test(String(w.id)) && plain(w.data) && !haveW.has(w.id) && WB.num(w.data.week) !== null) jobs.push({path: `golfers/${gid}/weeks/${w.id}`, data: w.data}); });
       (Array.isArray(g.sessions) ? g.sessions : []).forEach((x) => { if (plain(x) && ID.test(String(x.id)) && plain(x.data) && typeof x.data.shots_json === 'string' && !haveS.has(x.id) && !(typeof x.data.fp === 'string' && known.has(x.data.fp))) jobs.push({path: `golfers/${gid}/sessions/${x.id}`, data: x.data}); });
     });

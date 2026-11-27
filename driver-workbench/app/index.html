@@ -33,7 +33,7 @@
 <div class="wb-card"><div class="wb-lab">Smash, ball ÷ club</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_calc"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_calc">—</div></div>
 <div class="wb-card"><div class="wb-lab">Smash on the device</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_device"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_device">—</div></div>
 </div>
-<nav class="wb-nav" aria-label="Sections"><a href="#dashboard">Dashboard</a><a href="#bag">Bag</a><a href="#consistency">Consistency</a><a href="#check">Check</a><a href="#realistic">Realistic look</a><a href="#outlook">Outlook</a><a href="#topics">Topics</a><a href="#history">History</a><a href="#log">Log by hand</a><a href="#capture">Data to capture</a><a href="#refs">Benchmarks</a><a href="#backlog">Backlog</a></nav>
+<nav class="wb-nav" aria-label="Sections"><a href="#dashboard">Dashboard</a><a href="#bag">Bag</a><a href="#rounds">Rounds</a><a href="#consistency">Consistency</a><a href="#check">Check</a><a href="#realistic">Realistic look</a><a href="#outlook">Outlook</a><a href="#topics">Topics</a><a href="#history">History</a><a href="#log">Log by hand</a><a href="#capture">Data to capture</a><a href="#refs">Benchmarks</a><a href="#backlog">Backlog</a></nav>
 </div>
 <div data-only="ingest" hidden>
 <p class="wb-lede">Drop GSPro exports here on the GSPro PC. Analysis by player is on the iPad, or switch to Analysis above.</p>
@@ -133,6 +133,39 @@
 <thead><tr><th class="wb-l">Club</th><th>Shots</th><th>Carry</th><th>Carry spread</th><th>Total</th><th>Club speed</th><th>Ball speed</th><th>Smash</th><th>Launch</th><th>Spin</th><th>Peak (yd)</th><th>Offline spread</th></tr></thead>
 <tbody data-draw="bagrows"></tbody>
 </table></div>
+</section>
+
+<section id="rounds" data-only="analysis">
+<h2>Rounds</h2>
+<p class="wb-lede">Notes from rounds and practice rounds for the golfer picked at the top: how each part went, what happened, what to work on, and a photo of the scorecard. Made for the phone, right after a round.</p>
+<form id="round-form" class="wb-card wb-write" autocomplete="off">
+<div class="wb-fields wb-round-fields">
+<label>Date<input name="date" type="date" required></label>
+<label>Course<input name="course" type="text" maxlength="80"></label>
+<label>Kind<select name="kind"><option>Tournament</option><option selected>Practice round</option><option>Casual round</option><option>Range or lesson</option></select></label>
+<label>Holes<select name="holes"><option>18</option><option>9</option></select></label>
+<label>Score<input name="score" type="number" inputmode="numeric" min="18" max="200"></label>
+</div>
+<fieldset class="wb-ratings"><legend>How each part went, 1 (poor) to 5 (great)</legend>
+<label>Driving<select name="r_driving"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label>Approach<select name="r_approach"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label>Short game<select name="r_short"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label>Putting<select name="r_putting"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label>Mental game<select name="r_mental"><option value="">–</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+</fieldset>
+<label class="wb-round-text" for="round-what">What happened</label>
+<div class="wb-round-dict"><textarea id="round-what" name="what" rows="4" maxlength="4000" placeholder="Key shots, misses, decisions, how it felt"></textarea><button type="button" class="wb-btn round-mic" data-for="round-what" aria-pressed="false" hidden>Speak</button></div>
+<label class="wb-round-text" for="round-workon">What to work on</label>
+<div class="wb-round-dict"><textarea id="round-workon" name="workon" rows="2" maxlength="2000" placeholder="One or two things for practice"></textarea><button type="button" class="wb-btn round-mic" data-for="round-workon" aria-pressed="false" hidden>Speak</button></div>
+<p class="wb-note" id="round-live" aria-live="polite" hidden></p>
+<p class="wb-note" id="round-mic-hint">To speak a note, tap the mic on your keyboard.</p>
+<div class="wb-actions" id="round-photo-wrap" hidden><label class="wb-btn" id="round-photo-label" for="round-photo">Add scorecard photo</label><input id="round-photo" type="file" accept="image/*" class="wb-vh"><button type="button" id="round-read" class="wb-btn" hidden>Read scores</button><button type="button" id="round-photo-remove" class="wb-btn" hidden>Remove photo</button></div>
+<img id="round-thumb" class="wb-round-thumb" alt="Scorecard photo" hidden>
+<div class="wb-actions"><button type="button" id="round-holes-add" class="wb-btn">Enter hole by hole</button></div>
+<div id="round-holes"></div>
+<div class="wb-actions"><button type="submit" id="round-save" class="wb-btn wb-btn-main">Save round</button><button type="button" id="round-cancel" class="wb-btn" hidden>Cancel edit</button><span class="wb-msg" id="round-msg" hidden></span></div>
+</form>
+<div data-draw="rounds"></div>
 </section>
 
 <section id="consistency" data-only="analysis">
@@ -370,6 +403,7 @@
 <script src="runtime.js"></script>
 <script src="app.js"></script>
 <script src="import.js"></script>
+<script src="rounds.js"></script>
 <script>dash.start();</script>
 </body>
 </html>

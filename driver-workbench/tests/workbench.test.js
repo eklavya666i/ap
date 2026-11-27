@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -180,6 +180,37 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   await sleep(100);
   const winB = w.dash.data('windows').data;
   check(winB.launch[0] > winA.launch[0], 'the slower golfer gets a higher launch window');
+  // Rounds: a round saved from the form is listed, edited in place, kept in backups and restored if lost.
+  w.WB.setMode('analysis');
+  const rf = doc.getElementById('round-form');
+  check(rf && rf.elements.date.value.length === 10 && doc.getElementById('round-mic-hint').hidden === false && doc.getElementById('round-photo-wrap').hidden, 'round form opens with today and no mic or photo where they are unavailable');
+  rf.elements.course.value = 'Test Links'; rf.elements.score.value = '78'; rf.elements.r_driving.value = '4'; rf.elements.r_putting.value = '2';
+  rf.elements.what.value = 'Fairways in play, two three-putts.';
+  doc.getElementById('round-holes-add').click();
+  const hin = doc.querySelectorAll('#round-holes tbody tr');
+  hin[0].querySelectorAll('input')[0].value = '4'; hin[0].querySelectorAll('input')[0].dispatchEvent(new w.Event('input'));
+  hin[0].querySelectorAll('input')[1].value = '5'; hin[0].querySelectorAll('input')[1].dispatchEvent(new w.Event('input'));
+  rf.requestSubmit();
+  await sleep(250);
+  let rk = [...M.docs.keys()].filter((k) => k.includes('/rounds/'));
+  const rd = rk.length === 1 ? M.docs.get(rk[0]) : {};
+  check(hin.length === 18 && rk.length === 1 && rd.score === 78 && rd.ratings.driving === 4 && rd.ratings.putting === 2 && rd.holes.length === 1 && rd.holes[0].score === 5, 'saves a round with score, ratings and hole scores');
+  const rlist = doc.querySelector('[data-draw="rounds"]');
+  check(rlist.textContent.includes('Test Links') && rlist.textContent.includes('Putting 2/5'), 'lists the round with its ratings');
+  [...rlist.querySelectorAll('button')].find((b) => b.textContent === 'Edit').click();
+  check(rf.elements.course.value === 'Test Links' && doc.getElementById('round-save').textContent === 'Update round', 'opens a saved round for editing');
+  rf.elements.score.value = '77'; rf.requestSubmit();
+  await sleep(250);
+  rk = [...M.docs.keys()].filter((k) => k.includes('/rounds/'));
+  check(rk.length === 1 && M.docs.get(rk[0]).score === 77, 'updates the round in place');
+  const rb = JSON.stringify(w.WB.backup());
+  await M.db.doc(rk[0]).delete();
+  await sleep(80);
+  doc.getElementById('restore-text').value = rb;
+  doc.getElementById('restore-go').click();
+  await sleep(600);
+  check(M.docs.has(rk[0]) && M.docs.get(rk[0]).course === 'Test Links', 'backup and restore bring back a lost round');
+
   check(errors.length === 0, 'no script errors' + (errors.length ? ': ' + errors.join(' | ') : ''));
   console.log(failed ? `${failed} failed` : 'all passed');
   process.exit(failed ? 1 : 0);

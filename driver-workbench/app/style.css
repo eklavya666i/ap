@@ -220,3 +220,23 @@ textarea{font:inherit;font-size:16px;width:100%;min-height:110px;padding:10px;bo
 @media (max-width:600px){.wb-topic-detail{text-align:left;max-width:none}.wb-drop{min-height:120px}}
 @media (prefers-reduced-motion:reduce){.wb-drop{transition:none}.dash-skeleton{animation:none}}
 @media print{.wb-nav,#import,#log,.wb-write{display:none}}
+
+.wb-round-fields{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.wb-ratings{border:0;padding:0;margin:14px 0 4px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.wb-ratings legend{font-size:14px;color:var(--color-fg-muted);margin-bottom:6px;padding:0}
+.wb-ratings label{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.wb-round-text{display:block;margin:14px 0 6px;font-weight:600}
+.wb-round-dict{display:flex;gap:8px;align-items:flex-start}
+.wb-round-dict textarea{flex:1;min-width:0;font:inherit;font-size:16px;padding:8px 10px;border-radius:8px;border:1px solid var(--color-border-line);background:transparent;color:inherit}
+.wb-round-thumb{display:block;max-width:min(100%,260px);max-height:260px;margin-top:10px;border-radius:8px;border:1px solid var(--color-border-line)}
+.wb-vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wb-holes-wrap{overflow-x:auto;margin-top:8px}
+.wb-holes{border-collapse:collapse;font-size:14px}
+.wb-holes th,.wb-holes td{padding:3px;border-bottom:1px solid var(--color-border-line);text-align:center}
+.wb-holes input{width:2.6em;min-width:0;padding:6px 2px;font:inherit;font-size:16px;text-align:center}
+.wb-holes select{min-width:0;width:3.5em;padding:6px 2px;font:inherit;font-size:16px}
+.wb-holes tfoot td{font-weight:600}
+.wb-rounds{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:12px}
+.wb-round h3{margin:0 0 4px;font-size:16px}
+.wb-round-score{margin:0 0 6px;font-weight:600}
+.wb-round-ratings .wb-chip{margin:2px 6px 2px 0}
