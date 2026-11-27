@@ -133,6 +133,25 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   await sleep(150);
   check(M.docs.get(fastPath).has_raw === true && M.docs.has(fastPath.replace('/sessions/', '/raw/')) && [...M.docs.keys()].filter((k) => k.includes('/sessions/')).length === nBefore, 'attaches the original without a duplicate session');
 
+  // Older sessions took the file's saved date; a re-drop now reads it from the file name. Same shots, other date: still recognized.
+  const slowPath = saved.find((k) => M.docs.get(k).file === 'slow_2026-11-25.csv');
+  const legacy2 = Object.assign({}, M.docs.get(slowPath));
+  delete legacy2.has_raw; delete legacy2.schema;
+  await M.db.doc(slowPath).set(legacy2);
+  await M.db.doc(slowPath.replace('/sessions/', '/raw/')).delete();
+  await sleep(80);
+  P.start('auto', null, [file('slow_2026-11-26.csv', FILES['slow_2026-11-25.csv'])]);
+  await sleep(150);
+  check(P.state.sessions[0].date === '2026-11-26' && P.plan().length === 1 && P.plan()[0].kind === 'attach', 'recognizes a session saved under another date');
+  await P.save();
+  await sleep(150);
+  check(M.docs.get(slowPath).has_raw === true && [...M.docs.keys()].filter((k) => k.includes('/sessions/')).length === nBefore, 'attaches its original without a duplicate');
+  P.start('auto', null, [file('both_2026-11-19.csv', FILES['both_2026-11-18.csv'])]);
+  await sleep(150);
+  check(P.state.sessions.length > 0 && P.state.sessions.every((s) => s.dup) && P.plan().length === 0, 'recognizes a split session saved under another date');
+  doc.getElementById('csvcancel').click();
+  await sleep(30);
+
   // Backup, lose some data, restore: only the missing items come back.
   const backup = JSON.stringify(w.WB.backup());
   const lost = saved.slice(0, 2);

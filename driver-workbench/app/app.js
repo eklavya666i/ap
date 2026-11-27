@@ -528,7 +528,7 @@ dash.draw('gname', (el) => { const g = WB.golfer(); el.textContent = g ? g.name 
 })();
 
 /* Backlog: planned work, kept in the workbench's own store. */
-const PRIOS = ['Now', 'Next', 'Later'], STATUSES = ['Planned', 'Doing', 'Done'];
+const PRIOS = ['Now', 'Next', 'Later'], STATUSES = ['Planned', 'Doing', 'Waiting', 'Done'];
 dash.draw('backlogrows', (el) => {
   const b = dash.data('backlog');
   el.replaceChildren();
@@ -547,7 +547,7 @@ dash.draw('backlogrows', (el) => {
       const meta = document.createElement('span'); meta.className = 'wb-bl-meta';
       if (typeof r.area === 'string' && r.area) { const a = document.createElement('span'); a.className = 'wb-chip none'; a.textContent = r.area.slice(0, 30); meta.append(a); }
       const st = STATUSES.includes(r.status) ? r.status : 'Planned';
-      const chip = document.createElement('span'); chip.className = 'wb-chip wb-ro-only ' + (st === 'Done' ? 'ok' : st === 'Doing' ? 'warn' : 'none'); chip.textContent = st;
+      const chip = document.createElement('span'); chip.className = 'wb-chip wb-ro-only ' + (st === 'Done' ? 'ok' : st === 'Doing' ? 'warn' : st === 'Waiting' ? 'wait' : 'none'); chip.textContent = st;
       const sel = document.createElement('select'); sel.className = 'wb-bl-status wb-write'; sel.setAttribute('aria-label', 'Status of ' + r.title.slice(0, 60));
       STATUSES.forEach((s) => { const o = document.createElement('option'); o.value = s; o.textContent = s; sel.append(o); });
       sel.value = st;

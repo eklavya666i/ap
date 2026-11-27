@@ -49,7 +49,7 @@ Drop any number of older exports at once (up to 300 files per drop):
 - Files are split into **sessions by date**, from a date column in the file, or a date in the file name, or else the day the file was saved. Sessions dated only by the file's save time are marked with `*` in the preview; check their weeks.
 - Each session goes to a golfer by **driver club speed**: the faster golfer's typical speed is learned from their saved data, and the other golfer's from the files. A session where both hit is **split shot by shot**. Other clubs are matched using tour-average speed ratios.
 - **Weeks** are counted from each golfer's week 1. Sessions before week 1 get week 0 or below.
-- Sessions already saved are **skipped**, so dropping the same folder twice is safe.
+- Sessions already saved are **skipped**, so dropping the same folder twice is safe. They are matched by their shots as well as their date, so sessions saved before dates were read from GSPro file names are recognized too, and get their original files attached.
 - Every row of the preview can be changed before saving. After saving, a session's week can be changed, or the session removed, under **Imported files**.
 
 ## Golfer settings

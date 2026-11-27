@@ -93,16 +93,36 @@
     for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
     return 'f' + h.toString(16).padStart(8, '0');
   };
-  /* Saved sessions by fingerprint, so a file dropped again is recognized; whole sessions saved without their original file can have it attached. */
+  /* Date-free session key: the ball and club speeds of every shot, in any order. A session saved under another date
+     (for example before dates were read from GSPro file names), or split between golfers, is still recognized. */
+  WB.speedPairs = function (rows, cols) {
+    var bi = cols.indexOf('ball_speed'), ci = cols.indexOf('club_speed');
+    var pv = function (r, i) { var v = i < 0 ? null : r[i]; return v === null || v === undefined || v === '' ? '' : String(v); };
+    return rows.map(function (r) { return pv(r, bi) + '/' + pv(r, ci); });
+  };
+  WB.bodyKey = function (pairs) {
+    var s = 'b|' + pairs.length + '|' + pairs.slice().sort().join(','), h = 0x811c9dc5;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+    return 'b' + h.toString(16).padStart(8, '0');
+  };
+  /* Saved sessions by fingerprint and by date-free key, so a file dropped again is recognized; whole sessions saved without their original file can have it attached. */
   WB.knownSessions = function () {
-    var map = new Map();
+    var map = new Map(), bodies = new Map();
     Object.keys(raw).forEach(function (gid) {
       (raw[gid].imports || []).forEach(function (s) {
         var whole = !s.src_fp || s.src_fp === s.fp;
         if (s.fp) map.set(s.fp, {gid: gid, id: s.id, has_raw: s.has_raw, whole: whole});
         if (s.src_fp && !map.has(s.src_fp)) map.set(s.src_fp, {gid: gid, id: s.id, has_raw: s.has_raw, whole: false});
+        var d = s._doc || {}, rows = [];
+        try { rows = JSON.parse(d.shots_json || '[]'); } catch (e) { rows = []; }
+        if (!Array.isArray(rows) || !rows.length) return;
+        var pairs = WB.speedPairs(rows, Array.isArray(d.cols) ? d.cols : (s.cols || []));
+        var g = whole ? 'one:' + gid + '/' + s.id : 'src:' + s.src_fp, b = bodies.get(g);
+        if (b) b.pairs = b.pairs.concat(pairs);
+        else bodies.set(g, {pairs: pairs, ref: {gid: gid, id: s.id, has_raw: s.has_raw, whole: whole}});
       });
     });
+    bodies.forEach(function (b) { var k = WB.bodyKey(b.pairs); if (!map.has(k)) map.set(k, b.ref); });
     return map;
   };
   /* Everything saved, as one JSON-ready object: golfers, typed weeks, sessions (all clubs and shots) and the backlog.

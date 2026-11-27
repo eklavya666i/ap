@@ -272,12 +272,12 @@
         rows.forEach((r) => clubs.set(r[0], (clubs.get(r[0]) || 0) + 1));
         const driver = driverOf(clubs);
         const dvals = rows.filter((r) => r[0] === driver).map((r) => validClubSpeed(r, st.cols)).filter((v) => v !== null);
-        const fp = WB.fp(date, rows, ['club'].concat(st.cols));
+        const fp = WB.fp(date, rows, ['club'].concat(st.cols)), bk = WB.bodyKey(WB.speedPairs(rows, ['club'].concat(st.cols)));
         const s = {key: f.name + '|' + date, file: f.name, label: multi ? f.name + ' · ' + date : f.name, date, dateFrom: st.dates.some(Boolean) ? 'file' : fd.from,
-          cols: st.cols, rows, rawLines, head, units: st.units, assumed: st.assumed, dropped: idxAll.length - rows.length, clubs, driver, dvals, dspeed: median(dvals), fp, dup: saved.has(fp) || seen.has(fp)};
-        const k = saved.get(fp);
-        s.attachTo = k && k.whole && !k.has_raw && !seen.has(fp) ? k : null;
-        seen.add(fp);
+          cols: st.cols, rows, rawLines, head, units: st.units, assumed: st.assumed, dropped: idxAll.length - rows.length, clubs, driver, dvals, dspeed: median(dvals), fp, dup: saved.has(fp) || saved.has(bk) || seen.has(fp) || seen.has(bk)};
+        const k = saved.get(fp) || saved.get(bk);
+        s.attachTo = k && k.whole && !k.has_raw && !seen.has(fp) && !seen.has(bk) ? k : null;
+        seen.add(fp); seen.add(bk);
         let mix = dvals.length >= 6 ? split2(dvals) : null;
         if (!mix) {
           const top = [...clubs.entries()].sort((a, b) => b[1] - a[1])[0];
