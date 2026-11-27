@@ -1397,3 +1397,26 @@ function condEditor(r, path) {
   det.append(sum, grid, sv);
   return det;
 }
+
+
+/* Undo the last import: the sessions saved in the most recent import (within two hours), with their original-file records. */
+dash.draw('undobatch', (el) => {
+  el.replaceChildren();
+  let last = null;
+  const each = (fn) => WB.golfers().forEach((g) => { const r = WB.rawFor(g.id); ((r && r.imports) || []).forEach((i) => fn(g, i)); });
+  each((g, i) => { if (typeof i.imported_at === 'string' && (!last || i.imported_at > last)) last = i.imported_at; });
+  if (!last || !(Date.now() - Date.parse(last) < 2 * 3600e3)) return;
+  const items = [];
+  each((g, i) => { if (i.imported_at === last) items.push({gid: g.id, id: i.id}); });
+  if (!items.length) return;
+  const when = new Date(last).toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'});
+  const t = document.createElement('span');
+  t.textContent = `Last import: ${items.length} session${items.length === 1 ? '' : 's'} at ${when}. `;
+  el.append(t, confirmButton('Undo this import', `Remove ${items.length} session${items.length === 1 ? '' : 's'}`, async () => {
+    for (const it of items) {
+      await WB.remove(`golfers/${it.gid}/sessions/${it.id}`);
+      for (const p of ['', '-p2', '-p3']) { try { await WB.remove(`golfers/${it.gid}/raw/${it.id}${p}`); } catch (e) { /* none */ } }
+      await new Promise((r) => setTimeout(r, 60));
+    }
+  }));
+});

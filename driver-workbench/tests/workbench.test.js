@@ -234,6 +234,22 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   await sleep(600);
   check(M.docs.has(rk[0]) && M.docs.get(rk[0]).course === 'Test Links', 'backup and restore bring back a lost round');
 
+  // Skipped rows are listed with their reason; the last import can be undone in one step.
+  w.WB.setMode('ingest');
+  await sleep(150);
+  P.start('auto', null, [file('fast_2026-11-10.csv', FILES['fast_2026-11-10.csv'] + '\nAverage,,,,\nnot a shot,,,\n')]);
+  await sleep(150);
+  const rj = doc.querySelector('.wb-rejects summary');
+  check(rj && rj.textContent.startsWith('2 rows skipped') && rj.textContent.includes('1 summary row') && rj.textContent.includes('1 no ball speed'), 'lists skipped rows with reasons');
+  doc.getElementById('csvcancel').click();
+  await sleep(150);
+  const ubox = doc.querySelector('[data-draw="undobatch"]'), ub = ubox && ubox.querySelector('button');
+  const nS0 = [...M.docs.keys()].filter((k) => k.includes('/sessions/')).length;
+  check(ub && ubox.textContent.includes('Last import: ' + nS0 + ' sessions'), 'offers to undo the last import');
+  ub.click(); ub.click();
+  await sleep(1200);
+  check([...M.docs.keys()].filter((k) => k.includes('/sessions/') || k.includes('/raw/')).length === 0, 'undo removes the import’s sessions and original files');
+
   check(errors.length === 0, 'no script errors' + (errors.length ? ': ' + errors.join(' | ') : ''));
   console.log(failed ? `${failed} failed` : 'all passed');
   process.exit(failed ? 1 : 0);

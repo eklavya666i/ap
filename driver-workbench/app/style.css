@@ -249,3 +249,5 @@ textarea{font:inherit;font-size:16px;width:100%;min-height:110px;padding:10px;bo
 .wb-cond-grid input,.wb-cond-grid select{font:inherit;font-size:16px;min-width:0}
 .wb-fields .wb-cond-check,.wb-cond-grid .wb-cond-check{flex-direction:row;align-items:center;gap:8px;align-self:end;min-height:44px}
 .wb-cond-check input[type=checkbox]{width:22px;height:22px;min-height:0;padding:0;margin:0;flex:none}
+.wb-rejects{margin:8px 0}
+.wb-rejects summary{cursor:pointer;color:var(--color-fg-muted)}

@@ -168,14 +168,15 @@
     const detected = {};
     SPEEDS.forEach((f) => { if (map[f] !== undefined) detected[f] = speedUnit(unitText(f)); });
     DISTS.forEach((f) => { if (map[f] !== undefined) detected[f] = distUnit(unitText(f)); });
-    const shots = [], clubs = new Map();
+    const shots = [], clubs = new Map(), rejects = [];
     let summary = 0;
+    const reject = (r, why) => { if (rejects.length < 200) rejects.push({line: r + 1, why, text: String(rows[r].raw || '').slice(0, 140)}); };
     for (let r = start; r < rows.length; r++) {
       const row = rows[r].c, rawLine = rows[r].raw;
       const label = [map.club, map.shotno, 0].map((k) => (k === undefined ? '' : row[k] || '')).join(' ').toLowerCase();
-      if (/\b(avg|average|averages|mean|median|std|stdev|deviation|min|max|total|totals|summary|consistency)\b/.test(label)) { summary++; continue; }
+      if (/\b(avg|average|averages|mean|median|std|stdev|deviation|min|max|total|totals|summary|consistency)\b/.test(label)) { summary++; reject(r, 'summary row'); continue; }
       const ball = toNum(row[map.ball_speed], dec);
-      if (ball === null) continue;
+      if (ball === null) { if (row.some((c) => String(c).trim() !== '')) reject(r, 'no ball speed'); continue; }
       const v = {};
       Object.keys(map).forEach((f) => { if (f !== 'club' && f !== 'shotno' && f !== 'date') v[f] = toNum(row[map[f]], dec); });
       const club = map.club !== undefined ? (row[map.club] || '').trim().slice(0, 30) || 'Unlabelled' : 'All shots';
@@ -185,7 +186,7 @@
     if (!shots.length) return {error: 'No shots found in this file.'};
     if (shots.every((s) => s.n !== null)) shots.sort((a, b) => (a.d || '').localeCompare(b.d || '') || a.n - b.n);
     const unmapped = header.filter((h, k) => h && !Object.values(map).includes(k)).slice(0, 30);
-    return {delim, dec, map, mapped: Object.keys(map), unmapped, detected, unitRow: !!unitRow, shots, clubs, summary, headerRaw, unitRaw};
+    return {delim, dec, map, mapped: Object.keys(map), unmapped, detected, unitRow: !!unitRow, shots, clubs, summary, rejects, headerRaw, unitRaw};
   }
 
   const MODES = {imperial: ['mph', 'yd'], ms: ['ms', 'm'], kmh: ['kmh', 'm']};
@@ -431,6 +432,18 @@
       bad.forEach((f) => { const li = document.createElement('li'); li.className = 'wb-badc'; li.textContent = f.name + ': ' + f.error; ul.append(li); });
       if (S.over) { const li = document.createElement('li'); li.className = 'wb-badc'; li.textContent = `${S.over} more files weren’t read; drop up to ${MAX_FILES} at a time.`; ul.append(li); }
       el.append(ul);
+    }
+    const rej = S.files.filter((f) => f.parsed && f.parsed.rejects && f.parsed.rejects.length);
+    if (rej.length) {
+      const all = rej.flatMap((f) => f.parsed.rejects.map((x) => Object.assign({file: f.name}, x)));
+      const by = {}; all.forEach((x) => { by[x.why] = (by[x.why] || 0) + 1; });
+      const det = document.createElement('details'); det.className = 'wb-rejects';
+      const sm = document.createElement('summary');
+      sm.textContent = `${all.length} row${all.length === 1 ? '' : 's'} skipped: ` + Object.entries(by).map(([k, n]) => `${n} ${k}${n === 1 ? '' : 's'}`).join(', ');
+      const ul = document.createElement('ul'); ul.className = 'wb-files';
+      all.slice(0, 200).forEach((x) => { const li = document.createElement('li'); li.textContent = `${x.file}, line ${x.line}, ${x.why}: ${x.text || '(empty)'}`; ul.append(li); });
+      det.append(sm, ul);
+      el.append(det);
     }
     const wkWrap = $('csvweek-wrap'), gWrap = $('csvgolfer-wrap');
     if (wkWrap) wkWrap.hidden = !single;
