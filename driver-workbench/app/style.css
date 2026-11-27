@@ -409,3 +409,12 @@ text.lab-zone{font-size:13px;font-weight:700;fill:#f2f1ed}
 .lab-libc dt{color:var(--color-fg-muted)}
 .lab-libc dd{margin:0}
 @media(max-width:600px){.lab-covrow{grid-template-columns:6em minmax(0,1fr)}.lab-covax{margin-left:calc(6em + 10px)}.lab-dumb{grid-template-columns:minmax(0,1fr) auto}.lab-dk{grid-column:1/-1}.lab-heat{grid-template-columns:4.4em repeat(3,minmax(0,1fr))}.lab-heat.lab-heat4{grid-template-columns:3.6em repeat(4,minmax(0,1fr))}.lab-cell b{font-size:17px}}
+
+/* What's working and what isn't */
+.wb-pat{margin-top:var(--cds-gap-md)}
+.wb-pat .wb-card h3{margin:0 0 6px}
+.wb-pat-ok{border-top:3px solid var(--color-ok)}.wb-pat-warn{border-top:3px solid var(--color-warn)}
+.wb-pat-list{margin:6px 0 0;padding-left:18px;font-size:15px;line-height:1.5}
+.wb-pat-list li{margin:4px 0}
+.wb-pat-h{margin:var(--cds-gap-xl) 0 6px}
+.wb-pat-t th[scope=row]{text-align:left;font-weight:500;color:var(--color-fg)}

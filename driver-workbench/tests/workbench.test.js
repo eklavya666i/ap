@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js', 'lab.js', 'flight.js', 'swing.js', 'partials.js', 'drills.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js', 'lab.js', 'flight.js', 'swing.js', 'partials.js', 'drills.js', 'patterns.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -331,6 +331,19 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   const r2 = await w.WB.importNotes(nf);
   const pk = [...M.docs.keys()].find((k) => k.endsWith('/rounds/ptest1'));
   check(r1.ok && pk && M.docs.get(pk).from === 'phone' && M.docs.get(pk).course === 'Phone Course' && /already here/.test(r2.text) && !(await w.WB.importNotes({app: 'x'})).ok, 'imports notes from a phone once');
+
+  // What's working and what isn't: patterns across rounds with hole-by-hole scores.
+  const PARS = [4, 4, 3, 5, 4, 4, 3, 4, 5, 4, 3, 4, 5, 4, 4, 3, 4, 5];
+  for (let k = 0; k < 4; k++) {
+    const holes = PARS.map((par, i) => ({hole: i + 1, par, score: par === 3 ? 4 : par === 5 ? 5 : (i + 1) % 2 ? 4 : 5, putts: par === 3 ? 3 : 2, fairway: par === 3 ? null : par === 5, green: par !== 4}));
+    await M.db.doc('golfers/a/rounds/pat' + k).set({schema: 1, date: '2026-11-1' + k, course: 'Pattern CC', kind: 'Practice round', holes_played: 18, score: holes.reduce((n, h) => n + h.score, 0), ratings: {driving: 2, approach: 4, short: 4, putting: 2, mental: 4}, what: '', work_on: k === 3 ? 'Lag putting from 40 feet.' : '', holes});
+  }
+  w.WB.setGolfer('a'); w.dash.setParams({range: 'all'});
+  await sleep(250);
+  const pat = doc.querySelector('[data-draw="patterns"]').textContent;
+  check(pat.includes('Par 5s are the best scoring') && pat.includes('Par 3s cost the most: +1.0 a hole over 16 holes') && pat.includes('Three-putts: 4.0 a round') && pat.includes('Fairways hit: 29% of 56') && pat.includes('Up and down after a missed green: 40% of 40') && pat.includes('Pattern CC, hole 3 (par 3)') && pat.includes('Lag putting from 40 feet'), 'finds what is working and what is not across rounds');
+  w.WB.setGolfer('b');
+  await sleep(150);
 
   // Drill-down: golfer, then week, then session, then one shot with its fields and original line.
   w.WB.setMode('analysis');

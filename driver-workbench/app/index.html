@@ -243,6 +243,18 @@
 <div data-draw="rounds"></div>
 </section>
 
+<section id="patterns" data-only="analysis" data-view="rounds">
+<h2>What’s working and what isn’t</h2>
+<p class="wb-note">Patterns across <b data-draw="gname">—</b>’s rounds, from hole-by-hole scores where they were entered and the 1–5 ratings; range or lesson entries are left out. The date range above applies.</p>
+<div data-draw="patterns"></div>
+<details class="wb-details"><summary>How this is judged</summary><ul>
+<li><b>Working:</b> fairways hit 60% or more, greens in regulation 50% or more, up and down 40% or more, a three-putt a round or fewer, the best-scoring hole type, and the highest-rated area when it is 3.5 or more.</li>
+<li><b>Needs work:</b> fairways under 45%, greens under 30%, up and down under 20%, two or more three-putts or three or more doubles a round, the costliest hole type, and the lowest-rated area when it is 3 or less.</li>
+<li>Each needs enough holes to mean something: 10 fairways, 18 greens, 8 missed greens or 9 holes of a type.</li>
+<li><b>Range against course:</b> the share of drives in the last 4 weeks on the range that stay inside the fairway width picked at the top, against fairways hit on the course. A gap of 15 points or more is flagged.</li>
+</ul></details>
+</section>
+
 <section id="shots" data-only="analysis" data-view="data">
 <h2>Shots</h2>
 <p class="wb-lede">Every shot behind the numbers. Pick a week, then a session, then a shot to see all its fields, the line it came from in the GSPro file, and its flight. The date range above applies.</p>
@@ -530,6 +542,7 @@
 <script src="swing.js"></script>
 <script src="partials.js"></script>
 <script src="drills.js"></script>
+<script src="patterns.js"></script>
 <script>dash.start();</script>
 </body>
 </html>
