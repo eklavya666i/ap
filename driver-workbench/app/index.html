@@ -33,7 +33,7 @@
 <div class="wb-card"><div class="wb-lab">Smash, ball ÷ club</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_calc"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_calc">—</div></div>
 <div class="wb-card"><div class="wb-lab">Smash on the device</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_device"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_device">—</div></div>
 </div>
-<nav class="wb-nav" aria-label="Sections"><a href="#dashboard">Dashboard</a><a href="#bag">Bag</a><a href="#rounds">Rounds</a><a href="#consistency">Consistency</a><a href="#check">Check</a><a href="#realistic">Realistic look</a><a href="#outlook">Outlook</a><a href="#topics">Topics</a><a href="#history">History</a><a href="#log">Log by hand</a><a href="#capture">Data to capture</a><a href="#refs">Benchmarks</a><a href="#backlog">Backlog</a></nav>
+<nav class="wb-nav" aria-label="Sections"><a href="#dashboard">Dashboard</a><a href="#bag">Bag</a><a href="#rounds">Rounds</a><a href="#shots">Shots</a><a href="#consistency">Consistency</a><a href="#check">Check</a><a href="#realistic">Realistic look</a><a href="#outlook">Outlook</a><a href="#topics">Topics</a><a href="#history">History</a><a href="#log">Log by hand</a><a href="#capture">Data to capture</a><a href="#refs">Benchmarks</a><a href="#backlog">Backlog</a></nav>
 </div>
 <div data-only="ingest" hidden>
 <p class="wb-lede">Drop GSPro exports here on the GSPro PC. Analysis by player is on the iPad, or switch to Analysis above.</p>
@@ -189,6 +189,13 @@
 <div class="wb-actions"><button type="submit" id="round-save" class="wb-btn wb-btn-main">Save round</button><button type="button" id="round-cancel" class="wb-btn" hidden>Cancel edit</button><span class="wb-msg" id="round-msg" hidden></span></div>
 </form>
 <div data-draw="rounds"></div>
+</section>
+
+<section id="shots" data-only="analysis">
+<h2>Shots</h2>
+<p class="wb-lede">Every shot behind the numbers. Pick a week, then a session, then a shot to see all its fields, the line it came from in the GSPro file, and its flight. The date range above applies.</p>
+<nav class="wb-crumbs" aria-label="Where you are" data-draw="crumbs"></nav>
+<div data-draw="drill"></div>
 </section>
 
 <section id="consistency" data-only="analysis">
@@ -427,6 +434,7 @@
 <script src="app.js"></script>
 <script src="import.js"></script>
 <script src="rounds.js"></script>
+<script src="shots.js"></script>
 <script>dash.start();</script>
 </body>
 </html>

@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -260,6 +260,23 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   doc.getElementById('restore-go').click();
   await sleep(600);
   check(M.docs.has(rk[0]) && M.docs.get(rk[0]).course === 'Test Links', 'backup and restore bring back a lost round');
+
+  // Drill-down: golfer, then week, then session, then one shot with its fields and original line.
+  w.WB.setMode('analysis');
+  await sleep(150);
+  const drill = doc.querySelector('[data-draw="drill"]');
+  drill.querySelector('tbody button').click();
+  await sleep(120);
+  drill.querySelector('tbody button').click();
+  await sleep(120);
+  const nShotRows = drill.querySelectorAll('tbody tr').length;
+  drill.querySelector('tbody button').click();
+  for (let i = 0; i < 40 && (!drill.querySelector('.wb-line') || drill.querySelector('.wb-line').textContent === 'Loading…'); i++) await sleep(100);
+  const crumbs = doc.querySelector('[data-draw="crumbs"]').textContent;
+  check(nShotRows > 0 && /Week .*›.*›.*Shot 1/.test(crumbs) && drill.textContent.includes('Ball speed') && drill.querySelector('svg') && /\d/.test(drill.querySelector('.wb-line').textContent), 'drills down to one shot with its fields, flight and original line');
+  doc.querySelector('[data-draw="crumbs"] button').click();
+  await sleep(120);
+  check(drill.querySelector('thead th').textContent === 'Week', 'the breadcrumb goes back to the weeks');
 
   // Skipped rows are listed with their reason; the last import can be undone in one step.
   w.WB.setMode('ingest');
