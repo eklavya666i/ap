@@ -298,3 +298,6 @@ input:not([type=checkbox]):not([type=radio]),select{min-height:44px}
 .wb-fw-in{fill:var(--series-1)}
 .wb-fw-out{fill:none;stroke:var(--color-warn);stroke-width:1.8}
 .wb-fw-label{fill:var(--color-fg-muted);font-size:11px}
+.wb-goal-line{stroke:var(--accent);stroke-width:1.5;stroke-dasharray:5 4}
+.wb-goal .wb-num{margin:2px 0 6px}
+.wb-goal svg{width:100%;height:auto;display:block}

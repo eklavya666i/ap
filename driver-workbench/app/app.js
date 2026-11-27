@@ -14,7 +14,7 @@ const num = WB.num;
 function importWeeksOf(imports, target) {
   const groups = new Map();
   imports.forEach((i) => { if (Number.isInteger(i.week) && Math.abs(i.week) <= 260) { const g = groups.get(i.week) || []; g.push(i); groups.set(i.week, g); } });
-  const PT = ['carry', 'offline', 'hla', 'axis', 'face', 'path', 'f2p', 'attack', 'dyn_loft', 'peak', 'descent', 'launch', 'spin', 'club_speed', 'ball_speed'];
+  const PT = ['carry', 'total', 'offline', 'hla', 'axis', 'face', 'path', 'f2p', 'attack', 'dyn_loft', 'peak', 'descent', 'launch', 'spin', 'club_speed', 'ball_speed'];
   return [...groups.entries()].map(([week, g]) => {
     const cols = WB.COLS.filter((c) => g.some((i) => i.cols.includes(c)));
     const rows = g.flatMap((i) => { const at = cols.map((c) => i.cols.indexOf(c)); return i.shots.map((r) => at.map((k) => (k < 0 ? null : r[k]))); });
