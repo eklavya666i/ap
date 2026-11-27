@@ -9,6 +9,7 @@ Offline iPad apps. Each saves its own progress and works without a connection on
 | SAT Daily | https://eklavya666i.github.io/ap/sat/ |
 | Algebra 2: Rational Expressions (4.3–4.5) | https://eklavya666i.github.io/ap/alg2-rational/ |
 | Algebra 2: Topic 4 Prep (Rational Functions) | https://eklavya666i.github.io/ap/alg2-topic4/ |
+| Algebra 2: Rational Expressions, Detailed | https://eklavya666i.github.io/ap/alg2-detailed/ |
 | English 10H (Honors Lit Analysis & Composition 2) | https://eklavya666i.github.io/ap/english10/ |
 
 **AP World History: Modern.** 954 AP-style questions across all nine units, with an explanation for every answer choice. It has 45 mock quizzes (5 per unit), topic drills, a mixed mock weighted like the exam, practice and timed exam modes, and saved progress.
@@ -38,6 +39,19 @@ Offline iPad apps. Each saves its own progress and works without a connection on
 - speed drills with a Functions focus (asymptotes, holes, inverse variation, horizontal asymptotes)
 - a 20-question, 30-minute test sim weighted like the Topic 4 review
 
+**Rational Expressions, Detailed.** A version of Rational Expressions Prep built around typed answers. It keeps its own progress, so it can sit beside the other Algebra apps. It has:
+- answers typed on a math keypad and checked for equivalence, with common mistakes named (a lost restriction, an extraneous root, a sign slip); choices are one tap away
+- fresh numbers on every question from 35 templates, plus the 131 original questions
+- hints in three steps (a nudge, the first step, the full solution) and My Mistakes, where every miss comes back with new numbers
+- mastery (3 right in a row without hints) with reviews on days 1, 3, 7 and 21
+- a daily 5-minute test, lesson quizzes, a 25-question unit test, the test sim, a word-problem workshop and a boss challenge
+- voice lessons that highlight each step as they're read, with "Explain it another way" and We-do checks
+- three speed formats with medals, and a Daily Dash
+- XP, levels, coins, daily quests, badges, streaks and rest days
+- a PIN-locked parent page, plus Back up progress and Restore
+
+Source and build scripts are in [alg2-detailed/src](alg2-detailed/src).
+
 **English 10H.** Honors English 10 at Issaquah High (Honors Lit Analysis & Composition 2), built around the IHS unit order. Units 2, 3 and 4 are built, plus the writing tools for every unit. It has:
 - Unit 4, Lord of the Flies: 12 chapter guides with summaries, key events, symbols to watch, quote hunts and seminar questions, hidden past the chapter Ira has read
 - Unit 2, A Small Place: 4 section guides with Kincaid's rhetorical moves, voices, motifs, a model SOAPSTone and a SOAPSTone tool
@@ -49,6 +63,8 @@ Offline iPad apps. Each saves its own progress and works without a connection on
 - an offline draft checker that marks thesis, evidence, citation, commentary and style problems in the draft, rubric self-scoring, and a feedback-only hand-off to Claude with an AI-use log
 - Coach: what to do next and why; review cards, daily goals, streaks, badges, backup and a parent summary
 
+Source and build scripts are in [english10/src](english10/src).
+
 ## Put an app on an iPad
 
 1. Open the app's link in Safari.
@@ -57,7 +73,7 @@ Offline iPad apps. Each saves its own progress and works without a connection on
 
 Each app gets its own icon. Progress is saved on each device, inside the app. Deleting the icon deletes that device's progress.
 
-If the Cyber, SAT, Rational Expressions, Topic 4 or English 10H link shows World History the first time on an iPad that already has World History installed, wait a few seconds and reload the page once.
+If the Cyber, SAT, Rational Expressions, Topic 4, Detailed or English 10H link shows World History the first time on an iPad that already has World History installed, wait a few seconds and reload the page once.
 
 ## Updating
 
