@@ -5,7 +5,7 @@ Weekly driver analysis for two golfers from GSPro shot exports. It is one app wi
 - **Import station**: on the Windows PC that runs GSPro. Drop exports here.
 - **Analysis**: on the iPad, by player. Dashboards, consistency, a realistic outlook, topics, history and the backlog.
 
-The app is a Claude artifact. It runs inside Claude (the Windows desktop app, the iPad app or claude.ai) and keeps its data in the artifact's own database on the owner's Claude account. This repository holds its source.
+The app is a Claude artifact. It runs inside Claude (the Windows desktop app, the iPad app or claude.ai) and keeps its data in the artifact's own database on the owner's Claude account. This folder, `driver-workbench/` in the [eklavya666i/ap](https://github.com/eklavya666i/ap) repository, holds its source. Unlike the other apps there, it isn't run from that repository's GitHub Pages site.
 
 Live app: **Driver Workbench** in the owner's Claude artifacts (private to the owner).
 
@@ -26,7 +26,7 @@ The installed app asks for no access to your disk: it reads only the files you d
 2. Open the Driver Workbench and click **Install as desktop app** (or **Install as app** from the artifact's menu).
 3. It opens in its own window. Switch to **Analysis** at the top right; the Mac remembers the choice.
 
-To keep the code on the Mac: `git clone https://github.com/eklavya666i/driver-workbench.git` in Terminal (or *Clone repository* in GitHub Desktop).
+To keep the code on the Mac: `git clone https://github.com/eklavya666i/ap.git` in Terminal (or *Clone repository* in GitHub Desktop, with `eklavya666i/ap`). The workbench is in `ap/driver-workbench`; `git pull` inside `ap` brings later changes.
 
 ### iPad: analysis
 
@@ -73,7 +73,7 @@ Launch and spin targets follow each golfer's own club speed: the model's best la
 
 ## Data and privacy
 
-- Files are read on the device. Only the parsed shot numbers are stored.
+- Files are read on the device. Each session's parsed shots and its original CSV lines are stored.
 - Data lives in the artifact's database on the owner's Claude account. The rule `read: view, write: owner` lets only the owner add or change data; anyone the owner shares the workbench with can only read it.
 - Every club and every shot of each session is kept, so the whole-bag view and later versions can analyze all clubs from the same history.
 - **Copy this golfer's shots as CSV** (import station, under Imported files) copies every saved shot to the clipboard as a backup a spreadsheet can open.
@@ -108,7 +108,7 @@ Rules every upgrade follows (for whoever changes the code, including Claude):
 3. New documents carry `schema: 2` (raise it when the shape changes, and add the reader for it here).
 4. Run `npm test` in `tests/` before publishing. It checks importing, sorting, attaching originals, backup and restore, and the analysis on sample data.
 
-## Repository layout
+## Layout of this folder
 
 ```
 app/
@@ -125,14 +125,16 @@ tests/
 
 ## Updating the live app
 
-Changes here don't reach the installed apps by themselves. The live app is published from `app/` to the Claude artifact above: ask Claude to republish from this repository. Installed copies pick up the new version when they reload.
+Changes here don't reach the installed apps by themselves. The live app is published from `app/` to the Driver Workbench artifact: ask Claude to republish from this folder. Installed copies pick up the new version when they reload.
 
 Opening `app/index.html` directly in a browser shows the page without saving, since the database exists only inside Claude.
 
 ## Tests
 
+From the root of the `ap` repository:
+
 ```
-cd tests
+cd driver-workbench/tests
 npm install
 npm test
 ```
