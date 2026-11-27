@@ -250,8 +250,52 @@
     say(r.text, r.ok);
   });
 
+  /* Offline drafts (b62): what's typed is kept on this device; a round that can't be saved waits in a queue and is
+     saved when the connection is back. Saving the same round twice writes the same document, so a retry is safe. */
+  const mem = new Map();  /* used when this view has no browser storage */
+  const store = {get: (k) => { try { if (window.localStorage) return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { /* fall through */ } return mem.has(k) ? mem.get(k) : null; },
+    set: (k, v) => { try { if (window.localStorage) { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); return; } } catch (e) { /* fall through */ } if (v === null) mem.delete(k); else mem.set(k, v); }};
+  const DRAFT = 'wb-round-draft', QUEUE = 'wb-round-queue';
+  const within = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
+  function keepDraft() {
+    if (!form.elements.date.value) return;
+    const f = form.elements, r = {};
+    RATINGS.forEach(([k]) => { r[k] = f['r_' + k].value; });
+    store.set(DRAFT, {date: f.date.value, course: f.course.value, kind: f.kind.value, holes: f.holes.value, score: f.score.value, ratings: r,
+      what: f.what.value, workon: f.workon.value, editing, photo: photo ? {id: photo.id} : null, holesList: holes, at: Date.now()});
+  }
+  function restoreDraft() {
+    const d = store.get(DRAFT);
+    if (!d || Date.now() - d.at > 14 * 864e5 || !(d.what || d.workon || d.course || d.score)) return false;
+    const f = form.elements;
+    f.date.value = d.date || localDate(); f.course.value = d.course || ''; f.kind.value = KINDS.includes(d.kind) ? d.kind : KINDS[1];
+    f.holes.value = d.holes === '9' ? '9' : '18'; f.score.value = d.score || '';
+    RATINGS.forEach(([k]) => { f['r_' + k].value = d.ratings && d.ratings[k] ? d.ratings[k] : ''; });
+    f.what.value = d.what || ''; f.workon.value = d.workon || '';
+    editing = d.editing || null; photo = d.photo && typeof d.photo.id === 'string' ? {id: d.photo.id} : null;
+    holes = Array.isArray(d.holesList) ? cleanCard({holes: d.holesList}).holes : [];
+    drawHoles(); showPhoto();
+    if (editing) { $('round-save').textContent = 'Update round'; $('round-cancel').hidden = false; }
+    say('Draft restored from this device.', true);
+    return true;
+  }
+  async function flushQueue() {
+    const q = store.get(QUEUE) || [];
+    if (!q.length) return;
+    const left = [];
+    for (const job of q) { try { await within(WB.save(job.path, job.body), 8000); } catch (e) { left.push(job); } }
+    store.set(QUEUE, left.length ? left : null);
+    if (q.length > left.length) say(`Saved ${q.length - left.length} round${q.length - left.length === 1 ? '' : 's'} kept on this device while offline.`, true);
+  }
+  WB.flushRoundQueue = flushQueue;
+  form.addEventListener('input', keepDraft);
+  form.addEventListener('change', keepDraft);
+  window.addEventListener('online', flushQueue);
+  setTimeout(flushQueue, 1500);
+
   /* Save, edit, reset. */
   function reset() {
+    store.set(DRAFT, null);
     form.reset();
     form.elements.date.value = localDate();
     editing = null; photo = null; holes = [];
@@ -281,12 +325,19 @@
     const gid = editing ? editing.gid : g.id, id = editing ? editing.id : WB.newId('r');
     const btn = $('round-save');
     btn.disabled = true;
+    const path = 'golfers/' + gid + '/rounds/' + id;
     try {
-      await WB.save('golfers/' + gid + '/rounds/' + id, body);
+      await within(WB.save(path, body), 8000);
       const was = !!editing;
       reset();
       say(was ? 'Round updated.' : 'Round saved.', true);
-    } catch (e) { say('The round couldn’t be saved. Check the connection and try again.', false); }
+    } catch (e) {
+      const q = (store.get(QUEUE) || []).filter((j) => j.path !== path);
+      q.push({path, body});
+      store.set(QUEUE, q);
+      reset();
+      say('No connection: the round is kept on this device and will be saved when the connection is back.', true);
+    }
     btn.disabled = false;
   });
   $('round-cancel').addEventListener('click', () => { reset(); say('', true); });
@@ -353,4 +404,5 @@
   });
 
   reset();
+  restoreDraft();
 })();

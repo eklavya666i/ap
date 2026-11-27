@@ -71,6 +71,7 @@ On the import station, under **Golfer settings**:
 - **Realistic look** and **Outlook**: carry and total from a ball-flight model calibrated to TrackMan data, step by step (strike, attack angle, speed), and the speed outlook with a range.
 - **Shots**: drill down from the golfer to a week, a session and one shot; the inspector shows every field, whether the shot counts, the line it came from in the GSPro file, and a side view of its flight.
 - **Golf notes** (`notes/`): a small offline app for a golfer's own phone, served by this repository's GitHub Pages at `/ap/driver-workbench/notes/`. Notes, ratings and scorecard photos stay on the phone (IndexedDB) until Send to coach shares one JSON file; **Import notes from a phone** in Rounds adds them to that golfer's rounds. It needs no Claude account.
+- **Offline drafts**: round notes typed in the workbench are kept on the device as a draft; a round that can't be saved (no connection) waits on the device and is saved when the connection is back.
 - **Rounds**: notes from rounds and practice rounds, made for the phone: ratings for driving, approach, short game, putting and the mental game, what happened, what to work on, voice notes (Claude dictation where the device offers it, else the keyboard's mic) and a scorecard photo that Claude can read into hole-by-hole scores to check and save.
 - **Topics**, **History**, **Log a week by hand**, **Data to capture**, **Benchmarks**, **Backlog**.
 

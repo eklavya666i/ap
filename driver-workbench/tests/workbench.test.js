@@ -288,6 +288,17 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   await sleep(600);
   check(M.docs.has(rk[0]) && M.docs.get(rk[0]).course === 'Test Links', 'backup and restore bring back a lost round');
 
+  // Offline: a round that can't be saved waits on the device and is saved when the connection is back.
+  const realSave = w.WB.save;
+  w.WB.save = () => Promise.reject(new Error('offline'));
+  rf.elements.course.value = 'Offline Links'; rf.elements.what.value = 'Typed without a connection.'; rf.requestSubmit();
+  await sleep(200);
+  const kept = doc.getElementById('round-msg').textContent.includes('kept on this device') && ![...M.docs.values()].some((d) => d.course === 'Offline Links');
+  w.WB.save = realSave;
+  w.dispatchEvent(new w.Event('online'));
+  await sleep(400);
+  check(kept && [...M.docs.values()].some((d) => d.course === 'Offline Links') && doc.getElementById('round-msg').textContent.includes('kept on this device while offline'), 'keeps a round offline and saves it when back online');
+
   // Notes from a golfer's phone are added to that golfer's rounds once.
   const nf = {app: 'driver-workbench-notes', format: 1, golfer: 'Golfer A', rounds: [{id: 'ptest1', date: '2026-11-26', kind: 'Practice round', course: 'Phone Course', score: 80, ratings: {driving: 3}, what: 'From the phone'}]};
   const r1 = await w.WB.importNotes(nf);
