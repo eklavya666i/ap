@@ -33,7 +33,7 @@
 <div class="wb-card"><div class="wb-lab">Smash, ball ÷ club</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_calc"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_calc">—</div></div>
 <div class="wb-card"><div class="wb-lab">Smash on the device</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_device"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_device">—</div></div>
 </div>
-<nav class="wb-nav wb-views" aria-label="Views" data-only="analysis"><button type="button" data-goto="command">Command center</button><button type="button" data-goto="progress">Progress and forecast</button><button type="button" data-goto="driver">Driver lab</button><button type="button" data-goto="bag">Bag</button><button type="button" data-goto="rounds">Round journal</button><button type="button" data-goto="data">Data hub</button></nav>
+<nav class="wb-nav wb-views" aria-label="Views" data-only="analysis"><button type="button" data-goto="command">Command center</button><button type="button" data-goto="progress">Progress and forecast</button><button type="button" data-goto="driver">Driver lab</button><button type="button" data-goto="bag">Bag</button><button type="button" data-goto="calib">Calibration lab</button><button type="button" data-goto="rounds">Round journal</button><button type="button" data-goto="data">Data hub</button></nav>
 </div>
 <div data-only="ingest" hidden>
 <p class="wb-lede">Drop GSPro exports here on the GSPro PC. Analysis by player is on the iPad, or switch to Analysis above.</p>
@@ -404,6 +404,12 @@
 </div>
 </section>
 
+<section id="spincheck" data-only="analysis" data-view="calib">
+<h2>Spin check</h2>
+<p class="wb-lede">Is the monitor's spin believable? Each club's median reported spin against a typical band, and how far that moves carry and total.</p>
+<div data-draw="spincheck"></div>
+</section>
+
 <section id="refs" data-only="analysis" data-view="data">
 <h2>Benchmarks</h2>
 <p class="wb-note">An earlier shot and published averages to compare against.</p>
@@ -453,6 +459,7 @@
 <script src="command.js"></script>
 <script src="goals.js"></script>
 <script src="trust.js"></script>
+<script src="calib.js"></script>
 <script>dash.start();</script>
 </body>
 </html>
