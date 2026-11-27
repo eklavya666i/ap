@@ -260,6 +260,12 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   await sleep(1200);
   check([...M.docs.keys()].filter((k) => k.includes('/sessions/') || k.includes('/raw/')).length === 0, 'undo removes the import’s sessions and original files');
 
+  // Accessibility: every control has a label or a name.
+  const unlabeled = [...doc.querySelectorAll('input:not([type=hidden]), select, textarea')].filter((e) => !e.closest('label') && !e.getAttribute('aria-label') && !(e.id && doc.querySelector('label[for="' + e.id + '"]')));
+  const nameless = [...doc.querySelectorAll('button')].filter((b) => !(b.textContent.trim() || b.getAttribute('aria-label')));
+  if (unlabeled.length || nameless.length) console.log('A11Y', unlabeled.map((e) => e.outerHTML.slice(0, 120)).join(' || '), '##', nameless.map((b) => b.outerHTML.slice(0, 120)).join(' || '));
+  check(unlabeled.length === 0 && nameless.length === 0, 'every control has a label or a name');
+
   check(errors.length === 0, 'no script errors' + (errors.length ? ': ' + errors.join(' | ') : ''));
   console.log(failed ? `${failed} failed` : 'all passed');
   process.exit(failed ? 1 : 0);

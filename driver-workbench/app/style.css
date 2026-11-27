@@ -254,3 +254,12 @@ textarea{font:inherit;font-size:16px;width:100%;min-height:110px;padding:10px;bo
 .wb-tbar{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;margin-top:8px}
 .wb-ctable{overflow:auto;max-height:340px;margin-top:6px}
 .wb-ctable caption{text-align:left;font-weight:600;padding:4px 0}
+/* Accessibility (NFR-06): visible focus on every control, 44 px touch targets on touch screens. */
+a:focus-visible,summary:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wb-actions:has(.wb-vh:focus-visible) label.wb-btn{outline:3px solid var(--accent);outline-offset:2px}
+@media (pointer:coarse){
+.wb-btn,.wb-btn-sm,.wb-seg,.wb-golfers button,.wb-nav a,summary{min-height:44px}
+.wb-btn-sm{padding-left:12px;padding-right:12px}
+.wb-nav a{display:inline-flex;align-items:center}
+input:not([type=checkbox]):not([type=radio]),select{min-height:44px}
+}
