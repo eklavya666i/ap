@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -247,6 +247,23 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   const mf = doc.querySelector('[data-draw="modelfit"]').textContent;
   check(/Fitted on \d+ of .* drives/.test(mf) && w.WB.fitShot(130, 13, 2400, {alt: 0, temp: 75, turf: 'normal'}).fitted === true, 'fits the flight model to GSPro carry');
 
+  // Club by club: each club against windows from the LPGA Tour averages at the golfer's speed, and the Club filter.
+  w.WB.setGolfer('a');
+  await sleep(150);
+  const ct = doc.querySelector('[data-draw="clubtargets"]');
+  const i7row = [...ct.querySelectorAll('tr')].find((tr) => tr.textContent.startsWith('7 iron'));
+  check(i7row && i7row.textContent.includes('17.0–21.0°') && (i7row.textContent.match(/Low/g) || []).length >= 2 && i7row.textContent.includes('≥ 1.33') && ct.textContent.startsWith('Driver'), 'club by club shows each club against tour windows at its speed');
+  w.dash.setParams({club: 'i7'});
+  await sleep(150);
+  const ctr = doc.querySelector('[data-draw="clubtrend"]');
+  check(ctr.querySelectorAll('.wb-trend').length === 6 && ctr.textContent.includes('7 iron: 6 shots') && ctr.querySelector('svg') && doc.getElementById('club-pick').value === 'i7' && ct.querySelector('tr.wb-sel').textContent.startsWith('7 iron'), 'the Club filter shows one club week by week against its windows');
+  w.dash.setParams({club: 'all'});
+  await sleep(150);
+  const heat = doc.querySelector('[data-draw="clubtrend"] .wb-cheat');
+  check(heat && [...heat.querySelectorAll('tbody th')].map((t) => t.textContent).join(',') === 'Driver,7 iron' && doc.getElementById('club-pick').value === 'all', 'all clubs show carry by week');
+  w.WB.setGolfer('b');
+  await sleep(150);
+
   // Every chart has a table view and Copy as CSV.
   w.WB.setMode('analysis');
   await sleep(200);
@@ -333,6 +350,18 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   doc.querySelector('[data-draw="crumbs"] button').click();
   await sleep(120);
   check(drill.querySelector('thead th').textContent === 'Week' && drill.textContent.includes('Review queue'), 'the breadcrumb goes back to the weeks, with the review queue');
+  w.WB.setGolfer('a');
+  w.dash.setParams({club: 'i7'});
+  await sleep(150);
+  [...drill.querySelectorAll('tbody tr')].find((tr) => tr.textContent.includes('2026-11-10')).querySelector('button').click();
+  await sleep(120);
+  [...drill.querySelectorAll('tbody tr')].find((tr) => tr.textContent.includes('fast_')).querySelector('button').click();
+  await sleep(120);
+  check(drill.textContent.includes('Showing 7 iron shots only') && drill.querySelectorAll('tbody tr').length === 6, 'the Club filter narrows a session’s shot list');
+  w.dash.setParams({club: 'all'});
+  doc.querySelector('[data-draw="crumbs"] button').click();
+  w.WB.setGolfer('b');
+  await sleep(150);
 
   // Skipped rows are listed with their reason; the last import can be undone in one step.
   w.WB.setMode('ingest');

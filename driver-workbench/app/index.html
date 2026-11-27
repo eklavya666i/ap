@@ -123,7 +123,8 @@
 <label>Dates<select data-param="range"><option value="all">All weeks</option><option value="2">Last 2 weeks</option><option value="4">Last 4 weeks</option><option value="12">Last 12 weeks</option><option value="26">Last 26 weeks</option></select></label>
 <label>Fairway width<select data-param="corridor" data-num="1"><option value="20">20 yd</option><option value="25">25 yd</option><option value="30">30 yd</option><option value="35">35 yd</option><option value="40">40 yd</option></select></label>
 <label>Carry<select data-param="cview"><option value="hit">As hit in GSPro</option><option value="sea">At sea level</option></select></label>
-<p class="wb-note">The golfer is picked at the top. These apply to every view; Imported files on the import station always lists everything. Club and session-type filters come with per-club trends.</p>
+<label>Club<select id="club-pick" data-draw="clubpick"><option value="all">All clubs</option></select></label>
+<p class="wb-note">The golfer is picked at the top. Dates and Carry apply to every view. Club picks the club for Club by club (under Bag) and the shot list in Data hub; the driver views always show the driver. Imported files on the import station always lists everything.</p>
 </div>
 <section id="command" data-only="analysis" data-view="command">
 <h2>Command center</h2>
@@ -164,6 +165,26 @@
 <thead><tr><th class="wb-l">Club</th><th>Shots</th><th>Carry</th><th>Carry spread</th><th>Total</th><th>Club speed</th><th>Ball speed</th><th>Smash</th><th>Launch</th><th>Spin</th><th>Peak (yd)</th><th>Offline spread</th></tr></thead>
 <tbody data-draw="bagrows"></tbody>
 </table></div>
+</section>
+
+<section id="clubs" data-only="analysis" data-view="bag">
+<p class="wb-msg wb-badc wb-trust-banner" data-draw="trustbanner" data-need="spin"></p>
+<h2>Club by club</h2>
+<p class="wb-note">Each club against windows set for <b data-draw="gname">—</b>’s own speed from the TrackMan LPGA Tour averages, using the same sessions as the whole bag above. <span data-draw="clubnote"></span></p>
+<details class="wb-details wb-ctgt-how"><summary>How the windows are set</summary><ul>
+<li><b>Smash:</b> at least the tour’s ball speed ÷ club speed for that club, less 0.04. The driver uses the target smash from the driver dashboard.</li>
+<li><b>Launch:</b> within 2° of the tour average. The driver uses the driver dashboard’s window for the logged club speed.</li>
+<li><b>Spin:</b> within 15% of the tour average, scaled to this golfer’s club speed with the club (spin rises with speed for the same strike).</li>
+<li><b>Descent:</b> no more than 3° flatter than the tour’s landing angle, so the ball stops on greens.</li>
+<li><b>Carry vs tour:</b> the tour carry scaled by this golfer’s ball speed ÷ the tour’s. Well short usually means launch or spin is costing carry, or spin reads low (see the banner above).</li>
+<li>Woods past the 5-wood and hybrids use the 7-wood row; 1–3 irons use the 4 iron row; wedges past the pitching wedge have no tour row. Five shots or more are needed to judge a club. Source: <a href="https://support.trackmangolf.com/hc/en-us/article_attachments/7349801987483" target="_blank" rel="noopener">TrackMan LPGA Tour averages</a>.</li>
+</ul></details>
+<div class="wb-scroll"><table class="wb-table wb-ctgt">
+<thead><tr><th class="wb-l">Club</th><th>Shots</th><th>Smash</th><th>Launch</th><th>Spin (rpm)</th><th>Descent</th><th>Carry (yd)</th><th>Carry vs tour at this speed</th></tr></thead>
+<tbody data-draw="clubtargets"></tbody>
+</table></div>
+<h3 class="wb-ctrend-h">Week by week</h3>
+<div class="wb-ctrend" data-draw="clubtrend"></div>
 </section>
 
 <section id="rounds" data-only="analysis" data-view="rounds">
@@ -467,6 +488,7 @@
 <script src="goals.js"></script>
 <script src="trust.js"></script>
 <script src="calib.js"></script>
+<script src="clubs.js"></script>
 <script>dash.start();</script>
 </body>
 </html>

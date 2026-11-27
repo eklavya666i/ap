@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var datasets = {}, calcs = {}, cache = {}, draws = {}, onDataFns = [];
-  var DEFAULTS = {basis: 'logged', smash_target: 1.47, aoa: 3.5, weeks: 8, gain: 0.3, temp: 70, turf: 'normal', bagspan: 'last4', range: 'all', cview: 'hit', corridor: 30};
+  var DEFAULTS = {basis: 'logged', smash_target: 1.47, aoa: 3.5, weeks: 8, gain: 0.3, temp: 70, turf: 'normal', bagspan: 'last4', range: 'all', cview: 'hit', corridor: 30, club: 'all'};
   var params = Object.assign({}, DEFAULTS);
   var store = function (k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } return null; };
   try {

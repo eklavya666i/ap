@@ -103,8 +103,11 @@
     }
     const s = session();
     if (D.shot === null) {
-      const rows = s.arows.map((r, k) => { const o = rowOf(s, k), f = flagOf(o); return {key: k, flag: !!f, cells: [k + 1, o.club, fmt('club_speed', o.club_speed), fmt('ball_speed', o.ball_speed), fmt('smash', o.smash), fmt('launch', o.launch), fmt('spin', o.spin), fmt('carry', o.carry), fmt('offline', o.offline), f ? 'Check' : '', tagsAt(s, k).map(tagText).join('; ')]}; });
+      const pk = typeof WB.pickedClub === 'function' ? WB.pickedClub() : null;
+      const all = s.arows.map((r, k) => { const o = rowOf(s, k), f = flagOf(o); return {key: k, flag: !!f, club: r[0], cells: [k + 1, o.club, fmt('club_speed', o.club_speed), fmt('ball_speed', o.ball_speed), fmt('smash', o.smash), fmt('launch', o.launch), fmt('spin', o.spin), fmt('carry', o.carry), fmt('offline', o.offline), f ? 'Check' : '', tagsAt(s, k).map(tagText).join('; ')]}; });
+      const rows = pk ? all.filter((r) => { const i = clubInfo(r.club); return i && i.key === pk.key; }) : all;
       box.append(tagForm(g, s));
+      if (pk) box.append(el('p', 'wb-note wb-club-only', `Showing ${pk.name} shots only (Club at the top): ${rows.length} of ${all.length}. Shot numbers stay as in the file.`));
       box.append(el('p', 'wb-note', 'Rows marked Check sit outside the misread limits for their club and are left out of the analysis.'));
       box.append(table(['Shot', 'Club', 'Club speed', 'Ball', 'Smash', 'Launch', 'Spin', 'Carry', 'Offline', '', 'Tags'], rows, (k) => go({shot: k})));
       return;

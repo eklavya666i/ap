@@ -305,3 +305,16 @@ input:not([type=checkbox]):not([type=radio]),select{min-height:44px}
 .wb-trust-lead{font-size:13px;color:var(--color-fg-muted);margin-right:2px}
 .wb-trust-banner{display:block;margin:6px 0 10px}
 .wb-trust-banner:empty{display:none}
+/* Club by club */
+.wb-ctgt td{vertical-align:top}
+.wb-ctgt .wb-cw{display:block;font-size:12px;color:var(--color-fg-muted);white-space:nowrap;margin-top:2px}
+.wb-ctgt .wb-chip,.wb-cmode .wb-chip{font-size:11px;padding:0 6px;margin-left:6px;vertical-align:1px}
+.wb-ctgt tr.thin td{color:var(--color-fg-muted)}
+.wb-ctgt tr.wb-sel td:first-child{box-shadow:inset 3px 0 0 var(--color-ok)}
+.wb-ctgt-how{margin:0 0 var(--cds-gap-md)}
+.wb-ctrend-h{margin:var(--cds-gap-xl) 0 6px}
+.wb-cheat td{font-variant-numeric:tabular-nums}
+.wb-cheat td.thin{color:var(--color-fg-muted)}
+.wb-cheat td.wb-up{color:var(--color-ok)}.wb-cheat td.wb-dn{color:var(--color-bad)}
+.wb-cheat th .wb-crumb{text-align:left;color:var(--color-fg);text-decoration-color:var(--color-fg-muted);font-weight:600}
+.wb-cmode{margin-top:var(--cds-gap-md)}

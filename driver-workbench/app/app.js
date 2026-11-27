@@ -1153,6 +1153,11 @@ function clubInfo(label) {
   return {key: 'o-' + c, name: raw || 'Unlabelled', order: 90, cat: 'iron'};
 }
 const CLUB_LIMITS = {wood: {sm: [1.0, 1.56], sp: 8000}, hybrid: {sm: [1.0, 1.52], sp: 9000}, iron: {sm: [1.0, 1.5], sp: 11000}, wedge: {sm: [0.95, 1.4], sp: 13000}};
+/* A shot counts unless it looks like a misread or a top for its kind of club (shared by Whole bag and Club by club). */
+function shotOk(r, cat) {
+  const L = CLUB_LIMITS[cat] || CLUB_LIMITS.iron;
+  return r.ball !== null && (r.club === null || (r.ball / r.club >= L.sm[0] && r.ball / r.club <= L.sm[1])) && (r.launch === null || (r.launch >= -10 && r.launch <= 50)) && (r.spin === null || (r.spin >= 300 && r.spin <= L.sp)) && (r.carry === null || r.carry > 5);
+}
 dash.calc('bag', {
   inputs: ['imports'],
   fn: (imports) => {
@@ -1170,20 +1175,18 @@ dash.calc('bag', {
         if (!info) return;
         const g = by.get(info.key) || Object.assign({rows: [], sessions: new Set(), labels: new Set()}, info);
         const get = (c) => (ix[c] === undefined ? null : r[ix[c]]);
-        g.rows.push({club: get('club_speed'), ball: get('ball_speed'), launch: get('launch'), spin: get('spin'), carry: get('carry'), total: get('total'), offline: get('offline'), peak: get('peak')});
+        g.rows.push({club: get('club_speed'), ball: get('ball_speed'), launch: get('launch'), spin: get('spin'), carry: get('carry'), total: get('total'), offline: get('offline'), peak: get('peak'), descent: get('descent')});
         g.sessions.add(i.id); g.labels.add(r[0]);
         by.set(info.key, g);
       });
     });
     const out = [...by.values()].map((g) => {
-      const L = CLUB_LIMITS[g.cat];
-      const ok = (r) => r.ball !== null && (r.club === null || (r.ball / r.club >= L.sm[0] && r.ball / r.club <= L.sm[1])) && (r.launch === null || (r.launch >= -10 && r.launch <= 50)) && (r.spin === null || (r.spin >= 300 && r.spin <= L.sp)) && (r.carry === null || r.carry > 5);
-      const used = g.rows.filter(ok);
+      const used = g.rows.filter((r) => shotOk(r, g.cat));
       const col = (k) => used.map((r) => r[k]).filter((v) => v !== null);
       const both = used.filter((r) => r.club && r.ball !== null);
       return {key: g.key, name: g.name, order: g.order, cat: g.cat, labels: [...g.labels].join(', '), n: g.rows.length, n_used: used.length, sessions: g.sessions.size,
         carry: mean(col('carry')), carry_sd: stdev(col('carry')), total: mean(col('total')), ball: mean(col('ball')), club: mean(both.map((r) => r.club)),
-        smash: both.length ? mean(both.map((r) => r.ball / r.club)) : null, launch: mean(col('launch')), spin: mean(col('spin')), peak: mean(col('peak')), offline_sd: stdev(col('offline'))};
+        smash: both.length ? mean(both.map((r) => r.ball / r.club)) : null, launch: mean(col('launch')), spin: mean(col('spin')), peak: mean(col('peak')), descent: mean(col('descent')), offline_sd: stdev(col('offline'))};
     }).filter((c) => c.n_used >= 1).sort((a, b) => a.order - b.order || (b.carry || 0) - (a.carry || 0));
     const real = out.filter((c) => c.carry !== null && c.n_used >= 3);
     real.forEach((c, k) => {
