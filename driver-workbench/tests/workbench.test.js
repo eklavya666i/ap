@@ -203,6 +203,16 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   await sleep(200);
   check(saved.some((k) => M.docs.has(k) && M.docs.get(k).conditions && M.docs.get(k).conditions.altitude_ft === 0 && M.docs.get(k).conditions.ball !== undefined), 'edits one session’s conditions after import');
 
+  // Every chart has a table view and Copy as CSV.
+  w.WB.setMode('analysis');
+  await sleep(200);
+  const tbars = doc.querySelectorAll('.wb-tbar:not([hidden])');
+  const carryCard = doc.querySelector('[data-draw="trendchart"][data-m="carry"]').closest('.wb-card');
+  const tbtn = carryCard.querySelector('.wb-tbar button');
+  tbtn.click();
+  const ctab = carryCard.querySelector('.wb-ctable table');
+  check(tbars.length >= 7 && ctab && ctab.querySelector('th').textContent === 'Week' && ctab.tBodies[0].rows.length > 0, 'charts have a table view and Copy as CSV');
+
   // Rounds: a round saved from the form is listed, edited in place, kept in backups and restored if lost.
   w.WB.setMode('analysis');
   const rf = doc.getElementById('round-form');

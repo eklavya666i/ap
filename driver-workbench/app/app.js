@@ -705,11 +705,13 @@ dash.draw('scenchart', (el) => {
 dash.draw('proj', (el) => {
   const p = dash.data('projection'), ykey = el.dataset.y;
   el.replaceChildren();
+  chartTable(el, null);
   if (p.status !== 'ok') { el.textContent = loadingText(p.status, 'This chart'); return; }
   const logged = p.data.filter((d) => d.kind === 'Logged' && d[ykey] !== null);
   const proj = p.data.filter((d) => d.kind === 'Projected' && d[ykey] !== null);
   if (!logged.length && !proj.length) { el.textContent = 'Log a week to see this chart.'; return; }
   const all = logged.concat(proj);
+  chartTable(el, (ykey === 'club' ? 'Club' : 'Ball') + ' speed by week', ['Week', 'Kind', 'mph', 'Low', 'High'], all.map((d) => [d.week !== undefined && d.week !== null ? WB.wk(d.week) : (d.label || ''), d.kind, rd(d[ykey], 1), rd(d[ykey + '_lo'], 1), rd(d[ykey + '_hi'], 1)]));
   const W = Math.max(240, el.clientWidth || 300), H = 220, mt = 8, mb = 26;
   const vals = all.flatMap((d) => [d[ykey], d[ykey + '_lo'], d[ykey + '_hi']]).filter((v) => v !== null && v !== undefined);
   const y = d3.scaleLinear().domain([d3.min(vals) - 1, d3.max(vals) + 1]).nice();
@@ -842,7 +844,9 @@ dash.draw('trendchart', (el) => {
   el.replaceChildren();
   if (t.status !== 'ok') { el.textContent = loadingText(t.status, 'This chart'); return; }
   const pts = t.data.filter((r) => r[key] !== null);
+  chartTable(el, null);
   if (!pts.length) { const p = document.createElement('p'); p.className = 'wb-sub'; p.textContent = 'Not logged yet.'; el.append(p); return; }
+  chartTable(el, m.label + ' by week', ['Week', m.label + (m.unit ? ' (' + m.unit + ')' : ''), 'Spread ±'], pts.map((r) => [WB.wk(r.week), rd(r[key], m.d), rd(r[m.sd], m.d)]));
   const sdOf = (r) => (typeof r[m.sd] === 'number' ? r[m.sd] : 0);
   const target = m.target ? Number(dash.params().smash_target) : null;
   const wn = dash.data('windows');
@@ -906,9 +910,11 @@ dash.calc('dispweeks', {
 dash.draw('dispchart', (el) => {
   const d = dash.data('dispweeks');
   el.replaceChildren();
+  chartTable(el, null);
   if (d.status !== 'ok') { el.textContent = loadingText(d.status, 'This chart'); return; }
   if (!d.data.length) { const p = document.createElement('p'); p.className = 'wb-sub'; p.textContent = 'Import a GSPro CSV with carry and offline to see where drives land.'; el.append(p); return; }
   const cur = d.data[d.data.length - 1], prev = d.data.length > 1 ? d.data[0] : null;
+  chartTable(el, 'Where drives land', ['Week', 'Carry (yd)', 'Offline (yd, + is right)'], d.data.flatMap((w) => w.pts.map((p) => [WB.wk(w.week), rd(p.carry, 1), rd(p.offline, 1)])));
   const all = d.data.flatMap((w) => w.pts.map((p) => ({x: p.offline, y: p.carry})).concat(w.ring ? w.ring.path.map(([x, y]) => ({x, y})) : []));
   const xm = Math.max(10, ...all.map((p) => Math.abs(p.x))) * 1.1;
   const W = Math.max(260, el.clientWidth || 320), H = 300, mt = 10, mb = 30;
@@ -1196,9 +1202,11 @@ dash.draw('bagnote', (el) => {
 dash.draw('gapchart', (el) => {
   const b = dash.data('bag');
   el.replaceChildren();
+  chartTable(el, null);
   if (b.status !== 'ok' || !b.data.clubs.length) return;
   const clubs = b.data.clubs.filter((c) => c.carry !== null);
   if (!clubs.length) { el.textContent = 'These sessions have no carry data.'; return; }
+  chartTable(el, 'Carry by club', ['Club', 'Carry (yd)', 'Carry ±', 'Total (yd)', 'Shots'], clubs.map((c) => [c.name, rd(c.carry, 0), rd(c.carry_sd, 0), rd(c.total, 0), c.n_used]));
   const max = Math.max(...clubs.map((c) => Math.max(c.total || 0, (c.carry || 0) + (c.carry_sd || 0)))) * 1.04;
   const pct = (v) => Math.max(0, Math.min(100, (v / max) * 100)) + '%';
   clubs.forEach((c) => {
@@ -1420,3 +1428,44 @@ dash.draw('undobatch', (el) => {
     }
   }));
 });
+
+
+/* Table view and Copy as CSV for every chart (FR-24): each chart draw hands its numbers to chartTable. */
+function rd(v, d) { return typeof v === 'number' && isFinite(v) ? Math.round(v * Math.pow(10, d)) / Math.pow(10, d) : ''; }
+function csvCell(v) { const t = v === null || v === undefined ? '' : String(v); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; }
+function chartTable(el, title, cols, rows) {
+  const card = (el.closest && el.closest('.wb-card')) || el.parentNode;
+  if (!card) return;
+  let bar = card.querySelector(':scope > .wb-tbar');
+  if (!title) { if (bar) { bar.hidden = true; bar.__box.hidden = true; } return; }
+  if (!bar) {
+    bar = document.createElement('div'); bar.className = 'wb-tbar';
+    const tb = document.createElement('button'); tb.type = 'button'; tb.className = 'wb-btn wb-btn-sm'; tb.textContent = 'Table'; tb.setAttribute('aria-expanded', 'false');
+    const cb = document.createElement('button'); cb.type = 'button'; cb.className = 'wb-btn wb-btn-sm'; cb.textContent = 'Copy as CSV';
+    const box = document.createElement('div'); box.className = 'wb-ctable'; box.hidden = true;
+    const render = () => {
+      const d = bar.__data;
+      if (box.hidden || !d) return;
+      const t = document.createElement('table'); t.className = 'wb-table';
+      const cap = document.createElement('caption'); cap.textContent = d.title; t.append(cap);
+      const hr = t.createTHead().insertRow();
+      d.cols.forEach((c) => { const th = document.createElement('th'); th.textContent = c; th.scope = 'col'; hr.append(th); });
+      const tbd = t.createTBody();
+      d.rows.forEach((r) => { const tr = tbd.insertRow(); r.forEach((v) => { tr.insertCell().textContent = v === null || v === undefined ? '' : String(v); }); });
+      box.replaceChildren(t);
+    };
+    tb.addEventListener('click', () => { box.hidden = !box.hidden; tb.setAttribute('aria-expanded', String(!box.hidden)); tb.textContent = box.hidden ? 'Table' : 'Hide table'; render(); });
+    cb.addEventListener('click', async () => {
+      const d = bar.__data; if (!d) return;
+      const csv = [d.cols].concat(d.rows).map((r) => r.map(csvCell).join(',')).join('\n');
+      try { await navigator.clipboard.writeText(csv); cb.textContent = 'Copied'; } catch (e) { cb.textContent = 'Copying was blocked'; }
+      setTimeout(() => { cb.textContent = 'Copy as CSV'; }, 1600);
+    });
+    bar.__render = render; bar.__box = box;
+    bar.append(tb, cb);
+    card.append(bar, box);
+  }
+  bar.hidden = false;
+  bar.__data = {title, cols, rows};
+  bar.__render();
+}
