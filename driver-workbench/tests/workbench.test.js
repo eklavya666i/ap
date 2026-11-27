@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -261,6 +261,14 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   await sleep(150);
   const heat = doc.querySelector('[data-draw="clubtrend"] .wb-cheat');
   check(heat && [...heat.querySelectorAll('tbody th')].map((t) => t.textContent).join(',') === 'Driver,7 iron' && doc.getElementById('club-pick').value === 'all', 'all clubs show carry by week');
+  // Compare two weeks: the latest two side by side with a real-or-noise call, any week on request, and smash by shot over time.
+  const cmpd = w.dash.data('cmpdata').data;
+  const cmpRows = [...doc.querySelectorAll('[data-draw="cmprows"] tr')].map((tr) => tr.querySelector('th').textContent);
+  check(cmpd.key === 'dr' && cmpd.weeks.length >= 4 && cmpd.b === cmpd.weeks[cmpd.weeks.length - 1].week && cmpd.a === cmpd.weeks[cmpd.weeks.length - 2].week && cmpRows.includes('At target smash') && cmpRows.includes('In the fairway') && /Noise|Better|Worse|Changed/.test(doc.querySelector('[data-draw="cmprows"]').textContent) && doc.querySelectorAll('#cmp-a option').length === cmpd.weeks.length, 'compares the latest two weeks with a real-or-noise call');
+  w.dash.setParams({cmp_a: cmpd.weeks[0].week});
+  await sleep(150);
+  check(doc.querySelector('[data-draw="cmpcol"][data-which="a"]').textContent === 'Week ' + w.WB.wk(cmpd.weeks[0].week) && doc.querySelectorAll('[data-draw="strike"] circle').length === cmpd.weeks.reduce((n, x) => n + x.n, 0) && doc.querySelectorAll('[data-draw="strike"] rect').length >= 3, 'picks any week and shows smash by shot over time');
+  w.dash.setParams({cmp_a: undefined});
   w.WB.setGolfer('b');
   await sleep(150);
 

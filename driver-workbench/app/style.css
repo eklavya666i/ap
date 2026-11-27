@@ -318,3 +318,9 @@ input:not([type=checkbox]):not([type=radio]),select{min-height:44px}
 .wb-cheat td.wb-up{color:var(--color-ok)}.wb-cheat td.wb-dn{color:var(--color-bad)}
 .wb-cheat th .wb-crumb{text-align:left;color:var(--color-fg);text-decoration-color:var(--color-fg-muted);font-weight:600}
 .wb-cmode{margin-top:var(--cds-gap-md)}
+/* Compare two weeks and the strike view */
+.wb-cmp th[scope=row]{text-align:left;font-weight:500;color:var(--color-fg)}
+.wb-cmp td .wb-chip{font-size:12px;padding:1px 8px}
+.wb-legend i.wb-sw-ring{background:transparent;border:1.5px solid var(--cds-text-secondary);border-radius:50%}
+.wb-legend i.wb-sw-line{height:2px;width:14px;border-radius:0;vertical-align:3px}
+.wb-legend i.wb-sw-shade{background:var(--cds-chart-muted);opacity:.6}

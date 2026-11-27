@@ -67,6 +67,7 @@ On the import station, under **Golfer settings**:
 - **Dashboard**: weekly trends for club speed, ball speed, smash, launch, spin and carry, with the spread of shots in each week and target windows; where drives land, with a ring holding about 86% of drives; shot shape and delivery (start direction, curve, face, path, attack angle, peak height, descent); golfers side by side.
 - **Whole bag**: every club from the saved sessions (latest week, last 4 or 12 weeks, or all history): carry with its spread, total, speeds, smash, launch, spin, peak height and offline spread, plus a gapping chart that flags gaps under 7 yards, over 18 (25 around the woods), or clubs that carry farther than the next one up.
 - **Club by club** (under Bag): each club's smash, launch, spin and descent against windows for the golfer's own speed, from the TrackMan LPGA Tour averages (spin scaled to the golfer's club speed; the driver uses the driver dashboard's windows), and carry against the tour carry scaled to the golfer's ball speed. Week by week: carry by club and week, or, with **Club** picked in the filters, that club's carry, ball speed, smash, launch, spin and descent by week against its windows. The Club filter also narrows a session's shot list in Shots.
+- **Compare two weeks** (under Progress): any two imported weeks side by side for the club picked in the filters (the driver when none is): speeds, smash, share at the target smash, launch, spin, carry, total, spreads and, for the driver, share in the fairway, each marked real when the change is at least twice its standard error, and better or worse (launch and spin by distance from the club's window). **Strike over time**: every shot's smash in the date range, in the order hit, against the target smash, with a running median and weeks A and B shaded.
 - **Consistency**: spread of each imported week, the share of shots at the target smash, and smash shot by shot.
 - **Check**: whether ball speed ÷ club speed matches the device's smash.
 - **Realistic look** and **Outlook**: carry and total from a ball-flight model calibrated to TrackMan data, step by step (strike, attack angle, speed), and the speed outlook with a range.
@@ -132,6 +133,7 @@ app/
   shots.js      drill-down from golfer to week, session and shot, with the shot inspector
   goals.js      the goal tracker: 260 and long-and-straight, restated at sea level, and the club speed 260 needs
   calib.js      Calibration lab: the spin check per club, and the flight model fitted to GSPro's carry (used by the what-ifs)
+  compare.js    Compare two weeks (real-or-noise calls) and the strike view (smash by shot over time)
   clubs.js      Club by club: windows per club at the golfer's speed (TrackMan LPGA averages), week-by-week club trends, the Club filter
   trust.js      data trust: what the monitor's data can be trusted for, with banners where spin or club data matter
   command.js    the Command center: what's happening, how it's moving, what needs to happen, the week's fairway, alerts

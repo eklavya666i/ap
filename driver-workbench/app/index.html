@@ -124,7 +124,7 @@
 <label>Fairway width<select data-param="corridor" data-num="1"><option value="20">20 yd</option><option value="25">25 yd</option><option value="30">30 yd</option><option value="35">35 yd</option><option value="40">40 yd</option></select></label>
 <label>Carry<select data-param="cview"><option value="hit">As hit in GSPro</option><option value="sea">At sea level</option></select></label>
 <label>Club<select id="club-pick" data-draw="clubpick"><option value="all">All clubs</option></select></label>
-<p class="wb-note">The golfer is picked at the top. Dates and Carry apply to every view. Club picks the club for Club by club (under Bag) and the shot list in Data hub; the driver views always show the driver. Imported files on the import station always lists everything.</p>
+<p class="wb-note">The golfer is picked at the top. Dates and Carry apply to every view. Club picks one club for Club by club (under Bag), Compare two weeks (under Progress; the driver when no club is picked) and the shot list in Data hub; the other driver views always show the driver. Imported files on the import station always lists everything.</p>
 </div>
 <section id="command" data-only="analysis" data-view="command">
 <h2>Command center</h2>
@@ -339,6 +339,20 @@
 </ol>
 </section>
 
+<section id="compare" data-only="analysis" data-view="progress">
+<h2>Compare two weeks</h2>
+<p class="wb-note">Any two imported weeks side by side for <b data-draw="gname">—</b>. A change counts as real when it is at least twice its standard error, so bigger than the shot-to-shot noise; five or more shots a week are needed. Launch and spin are better when they move toward the club’s window. <span data-draw="cmphead"></span></p>
+<div class="wb-controls"><label>Week A<select id="cmp-a" data-draw="cmpweek" data-which="a"></select></label><label>Week B<select id="cmp-b" data-draw="cmpweek" data-which="b"></select></label></div>
+<div class="wb-scroll"><table class="wb-table wb-cmp">
+<thead><tr><th class="wb-l">Reading</th><th data-draw="cmpcol" data-which="a">Week A</th><th data-draw="cmpcol" data-which="b">Week B</th><th>Change</th><th>Real?</th></tr></thead>
+<tbody data-draw="cmprows"></tbody>
+</table></div>
+<div class="wb-card" style="margin-top:var(--cds-gap-md)"><h3>Strike over time: smash by shot</h3>
+<p class="wb-note" data-draw="strikenote"></p>
+<div class="wb-chartbox" data-draw="strike"></div>
+<div class="wb-legend"><span><i data-draw="sw" data-i="0"></i>Reached the target</span><span><i class="wb-sw-ring"></i>Below it</span><span><i class="wb-sw-dash"></i>Target smash</span><span><i class="wb-sw-line" data-draw="sw" data-i="1"></i>Running median, 9 shots</span><span><i class="wb-sw-shade"></i>Weeks A and B</span></div></div>
+</section>
+
 <section id="history" data-only="analysis" data-view="progress">
 <h2>History</h2>
 <p class="wb-note">Every week for <b data-draw="gname">—</b>, typed or imported. A week with several sessions combines their driver shots; imported numbers win over typed ones. Weeks before week 1 show as 0 or below.</p>
@@ -489,6 +503,7 @@
 <script src="trust.js"></script>
 <script src="calib.js"></script>
 <script src="clubs.js"></script>
+<script src="compare.js"></script>
 <script>dash.start();</script>
 </body>
 </html>
