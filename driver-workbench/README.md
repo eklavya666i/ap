@@ -55,6 +55,7 @@ On the import station, under **Golfer settings**:
 ## What the analysis shows
 
 - **Dashboard**: weekly trends for club speed, ball speed, smash, launch, spin and carry, with the spread of shots in each week and target windows; where drives land, with a ring holding about 86% of drives; shot shape and delivery (start direction, curve, face, path, attack angle, peak height, descent); golfers side by side.
+- **Whole bag**: every club from the saved sessions (latest week, last 4 or 12 weeks, or all history): carry with its spread, total, speeds, smash, launch, spin, peak height and offline spread, plus a gapping chart that flags gaps under 7 yards, over 18 (25 around the woods), or clubs that carry farther than the next one up.
 - **Consistency**: spread of each imported week, the share of shots at the target smash, and smash shot by shot.
 - **Check**: whether ball speed ÷ club speed matches the device's smash.
 - **Realistic look** and **Outlook**: carry and total from a ball-flight model calibrated to TrackMan data, step by step (strike, attack angle, speed), and the speed outlook with a range.
@@ -66,7 +67,14 @@ Launch and spin targets follow each golfer's own club speed: the model's best la
 
 - Files are read on the device. Only the parsed shot numbers are stored.
 - Data lives in the artifact's database on the owner's Claude account. The rule `read: view, write: owner` lets only the owner add or change data; anyone the owner shares the workbench with can only read it.
-- Every club and every shot of each session is kept, so later versions can analyze all clubs from the same history.
+- Every club and every shot of each session is kept, so the whole-bag view and later versions can analyze all clubs from the same history.
+- **Copy this golfer's shots as CSV** (import station, under Imported files) copies every saved shot to the clipboard as a backup a spreadsheet can open.
+
+How GSPro data is read:
+
+- Columns a monitor fills with zeros for a club (attack angle, club path, face, dynamic loft when it reads no club data) count as not measured.
+- GSPro's peak height is in feet; it is stored and shown in yards.
+- The date comes from a date column, else the file name (GSPro names exports `gspro-exportMM-DD-YY-hh-mm-ss.csv`), else the file's save time.
 
 Database layout:
 

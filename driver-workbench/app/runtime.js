@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var datasets = {}, calcs = {}, cache = {}, draws = {}, onDataFns = [];
-  var DEFAULTS = {basis: 'logged', smash_target: 1.47, aoa: 3.5, weeks: 8, gain: 0.3, temp: 70, turf: 'normal'};
+  var DEFAULTS = {basis: 'logged', smash_target: 1.47, aoa: 3.5, weeks: 8, gain: 0.3, temp: 70, turf: 'normal', bagspan: 'last4'};
   var params = Object.assign({}, DEFAULTS);
   var store = function (k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } return null; };
   try {
@@ -238,7 +238,9 @@
 
   var parsedCache = typeof WeakMap === 'function' ? new WeakMap() : null;
   function str(v, n) { return typeof v === 'string' ? v.slice(0, n || 120) : ''; }
-  /* One imported file. All clubs are kept for history; the analysis reads the shots of the club marked as the driver. */
+  /* One imported session. All clubs are kept (arows: [club, ...cols]); the analysis reads the club marked as the driver (drows).
+     Columns a monitor fills with zeros for a club (attack, path, face when it reads no club data) count as not measured.
+     Sessions saved before peak_unit was stored hold GSPro's peak height in feet; it is read in yards here. */
   function sessionRow(d) {
     if (parsedCache && parsedCache.has(d)) return parsedCache.get(d);
     var b = d.data() || {}, shots = [];
@@ -250,13 +252,27 @@
     var ci = cols.indexOf('club'), driver = str(b.driver, 30);
     var dcols = cols.filter(function (c) { return c !== 'club' && WB.COLS.indexOf(c) >= 0; });
     var at = dcols.map(function (c) { return cols.indexOf(c); });
-    var drows = shots.filter(function (r) { return ci < 0 || r[ci] === driver; }).map(function (r) {
-      return at.map(function (k) { var v = r[k]; return typeof v === 'number' && isFinite(v) ? v : null; });
+    var pk = dcols.indexOf('peak'), feet = b.peak_unit !== 'yd';
+    var arows = shots.map(function (r) {
+      var row = at.map(function (k) { var v = r[k]; return typeof v === 'number' && isFinite(v) ? v : null; });
+      if (pk >= 0 && feet && row[pk] !== null) row[pk] = Math.round(row[pk] / 3 * 10) / 10;
+      return [ci < 0 ? 'All shots' : String(r[ci] || '').slice(0, 30)].concat(row);
     });
+    var groups = {};
+    arows.forEach(function (r) { (groups[r[0]] = groups[r[0]] || []).push(r); });
+    Object.keys(groups).forEach(function (club) {
+      var g = groups[club];
+      if (g.length < 3) return;
+      dcols.forEach(function (c, j) {
+        if (c === 'club_speed' || c === 'ball_speed') return;
+        if (g.every(function (r) { return r[j + 1] === 0 || r[j + 1] === null; })) g.forEach(function (r) { r[j + 1] = null; });
+      });
+    });
+    var drows = arows.filter(function (r) { return ci < 0 || r[0] === driver; }).map(function (r) { return r.slice(1); });
     var clubs = Array.isArray(b.clubs) ? b.clubs.filter(function (c) { return c && typeof c.club === 'string'; }).map(function (c) { return {club: c.club.slice(0, 30), n: WB.num(c.n) || 0}; }).slice(0, 30) : [];
     var row = {
       id: d.id, week: WB.num(b.week), date: str(b.date, 10), file: str(b.file, 160), units: str(b.units, 40), imported_at: str(b.imported_at, 40),
-      driver: driver, clubs: clubs, n_all: shots.length, cols: dcols, shots: drows,
+      driver: driver, clubs: clubs, n_all: shots.length, cols: dcols, shots: drows, arows: arows,
       fp: str(b.fp, 60) || WB.fp(str(b.date, 10), shots, cols), src_fp: str(b.src_fp, 60), date_from: str(b.date_from, 10),
     };
     if (parsedCache) parsedCache.set(d, row);

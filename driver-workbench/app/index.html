@@ -33,7 +33,7 @@
 <div class="wb-card"><div class="wb-lab">Smash, ball ÷ club</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_calc"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_calc">—</div></div>
 <div class="wb-card"><div class="wb-lab">Smash on the device</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_device"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_device">—</div></div>
 </div>
-<nav class="wb-nav" aria-label="Sections"><a href="#dashboard">Dashboard</a><a href="#consistency">Consistency</a><a href="#check">Check</a><a href="#realistic">Realistic look</a><a href="#outlook">Outlook</a><a href="#topics">Topics</a><a href="#history">History</a><a href="#log">Log by hand</a><a href="#capture">Data to capture</a><a href="#refs">Benchmarks</a><a href="#backlog">Backlog</a></nav>
+<nav class="wb-nav" aria-label="Sections"><a href="#dashboard">Dashboard</a><a href="#bag">Bag</a><a href="#consistency">Consistency</a><a href="#check">Check</a><a href="#realistic">Realistic look</a><a href="#outlook">Outlook</a><a href="#topics">Topics</a><a href="#history">History</a><a href="#log">Log by hand</a><a href="#capture">Data to capture</a><a href="#refs">Benchmarks</a><a href="#backlog">Backlog</a></nav>
 </div>
 <div data-only="ingest" hidden>
 <p class="wb-lede">Drop GSPro exports here on the GSPro PC. Analysis by player is on the iPad, or switch to Analysis above.</p>
@@ -82,6 +82,7 @@
 
 <h2>Imported files</h2>
 <div class="wb-segs wb-golfer-pick" data-draw="golferbar" role="group" aria-label="Golfer"></div>
+<div class="wb-actions wb-copyrow"><button type="button" id="copycsv" class="wb-btn">Copy this golfer’s shots as CSV</button><span class="wb-msg" id="copycsv-msg" hidden></span></div>
 <p class="wb-note" id="hist-none" hidden>No files imported yet.</p>
 <span data-draw="histstate"></span>
 <div class="wb-scroll"><table class="wb-table" id="hist-table">
@@ -110,6 +111,18 @@
 <p class="wb-sub">Averages ± spread of the driver shots. Directions assume a right-handed golfer; curve comes from GSPro’s spin axis, or from side and back spin when the file has no axis.</p></div>
 </div>
 <div class="wb-card wb-dash3"><h3>Golfers side by side</h3><div data-draw="compare"></div></div>
+</section>
+
+<section id="bag" data-only="analysis">
+<h2>Whole bag</h2>
+<p class="wb-note">Every club in <b data-draw="gname">—</b>’s imported sessions: carry (dark), the spread of carry (the band), and roll out to total (light). Each gap is the carry difference to the next club down; tight gaps (under 7 yards) or wide ones (over 18, or 25 around the woods) are flagged. <span data-draw="bagnote"></span></p>
+<div class="wb-controls"><label>Sessions from<select data-param="bagspan"><option value="latest">The latest week</option><option value="last4">The last 4 weeks</option><option value="last12">The last 12 weeks</option><option value="all">All history</option></select></label></div>
+<div class="wb-card"><div class="wb-gap" data-draw="gapchart"></div>
+<div class="wb-legend"><span><i class="wb-sw-carry"></i>Carry</span><span><i class="wb-sw-band"></i>Carry spread</span><span><i class="wb-sw-total"></i>Roll to total</span><span>Numbers: carry ± spread · total (yd)</span></div></div>
+<div class="wb-scroll" style="margin-top:var(--cds-gap-md)"><table class="wb-table" id="bag-table">
+<thead><tr><th class="wb-l">Club</th><th>Shots</th><th>Carry</th><th>Carry spread</th><th>Total</th><th>Club speed</th><th>Ball speed</th><th>Smash</th><th>Launch</th><th>Spin</th><th>Peak (yd)</th><th>Offline spread</th></tr></thead>
+<tbody data-draw="bagrows"></tbody>
+</table></div>
 </section>
 
 <section id="consistency" data-only="analysis">

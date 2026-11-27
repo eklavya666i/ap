@@ -129,7 +129,9 @@
   }
   function nameDate(name) {
     const s = String(name || '');
-    let m = s.match(/(20\d{2})[-_.]?(\d{2})[-_.]?(\d{2})/);
+    let m = s.match(/gspro[-_ ]?export[-_ ]?(\d{2})-(\d{2})-(\d{2})(?:\D|$)/i);
+    if (m && +m[1] >= 1 && +m[1] <= 12 && +m[2] >= 1 && +m[2] <= 31) return `20${m[3]}-${m[1]}-${m[2]}`;
+    m = s.match(/(20\d{2})[-_.]?(\d{2})[-_.]?(\d{2})/);
     if (m && +m[2] >= 1 && +m[2] <= 12 && +m[3] >= 1 && +m[3] <= 31) return `${m[1]}-${m[2]}-${m[3]}`;
     m = s.match(/(\d{1,2})[-_.](\d{1,2})[-_.](20\d{2})/);
     if (m && +m[1] >= 1 && +m[1] <= 12 && +m[2] >= 1 && +m[2] <= 31) return `${m[3]}-${pad2(m[1])}-${pad2(m[2])}`;
@@ -188,7 +190,7 @@
   /* All shots of one parsed file in standard units: rows are [club, ...cols], with each shot's date beside it. */
   function standardize(p, mode) {
     const SPD = {mph: 1, ms: 2.2369363, kmh: 0.6213712}, DST = {yd: 1, m: 1.0936133, ft: 1 / 3};
-    const unitOf = (f) => (mode !== 'auto' ? (SPEEDS.includes(f) ? MODES[mode][0] : MODES[mode][1]) : p.detected[f] || (SPEEDS.includes(f) ? 'mph' : 'yd'));
+    const unitOf = (f) => (mode !== 'auto' ? (f === 'peak' ? (MODES[mode][1] === 'm' ? 'm' : 'ft') : SPEEDS.includes(f) ? MODES[mode][0] : MODES[mode][1]) : p.detected[f] || (SPEEDS.includes(f) ? 'mph' : f === 'peak' ? 'ft' : 'yd'));
     const assumed = mode === 'auto' && [...SPEEDS, 'carry'].some((f) => p.map[f] !== undefined && !p.detected[f]);
     const hasSpin = p.map.spin !== undefined || p.map.back !== undefined;
     const hasAxis = p.map.axis !== undefined || (p.map.back !== undefined && p.map.side !== undefined);
@@ -538,7 +540,7 @@
       week: j.week, date: s.date, date_from: s.dateFrom, file: s.label + (j.part ? ' (split by speed)' : ''), units: s.units, imported_at: now, driver: s.driver,
       clubs: [...clubs.entries()].map(([club, n]) => ({club, n})), n_total: j.rows.length,
       summary: {driver_used: ds.n_used, driver_left: ds.n_left, club_speed: ds.club_speed, ball_speed: ds.ball_speed, launch: ds.launch, spin: ds.spin, carry: ds.carry, total: ds.total},
-      cols: ['club'].concat(s.cols), shots_json: JSON.stringify(j.rows), fp: j.part ? s.fp + ':' + j.gid : s.fp, src_fp: s.fp,
+      cols: ['club'].concat(s.cols), shots_json: JSON.stringify(j.rows), fp: j.part ? s.fp + ':' + j.gid : s.fp, src_fp: s.fp, peak_unit: 'yd',
     };
   }
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));

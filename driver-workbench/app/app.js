@@ -19,11 +19,12 @@ function importWeeksOf(imports, target) {
     const cols = WB.COLS.filter((c) => g.some((i) => i.cols.includes(c)));
     const rows = g.flatMap((i) => { const at = cols.map((c) => i.cols.indexOf(c)); return i.shots.map((r) => at.map((k) => (k < 0 ? null : r[k]))); });
     const dates = [...new Set(g.map((i) => i.date).filter(Boolean))].sort();
+    if (!rows.length) return null;
     const st = WB.shotStats(cols, rows, target);
     const at = PT.map((c) => cols.indexOf(c));
     const pts = rows.map((r, n) => { const o = {used: st.dots[n].used}; PT.forEach((c, j) => { const v = at[j] < 0 ? null : r[at[j]]; o[c] = typeof v === 'number' && isFinite(v) ? v : null; }); return o; });
     return Object.assign({week, date: dates[0] || '', files: g.map((i) => i.file), n_sessions: g.length, driver: g[0].driver, cols, pts}, st);
-  }).sort((a, b) => a.week - b.week);
+  }).filter(Boolean).sort((a, b) => a.week - b.week);
 }
 dash.calc('csvweeks', {inputs: ['imports'], fn: (imports) => importWeeksOf(imports, Number(dash.params().smash_target))});
 
@@ -1115,5 +1116,140 @@ dash.draw('gsettings', (el) => {
     });
     try { await WB.save('config/golfers', {list}); if (msgEl) { msgEl.textContent = 'Saved.'; msgEl.className = 'wb-msg wb-good'; msgEl.hidden = false; } }
     catch (err) { if (msgEl) { msgEl.textContent = WB.noDb ? 'Saving is off in this view.' : 'That wasn’t saved.'; msgEl.className = 'wb-msg wb-badc'; msgEl.hidden = false; } }
+  });
+})();
+
+/* ---------- Whole bag: every club from the saved sessions, with gapping ---------- */
+function clubInfo(label) {
+  const raw = String(label || '').trim(), c = raw.toLowerCase().replace(/[\s_-]+/g, '');
+  let m;
+  if (/^(dr|driver|1w|w1|d|drv|1wood|wood1)$/.test(c) || /driver/.test(c)) return {key: 'dr', name: 'Driver', order: 0, cat: 'wood'};
+  if ((m = c.match(/^(\d)(?:w|wood)$/) || c.match(/^w(\d)$/))) return {key: 'w' + m[1], name: m[1] + ' wood', order: 10 + Number(m[1]), cat: 'wood'};
+  if ((m = c.match(/^(\d)(?:h|hy|hyb|hybrid)$/) || c.match(/^h(\d)$/))) return {key: 'h' + m[1], name: m[1] + ' hybrid', order: 30 + Number(m[1]), cat: 'hybrid'};
+  if ((m = c.match(/^(\d)(?:i|iron)$/) || c.match(/^i(\d)$/))) return {key: 'i' + m[1], name: m[1] + ' iron', order: 50 + Number(m[1]), cat: 'iron'};
+  if (/^(pw|p|pitchingwedge|pitching)$/.test(c)) return {key: 'pw', name: 'Pitching wedge', order: 70, cat: 'wedge'};
+  if (/^(gw|aw|uw|gapwedge|approachwedge)$/.test(c)) return {key: 'gw', name: 'Gap wedge', order: 72, cat: 'wedge'};
+  if (/^(sw|sandwedge)$/.test(c)) return {key: 'sw', name: 'Sand wedge', order: 74, cat: 'wedge'};
+  if (/^(lw|lobwedge)$/.test(c)) return {key: 'lw', name: 'Lob wedge', order: 76, cat: 'wedge'};
+  if ((m = c.match(/^(\d{2})(?:°|deg)?$/)) && Number(m[1]) >= 44 && Number(m[1]) <= 64) return {key: 'x' + m[1], name: m[1] + '° wedge', order: 70 + (Number(m[1]) - 44) / 2, cat: 'wedge'};
+  if (/^(pt|putter|putt)$/.test(c)) return null;
+  return {key: 'o-' + c, name: raw || 'Unlabelled', order: 90, cat: 'iron'};
+}
+const CLUB_LIMITS = {wood: {sm: [1.0, 1.56], sp: 8000}, hybrid: {sm: [1.0, 1.52], sp: 9000}, iron: {sm: [1.0, 1.5], sp: 11000}, wedge: {sm: [0.95, 1.4], sp: 13000}};
+dash.calc('bag', {
+  inputs: ['imports'],
+  fn: (imports) => {
+    const span = dash.params().bagspan || 'last4';
+    const dated = imports.filter((i) => Number.isInteger(i.week));
+    if (!dated.length) return {clubs: [], from: null, to: null, sessions: 0, span};
+    const W = Math.max(...dated.map((i) => i.week));
+    const keep = dated.filter((i) => span === 'all' || (span === 'latest' ? i.week === W : i.week > W - (span === 'last12' ? 12 : 4)));
+    const by = new Map();
+    keep.forEach((i) => {
+      const ix = {};
+      i.cols.forEach((c, k) => { ix[c] = k + 1; });
+      i.arows.forEach((r) => {
+        const info = clubInfo(r[0]);
+        if (!info) return;
+        const g = by.get(info.key) || Object.assign({rows: [], sessions: new Set(), labels: new Set()}, info);
+        const get = (c) => (ix[c] === undefined ? null : r[ix[c]]);
+        g.rows.push({club: get('club_speed'), ball: get('ball_speed'), launch: get('launch'), spin: get('spin'), carry: get('carry'), total: get('total'), offline: get('offline'), peak: get('peak')});
+        g.sessions.add(i.id); g.labels.add(r[0]);
+        by.set(info.key, g);
+      });
+    });
+    const out = [...by.values()].map((g) => {
+      const L = CLUB_LIMITS[g.cat];
+      const ok = (r) => r.ball !== null && (r.club === null || (r.ball / r.club >= L.sm[0] && r.ball / r.club <= L.sm[1])) && (r.launch === null || (r.launch >= -10 && r.launch <= 50)) && (r.spin === null || (r.spin >= 300 && r.spin <= L.sp)) && (r.carry === null || r.carry > 5);
+      const used = g.rows.filter(ok);
+      const col = (k) => used.map((r) => r[k]).filter((v) => v !== null);
+      const both = used.filter((r) => r.club && r.ball !== null);
+      return {key: g.key, name: g.name, order: g.order, cat: g.cat, labels: [...g.labels].join(', '), n: g.rows.length, n_used: used.length, sessions: g.sessions.size,
+        carry: mean(col('carry')), carry_sd: stdev(col('carry')), total: mean(col('total')), ball: mean(col('ball')), club: mean(both.map((r) => r.club)),
+        smash: both.length ? mean(both.map((r) => r.ball / r.club)) : null, launch: mean(col('launch')), spin: mean(col('spin')), peak: mean(col('peak')), offline_sd: stdev(col('offline'))};
+    }).filter((c) => c.n_used >= 1).sort((a, b) => a.order - b.order || (b.carry || 0) - (a.carry || 0));
+    const real = out.filter((c) => c.carry !== null && c.n_used >= 3);
+    real.forEach((c, k) => {
+      const nx = real[k + 1];
+      if (!nx) return;
+      c.gap = c.carry - nx.carry;
+      c.gap_to = nx.name;
+      const wide = c.cat === 'wood' || nx.cat === 'wood' ? 25 : 18;
+      c.gap_flag = c.gap < 0 ? 'overlap' : c.gap < 7 ? 'tight' : c.gap > wide ? 'wide' : '';
+    });
+    const dates = keep.map((i) => i.date).filter(Boolean).sort();
+    return {clubs: out, from: dates[0] || null, to: dates[dates.length - 1] || null, sessions: keep.length, span, week: W};
+  },
+});
+dash.draw('bagnote', (el) => {
+  const b = dash.data('bag');
+  if (b.status !== 'ok') { el.textContent = b.status === 'loading' ? 'Loading…' : '—'; return; }
+  const d = b.data;
+  el.textContent = !d.clubs.length ? 'No imported sessions yet for this golfer.' : `${d.sessions} session${d.sessions === 1 ? '' : 's'}${d.from ? `, ${d.from}${d.to && d.to !== d.from ? ' to ' + d.to : ''}` : ''}. Likely misreads and tops are left out using limits for each kind of club.`;
+});
+dash.draw('gapchart', (el) => {
+  const b = dash.data('bag');
+  el.replaceChildren();
+  if (b.status !== 'ok' || !b.data.clubs.length) return;
+  const clubs = b.data.clubs.filter((c) => c.carry !== null);
+  if (!clubs.length) { el.textContent = 'These sessions have no carry data.'; return; }
+  const max = Math.max(...clubs.map((c) => Math.max(c.total || 0, (c.carry || 0) + (c.carry_sd || 0)))) * 1.04;
+  const pct = (v) => Math.max(0, Math.min(100, (v / max) * 100)) + '%';
+  clubs.forEach((c) => {
+    const row = document.createElement('div'); row.className = 'wb-gap-row' + (c.n_used < 3 ? ' thin' : '');
+    const nm = document.createElement('div'); nm.className = 'wb-gap-name'; nm.textContent = c.name;
+    const tr = document.createElement('div'); tr.className = 'wb-gap-track';
+    if (c.total !== null && c.total > c.carry) { const t = document.createElement('i'); t.className = 'wb-gap-total'; t.style.left = pct(c.carry); t.style.width = `calc(${pct(c.total)} - ${pct(c.carry)})`; tr.append(t); }
+    const bar = document.createElement('i'); bar.className = 'wb-gap-carry'; bar.style.width = pct(c.carry); tr.append(bar);
+    if (c.carry_sd) { const w = document.createElement('i'); w.className = 'wb-gap-sd'; w.style.left = pct(c.carry - c.carry_sd); w.style.width = `calc(${pct(c.carry + c.carry_sd)} - ${pct(c.carry - c.carry_sd)})`; tr.append(w); }
+    const nums = document.createElement('div'); nums.className = 'wb-gap-nums';
+    nums.textContent = `${Math.round(c.carry)}${c.carry_sd ? ' ±' + Math.round(c.carry_sd) : ''} · ${c.total === null ? '—' : Math.round(c.total)}`;
+    row.append(nm, tr, nums);
+    el.append(row);
+    if (c.gap !== undefined) {
+      const g = document.createElement('div'); g.className = 'wb-gap-step' + (c.gap_flag ? ' ' + c.gap_flag : '');
+      g.textContent = c.gap_flag === 'overlap' ? `${c.gap_to} carries farther (${Math.round(-c.gap)} yd)` : `${Math.round(c.gap)} yd to ${c.gap_to.toLowerCase()}${c.gap_flag === 'tight' ? ': tight' : c.gap_flag === 'wide' ? ': wide' : ''}`;
+      el.append(g);
+    }
+  });
+});
+dash.draw('bagrows', (el) => {
+  const b = dash.data('bag');
+  el.replaceChildren();
+  if (b.status !== 'ok') { msgRow(el, 12, loadingText(b.status, 'The bag')); return; }
+  if (!b.data.clubs.length) { msgRow(el, 12, 'Import GSPro sessions to see every club.'); return; }
+  b.data.clubs.forEach((c) => {
+    const tr = document.createElement('tr');
+    const f1 = (v) => (v === null ? '—' : v.toFixed(1)), f0 = (v) => (v === null ? '—' : Math.round(v).toLocaleString('en-US'));
+    [c.name, `${c.n_used}${c.n > c.n_used ? ' (+' + (c.n - c.n_used) + ' out)' : ''}`, f0(c.carry), c.carry_sd === null ? '—' : '±' + c.carry_sd.toFixed(1), f0(c.total), f1(c.club), f1(c.ball), c.smash === null ? '—' : c.smash.toFixed(2), c.launch === null ? '—' : c.launch.toFixed(1) + '°', f0(c.spin), f0(c.peak), c.offline_sd === null ? '—' : '±' + c.offline_sd.toFixed(1)].forEach((t, i) => {
+      const td = document.createElement('td'); td.textContent = t; if (i === 0) td.className = 'wb-wrap'; tr.append(td);
+    });
+    el.append(tr);
+  });
+});
+
+/* Copy a golfer's every saved shot as CSV: a backup any spreadsheet opens. */
+(function () {
+  const btn = document.getElementById('copycsv'), out = document.getElementById('copycsv-msg');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    const g = WB.golfer(), r = g ? WB.rawFor(g.id) : null;
+    if (!r || !r.imports) { if (out) { out.textContent = 'Nothing loaded yet.'; out.hidden = false; } return; }
+    const esc = (v) => { const s = v === null || v === undefined ? '' : String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+    const lines = [['date', 'week', 'file', 'club'].concat(WB.COLS).join(',')];
+    r.imports.slice().sort((a, b) => (a.date || '').localeCompare(b.date || '')).forEach((s) => {
+      const ix = s.cols.map((c) => WB.COLS.indexOf(c));
+      s.arows.forEach((row) => {
+        const vals = WB.COLS.map(() => '');
+        ix.forEach((k, j) => { if (k >= 0 && row[j + 1] !== null) vals[k] = row[j + 1]; });
+        lines.push([s.date, s.week, s.file, row[0]].concat(vals).map(esc).join(','));
+      });
+    });
+    try {
+      await navigator.clipboard.writeText(lines.join('\n'));
+      if (out) { out.textContent = `Copied ${(lines.length - 1).toLocaleString('en-US')} shots for ${g.name}. Paste into a spreadsheet or a text file.`; out.className = 'wb-msg wb-good'; out.hidden = false; }
+    } catch (e) {
+      if (out) { out.textContent = 'Copying was blocked here. Try again from the app window.'; out.className = 'wb-msg wb-badc'; out.hidden = false; }
+    }
   });
 })();
