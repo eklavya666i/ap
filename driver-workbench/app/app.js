@@ -1283,6 +1283,7 @@ dash.draw('bagrows', (el) => {
     const jobs = [], cur = WB.golfers();
     const list = plain(b.config) && Array.isArray(b.config.list) ? b.config.list.filter((g) => plain(g) && typeof g.id === 'string' && GID.test(g.id) && typeof g.name === 'string') : [];
     const addG = list.filter((g) => !cur.some((c) => c.id === g.id));
+    if (plain(b.conditions) && WB.conditions().assumed && WB.num(b.conditions.altitude_ft) !== null) jobs.push({path: 'config/conditions', data: {altitude_ft: WB.num(b.conditions.altitude_ft), temp_f: WB.num(b.conditions.temp_f) || 75, firmness: WB.num(b.conditions.firmness) || 3, lm_carry: b.conditions.lm_carry === true, updated_at: new Date().toISOString()}});
     if (addG.length) jobs.push({path: 'config/golfers', data: {list: cur.map((c) => ({id: c.id, name: c.name, start: c.start, speed: c.speed})).concat(addG.map((g) => ({id: g.id, name: g.name.slice(0, 30), start: typeof g.start === 'string' ? g.start : null, speed: WB.num(g.speed)})))}});
     const known = WB.knownSessions();
     Object.entries(b.golfers).forEach(([gid, g]) => {
@@ -1308,5 +1309,52 @@ dash.draw('bagrows', (el) => {
     goBtn.disabled = false;
     say(rMsg, `Restored ${ok} item${ok === 1 ? '' : 's'}${bad ? `; ${bad} couldn’t be saved` : ''}. Nothing already here was changed.`, !bad);
     if (ok) box.value = '';
+  });
+})();
+
+
+/* Altitude: GSPro's altitude setting adds carry with no swing change. Each imported week's driver carry is restated
+   at sea level with the flight model (same ball speed, launch and spin), so weeks and benchmarks compare fairly. */
+dash.calc('altitude', {
+  inputs: ['csvweeks'],
+  fn: (csv) => {
+    const c = WB.conditions();
+    return csv.map((w) => {
+      const used = w.pts.filter((p) => p.used && ['ball_speed', 'launch', 'spin', 'carry'].every((k) => typeof p[k] === 'number'));
+      if (used.length < 3) return null;
+      const avg = (k) => used.reduce((a, p) => a + p[k], 0) / used.length;
+      const bs = avg('ball_speed'), la = avg('launch'), sp = avg('spin'), carry = avg('carry');
+      const up = BF.shot(bs, la, sp, {alt: c.altitude_ft, temp: c.temp_f, turf: 'normal'}).carry;
+      const sea = BF.shot(bs, la, sp, {alt: 0, temp: c.temp_f, turf: 'normal'}).carry;
+      if (!(up > 0) || !(sea > 0)) return null;
+      return {week: w.week, alt: c.altitude_ft, carry, carry_sea: carry * sea / up};
+    }).filter(Boolean);
+  },
+});
+dash.draw('alttext', (el) => {
+  const c = WB.conditions(), d = dash.data('altitude'), g = WB.golfer();
+  const where = c.assumed ? ' (the SLC preset from the project notes; set the real value under Import → GSPro conditions)' : '';
+  let t = `GSPro is set to ${c.altitude_ft.toLocaleString('en-US')} ft${where}.`;
+  if (d.status === 'ok' && d.data.length && c.altitude_ft > 200) {
+    const r = d.data[d.data.length - 1], gain = r.carry - r.carry_sea;
+    t += ` Thinner air adds about ${Math.round(gain)} yd of carry to ${g ? g.name + '’s' : 'these'} drives: week ${WB.wk(r.week)}’s ${Math.round(r.carry)} yd carry is about ${Math.round(r.carry_sea)} yd at sea level.`;
+  }
+  el.textContent = t + ' The Realistic look and Outlook are at sea level.';
+});
+(function () {
+  const box = document.getElementById('cond-box'), f = document.getElementById('cond-form'), m = document.getElementById('cond-msg');
+  if (!box || !f) return;
+  const fill = () => { const c = WB.conditions(); f.elements.altitude_ft.value = c.altitude_ft; f.elements.temp_f.value = c.temp_f; f.elements.firmness.value = String(c.firmness); f.elements.lm_carry.checked = c.lm_carry; };
+  box.addEventListener('toggle', () => { if (box.open) fill(); });
+  f.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const n = (v) => WB.num(v);
+    const alt = n(f.elements.altitude_ft.value), temp = n(f.elements.temp_f.value);
+    if (alt === null || alt < -500 || alt > 12000 || temp === null || temp < 20 || temp > 120) { m.textContent = 'Altitude must be −500 to 12,000 ft and temperature 20 to 120 °F.'; m.className = 'wb-msg wb-badc'; m.hidden = false; return; }
+    try {
+      await WB.save('config/conditions', {altitude_ft: Math.round(alt), temp_f: Math.round(temp), firmness: Math.min(5, Math.max(1, Math.round(n(f.elements.firmness.value) || 3))), lm_carry: !!f.elements.lm_carry.checked, updated_at: new Date().toISOString()});
+      m.textContent = 'Saved. New imports record these conditions.'; m.className = 'wb-msg wb-good';
+    } catch (e) { m.textContent = 'Couldn’t save. Check the connection and try again.'; m.className = 'wb-msg wb-badc'; }
+    m.hidden = false;
   });
 })();

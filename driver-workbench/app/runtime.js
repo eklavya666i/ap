@@ -12,7 +12,7 @@
   } catch (e) { /* defaults */ }
 
   /* Golfers: each has typed weeks and imported sessions, all subscribed at once so switching is instant. */
-  var golfers = [], configLoaded = false, configDoc = null, selected = store('wb-golfer'), raw = {}, subs = {};
+  var golfers = [], configLoaded = false, configDoc = null, conditionsDoc = null, selected = store('wb-golfer'), raw = {}, subs = {};
   var ID_RE = /^[a-z0-9][a-z0-9_-]{0,30}$/;
 
   function golferData(id) {
@@ -128,7 +128,7 @@
   /* Everything saved, as one JSON-ready object: golfers, typed weeks, sessions (all clubs and shots) and the backlog.
      Original CSV files stay out: they live in the raw collections and in the export folders. */
   WB.backup = function () {
-    var out = {app: 'driver-workbench', format: 1, exported_at: new Date().toISOString(), config: configDoc, golfers: {}, backlog: []};
+    var out = {app: 'driver-workbench', format: 1, exported_at: new Date().toISOString(), config: configDoc, conditions: conditionsDoc, golfers: {}, backlog: []};
     Object.keys(raw).forEach(function (gid) {
       var g = raw[gid];
       out.golfers[gid] = {
@@ -175,6 +175,13 @@
   WB.mode = function () { return mode === 'ingest' ? 'ingest' : 'analysis'; };
   WB.setMode = function (m, keep) { mode = m; if (keep !== false) store('wb-mode', m); applyMode(); clearCache(); render(); };
   WB.applyMode = applyMode;
+  /* GSPro's conditions: they change carry with no swing change. Until set, the SLC preset from the project notes is assumed. */
+  WB.conditions = function () {
+    var c = conditionsDoc || {};
+    var n = function (v, lo, hi, d) { var x = WB.num(v); return x !== null && x >= lo && x <= hi ? x : d; };
+    return {altitude_ft: Math.round(n(c.altitude_ft, -500, 12000, 4450)), temp_f: Math.round(n(c.temp_f, 20, 120, 75)),
+      firmness: Math.round(n(c.firmness, 1, 5, 3)), lm_carry: c.lm_carry === true, assumed: !conditionsDoc};
+  };
   WB.roundsFor = function (gid) { var g = raw[gid]; return g ? g.rounds : null; };
   WB.rawFor = function (gid) { var g = raw[gid]; return g ? {typed: g.typed, imports: g.imports} : null; };
   WB.golfer = function () { return golfers.filter(function (g) { return g.id === selected; })[0] || null; };
@@ -420,6 +427,7 @@
       var g = selected && raw[selected];
       if (!configLoaded || (g && (g.typed === null || g.imports === null))) note('db-note', true, 'Your saved data can’t be reached yet. Anything shown may be out of date.');
     }, 10000);
+    db.doc('config/conditions').onSnapshot(function (snap) { conditionsDoc = snap.exists ? snap.data() : null; schedule(); }, function () {});
     db.doc('config/golfers').onSnapshot(function (snap) {
       configDoc = snap.exists ? snap.data() : null;
       var list = configDoc && Array.isArray(configDoc.list) ? configDoc.list : [];

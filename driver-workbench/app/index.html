@@ -80,6 +80,18 @@
 <form id="addgolfer" class="wb-inline"><label class="wb-visually-hidden" for="gname-in">New golfer’s name</label><input id="gname-in" name="gname" type="text" maxlength="30" placeholder="New golfer’s name" autocomplete="off"><button type="submit" class="wb-btn">Add golfer</button><span class="wb-msg wb-badc" id="addgolfer-msg" hidden></span></form>
 </details>
 
+<details class="wb-more wb-write" id="cond-box"><summary>GSPro conditions</summary>
+<form id="cond-form" class="wb-card">
+<p class="wb-note">GSPro's settings change carry with no change in the swing, so each import records them. Set them to match GSPro.</p>
+<div class="wb-fields">
+<label>Altitude (ft)<input name="altitude_ft" type="number" inputmode="numeric" min="-500" max="12000" step="10"></label>
+<label>Temperature (°F)<input name="temp_f" type="number" inputmode="numeric" min="20" max="120"></label>
+<label>Fairway firmness<select name="firmness"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label class="wb-cond-check"><input name="lm_carry" type="checkbox"> Use LM Carry is on</label>
+</div>
+<div class="wb-actions"><button type="submit" class="wb-btn wb-btn-main">Save conditions</button><span class="wb-msg" id="cond-msg" hidden></span></div>
+</form>
+</details>
 <details class="wb-more wb-write" id="backup-box"><summary>Backup and restore</summary>
 <div class="wb-card">
 <p class="wb-note">A backup holds every golfer, typed week, imported session (all clubs and all shots) and backlog item. Copy one now and then, and keep it with the GSPro export folders. The original CSV files aren’t in it: keep the folders too.</p>
@@ -104,6 +116,7 @@
 <section id="dashboard" data-only="analysis">
 <h2>Driver dashboard</h2>
 <p class="wb-note">Weekly averages for <b data-draw="gname">—</b> by program week. Shaded bars show the spread of shots around each average in imported weeks; green bands are launch and spin windows for this golfer’s club speed (<b data-draw="win" data-w="l_lo">—</b>–<b data-draw="win" data-w="l_hi">—</b>°, <b data-draw="win" data-w="s_lo">—</b>–<b data-draw="win" data-w="s_hi">—</b> rpm); the dashed line is the target smash. A hollow red point is a week whose numbers don’t add up.</p>
+<p class="wb-note" data-draw="alttext"></p>
 <div class="wb-trends">
 <div class="wb-card wb-trend"><div class="wb-trend-head"><h3>Club speed (mph)</h3><span class="wb-trend-now" data-draw="trendhead" data-m="club"></span></div><div class="wb-chartbox wb-mini" data-draw="trendchart" data-m="club"></div></div>
 <div class="wb-card wb-trend"><div class="wb-trend-head"><h3>Ball speed (mph)</h3><span class="wb-trend-now" data-draw="trendhead" data-m="ball"></span></div><div class="wb-chartbox wb-mini" data-draw="trendchart" data-m="ball"></div></div>

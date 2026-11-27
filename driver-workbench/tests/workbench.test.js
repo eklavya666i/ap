@@ -180,6 +180,16 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   await sleep(100);
   const winB = w.dash.data('windows').data;
   check(winB.launch[0] > winA.launch[0], 'the slower golfer gets a higher launch window');
+  // GSPro conditions: the SLC preset is assumed until set; carry is restated at sea level; saving changes it.
+  const alt = () => doc.querySelector('[data-draw="alttext"]').textContent;
+  check(alt().includes('4,450 ft') && alt().includes('at sea level'), 'shows GSPro altitude and carry at sea level');
+  const cf = doc.getElementById('cond-form');
+  doc.getElementById('cond-box').open = true; doc.getElementById('cond-box').dispatchEvent(new w.Event('toggle'));
+  cf.elements.altitude_ft.value = '5000'; cf.requestSubmit();
+  await sleep(200);
+  check(M.docs.get('config/conditions').altitude_ft === 5000 && alt().includes('5,000 ft') && !alt().includes('preset'), 'saves GSPro conditions');
+  check(saved.some((k) => M.docs.has(k) && M.docs.get(k).conditions && M.docs.get(k).conditions.altitude_ft === 4450), 'new sessions record their conditions');
+
   // Rounds: a round saved from the form is listed, edited in place, kept in backups and restored if lost.
   w.WB.setMode('analysis');
   const rf = doc.getElementById('round-form');

@@ -549,7 +549,7 @@
       schema: 2, week: j.week, date: s.date, date_from: s.dateFrom, file: s.label + (j.part ? ' (split by speed)' : ''), units: s.units, imported_at: now, driver: s.driver,
       clubs: [...clubs.entries()].map(([club, n]) => ({club, n})), n_total: j.rows.length,
       summary: {driver_used: ds.n_used, driver_left: ds.n_left, club_speed: ds.club_speed, ball_speed: ds.ball_speed, launch: ds.launch, spin: ds.spin, carry: ds.carry, total: ds.total},
-      cols: ['club'].concat(s.cols), shots_json: JSON.stringify(j.rows), fp: j.part ? s.fp + ':' + j.gid : s.fp, src_fp: s.fp, peak_unit: 'yd', has_raw: !!rawOk,
+      cols: ['club'].concat(s.cols), shots_json: JSON.stringify(j.rows), fp: j.part ? s.fp + ':' + j.gid : s.fp, src_fp: s.fp, peak_unit: 'yd', has_raw: !!rawOk, conditions: (({altitude_ft, temp_f, firmness, lm_carry, assumed}) => ({altitude_ft, temp_f, firmness, lm_carry, assumed}))(WB.conditions()),
     };
   }
   /* The session's original CSV lines, in pieces under 200,000 characters: golfers/{id}/raw/{session}, then {session}-p2 and on. */
