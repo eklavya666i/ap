@@ -3,7 +3,7 @@
 function draftSrc(mode, id) {
   if (mode === "a") { const a = getA(id); if (a) return {key: "a:" + a.id, type: ESSAY_TYPES.includes(a.type) ? a.type : "lit", a, title: a.title, get: () => a.draft || "", set: v => { a.draft = v; }}; }
   if (mode === "tw") { const w = S.writes[Number(id)]; if (w) return {key: "tw:" + id, type: w.type, w, title: "Timed write · " + nice(w.d), get: () => w.text || "", set: v => { w.text = v; }}; }
-  const type = ESSAY(id) ? id : (S.drafts.lastType || "lens");
+  const type = ESSAY(id) ? id : ESSAY(S.drafts.lastType) ? S.drafts.lastType : "lit";
   return {key: "t:" + type, type, title: ESSAY(type).name, get: () => S.drafts["check:" + type] || "", set: v => { S.drafts["check:" + type] = v; }};
 }
 let CK = null;   // the last check: {key, res, text}
@@ -11,7 +11,7 @@ IN.cktext = el => { const src = draftSrc(el.dataset.mode, el.dataset.id); src.se
 IN.cktype = el => { S.drafts.lastType = el.value; save(); location.hash = `#/check/t/${el.value}`; };
 ACT.runcheck = arg => {
   const [mode, id] = arg.split("|"), src = draftSrc(mode, id), text = src.get(), E = ESSAY(src.type);
-  const ctx = src.a ? ctxFor(src.a) : {type: src.type, lenses: LENSES, title: "", author: "", names: LOTF.characters.map(c => c.name.split(" ")[0])};
+  const B = bookOfUnit(S.set.unit), ctx = src.a ? ctxFor(src.a) : {type: src.type, title: "", author: "", names: B && B.names ? B.names : []};
   CK = {key: src.key, text, res: Checker.check(text, E.check, {...ctx, type: src.type})};
   if (CK.res.stats.words >= 40) {
     const first = !S.checks.some(c => c.key === src.key && c.d === today());
@@ -23,10 +23,10 @@ ACT.runcheck = arg => {
   render(); setTimeout(() => { const r = $("#ckres"); if (r) r.scrollIntoView({behavior: REDUCED ? "auto" : "smooth", block: "start"}); }, 30);
 };
 ACT.showf = a => { $$("mark.on").forEach(m => m.classList.remove("on")); const ms = $$(`mark[data-f="${a}"]`); ms.forEach(m => m.classList.add("on")); if (ms[0]) ms[0].scrollIntoView({block: "center", behavior: REDUCED ? "auto" : "smooth"}); else toast("This one is about the whole draft or a whole paragraph"); };
-const AREA_NAMES = {thesis: "Thesis", evidence: "Evidence", commentary: "Commentary", organization: "Organization", style: "Style", conventions: "Conventions and MLA", counter: "Counterclaim", lens: "Lens", sources: "Sources", story: "Storytelling"};
+const AREA_NAMES = {thesis: "Thesis", evidence: "Evidence", commentary: "Commentary", organization: "Organization", style: "Style", conventions: "Conventions and MLA", counter: "Counterclaim", sources: "Sources", story: "Storytelling"};
 function areasFor(type) {
   const a = type === "narrative" ? ["story", "organization", "style", "conventions"] : ["thesis", "evidence", "commentary", "organization", "style", "conventions"];
-  if (type === "argument") a.splice(3, 0, "counter"); if (type === "lens") a.splice(1, 0, "lens"); if (type === "synthesis") a.splice(2, 0, "sources");
+  if (type === "argument") a.splice(3, 0, "counter"); if (type === "synthesis") a.splice(2, 0, "sources");
   return a;
 }
 function markedHTML(text, findings) {
@@ -100,7 +100,7 @@ How to give feedback:
 - End with the two changes that would raise my score the most.
 
 Assignment: ${a ? a.title + " (" + E.name + ")" : E.name}
-Prompt: ${a && a.prompt ? a.prompt : src.w ? src.w.prompt : "(not given)"}${a && a.book ? "\nText: Lord of the Flies by William Golding" : ""}
+Prompt: ${a && a.prompt ? a.prompt : src.w ? src.w.prompt : "(not given)"}${a && BOOKS[a.book] ? `\nText: ${BOOKS[a.book].title} by ${BOOKS[a.book].author}` : ""}
 
 Rubric (1 = Beginning, 4 = Exceeds):
 ${E.rubric.map((r, i) => `${i + 1}. ${r.row}: 4 = ${r.lv[3]}; 3 = ${r.lv[2]}; 2 = ${r.lv[1]}; 1 = ${r.lv[0]}`).join("\n")}

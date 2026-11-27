@@ -1,4 +1,5 @@
 // ---------- Today: setup, what to do next, due soon, reading, review cards, a drill of the day, goals, streak; and the review-card player
+const unitSelect = () => `<label class="f">Your class is on<select data-in="unit">${COURSE.units.map(U => `<option value="${U.u}"${U.u === S.set.unit ? " selected" : ""}>Unit ${U.u}: ${esc(U.title)}${U.text !== U.title && !U.writing ? ` (${esc(U.text)})` : ""}</option>`).join("")}</select></label>`;
 function calHTML() {
   const k = today(), cells = [];
   for (let i = 55; i >= 0; i--) { const d = addD(k, -i), x = S.days[d]; cells.push(`<i class="${x && x.frozen ? "fz" : counted(d) ? "on" : ""}${d === k ? " today" : ""}" title="${d}"></i>`); }
@@ -16,24 +17,26 @@ function drillOfDay() {
 IN.name = el => { S.name = el.value.trim().slice(0, 30); save(); renderStats(); };
 ACT.setupdone = () => { S.seen.setup = today(); save(); render(); };
 V.today = () => {
-  const h = new Date().getHours(), hello = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening", U = UNIT(S.set.unit);
+  const h = new Date().getHours(), hello = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening", U = UNIT(S.set.unit) || UNIT(3);
   const setup = !S.seen.setup ? `<div class="card hi"><h3>Set up in a minute</h3>
     <label class="f">Your first name<input type="text" data-in="name" value="${esc(S.name)}" maxlength="30" autocomplete="given-name"></label>
-    <div class="row">${readSelect("lotf")}</div><div class="row">${readSelect("asp")}</div><p class="meta">Guides, quizzes and review cards stay hidden past this point, so nothing gets spoiled.</p>
+    ${unitSelect()}
+    ${Object.values(BOOKS).map(B => `<div class="row">${readSelect(B.id)}<span class="meta"><i>${esc(B.title)}</i></span></div>`).join("")}<p class="meta">Guides, quizzes and review cards stay hidden past the point you've read, so nothing gets spoiled.</p>
     <div class="row"><a class="btn ghost" href="#/asg/new">Add your next assignment</a><button class="btn" data-act="setupdone">Done</button></div></div>` : "";
   const R = recs().slice(0, 3);
   const soon = S.asg.filter(a => !a.done && daysTo(a.due) <= 7).sort((a, b) => a.due < b.due ? -1 : 1);
-  const G = goals(), dc = dueCards(), d = drillOfDay(), B = bookOfUnit(U.u), b = B ? B.id : "lotf", r = readTo(b), w = W(b).ch.toLowerCase();
+  const G = goals(), dc = dueCards(), d = drillOfDay(), B = bookOfUnit(U.u), b = B ? B.id : BOOK0, r = readTo(b), w = W(b).ch.toLowerCase();
   const seenL = ARG.lessons.filter(l => S.seen["lesson:" + l.id]).length, nextL = ARG.lessons.find(l => !S.seen["lesson:" + l.id]);
-  return `<h2>${hello}${S.name ? ", " + esc(S.name) : ""}</h2><p class="lead">${nice(today())} · Unit ${U.u}: ${esc(U.title)}${B ? ` · <i>${esc(B.title)}</i>, read through ${r ? w + " " + r : `no ${W(b).chs.toLowerCase()} yet`}` : U.workshop ? ` · ${seenL} of ${ARG.lessons.length} lessons opened` : ""}</p>
+  return `<h2>${hello}${S.name ? ", " + esc(S.name) : ""}</h2><p class="lead">${nice(today())} · Unit ${U.u}: ${esc(U.title)}${B ? ` · ${B.title === U.title ? "" : `<i>${esc(B.title)}</i>, `}read through ${r ? w + " " + r : `no ${W(b).chs.toLowerCase()} yet`}` : U.workshop ? ` · ${seenL} of ${ARG.lessons.length} lessons opened` : ""}</p>
   ${setup}
   <div class="card"><h3>Do these next</h3><ul class="list">${R.map(recHTML).join("")}</ul><div class="row"><a class="btn ghost sm" href="#/coach">More in Coach</a></div></div>
   <div class="cols">
   <div class="card"><h3>Due this week</h3>${soon.length ? `<ul class="list">${soon.map(a => { const ns = nextStep(a); return `<li><a class="go" href="#/asg/${a.id}"><span class="t"><b>${esc(a.title)}</b><br><span class="s">${dueWords(a.due)}${ns ? " · next: " + esc(ns[1].toLowerCase()) : ""}</span></span></a>${daysTo(a.due) <= 1 ? `<span class="chip fix">soon</span>` : ""}</li>`; }).join("")}</ul>` : `<p class="meta">Nothing due in the next 7 days.</p>`}<div class="row"><a class="btn ghost sm" href="#/asg/new">+ Add assignment</a></div></div>
-  <div class="card"><h3>${U.workshop ? "Workshop" : "Reading"}</h3>${B ? `<p class="meta"><i>${esc(B.title)}</i></p><div class="row" style="margin:0">${readSelect(b)}</div>
+  <div class="card"><h3>${U.workshop ? "Workshop" : U.writing ? "Writing unit" : "Reading"}</h3>${B ? `<p class="meta"><i>${esc(B.title)}</i></p><div class="row" style="margin:0">${readSelect(b)}</div>
     <div class="row">${r < B.chapters_n ? `<a class="btn sm" href="${chHref(b, r + 1)}">${W(b).ch} ${r + 1}: before you read</a>` : ""}${r ? `<button class="btn ghost sm" data-act="quiz" data-arg="ch:${b}:${r}">${W(b).ch} ${r} check</button>` : ""}</div>`
     : U.workshop ? `<p class="meta">${seenL} of ${ARG.lessons.length} argument lessons opened.</p><div class="row">${nextL ? `<a class="btn sm" href="#/lesson/${nextL.id}">Next: ${esc(nextL.title)}</a>` : `<a class="btn sm" href="#/debate">Debate prep</a>`}<button class="btn ghost sm" data-act="quiz" data-arg="fallacies">Fallacy finder</button></div>`
-    : `<p class="meta">The reading guide for ${esc(U.text)} comes in phase ${U.phase}. Writing guides and drills are ready now.</p>`}</div>
+    : U.writing ? `<p class="meta">${esc(U.product)}: the guide, drills and your day-by-day plan are in Write.</p><div class="row"><a class="btn sm" href="#/guide/${U.essay}">${esc(ESSAY(U.essay).name)} guide</a><a class="btn ghost sm" href="#/asg/new">Plan it</a></div>`
+    : `<p class="meta">The reading guide for <i>${esc(U.text)}</i> is coming. Writing guides and drills are ready now.</p><div class="row"><a class="btn ghost sm" href="#/unit/${U.u}">Unit ${U.u}</a></div>`}</div>
   <div class="card"><h3>Review cards</h3><p class="meta">${dc.due.length} due · ${dc.fresh.length} new today</p><div class="row"><a class="btn sm${dc.all.length ? "" : " ghost"}" href="#/review">${dc.all.length ? `Review ${dc.all.length} cards` : "All caught up"}</a></div></div>
   <div class="card"><h3>Drill of the day</h3><p><b>${esc(d.title)}</b><br><span class="meta">${esc(SKILLS[d.skill])} · about two minutes</span></p><div class="row"><a class="btn sm" href="#/drill/${d.id}">Start</a></div></div>
   <div class="card"><h3>Today's goals</h3><ul class="goals">${G.list.map(id => { const [t, n] = GOALS[id], got = Math.min(n, G.got[id] || 0), ok = G.paid.includes(id); return `<li class="${ok ? "done" : ""}"><span>${ok ? "✓ " : ""}${esc(t)}</span><span class="gbar"><i style="width:${pct(got, n)}%"></i></span></li>`; }).join("")}</ul><p class="meta">+25 XP each, +40 for all three.</p></div>

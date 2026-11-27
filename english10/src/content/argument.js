@@ -1,4 +1,4 @@
-// Unit 3: the argument workshop. Lessons, fallacies, public-domain sources to analyze, labeled practice sources,
+// Unit 5: the argument workshop. Lessons, fallacies, public-domain sources to analyze, labeled practice sources,
 // debate preparation and a question bank. Statistics in practice items are labeled hypothetical so nothing reads as a real fact.
 const ARG = {
   unit: 3,

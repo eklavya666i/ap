@@ -7,19 +7,18 @@ The plan and status live in the Ira AP project doc `claude/english10h-app.md`.
 
 - `app.html`: the shell and all the styles. The build drops the scripts below into it, in this order.
 - `content/`: everything Ira reads.
-  - `course.js` the 7 units, in the order of the 2024–25 IHS syllabus (reorder here when this year's Canvas syllabus is in hand)
-  - `lotf.js` Lord of the Flies (Unit 4): context, 12 chapter guides, characters, symbols, themes, 96 reading checks. Original study text only: the novel is under copyright, so the guide quotes none of it; Ira logs her own quotations with page numbers.
-  - `asp.js` A Small Place (Unit 2): context, 4 section guides with a rhetorical move each, voices, motifs, themes, 32 questions. Same no-quotation rule.
-  - `argument.js` the argument workshop (Unit 3): 8 lessons, 14 fallacies, 3 public-domain speeches and 2 labeled practice sources, debate motions and format, 55 questions
-  - `lenses.js` 9 critical lenses applied to the novel, 27 lens questions, the Hobbes or Rousseau idea
-  - `terms.js` 94 glossary terms with examples (terms quizzes and review cards are built from it)
-  - `writing.js` 6 essay guides with rubrics and public-domain model paragraphs, 28 drills, 14 timed-write prompts
+  - `course.js` the 10 units of Ira's 2026–27 syllabus (five a semester) and its 11 course goals
+  - `f451.js` Fahrenheit 451 (Unit 3): context, 7 section guides across the three parts, each with a craft focus, plus characters, symbols, themes, quote tags and 56 reading checks. Original study text only: the novel is under copyright, so the guide quotes none of it; Ira logs her own quotations with page numbers.
+  - `asp.js` A Small Place (Unit 4): context, 4 section guides with a rhetorical move each, voices, motifs, themes, 32 questions. Same no-quotation rule.
+  - `argument.js` the argument workshop (Unit 5): 8 lessons, 14 fallacies, 3 public-domain speeches and 2 labeled practice sources, debate motions and format, 55 questions
+  - `terms.js` 95 glossary terms with examples (terms quizzes and review cards are built from it)
+  - `writing.js` 5 essay guides with rubrics and public-domain model paragraphs, 28 drills, 14 timed-write prompts
   - `coach.js` advice cards, seminar help, teacher email templates, content notes (with the 988 line), the AI-honesty line
-- `lib/checker.js`: the offline draft checker (thesis, evidence, citations, commentary, organization, style, MLA, plus argument, lens, synthesis and narrative rules). It marks spots; it never rewrites.
+- `lib/checker.js`: the offline draft checker (thesis, evidence, citations, commentary, organization, style, MLA, plus argument, rhetorical, synthesis and narrative rules). It marks spots; it never rewrites.
 - `js/NN-name.js`: the app, run in number order:
-  - `00-core.js` state, dates, streak, XP and levels, daily goals, badges, review cards
-  - `10-quiz.js` reading checks, mixed review, lens, terms, who-and-what, the timed unit test, My misses
-  - `20-learn.js` Learn: units, book guides with spoiler gating (chapters or sections, people, symbols, themes, lenses or rhetoric, context), the argument workshop, glossary
+  - `00-core.js` state (and the move from the old unit numbers), dates, streak, XP and levels, daily goals, badges, review cards
+  - `10-quiz.js` reading checks, mixed review, terms, who-and-what, argument and fallacy quizzes, timed unit tests, My misses
+  - `20-learn.js` Learn: units by semester, book guides with spoiler gating (sections, people, symbols, themes, craft or rhetoric, context), the argument workshop, glossary
   - `30-write.js` Write: assignments with day plans, the prompt decoder, thesis and outline builders, essay guides, Quote Log, seminar prep, drills, SOAPSTone, debate prep
   - `40-check.js` Check: the checker with highlights, rubric self-scoring, the Claude feedback hand-off and its AI-use log
   - `50-test.js` Test hub and timed writes
@@ -33,11 +32,12 @@ The plan and status live in the Ira AP project doc `claude/english10h-app.md`.
 
 ```
 npm install
-node test.js           # every chapter guide, question, lens, term, essay guide and drill; the checker on good and weak writing
+node test.js           # every section guide, question, term, essay guide and drill; the checker on good and weak writing
 node build.js          # rebuild; the offline cache version changes automatically
 python3 check_ipad.py  # iPad checks in headless Chrome: every screen, setup, spoilers, quizzes, a whole assignment from plan to
-                       # Claude hand-off, drills, cards, seminar, a timed write, offline, backup and restore, World History first,
-                       # five iPad sizes and Split View (needs Playwright and Chrome; the test server starts and stops with it)
+                       # Claude hand-off, drills, cards, seminar, a timed write, offline, backup and restore, progress saved under
+                       # the old unit numbers, World History first, five iPad sizes and Split View (needs Playwright and Chrome;
+                       # the test server starts and stops with it)
 python3 make_icons.py  # redraw the icons
 ```
 
@@ -46,8 +46,9 @@ Every model paragraph in the essay guides must pass the draft checker with no fi
 
 ## Adding a unit
 
-Add `content/<book>.js` in the shape of `lotf.js` or `asp.js` (set `word` for section names), register it in `build.js`'s CONTENT list and in `BOOKS` in `js/00-core.js`, and point the unit at it in `course.js` with `book` and `ready: true`.
-Phases 1 and 2 are done (Units 2, 3 and 4). Phase 3 is Units 1, 5 and 6 (The Astonishing Color of After, Night, book clubs), phase 4 Macbeth.
+Add `content/<book>.js` in the shape of `f451.js` or `asp.js` (its `word` object overrides labels such as Section or Voices), register it in `build.js`'s CONTENT list and in `BOOKS` in `js/00-core.js`, and point the unit at it in `course.js` with `book` and `ready: true`.
+Built: Units 1, 3, 4 and 5. Still to build: Unit 2 (The Astonishing Color of After, for review), Semester 2 (Night and synthesis, book clubs and their presentation, the synthesis essay, Macbeth, poetry and the My Favorite Poem presentation).
+Lord of the Flies and the critical-lens unit followed an older syllabus and were retired in November 2026; they're in git history before that change.
 
 ## Branches
 

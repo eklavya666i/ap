@@ -48,11 +48,10 @@ const Checker = (() => {
   const CONTRACTIONS = /\b(?:don't|doesn't|didn't|can't|won't|isn't|aren't|wasn't|weren't|it's|that's|there's|here's|he's|she's|they're|we're|you're|I'm|I've|I'd|I'll|they've|we've|couldn't|shouldn't|wouldn't|hasn't|haven't|hadn't|let's|what's|who's|they'll|we'll|you'll)\b/gi;
   const VAGUE = /\b(?:things?|stuff|a lot|lots of|very|really|basically|literally|kind of|sort of|good|bad|nice|super|huge|awesome)\b/gi;
   const WEAK_COMM = /\b(?:(?:this|the|that) (?:quote|quotation) (?:shows|proves|means|says|explains|tells)|this (?:shows|proves|means)|the author is (?:saying|trying to say)|in other words)\b/gi;
-  const SUMMARY_START = /^(?:then|next|after that|afterwards|later|later on|first|finally|in chapter \d+|at the (?:beginning|end) of the (?:book|novel|story|chapter))\b/i;
+  const SUMMARY_START = /^(?:then|next|after that|afterwards|later|later on|first|finally|in chapter \d+|in (?:section|part) (?:\d+|one|two|three)|at the (?:beginning|end) of the (?:book|novel|story|chapter|section|part))\b/i;
   const PAST_AFTER = "(?:said|wrote|showed|described|used|was|were|did|went|felt|thought|knew|saw|told|asked|decided|realized|became|wanted|tried|took|made|gave|explained|believed|ran|killed)";
-  const LENS_NAMES = {formal: /\b(?:formalis[tm]|new critic(?:ism|s)?)\b/i, psych: /\b(?:psychoanalytic|freudian|psychological)\b/i, arch: /\b(?:archetypal|mythological|mythic)\b/i,
-    marx: /\b(?:marxis[tm]|social class|economic)\b/i, gender: /\b(?:feminis[tm]|gender)\b/i, hist: /\b(?:historical|biographical)\b/i, postcol: /\b(?:postcolonial|post-colonial)\b/i,
-    reader: /\breader[- ]response\b/i, eco: /\b(?:ecocritic(?:al|ism)|environmental)\b/i};
+  // Class titles whose capitals the checker watches (one-word or common-phrase titles like Night and A Small Place are skipped)
+  const CAP_TITLES = ["Fahrenheit 451", "The Astonishing Color of After"];
 
   function thesisCheck(sentence, ctx = {}) {
     const t = String(sentence || "").trim(), type = ctx.type || "lit", parts = [];
@@ -64,7 +63,6 @@ const Checker = (() => {
     if (type === "argument") add("Takes a position", /\b(?:should|must|ought|need to|needs to|is (?:more|less|better|worse)|are (?:more|less|better|worse)|deserve|unfair|necessary|harmful|benefit)\b/i.test(t), "Use a position word: should, must, is better than...");
     else if (type !== "narrative") add("Says how or why, not just what", /\b(?:because|but|disagree|differ|contrast|complicat|reveal|reveals|revealing|suggest|suggests|show(?:s)? that|demonstrat|illustrat|expos|argu|critiqu|warn|prov|ultimately|although|while|despite|through|by|so that|in order to|to show|to reveal|to suggest|to argue)/i.test(t), "Add the insight: '...to show that...' or 'because...'.");
     if (ctx.title || ctx.author) add("Names the title or author", (ctx.title && t.toLowerCase().includes(ctx.title.toLowerCase())) || (ctx.author && t.includes(ctx.author)), `Name ${ctx.title ? ctx.title : "the text"}${ctx.author ? " or " + ctx.author : ""}.`);
-    if (type === "lens") add("Names the lens", Object.values(LENS_NAMES).some(r => r.test(t)), "Name your lens: Marxist, psychoanalytic, archetypal...");
     if (type !== "narrative") add("Arguable, not a plain fact", !/^(?:[\w\s,']+ is (?:a|an|the) (?:novel|book|story|play|speech|memoir) (?:about|that|where))/i.test(t) && n >= 8, "A reader should be able to disagree. Say what the book shows, not what it is.");
     const score = parts.filter(p => p.pass).length;
     return {sentence: t, parts, score, of: parts.length, ok: score === parts.length};
@@ -107,11 +105,11 @@ const Checker = (() => {
         const s = sentOf(q.s); if (!s) continue;
         const qw = wc(q.inner), sw = wc(s.text);
         const lead = text.slice(s.s, q.s).trim();
-        if (!lead && qw >= 0.7 * sw) add("evidence", "fix", "Dropped quotation: it stands alone with no lead-in.", [[q.s, q.e]], "Attach it to your own words: 'When ___, Golding describes...'");
+        if (!lead && qw >= 0.7 * sw) add("evidence", "fix", "Dropped quotation: it stands alone with no lead-in.", [[q.s, q.e]], `Attach it to your own words: 'When ___, ${ctx.author || "the author"} describes...'`);
         if (qw > 40) add("evidence", "tip", "Long quotation: trim it to the words that matter.", [[q.s, q.e]], "Quote only what you analyze. Over four lines of prose needs block format.");
         if (cfg.cite) {
           const after = text.slice(q.e, Math.min(s.e + 2, q.e + 60));
-          if (!/^\s*[,.;:!?]?\s*\(/.test(after) && !cites.some(c => c.s >= q.e && c.s <= s.e + 1)) { uncited++; add("conventions", "fix", "Quotation without a citation.", [[q.s, q.e]], "Add the author and page right after it: (Golding 42)."); }
+          if (!/^\s*[,.;:!?]?\s*\(/.test(after) && !cites.some(c => c.s >= q.e && c.s <= s.e + 1)) { uncited++; add("conventions", "fix", "Quotation without a citation.", [[q.s, q.e]], `Add the author and page right after it: (${ctx.author || "Bradbury"} 42).`); }
         }
       }
       if (Q.length && cfg.cite && !uncited) goods.push("Every quotation has a citation.");
@@ -158,12 +156,12 @@ const Checker = (() => {
     }
     { const v = [...out.matchAll(VAGUE)]; if (v.length >= 2) add("style", "tip", `Vague words (${v.length}).`, v.map(x => [x.index, x.index + x[0].length]), "Swap in precise words: what exactly is 'good' or 'a lot'?"); }
     if (cfg.present) {
-      const names = ["Golding", "Poe", "Lincoln", "Douglass", "Wiesel", "Shakespeare", "Pan", "Kincaid", "the author", "the narrator", "the speaker", "the poet", ...(ctx.names || [])];
+      const names = ["Bradbury", "Poe", "Lincoln", "Douglass", "Wiesel", "Shakespeare", "Pan", "Kincaid", "the author", "the narrator", "the speaker", "the poet", ...(ctx.names || [])];
       const re = new RegExp(`\\b(?:${names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})\\s+${PAST_AFTER}\\b`, "gi");
       const m = [...out.matchAll(re)];
-      if (m.length) add("style", "tip", `Past tense for the story (${m.length}).`, m.map(x => [x.index, x.index + x[0].length]), "Use the literary present: 'Golding writes,' 'Ralph blows the conch.'");
+      if (m.length) add("style", "tip", `Past tense for the story (${m.length}).`, m.map(x => [x.index, x.index + x[0].length]), `Use the literary present: '${ctx.author || "Bradbury"} writes,' not '${ctx.author || "Bradbury"} wrote.'`);
     }
-    { const pv = [...out.matchAll(/\b(?:is|are|was|were|be|been|being)\s+(?:\w+ed|written|shown|given|taken|made|seen|known|done|told|thrown|broken|stolen|chosen|beaten|driven)\b/gi)]; if (pv.length >= 4) add("style", "tip", `Passive voice (${pv.length}).`, pv.map(x => [x.index, x.index + x[0].length]), "Name who acts: 'Roger kills Piggy,' not 'Piggy is killed.'"); }
+    { const pv = [...out.matchAll(/\b(?:is|are|was|were|be|been|being)\s+(?:\w+ed|written|shown|given|taken|made|seen|known|done|told|thrown|broken|stolen|chosen|beaten|driven)\b/gi)]; if (pv.length >= 4) add("style", "tip", `Passive voice (${pv.length}).`, pv.map(x => [x.index, x.index + x[0].length]), "Name who acts: 'The firemen burn the books,' not 'The books are burned.'"); }
     S.filter(s => wc(s.text) > 45).forEach(s => add("style", "tip", `Long sentence (${wc(s.text)} words).`, [[s.s, s.e]], "Check for a run-on; split at the turn in the idea."));
     for (let i = 0; i + 2 < S.length; i++) {
       const f = S.slice(i, i + 3).map(s => (s.text.match(/^[\W]*([A-Za-z]+)/) || [])[1]);
@@ -173,10 +171,13 @@ const Checker = (() => {
 
     // ---- Conventions
     { const m = [...out.matchAll(/\b(?:alot|could of|should of|would of|irregardless|its')\b/gi)]; if (m.length) add("conventions", "fix", `Usage error${m.length > 1 ? "s" : ""}: ${[...new Set(m.map(x => x[0].toLowerCase()))].join(", ")}.`, m.map(x => [x.index, x.index + x[0].length]), "a lot; could have; regardless; its."); }
-    { const m = [...text.matchAll(/\((?:pg?s?\.?|page)\s*\d+(?:[-–]\d+)?\)/gi)]; if (m.length) add("conventions", "fix", "MLA citations use just the page number.", m.map(x => [x.index, x.index + x[0].length]), "Write (42) or (Golding 42), without p. or page."); }
-    { const m = [...text.matchAll(/\([A-Z][A-Za-z'’-]+,\s*\d+(?:[-–]\d+)?\)/g)]; if (m.length) add("conventions", "fix", "No comma between author and page in MLA.", m.map(x => [x.index, x.index + x[0].length]), "Write (Golding 42)."); }
-    { const m = [...text.matchAll(/\.["”]\s*\([^)]{1,40}\)|["”]\.\s*\([^)]{1,40}\)/g)]; if (m.length) add("conventions", "fix", "Period before the citation.", m.map(x => [x.index, x.index + x[0].length]), "Close the quote, cite, then the period: ...shame\" (Golding 64)."); }
-    { const m = [...out.matchAll(/\blord of the flies\b/gi)].filter(x => x[0] !== "Lord of the Flies"); if (m.length) add("conventions", "fix", "Capitalize the title: Lord of the Flies.", m.map(x => [x.index, x.index + x[0].length]), "In titles, small words like of and the stay lowercase unless first."); }
+    { const m = [...text.matchAll(/\((?:pg?s?\.?|page)\s*\d+(?:[-–]\d+)?\)/gi)]; if (m.length) add("conventions", "fix", "MLA citations use just the page number.", m.map(x => [x.index, x.index + x[0].length]), `Write (42) or (${ctx.author || "Bradbury"} 42), without p. or page.`); }
+    { const m = [...text.matchAll(/\([A-Z][A-Za-z'’-]+,\s*\d+(?:[-–]\d+)?\)/g)]; if (m.length) add("conventions", "fix", "No comma between author and page in MLA.", m.map(x => [x.index, x.index + x[0].length]), `Write (${ctx.author || "Bradbury"} 42).`); }
+    { const m = [...text.matchAll(/\.["”]\s*\([^)]{1,40}\)|["”]\.\s*\([^)]{1,40}\)/g)]; if (m.length) add("conventions", "fix", "Period before the citation.", m.map(x => [x.index, x.index + x[0].length]), `Close the quote, cite, then the period: ...words" (${ctx.author || "Bradbury"} 64).`); }
+    for (const T of CAP_TITLES.concat(ctx.title && ctx.title.includes(" ") && !CAP_TITLES.includes(ctx.title) && !/^a small place$/i.test(ctx.title) ? [ctx.title] : [])) {
+      const m = [...out.matchAll(new RegExp(`\\b${T.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "gi"))].filter(x => x[0] !== T);
+      if (m.length) add("conventions", "fix", `Capitalize the title: ${T}.`, m.map(x => [x.index, x.index + x[0].length]), "Capitalize the main words of a title; small words like of and the stay lowercase unless they come first.");
+    }
     { const low = S.filter(s => /^[("“'‘]?[a-z]/.test(s.text) && !/^["“]/.test(s.text)); if (low.length) add("conventions", "fix", `Sentence${low.length > 1 ? "s" : ""} starting with a lowercase letter.`, low.map(s => [s.s, s.s + 1]), "Capitalize the first word of every sentence."); }
     { const m = [...out.matchAll(/ {2,}/g)]; if (m.length >= 3) add("conventions", "tip", "Extra spaces between words.", m.slice(0, 20).map(x => [x.index, x.index + x[0].length]), "Use one space."); }
 
@@ -191,18 +192,6 @@ const Checker = (() => {
         else goods.push("Counterclaim and rebuttal are both there.");
       }
       if (!/\d|according to|study|studies|research|survey|report|found that|data|expert/i.test(out)) add("evidence", "tip", "No data, study or expert found.", [], "Add evidence: a statistic, a study or an expert, with a citation.");
-    }
-    if (cfg.lens) {
-      const found = Object.keys(LENS_NAMES).filter(k => LENS_NAMES[k].test(out) || LENS_NAMES[k].test(text));
-      if (!found.length) add("lens", "fix", "Your critical lens isn't named.", [], "Name it in the introduction and thesis: 'Read through a Marxist lens...'");
-      else {
-        const lens = (ctx.lenses || []).find(l => l.id === found[0]);
-        if (lens) {
-          const used = lens.terms.filter(t => new RegExp(`\\b${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "i").test(out));
-          if (used.length < 2) add("lens", "tip", `Only ${used.length} ${lens.name} term${used.length === 1 ? "" : "s"} used.`, [], `Use the lens's vocabulary: ${lens.terms.slice(0, 6).join(", ")}.`);
-          else goods.push(`You use ${lens.name} vocabulary: ${used.slice(0, 4).join(", ")}.`);
-        }
-      }
     }
     if (cfg.rhetoric) {
       const uses = [...out.matchAll(/\buses?\b/gi)];
@@ -230,13 +219,13 @@ const Checker = (() => {
     return finish();
 
     function finish() {
-      const AREAS = ["thesis", "evidence", "commentary", "organization", "style", "conventions", "counter", "lens", "sources", "story"];
+      const AREAS = ["thesis", "evidence", "commentary", "organization", "style", "conventions", "counter", "sources", "story"];
       const areas = {};
       for (const a of AREAS) { const f = F.filter(x => x.area === a); areas[a] = f.some(x => x.sev === "fix") ? "fix" : f.length ? "tip" : "ok"; }
       const fixes = F.filter(x => x.sev === "fix").length, tips = F.length - fixes;
       return {stats, findings: F, goods, areas, thesis, fixes, tips};
     }
   }
-  return {check, thesisCheck, paragraphs, sentences, quotes, wc, LENS_NAMES};
+  return {check, thesisCheck, paragraphs, sentences, quotes, wc};
 })();
 if (typeof module !== "undefined") module.exports = {Checker};

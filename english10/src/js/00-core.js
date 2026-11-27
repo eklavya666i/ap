@@ -28,45 +28,66 @@ const daysTo = k => dn(k) - dn(today());
 const dueWords = k => { const n = daysTo(k); return n < 0 ? `${-n} day${n === -1 ? "" : "s"} late` : n === 0 ? "due today" : n === 1 ? "due tomorrow" : `due in ${n} days`; };
 
 // ---------- Content lookups
-const BOOKS = {lotf: LOTF, asp: ASP}, UNIT = n => COURSE.units.find(u => u.u === n);
+const BOOKS = {f451: F451, asp: ASP}, BOOK0 = "f451", UNIT = n => COURSE.units.find(u => u.u === n);
+const ARGU = (COURSE.units.find(u => u.workshop) || {}).u;   // the argument workshop's unit number
 const bookOfUnit = n => { const U = UNIT(n); return U && U.book ? BOOKS[U.book] : null; };
-const W = b => BOOKS[b].word || {ch: "Chapter", chs: "Chapters", people: "Characters", symbols: "Symbols"};
+const bookOf = b => BOOKS[b] ? b : BOOK0;
+// Labels for a book's parts. A book's own word object overrides these (A Small Place has voices and motifs, not characters).
+const WORD0 = {ch: "Chapter", chs: "Chapters", short: "Ch.", people: "Characters", symbols: "Symbols", person: "Character", sym: "Symbol", focus: "Craft focus", angle: "Analysis angle", arc: "Arc so far", events: "Key events", flags: "character moments, symbols, and questions", tab: ["craft", "Craft"]};
+const W = b => Object.assign({}, WORD0, (BOOKS[b] || {}).word);
 const ESSAY = id => ESSAYS.find(e => e.id === id);
-const LENS = id => LENSES.find(l => l.id === id);
-const RQ = [];   // reading checks for every book: ids like lotf.3.2 and asp.1.4
+const unitsLabel = a => `Unit${a.length > 1 ? "s" : ""} ${a.join(", ")}`;
+const RQ = [];   // reading checks for every book: ids like f451.3.2 and asp.1.4
 for (const B of Object.values(BOOKS)) { const k = {}; for (const [ch, kind, q, c, why] of B.questions) { k[ch] = (k[ch] || 0) + 1; RQ.push({id: `${B.id}.${ch}.${k[ch]}`, set: "read", book: B.id, ch, kind, q, c, why}); } }
-const LQ = [];   // lens questions
-{ const k = {}; for (const [lens, q, c, why] of LENS_QS) { k[lens] = (k[lens] || 0) + 1; LQ.push({id: `lens.${lens}.${k[lens]}`, set: "lens", lens, kind: "lens", q, c, why}); } }
 const TERM = {}; for (const t of TERMS) TERM[slug(t.t)] = t;
 const DRILL = {}; for (const d of DRILLS) DRILL[d.id] = d;
 const AQ = [];   // argument workshop questions
 { const k = {}; for (const [src, kind, q, c, why] of ARG.questions) { k[src] = (k[src] || 0) + 1; AQ.push({id: `arg.${src}.${k[src]}`, set: "arg", src, kind, q, c, why}); } }
-const ALLQ = {}; for (const x of RQ.concat(LQ, AQ)) ALLQ[x.id] = x;
-const CH = (n, b = "lotf") => BOOKS[b].chapters[n - 1];
-const KIND_NAMES = {plot: "Plot", character: "Character", symbol: "Symbol", theme: "Theme", inference: "Inference", rhetoric: "Rhetoric", lens: "Lenses", term: "Terms", who: "Who and what",
+const ALLQ = {}; for (const x of RQ.concat(AQ)) ALLQ[x.id] = x;
+const CH = (n, b = BOOK0) => BOOKS[b].chapters[n - 1];
+const KIND_NAMES = {plot: "Plot", character: "Character", symbol: "Symbol", theme: "Theme", inference: "Inference", rhetoric: "Rhetoric", craft: "Craft", term: "Terms", who: "Who and what",
   claim: "Claims", evidence: "Evidence", reasoning: "Reasoning", sources: "Sources", counter: "Counterclaims", fallacy: "Fallacies", appeal: "Appeals", debate: "Debate"};
 const ARG_KINDS = ["claim", "evidence", "reasoning", "sources", "counter", "fallacy", "appeal", "debate"];
 
 // ---------- Saved progress (key eng10h.v1)
 const fresh = () => ({
-  v: 1, upd: 0, name: "", days: {}, xp: 0,
-  read: {lotf: 0, asp: 0}, peek: {}, readLog: [], soaps: [], debates: [],
+  v: 1, syl: 2, upd: 0, name: "", days: {}, xp: 0,
+  read: {f451: 0, asp: 0}, peek: {}, readLog: [], soaps: [], debates: [],
   qs: {}, miss: {}, fixed: 0, quizzes: [],
   cards: {}, newDay: null, newCount: 0,
   drills: {}, asg: [], quotes: [], sem: [], rub: [], checks: [], writes: [], tw: null, ai: [], drafts: {}, seen: {},
   badges: {}, goals: null, streak: {freezes: 0, used: [], lastRun: 0},
-  set: {unit: 4, sound: true, calm: false, big: false, pin: null}, bk: null
+  set: {unit: 3, sound: true, calm: false, big: false, pin: null}, bk: null
 });
 let S = fresh();
+// Progress saved before the November 2026 syllabus update used the old unit numbers (1 Astonishing Color, 2 A Small
+// Place, 3 argument, 4 Lord of the Flies and lenses, 5 Night, 6 book clubs, 7 Macbeth). Map them to Ira's syllabus, and
+// drop misses and stats for the retired Lord of the Flies and lens questions so My misses only lists questions that exist.
+function migrate(j) {
+  if (j.syl >= 2) return j;
+  const M = {1: 2, 2: 4, 3: 5, 4: 3, 5: 6, 6: 7, 7: 9};
+  if (j.set && M[j.set.unit]) j.set.unit = M[j.set.unit];
+  for (const q of j.quizzes || []) if (q.kind === "unit" && M[q.unit]) q.unit = M[q.unit];
+  const gone = k => /^(?:lotf\.|lens\.|who\.[cs]\.)/.test(k);
+  for (const box of [j.miss, j.qs]) if (box) for (const k of Object.keys(box)) if (gone(k)) delete box[k];
+  for (const a of j.asg || []) { if (a.type === "lens") a.type = "lit"; if (a.book === "lotf") a.book = ""; }
+  for (const w of j.writes || []) if (w.type === "lens") w.type = "lit";
+  if (j.tw && j.tw.type === "lens") j.tw = null;
+  if (j.drafts && j.drafts.lastType === "lens") j.drafts.lastType = "lit";
+  if (j.drafts && j.drafts.semBook === "lotf") delete j.drafts.semBook;
+  j.syl = 2;
+  return j;
+}
 function loadState(j) {
+  migrate(j);
   S = Object.assign(fresh(), j);
   for (const k of ["set", "streak", "read", "seen", "peek", "drafts", "qs", "miss", "cards", "drills", "badges"]) S[k] = Object.assign(fresh()[k], j[k] || {});
 }
 try { const j = JSON.parse(localStorage.getItem(LS) || "null"); if (j && j.v === 1) loadState(j); } catch (e) {}
 function save() { S.upd = Date.now(); try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
 let saveT = 0; function saveSoon() { clearTimeout(saveT); saveT = setTimeout(save, 400); }
-const readTo = (b = "lotf") => S.read[b] || 0;
-const canSee = (ch, b = "lotf") => ch <= readTo(b) || !!S.peek[b + ":" + ch] || (b === "lotf" && !!S.peek[ch]);
+const readTo = (b = BOOK0) => S.read[b] || 0;
+const canSee = (ch, b = BOOK0) => ch <= readTo(b) || !!S.peek[b + ":" + ch];
 
 // ---------- Days, active minutes and streak (from Math 6)
 function day(k = today()) { return S.days[k] || (S.days[k] = {min: 0, done: 0, xp: 0}); }
@@ -105,9 +126,9 @@ function addXP(n) {
 
 // ---------- Daily goals: three a day, one from each group
 const GOALS = {
-  cards: ["Review 10 cards", 10], rcheck: ["Finish a reading check", 1], quiz: ["Finish a lens or terms quiz", 1],
+  cards: ["Review 10 cards", 10], rcheck: ["Finish a reading check", 1], quiz: ["Finish a terms or argument quiz", 1],
   drill: ["Do 2 writing drills", 2], quote: ["Log 2 quotations", 2], draft: ["Check a draft or score a rubric", 1],
-  step: ["Move an assignment forward", 1], guide: ["Read a chapter guide", 1], seminar: ["Prep for a seminar", 1]
+  step: ["Move an assignment forward", 1], guide: ["Read a section guide or lesson", 1], seminar: ["Prep for a seminar", 1]
 };
 const GPOOL = [["cards", "rcheck", "quiz"], ["drill", "quote", "draft"], ["step", "guide", "seminar"]];
 function goals() {
@@ -133,19 +154,18 @@ function goalTick(id, by = 1) {
 // ---------- Badges
 const BADGES = [];
 for (const n of [3, 7, 14, 30, 60, 100]) BADGES.push({id: `streak-${n}`, fam: "Streaks", name: `${n}-day streak`, rule: `A ${n}-day streak`, test: () => streak() >= n});
-BADGES.push({id: "read-1", fam: "Reading", name: "Washed ashore", rule: "Finish chapter 1", test: () => readTo() >= 1});
-BADGES.push({id: "read-6", fam: "Reading", name: "Halfway across", rule: "Read through chapter 6", test: () => readTo() >= 6});
-BADGES.push({id: "read-12", fam: "Reading", name: "Rescued", rule: "Finish Lord of the Flies", test: () => readTo() >= 12});
+BADGES.push({id: "f451-1", fam: "Reading", name: "First spark", rule: "Finish section 1 of Fahrenheit 451", test: () => readTo("f451") >= 1});
+BADGES.push({id: "f451-4", fam: "Reading", name: "Sieve and sand", rule: "Read into Part Two of Fahrenheit 451", test: () => readTo("f451") >= 4});
+BADGES.push({id: "f451-7", fam: "Reading", name: "Burning bright", rule: "Finish Fahrenheit 451", test: () => readTo("f451") >= 7});
 BADGES.push({id: "asp-4", fam: "Reading", name: "Small place, big ideas", rule: "Finish A Small Place", test: () => readTo("asp") >= 4});
 BADGES.push({id: "perfect", fam: "Quizzes", name: "Perfect check", rule: "100% on a reading check", test: () => S.quizzes.some(q => q.kind === "ch" && q.right === q.n)});
 BADGES.push({id: "perfect5", fam: "Quizzes", name: "Five perfect checks", rule: "100% on five reading checks", test: () => new Set(S.quizzes.filter(q => q.kind === "ch" && q.right === q.n).map(q => q.ch)).size >= 5});
-BADGES.push({id: "allch", fam: "Quizzes", name: "Every chapter checked", rule: "Pass all 12 Lord of the Flies reading checks (6 of 8 or better)", test: () => LOTF.chapters.every(c => S.quizzes.some(q => q.kind === "ch" && (q.book || "lotf") === "lotf" && q.ch === c.n && q.right >= 6))});
+BADGES.push({id: "allsec", fam: "Quizzes", name: "Every section checked", rule: "Pass all 7 Fahrenheit 451 reading checks (6 of 8 or better)", test: () => F451.chapters.every(c => S.quizzes.some(q => q.kind === "ch" && q.book === "f451" && q.ch === c.n && q.right >= 6))});
 BADGES.push({id: "fallacy90", fam: "Quizzes", name: "Fallacy finder", rule: "90% or better on the fallacy finder", test: () => S.quizzes.some(q => q.kind === "fallacies" && q.right >= 0.9 * q.n)});
-BADGES.push({id: "lens90", fam: "Quizzes", name: "Lens spotter", rule: "90% or better on a lens quiz", test: () => S.quizzes.some(q => q.kind === "lens" && q.right >= 0.9 * q.n)});
 BADGES.push({id: "term90", fam: "Quizzes", name: "Word smith", rule: "90% or better on a terms quiz", test: () => S.quizzes.some(q => q.kind === "terms" && q.right >= 0.9 * q.n)});
 BADGES.push({id: "unit90", fam: "Quizzes", name: "Unit champion", rule: "90% or better on a unit test", test: () => S.quizzes.some(q => q.kind === "unit" && q.right >= 0.9 * q.n)});
 BADGES.push({id: "fix10", fam: "Quizzes", name: "Comeback", rule: "Fix 10 missed questions", test: () => S.fixed >= 10});
-BADGES.push({id: "lenses", fam: "Learning", name: "Nine lenses", rule: "Open all nine lens pages", test: () => LENSES.every(l => S.seen["lens:" + l.id])});
+BADGES.push({id: "guides7", fam: "Learning", name: "Close reader", rule: "Open all seven Fahrenheit 451 section guides", test: () => F451.chapters.every(c => S.seen[`ch:f451:${c.n}`])});
 BADGES.push({id: "cards100", fam: "Learning", name: "Card shark", rule: "Review 100 cards", test: () => sum(Object.values(S.cards).map(c => c.n || 0)) >= 100});
 BADGES.push({id: "cards-master", fam: "Learning", name: "Long memory", rule: "Move 25 cards to the 21-day box", test: () => Object.values(S.cards).filter(c => c.box >= 4).length >= 25});
 for (const n of [1, 10, 25]) BADGES.push({id: `drill-${n}`, fam: "Writing", name: n === 1 ? "First drill" : `${n} drills`, rule: `Finish ${n} writing drill${n > 1 ? "s" : ""}`, test: () => sum(Object.values(S.drills).map(d => d.n || 0)) >= n});
@@ -169,15 +189,15 @@ function checkBadges() {
 // ---------- Review cards (Leitner boxes: 1, 3, 7, 21, 60 days). New cards come in at 8 a day.
 const BOX_DAYS = [0, 1, 3, 7, 21, 60];
 function allCards() {
-  const groups = {4: [], 2: [], 3: []};
-  for (const l of LENSES) groups[4].push({id: "l:" + l.id, kind: "Lens", front: l.name + " lens", back: l.q, extra: "Key terms: " + l.terms.slice(0, 5).join(", ")});
-  for (const c of LOTF.characters) if (canSee(c.from)) groups[4].push({id: "c:" + c.id, kind: "Character", front: c.name, back: c.role});
-  for (const s of LOTF.symbols) if (canSee(s.from)) groups[4].push({id: "s:" + s.id, kind: "Symbol", front: s.name, back: s.means});
-  for (const c of ASP.characters) if (canSee(c.from, "asp")) groups[2].push({id: "ac:" + c.id, kind: "Voice", front: c.name, back: c.role});
-  for (const s of ASP.symbols) if (canSee(s.from, "asp")) groups[2].push({id: "as:" + s.id, kind: "Motif", front: s.name, back: s.means});
-  for (const f of ARG.fallacies) groups[3].push({id: "f:" + slug(f.name), kind: "Fallacy", front: f.name, back: f.d, extra: "Example: " + f.ex});
+  const groups = {}, add = (u, c) => (groups[u] = groups[u] || []).push(c);
+  for (const B of Object.values(BOOKS)) {
+    const pre = B.id === "asp" ? "a" : B.id[0], w = W(B.id);   // card ids: fc:montag, fs:fire; ac:you, as:library
+    for (const c of B.characters) if (canSee(c.from, B.id)) add(B.unit, {id: `${pre}c:${c.id}`, kind: w.person, front: c.name, back: c.role});
+    for (const s of B.symbols) if (canSee(s.from, B.id)) add(B.unit, {id: `${pre}s:${s.id}`, kind: w.sym, front: s.name, back: s.means});
+  }
+  for (const f of ARG.fallacies) add(ARGU, {id: "f:" + slug(f.name), kind: "Fallacy", front: f.name, back: f.d, extra: "Example: " + f.ex});
   const first = groups[S.set.unit] ? [S.set.unit] : [];
-  const out = [...first, ...[4, 2, 3].filter(u => !first.includes(u))].flatMap(u => groups[u]);
+  const out = [...first, ...Object.keys(groups).map(Number).filter(u => !first.includes(u))].flatMap(u => groups[u]);
   const order = {write: 0, lit: 1, narr: 2, arg: 3, drama: 4};
   for (const t of TERMS.slice().sort((a, b) => order[a.g] - order[b.g])) out.push({id: "t:" + slug(t.t), kind: TERM_GROUPS[t.g], front: t.t, back: t.d, extra: t.ex});
   return out;

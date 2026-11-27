@@ -52,14 +52,14 @@ Offline iPad apps. Each saves its own progress and works without a connection on
 
 Source and build scripts are in [alg2-detailed/src](alg2-detailed/src).
 
-**English 10H.** Honors English 10 at Issaquah High (Honors Lit Analysis & Composition 2), built around the IHS unit order. Units 2, 3 and 4 are built, plus the writing tools for every unit. It has:
-- Unit 4, Lord of the Flies: 12 chapter guides with summaries, key events, symbols to watch, quote hunts and seminar questions, hidden past the chapter Ira has read
-- Unit 2, A Small Place: 4 section guides with Kincaid's rhetorical moves, voices, motifs, a model SOAPSTone and a SOAPSTone tool
-- Unit 3, the argument workshop: 8 lessons, a 14-fallacy gallery, public-domain speeches to analyze, practice sources for judging credibility, and debate prep
-- 128 reading checks, 27 lens questions, 55 argument questions, a fallacy finder, a terms quiz from a 94-term glossary, timed tests for Units 2, 3 and 4, and My misses
-- 9 critical lenses applied to the novel; character, symbol and theme trackers
+**English 10H.** Honors English 10 at Issaquah High (Honors Lit Analysis & Composition 2), following Ira's 2026–27 syllabus: ten units, five a semester, with Socratic seminars all year. Units 1 (personal narrative), 3, 4 and 5 are ready, plus the writing tools for every unit. It has:
+- Unit 3, Fahrenheit 451: 7 section guides across the novel's three parts, with summaries, key events, a craft focus, quote hunts and seminar questions, hidden past the section Ira has read
+- Unit 4, A Small Place: 4 section guides with Kincaid's rhetorical moves, voices, motifs, a model SOAPSTone and a SOAPSTone tool
+- Unit 5, the argument workshop: 8 lessons, a 14-fallacy gallery, public-domain speeches to analyze, practice sources for judging credibility, and debate prep
+- 88 reading checks, 55 argument questions, a fallacy finder, a terms quiz from a 95-term glossary, timed tests for Units 3, 4 and 5, and My misses
+- character, symbol and theme trackers, and the syllabus's course goals
 - assignments planned day by day, a prompt decoder, thesis and outline builders, a Quote Log with MLA citations, seminar prep
-- 6 essay guides with rubrics and model paragraphs, 28 writing drills, and 14 timed writes
+- 5 essay guides with rubrics and model paragraphs, 28 writing drills, and 14 timed writes
 - an offline draft checker that marks thesis, evidence, citation, commentary and style problems in the draft, rubric self-scoring, and a feedback-only hand-off to Claude with an AI-use log
 - Coach: what to do next and why; review cards, daily goals, streaks, badges, backup and a parent summary
 

@@ -31,7 +31,7 @@ const WEB_FONTS = `<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400..600&display=swap" rel="stylesheet">`;
 
-const DESC = "Honors English 10 (Issaquah): Lord of the Flies and critical lenses, reading checks, an essay coach, an offline draft checker and timed writes. Works offline.";
+const DESC = "Honors English 10 (Issaquah): Fahrenheit 451, A Small Place and argument, reading checks, an essay coach, an offline draft checker and timed writes. Works offline.";
 const APP_HEAD = `<meta name="description" content="${DESC}">
 <meta name="format-detection" content="telephone=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -55,7 +55,7 @@ const MANIFEST = JSON.stringify({
   ]
 }, null, 1);
 
-const CONTENT = ["course.js", "lotf.js", "asp.js", "argument.js", "lenses.js", "terms.js", "writing.js", "coach.js"];
+const CONTENT = ["course.js", "f451.js", "asp.js", "argument.js", "terms.js", "writing.js", "coach.js"];
 const appFiles = fs.readdirSync(here("js")).filter(f => /^\d\d-[\w-]+\.js$/.test(f)).sort();
 const base = fs.readFileSync(here("app.html"), "utf8")
   .replace("/*__CONTENT__*/", () => CONTENT.map(f => `// ===== content/${f}\n` + strip("content/" + f)).join("\n"))

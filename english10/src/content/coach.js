@@ -24,21 +24,21 @@ const ADVICE = [
     "After each quotation, ask 'so what?' twice. The first answer explains the quotation; the second connects it to your thesis.",
     "Name the specific word or detail doing the work, and say what effect it creates.",
     "Aim for at least two sentences of commentary for every sentence of evidence.",
-    "Avoid 'This quote shows...' Start with the idea instead: 'By hiding behind paint, Jack...'"]},
+    "Avoid 'This quote shows...' Start with the idea instead: 'By asking whether he is happy, Clarisse...'"]},
   {id: "revise", tag: "Writing", title: "Revise with feedback", body: [
     "Read every comment and sort them: thesis and ideas first, then evidence and commentary, then sentences and conventions.",
     "Fix the biggest problem first. A sharper thesis changes the whole essay.",
     "Run the revised draft through Check and score it with the rubric again to see what moved."]},
   {id: "rework", tag: "Grades", title: "Late work and reworking", body: [
-    "Rules vary by teacher, so check this year's syllabus on Canvas.",
-    "In the 2024–25 IHS syllabus for this course, products (essays) could be turned in late for up to 80%, and a product turned in on time that scored below 80% could be reworked after a conference with the teacher for up to 80%. Prep work could not be turned in late.",
-    "If a rework option exists, ask early and come with a revision plan."]},
+    "Rules for late work and reworking vary by teacher, so check the syllabus on Canvas: how late essays are graded, whether a low score can be reworked, and which work can't be turned in late.",
+    "If a rework option exists, ask early and come with a revision plan.",
+    "Turn in what you have on time when you can. A finished draft usually earns more than a perfect essay that's late."]},
   {id: "grades", tag: "Grades", title: "Where the grade comes from", body: [
-    "The 2024–25 syllabus weighted grades as Product 60%, Process 30% and Prep 10%. Confirm this year's weights on Canvas.",
-    "Products, meaning essays and major projects, are most of the grade, so drafting time pays off most.",
-    "Process work (quote analysis, drafts, discussions) builds the product; don't skip it."]},
+    "Find the grade categories and their weights in the syllabus on Canvas.",
+    "If essays and major projects count the most, drafting and revising time pays off the most.",
+    "Smaller work (reading checks, quote analysis, drafts, discussions) builds toward the big products; don't skip it."]},
   {id: "workload", tag: "Habits", title: "The honors workload", body: [
-    "The course syllabus estimates two to three hours a week outside class, mostly reading.",
+    "Honors English means regular reading outside class: expect a few hours a week, more during a novel.",
     "Split each reading assignment into daily chunks. Set the due date in Write and the app plans the days for you.",
     "Do the hard thinking (thesis, commentary) when you're fresh; save formatting and citations for tired time."]},
   {id: "teacher", tag: "Habits", title: "Talking to your teacher", body: [
@@ -46,23 +46,24 @@ const ADVICE = [
     "Be specific: say which part of the prompt or comment confuses you and what you've tried.",
     "Use the email templates below, then edit them so they sound like you."]},
   {id: "ai", tag: "Honesty", title: "Using AI honestly", body: [
-    "The syllabus says work must be your own, and generative AI must be quoted and cited like any source. Copying, even partly, counts as plagiarism, and violations earn a zero with no recovery.",
+    "Your work has to be your own. Check your teacher's AI rules on Canvas: AI-written text usually has to be cited like any source, and passing it off as yours is plagiarism.",
     "This app coaches but never writes your essay. Claude feedback is for feedback only: never paste AI-written sentences into your work.",
     "The app keeps an AI-use log. If you used Claude feedback on an assignment, follow your teacher's rules for disclosing it.",
-    "Don't share timed-write prompts with anyone; the syllabus forbids it."]},
+    "Don't share timed-write prompts or test questions with other students."]},
   {id: "heavy", tag: "Wellbeing", title: "When a book is heavy", body: [
-    "Some books in this course deal with suicide, depression, the Holocaust and violence. It is normal for them to stir up strong feelings.",
+    "Some books in this course deal with suicide, depression, the Holocaust, war and violence. It is normal for them to stir up strong feelings.",
     "Talk to someone: a parent, your teacher or your school counselor.",
     "If you or someone you know is struggling, call or text 988 to reach the Suicide & Crisis Lifeline, any time."]}
 ];
 const CONTENT_NOTES = {
-  1: "The Astonishing Color of After centers on a mother's suicide and her daughter's grief and depression. If it brings up something heavy, talk to a parent, a teacher or your school counselor. You can call or text 988 at any time to reach the Suicide & Crisis Lifeline.",
-  5: "Night is Elie Wiesel's memoir of the Holocaust and includes scenes of extreme violence and loss. Take breaks when you need them, and talk to someone you trust about what you're reading."
+  2: "The Astonishing Color of After centers on a mother's suicide and her daughter's grief and depression. If it brings up something heavy, talk to a parent, a teacher or your school counselor. You can call or text 988 at any time to reach the Suicide & Crisis Lifeline.",
+  3: "Fahrenheit 451 includes a drug overdose, a woman who chooses to die with her books, and violent deaths. If something in it weighs on you, talk to a parent, a teacher or your school counselor. You can call or text 988 at any time to reach the Suicide & Crisis Lifeline.",
+  6: "Night is Elie Wiesel's memoir of the Holocaust and includes scenes of extreme violence and loss. Take breaks when you need them, and talk to someone you trust about what you're reading."
 };
 const SEMINAR = {
-  levels: [["Level 1: the text", "What happens? Questions with answers on the page.", "Why do the boys choose Ralph as chief?"],
-           ["Level 2: meaning", "Why does it matter? Questions with more than one good answer.", "What does the conch give the boys that they could not create without it?"],
-           ["Level 3: the world", "So what? Connect the text to people, history or your own life.", "When do rules stop protecting people?"]],
+  levels: [["Level 1: the text", "What happens? Questions with answers on the page.", "What does Montag find when he gets home after meeting Clarisse?"],
+           ["Level 2: meaning", "Why does it matter? Questions with more than one good answer.", "Why does Mildred act as if nothing happened the next morning?"],
+           ["Level 3: the world", "So what? Connect the text to people, history or your own life.", "Do screens make it easier or harder to know what we feel?"]],
   starters: {
     "Build": ["I'd like to add to what ___ said about...", "That connects to page ___, where...", "Building on that idea..."],
     "Agree": ["I agree with ___ because on page ___...", "That's convincing, especially the part about..."],
