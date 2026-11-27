@@ -1,6 +1,6 @@
-# Driver Workbench
+# Pin High (formerly Driver Workbench)
 
-Weekly driver analysis for two golfers from GSPro shot exports. It is one app with two views:
+Golf performance analysis for two golfers from GSPro shot exports. Renamed Pin High on Nov 27, 2026; the folder, the database paths and the backup format keep the old `driver-workbench` id so nothing stored or installed breaks. It is one app with two views:
 
 - **Import station**: on the Windows PC that runs GSPro. Drop exports here.
 - **Analysis**: on the iPad, by player. Dashboards, consistency, a realistic outlook, topics, history and the backlog.
@@ -72,6 +72,10 @@ On the import station, under **Golfer settings**:
 - **Check**: whether ball speed ÷ club speed matches the device's smash.
 - **Realistic look** and **Outlook**: carry and total from a ball-flight model calibrated to TrackMan data, step by step (strike, attack angle, speed), and the speed outlook with a range.
 - **Shots**: drill down from the golfer to a week, a session and one shot; the inspector shows every field, whether the shot counts, the line it came from in the GSPro file, and a side view of its flight.
+- **Ball flight**: the most common miss for a club from start line and curve, its shots against the rest as tracers over a night range (drawn through GSPro's launch, peak height, descent, carry and offline), side and top views, why it happens, and its weekly trend.
+- **Swing and strike**: club delivery measured when the monitor sends it, otherwise inferred from start line and curve (±1.5°), the strike on a driver face from face-spray zones (a shot tag's target such as “Mid center”), delivery consistency, launch and spin, start line against curve.
+- **Partial shots**: the wedge yardage book by club and swing length from shot tags; untagged wedge shots get a length suggested from their share of the club's full-swing speed, marked as suggested.
+- **Drill studio**: whether each tagged drill moved its number (stock shots outside the drill blocks, two weeks before against the weeks after), prescriptions from the latest data, the tee-height ladder and the drill library.
 - **Golf notes** (`notes/`): a small offline app for a golfer's own phone, served by this repository's GitHub Pages at `/ap/driver-workbench/notes/`. Notes, ratings and scorecard photos stay on the phone (IndexedDB) until Send to coach shares one JSON file; **Import notes from a phone** in Rounds adds them to that golfer's rounds. It needs no Claude account.
 - **Offline drafts**: round notes typed in the workbench are kept on the device as a draft; a round that can't be saved (no connection) waits on the device and is saved when the connection is back.
 - **Rounds**: notes from rounds and practice rounds, made for the phone: ratings for driving, approach, short game, putting and the mental game, what happened, what to work on, voice notes (Claude dictation where the device offers it, else the keyboard's mic) and a scorecard photo that Claude can read into hole-by-hole scores to check and save.
@@ -137,6 +141,11 @@ app/
   clubs.js      Club by club: windows per club at the golfer's speed (TrackMan LPGA averages), week-by-week club trends, the Club filter
   trust.js      data trust: what the monitor's data can be trusted for, with banners where spin or club data matter
   command.js    the Command center: what's happening, how it's moving, what needs to happen, the week's fairway, alerts
+  lab.js        shared by the four lab views: every club's shots with tags, flight paths through GSPro's numbers, the night-range scene, the driver face
+  flight.js     Ball flight
+  swing.js      Swing and strike
+  partials.js   Partial shots
+  drills.js     Drill studio
 tests/
   workbench.test.js   end-to-end test in jsdom with an in-memory database
   sample-data/        synthetic GSPro range exports

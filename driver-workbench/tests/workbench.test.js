@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js', 'lab.js', 'flight.js', 'swing.js', 'partials.js', 'drills.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -370,6 +370,18 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   doc.querySelector('[data-draw="crumbs"] button').click();
   w.WB.setGolfer('b');
   await sleep(150);
+
+  // The four lab views draw from the same sessions: Ball flight, Swing and strike, Partial shots, Drill studio.
+  for (const v of ['flight', 'swing', 'partials', 'drills']) {
+    w.WB.setView(v);
+    await sleep(150);
+    const box = doc.querySelector(`[data-draw="${v}"]`);
+    check(box && !doc.getElementById(v).hidden && box.querySelector('.lab-find') && !/couldn’t be worked out/.test(box.textContent) && doc.querySelector(`[data-goto="${v}"]`).getAttribute('aria-current') === 'page', `the ${v} view opens with its finding`);
+  }
+  const pf = doc.querySelector('[data-draw="partials"]');
+  check(/½/.test(pf.textContent) && pf.querySelector('.lab-cov'), 'Partial shots reads the swing-length tag');
+  w.WB.setView('all');
+  await sleep(120);
 
   // Skipped rows are listed with their reason; the last import can be undone in one step.
   w.WB.setMode('ingest');

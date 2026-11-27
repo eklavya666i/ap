@@ -21,6 +21,8 @@
   const tagsAt = (s, k) => tagsOf(s).filter((x) => k >= x.from && k <= x.to);
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
   const go = (o) => { Object.assign(D, o); dash.schedule(); const s = document.getElementById('shots'); if (s && s.scrollIntoView) s.scrollIntoView({block: 'start'}); };
+  /* Other views open a shot here: a tap on a tracer or dot in Ball flight, Swing and strike or Partial shots. */
+  WB.openShot = (sid, k) => { const s = (imports() || []).find((i) => i.id === sid); if (!s || !Number.isInteger(k)) return; if (WB.view() !== 'all') WB.setView('data'); go({week: Number.isInteger(s.week) ? s.week : null, sid, shot: k}); };
   const fmt = (k, v) => { if (typeof v !== 'number' || !isFinite(v)) return '—'; const f = FIELDS[k]; const d = f ? f[2] : 1; return (Math.round(v * Math.pow(10, d)) / Math.pow(10, d)).toLocaleString('en-US') + (f && f[1] ? (f[1] === '°' ? '°' : ' ' + f[1]) : ''); };
   const imports = () => { const d = dash.data('imports'); return d.status === 'ok' ? d.data : null; };
   const session = () => (imports() || []).find((i) => i.id === D.sid) || null;

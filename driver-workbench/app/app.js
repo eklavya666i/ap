@@ -1296,7 +1296,7 @@ dash.draw('bagrows', (el) => {
   if (goBtn && box) goBtn.addEventListener('click', async () => {
     let b;
     try { b = JSON.parse(box.value); } catch (e) { say(rMsg, 'That isn’t a backup: the text isn’t valid JSON.', false); return; }
-    if (!plain(b) || b.app !== 'driver-workbench' || !plain(b.golfers)) { say(rMsg, 'That isn’t a Driver Workbench backup.', false); return; }
+    if (!plain(b) || b.app !== 'driver-workbench' || !plain(b.golfers)) { say(rMsg, 'That isn’t a Pin High (Driver Workbench) backup.', false); return; }
     const jobs = [], cur = WB.golfers();
     const list = plain(b.config) && Array.isArray(b.config.list) ? b.config.list.filter((g) => plain(g) && typeof g.id === 'string' && GID.test(g.id) && typeof g.name === 'string') : [];
     const addG = list.filter((g) => !cur.some((c) => c.id === g.id));

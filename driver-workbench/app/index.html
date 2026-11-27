@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Driver Workbench</title>
+<title>Pin High</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Inter:wght@400;500;600&display=swap">
@@ -13,7 +13,7 @@
 <header class="wb-band" id="top">
 <div class="wb-band-in">
 <div class="wb-head-row">
-<h1 class="wb-title" data-only="analysis">Driver workbench</h1>
+<h1 class="wb-title" data-only="analysis">Pin High</h1>
 <h1 class="wb-title" data-only="ingest" hidden>Import station</h1>
 <div class="wb-head-actions"><div class="wb-segs wb-modes" data-draw="modeswitch" role="group" aria-label="View"></div><button type="button" id="install" class="wb-btn wb-btn-accent" hidden>Install as desktop app</button></div>
 </div>
@@ -33,7 +33,7 @@
 <div class="wb-card"><div class="wb-lab">Smash, ball ÷ club</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_calc"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_calc">—</div></div>
 <div class="wb-card"><div class="wb-lab">Smash on the device</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_device"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_device">—</div></div>
 </div>
-<nav class="wb-nav wb-views" aria-label="Views" data-only="analysis"><button type="button" data-goto="command">Command center</button><button type="button" data-goto="progress">Progress and forecast</button><button type="button" data-goto="driver">Driver lab</button><button type="button" data-goto="bag">Bag</button><button type="button" data-goto="calib">Calibration lab</button><button type="button" data-goto="rounds">Round journal</button><button type="button" data-goto="data">Data hub</button></nav>
+<nav class="wb-nav wb-views" aria-label="Views" data-only="analysis"><button type="button" data-goto="command">Command center</button><button type="button" data-goto="progress">Progress and forecast</button><button type="button" data-goto="driver">Driver lab</button><button type="button" data-goto="flight">Ball flight</button><button type="button" data-goto="swing">Swing and strike</button><button type="button" data-goto="bag">Bag</button><button type="button" data-goto="partials">Partial shots</button><button type="button" data-goto="drills">Drill studio</button><button type="button" data-goto="rounds">Round journal</button><button type="button" data-goto="calib">Calibration lab</button><button type="button" data-goto="data">Data hub</button></nav>
 </div>
 <div data-only="ingest" hidden>
 <p class="wb-lede">Drop GSPro exports here on the GSPro PC. Analysis by player is on the iPad, or switch to Analysis above.</p>
@@ -185,6 +185,27 @@
 </table></div>
 <h3 class="wb-ctrend-h">Week by week</h3>
 <div class="wb-ctrend" data-draw="clubtrend"></div>
+</section>
+
+<section id="flight" data-only="analysis" data-view="flight">
+<h2>Ball flight</h2>
+<div class="lab" data-draw="flight"></div>
+</section>
+
+<section id="swing" data-only="analysis" data-view="swing">
+<p class="wb-msg wb-badc wb-trust-banner" data-draw="trustbanner" data-need="club"></p>
+<h2>Swing and strike</h2>
+<div class="lab" data-draw="swing"></div>
+</section>
+
+<section id="partials" data-only="analysis" data-view="partials">
+<h2>Partial shots</h2>
+<div class="lab" data-draw="partials"></div>
+</section>
+
+<section id="drills" data-only="analysis" data-view="drills">
+<h2>Drill studio</h2>
+<div class="lab" data-draw="drills"></div>
 </section>
 
 <section id="rounds" data-only="analysis" data-view="rounds">
@@ -504,6 +525,11 @@
 <script src="calib.js"></script>
 <script src="clubs.js"></script>
 <script src="compare.js"></script>
+<script src="lab.js"></script>
+<script src="flight.js"></script>
+<script src="swing.js"></script>
+<script src="partials.js"></script>
+<script src="drills.js"></script>
 <script>dash.start();</script>
 </body>
 </html>
