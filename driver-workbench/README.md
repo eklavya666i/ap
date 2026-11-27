@@ -90,7 +90,7 @@ Database layout:
 | Path | Holds |
 | --- | --- |
 | `config/golfers` | Golfer list: id, name, week-1 Monday, typical driver speed |
-| `config/conditions` | GSPro's conditions: altitude, temperature, fairway firmness, Use LM Carry. Until set, the SLC preset (4,450 ft) is assumed; each new session also records the conditions it was hit in |
+| `config/conditions` | GSPro's conditions profile: altitude and elevation mode, temperature, fairway and green firmness, Use LM Carry, indoor or outdoor, ball. Until set, the SLC preset (4,450 ft) is assumed; each new session also records the conditions it was hit in |
 | `golfers/{id}/sessions/{session}` | One GSPro session: date, week, file, driver label, all shots of all clubs (`shots_json`), a summary, a fingerprint for duplicates |
 | `golfers/{id}/raw/{session}` | The session's original CSV header and lines (`-p2`, `-p3`… when longer than 200,000 characters); never loaded by the analysis |
 | `golfers/{id}/weeks/w{NN}` | A week typed by hand: averages, conditions, notes |

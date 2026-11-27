@@ -176,12 +176,23 @@
   WB.setMode = function (m, keep) { mode = m; if (keep !== false) store('wb-mode', m); applyMode(); clearCache(); render(); };
   WB.applyMode = applyMode;
   /* GSPro's conditions: they change carry with no swing change. Until set, the SLC preset from the project notes is assumed. */
-  WB.conditions = function () {
-    var c = conditionsDoc || {};
-    var n = function (v, lo, hi, d) { var x = WB.num(v); return x !== null && x >= lo && x <= hi ? x : d; };
-    return {altitude_ft: Math.round(n(c.altitude_ft, -500, 12000, 4450)), temp_f: Math.round(n(c.temp_f, 20, 120, 75)),
-      firmness: Math.round(n(c.firmness, 1, 5, 3)), lm_carry: c.lm_carry === true, assumed: !conditionsDoc};
+  WB.cleanConditions = function (c, d) {
+    c = c && typeof c === 'object' ? c : {}; d = d && typeof d === 'object' ? d : {};
+    var n = function (v, lo, hi, dv) { var x = WB.num(v); return x !== null && x >= lo && x <= hi ? x : dv; };
+    var pick = function (v, ok, dv) { return ok.indexOf(v) >= 0 ? v : dv; };
+    return {
+      altitude_ft: Math.round(n(c.altitude_ft, -500, 12000, n(d.altitude_ft, -500, 12000, 4450))),
+      elevation_mode: pick(c.elevation_mode, ['global', 'course'], pick(d.elevation_mode, ['global', 'course'], 'global')),
+      temp_f: Math.round(n(c.temp_f, 20, 120, n(d.temp_f, 20, 120, 75))),
+      firmness: Math.round(n(c.firmness, 1, 5, n(d.firmness, 1, 5, 3))),
+      green_firmness: Math.round(n(c.green_firmness, 1, 5, n(d.green_firmness, 1, 5, 3))),
+      lm_carry: typeof c.lm_carry === 'boolean' ? c.lm_carry : d.lm_carry === true,
+      setting: pick(c.setting, ['indoor', 'outdoor'], pick(d.setting, ['indoor', 'outdoor'], 'indoor')),
+      ball: (typeof c.ball === 'string' ? c.ball : typeof d.ball === 'string' ? d.ball : '').trim().slice(0, 40)
+    };
   };
+  WB.conditions = function () { var o = WB.cleanConditions(conditionsDoc || {}); o.assumed = !conditionsDoc; return o; };
+
   WB.roundsFor = function (gid) { var g = raw[gid]; return g ? g.rounds : null; };
   WB.rawFor = function (gid) { var g = raw[gid]; return g ? {typed: g.typed, imports: g.imports} : null; };
   WB.golfer = function () { return golfers.filter(function (g) { return g.id === selected; })[0] || null; };

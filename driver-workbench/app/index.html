@@ -85,8 +85,12 @@
 <p class="wb-note">GSPro's settings change carry with no change in the swing, so each import records them. Set them to match GSPro.</p>
 <div class="wb-fields">
 <label>Altitude (ft)<input name="altitude_ft" type="number" inputmode="numeric" min="-500" max="12000" step="10"></label>
+<label>Elevation mode<select name="elevation_mode"><option value="global">Global</option><option value="course">Course</option></select></label>
 <label>Temperature (°F)<input name="temp_f" type="number" inputmode="numeric" min="20" max="120"></label>
 <label>Fairway firmness<select name="firmness"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label>Green firmness<select name="green_firmness"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+<label>Setting<select name="setting"><option value="indoor">Indoor sim</option><option value="outdoor">Outdoor</option></select></label>
+<label>Ball<input name="ball" type="text" maxlength="40"></label>
 <label class="wb-cond-check"><input name="lm_carry" type="checkbox"> Use LM Carry is on</label>
 </div>
 <div class="wb-actions"><button type="submit" class="wb-btn wb-btn-main">Save conditions</button><span class="wb-msg" id="cond-msg" hidden></span></div>

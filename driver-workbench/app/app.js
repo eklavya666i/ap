@@ -23,7 +23,8 @@ function importWeeksOf(imports, target) {
     const st = WB.shotStats(cols, rows, target);
     const at = PT.map((c) => cols.indexOf(c));
     const pts = rows.map((r, n) => { const o = {used: st.dots[n].used}; PT.forEach((c, j) => { const v = at[j] < 0 ? null : r[at[j]]; o[c] = typeof v === 'number' && isFinite(v) ? v : null; }); return o; });
-    return Object.assign({week, date: dates[0] || '', files: g.map((i) => i.file), n_sessions: g.length, driver: g[0].driver, cols, pts}, st);
+    const wa = g.reduce((a, i) => { const c = i._doc && i._doc.conditions; return c && typeof c.altitude_ft === 'number' ? [a[0] + c.altitude_ft * i.shots.length, a[1] + i.shots.length] : a; }, [0, 0]);
+    return Object.assign({week, date: dates[0] || '', files: g.map((i) => i.file), n_sessions: g.length, driver: g[0].driver, cols, pts, alt: wa[1] ? wa[0] / wa[1] : null}, st);
   }).filter(Boolean).sort((a, b) => a.week - b.week);
 }
 dash.calc('csvweeks', {inputs: ['imports'], fn: (imports) => importWeeksOf(imports, Number(dash.params().smash_target))});
@@ -34,7 +35,7 @@ dash.calc('sessionrows', {
     const target = Number(dash.params().smash_target);
     return imports.map((i) => {
       const s = WB.shotStats(i.cols, i.shots, target);
-      return {id: i.id, week: i.week, date: i.date, file: i.file, driver: i.driver, clubs: i.clubs, n_all: i.n_all, imported_at: i.imported_at, n_used: s.n_used, n_left: s.n_left, club_speed: s.club_speed, ball_speed: s.ball_speed, smash: s.club_speed && s.ball_speed ? s.ball_speed / s.club_speed : null, launch: s.launch, spin: s.spin, carry: s.carry};
+      return {id: i.id, week: i.week, date: i.date, file: i.file, driver: i.driver, clubs: i.clubs, n_all: i.n_all, imported_at: i.imported_at, conditions: i._doc && i._doc.conditions ? WB.cleanConditions(i._doc.conditions) : null, n_used: s.n_used, n_left: s.n_left, club_speed: s.club_speed, ball_speed: s.ball_speed, smash: s.club_speed && s.ball_speed ? s.ball_speed / s.club_speed : null, launch: s.launch, spin: s.spin, carry: s.carry};
     }).sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.imported_at || '').localeCompare(a.imported_at || ''));
   },
 });
@@ -483,7 +484,7 @@ dash.draw('histrows', (el) => {
         mv.disabled = false;
       });
       wrap.append(inp, mv);
-      box.append(wrap, confirmButton('Remove', 'Confirm remove', () => WB.remove('golfers/' + g.id + '/sessions/' + r.id)));
+      box.append(wrap, condEditor(r, 'golfers/' + g.id + '/sessions/' + r.id), confirmButton('Remove', 'Confirm remove', () => WB.remove('golfers/' + g.id + '/sessions/' + r.id)));
     }
     tr.append(td);
     el.append(tr);
@@ -1283,7 +1284,7 @@ dash.draw('bagrows', (el) => {
     const jobs = [], cur = WB.golfers();
     const list = plain(b.config) && Array.isArray(b.config.list) ? b.config.list.filter((g) => plain(g) && typeof g.id === 'string' && GID.test(g.id) && typeof g.name === 'string') : [];
     const addG = list.filter((g) => !cur.some((c) => c.id === g.id));
-    if (plain(b.conditions) && WB.conditions().assumed && WB.num(b.conditions.altitude_ft) !== null) jobs.push({path: 'config/conditions', data: {altitude_ft: WB.num(b.conditions.altitude_ft), temp_f: WB.num(b.conditions.temp_f) || 75, firmness: WB.num(b.conditions.firmness) || 3, lm_carry: b.conditions.lm_carry === true, updated_at: new Date().toISOString()}});
+    if (plain(b.conditions) && WB.conditions().assumed && WB.num(b.conditions.altitude_ft) !== null) jobs.push({path: 'config/conditions', data: Object.assign(WB.cleanConditions(b.conditions), {updated_at: new Date().toISOString()})});
     if (addG.length) jobs.push({path: 'config/golfers', data: {list: cur.map((c) => ({id: c.id, name: c.name, start: c.start, speed: c.speed})).concat(addG.map((g) => ({id: g.id, name: g.name.slice(0, 30), start: typeof g.start === 'string' ? g.start : null, speed: WB.num(g.speed)})))}});
     const known = WB.knownSessions();
     Object.entries(b.golfers).forEach(([gid, g]) => {
@@ -1324,10 +1325,11 @@ dash.calc('altitude', {
       if (used.length < 3) return null;
       const avg = (k) => used.reduce((a, p) => a + p[k], 0) / used.length;
       const bs = avg('ball_speed'), la = avg('launch'), sp = avg('spin'), carry = avg('carry');
-      const up = BF.shot(bs, la, sp, {alt: c.altitude_ft, temp: c.temp_f, turf: 'normal'}).carry;
+      const alt = typeof w.alt === 'number' ? w.alt : c.altitude_ft;
+      const up = BF.shot(bs, la, sp, {alt, temp: c.temp_f, turf: 'normal'}).carry;
       const sea = BF.shot(bs, la, sp, {alt: 0, temp: c.temp_f, turf: 'normal'}).carry;
       if (!(up > 0) || !(sea > 0)) return null;
-      return {week: w.week, alt: c.altitude_ft, carry, carry_sea: carry * sea / up};
+      return {week: w.week, alt, carry, carry_sea: carry * sea / up};
     }).filter(Boolean);
   },
 });
@@ -1335,8 +1337,9 @@ dash.draw('alttext', (el) => {
   const c = WB.conditions(), d = dash.data('altitude'), g = WB.golfer();
   const where = c.assumed ? ' (the SLC preset from the project notes; set the real value under Import → GSPro conditions)' : '';
   let t = `GSPro is set to ${c.altitude_ft.toLocaleString('en-US')} ft${where}.`;
-  if (d.status === 'ok' && d.data.length && c.altitude_ft > 200) {
+  if (d.status === 'ok' && d.data.length && d.data[d.data.length - 1].alt > 200) {
     const r = d.data[d.data.length - 1], gain = r.carry - r.carry_sea;
+    if (Math.abs(r.alt - c.altitude_ft) >= 50) t += ` Week ${WB.wk(r.week)}’s sessions were hit at ${Math.round(r.alt).toLocaleString('en-US')} ft.`;
     t += ` Thinner air adds about ${Math.round(gain)} yd of carry to ${g ? g.name + '’s' : 'these'} drives: week ${WB.wk(r.week)}’s ${Math.round(r.carry)} yd carry is about ${Math.round(r.carry_sea)} yd at sea level.`;
   }
   el.textContent = t + ' The Realistic look and Outlook are at sea level.';
@@ -1344,7 +1347,7 @@ dash.draw('alttext', (el) => {
 (function () {
   const box = document.getElementById('cond-box'), f = document.getElementById('cond-form'), m = document.getElementById('cond-msg');
   if (!box || !f) return;
-  const fill = () => { const c = WB.conditions(); f.elements.altitude_ft.value = c.altitude_ft; f.elements.temp_f.value = c.temp_f; f.elements.firmness.value = String(c.firmness); f.elements.lm_carry.checked = c.lm_carry; };
+  const fill = () => { const c = WB.conditions(), e = f.elements; e.altitude_ft.value = c.altitude_ft; e.elevation_mode.value = c.elevation_mode; e.temp_f.value = c.temp_f; e.firmness.value = String(c.firmness); e.green_firmness.value = String(c.green_firmness); e.setting.value = c.setting; e.ball.value = c.ball; e.lm_carry.checked = c.lm_carry; };
   box.addEventListener('toggle', () => { if (box.open) fill(); });
   f.addEventListener('submit', async (ev) => {
     ev.preventDefault();
@@ -1352,9 +1355,45 @@ dash.draw('alttext', (el) => {
     const alt = n(f.elements.altitude_ft.value), temp = n(f.elements.temp_f.value);
     if (alt === null || alt < -500 || alt > 12000 || temp === null || temp < 20 || temp > 120) { m.textContent = 'Altitude must be −500 to 12,000 ft and temperature 20 to 120 °F.'; m.className = 'wb-msg wb-badc'; m.hidden = false; return; }
     try {
-      await WB.save('config/conditions', {altitude_ft: Math.round(alt), temp_f: Math.round(temp), firmness: Math.min(5, Math.max(1, Math.round(n(f.elements.firmness.value) || 3))), lm_carry: !!f.elements.lm_carry.checked, updated_at: new Date().toISOString()});
+      const e = f.elements;
+      await WB.save('config/conditions', Object.assign(WB.cleanConditions({altitude_ft: alt, elevation_mode: e.elevation_mode.value, temp_f: temp, firmness: e.firmness.value, green_firmness: e.green_firmness.value, setting: e.setting.value, ball: e.ball.value, lm_carry: !!e.lm_carry.checked}), {updated_at: new Date().toISOString()}));
       m.textContent = 'Saved. New imports record these conditions.'; m.className = 'wb-msg wb-good';
     } catch (e) { m.textContent = 'Couldn’t save. Check the connection and try again.'; m.className = 'wb-msg wb-badc'; }
     m.hidden = false;
   });
 })();
+
+
+/* GSPro conditions for one session, editable after import (the conditions profile: FR-02 in the dashboards spec). */
+function condEditor(r, path) {
+  const c = r.conditions || WB.conditions();
+  const det = document.createElement('details'); det.className = 'wb-cond-edit wb-write';
+  const sum = document.createElement('summary');
+  sum.textContent = r.conditions ? c.altitude_ft.toLocaleString('en-US') + ' ft' : 'Conditions';
+  sum.title = 'GSPro conditions for this session';
+  const grid = document.createElement('div'); grid.className = 'wb-cond-grid';
+  const field = (label, el) => { const l = document.createElement('label'); l.textContent = label; l.append(el); grid.append(l); return el; };
+  const num = (v, lo, hi) => { const i = document.createElement('input'); i.type = 'number'; i.inputMode = 'numeric'; i.min = lo; i.max = hi; i.value = v; return i; };
+  const sel = (opts, v) => { const s = document.createElement('select'); opts.forEach(([val, txt]) => { const o = document.createElement('option'); o.value = val; o.textContent = txt; s.append(o); }); s.value = String(v); return s; };
+  const five = [1, 2, 3, 4, 5].map((k) => [String(k), String(k)]);
+  const alt = field('Altitude (ft)', num(c.altitude_ft, -500, 12000));
+  const fw = field('Fairway firmness', sel(five, c.firmness));
+  const gr = field('Green firmness', sel(five, c.green_firmness));
+  const st = field('Setting', sel([['indoor', 'Indoor'], ['outdoor', 'Outdoor']], c.setting));
+  const ball = field('Ball', Object.assign(document.createElement('input'), {type: 'text', maxLength: 40, value: c.ball}));
+  const lm = Object.assign(document.createElement('input'), {type: 'checkbox', checked: c.lm_carry});
+  const lml = document.createElement('label'); lml.className = 'wb-cond-check'; lml.append(lm, ' Use LM Carry'); grid.append(lml);
+  const sv = document.createElement('button'); sv.type = 'button'; sv.className = 'wb-btn wb-btn-sm'; sv.textContent = 'Save conditions';
+  sv.addEventListener('click', async () => {
+    const a = WB.num(alt.value);
+    if (a === null || a < -500 || a > 12000) { sv.textContent = 'Altitude −500 to 12,000 ft'; return; }
+    sv.disabled = true;
+    try {
+      await WB.patch(path, {conditions: WB.cleanConditions({altitude_ft: a, firmness: fw.value, green_firmness: gr.value, setting: st.value, ball: ball.value, lm_carry: lm.checked}, c)});
+      sv.textContent = 'Saved';
+    } catch (e) { sv.textContent = 'Not saved'; }
+    sv.disabled = false;
+  });
+  det.append(sum, grid, sv);
+  return det;
+}

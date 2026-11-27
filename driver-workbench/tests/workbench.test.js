@@ -190,6 +190,19 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   check(M.docs.get('config/conditions').altitude_ft === 5000 && alt().includes('5,000 ft') && !alt().includes('preset'), 'saves GSPro conditions');
   check(saved.some((k) => M.docs.has(k) && M.docs.get(k).conditions && M.docs.get(k).conditions.altitude_ft === 4450), 'new sessions record their conditions');
 
+  cf.elements.green_firmness.value = '4'; cf.elements.setting.value = 'outdoor'; cf.elements.ball.value = 'Tour ball'; cf.requestSubmit();
+  await sleep(200);
+  const cd = M.docs.get('config/conditions');
+  check(cd.green_firmness === 4 && cd.setting === 'outdoor' && cd.ball === 'Tour ball' && cd.elevation_mode === 'global', 'saves the rest of the conditions profile');
+  w.WB.setMode('ingest');
+  await sleep(150);
+  const ce = doc.querySelector('[data-draw="histrows"] details.wb-cond-edit');
+  ce.open = true;
+  ce.querySelector('input[type="number"]').value = '0';
+  [...ce.querySelectorAll('button')].find((b) => b.textContent === 'Save conditions').click();
+  await sleep(200);
+  check(saved.some((k) => M.docs.has(k) && M.docs.get(k).conditions && M.docs.get(k).conditions.altitude_ft === 0 && M.docs.get(k).conditions.ball !== undefined), 'edits one session’s conditions after import');
+
   // Rounds: a round saved from the form is listed, edited in place, kept in backups and restored if lost.
   w.WB.setMode('analysis');
   const rf = doc.getElementById('round-form');
