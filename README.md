@@ -11,6 +11,7 @@ Offline iPad apps. Each saves its own progress and works without a connection on
 | Algebra 2: Topic 4 Prep (Rational Functions) | https://eklavya666i.github.io/ap/alg2-topic4/ |
 | Algebra 2: Rational Expressions, Detailed | https://eklavya666i.github.io/ap/alg2-detailed/ |
 | English 10H (Honors Lit Analysis & Composition 2) | https://eklavya666i.github.io/ap/english10/ |
+| Driver Workbench (golf: GSPro driver and whole-bag analysis) | Runs in Claude, not on this site: [driver-workbench](driver-workbench/README.md) |
 
 **AP World History: Modern.** 954 AP-style questions across all nine units, with an explanation for every answer choice. It has 45 mock quizzes (5 per unit), topic drills, a mixed mock weighted like the exam, practice and timed exam modes, and saved progress.
 
@@ -65,6 +66,8 @@ Source and build scripts are in [alg2-detailed/src](alg2-detailed/src).
 
 Source and build scripts are in [english10/src](english10/src).
 
+**Driver Workbench.** Weekly GSPro range exports for two golfers. The Windows PC beside GSPro is the import station: each golfer's CSV files are dropped there, sorted by club speed and saved with their original lines. The iPad and the Mac show the analysis by player: driver trends, dispersion, strike checks, a realistic outlook and whole-bag gapping. Unlike the apps above, it runs as an installed Claude app, because its data lives in a private Claude database that both devices share; nothing is stored on this site. Code, tests and install steps are in [driver-workbench](driver-workbench/README.md).
+
 ## Put an app on an iPad
 
 1. Open the app's link in Safari.
@@ -78,5 +81,7 @@ If the Cyber, SAT, Rational Expressions, Topic 4, Detailed or English 10H link s
 ## Updating
 
 Changing any file here republishes the site. Installed copies pick up the new version the next time they open online.
+
+The Driver Workbench is the exception: it is republished to Claude from [driver-workbench/app](driver-workbench/app), as its README describes.
 
 AP and SAT are registered trademarks of College Board, which was not involved in making these apps.
