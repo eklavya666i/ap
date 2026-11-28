@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js', 'lab.js', 'flight.js', 'swing.js', 'partials.js', 'drills.js', 'patterns.js', 'heads.js', 'shell.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js', 'lab.js', 'flight.js', 'swing.js', 'partials.js', 'drills.js', 'patterns.js', 'heads.js', 'hero.js', 'shell.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -408,6 +408,11 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   const labHead = doc.querySelector('[data-draw="viewhead"]');
   check(heads.every((t, i) => HEAD[Object.keys(HEAD)[i]].test(t.slice(t.indexOf(': ') + 2))) && labHead.querySelector('.ph-vh-sr') && !labHead.querySelector('.ph-h') && doc.querySelector('[data-draw="crumb"]').textContent.includes('Ball flight'), 'each view leads with its finding headline');
   w.WB.setView('all');
+  // Command center hero: the range scene with the hero figure, the figures row and the Path-to-260 ruler.
+  await sleep(100);
+  const hero = doc.querySelector('[data-draw="hero"]'), rul = doc.querySelector('[data-draw="ruler"]');
+  const nTr = hero.querySelectorAll('.lab-tracer').length;
+  check(nTr > 0 && nTr <= 40 && /Median standard total/.test(hero.textContent) && hero.querySelectorAll('.ph-fig').length === 5 && hero.querySelectorAll('.ph-spark').length === 5 && rul.querySelector('.ph-rseg.now') && rul.querySelector('.ph-rflag') && rul.querySelectorAll('.ph-rlegend li').length === 3, 'the Command center leads with the range scene, figures row and Path-to-260 ruler');
   w.WB.setView('all');
   await sleep(120);
 

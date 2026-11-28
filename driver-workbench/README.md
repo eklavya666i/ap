@@ -145,6 +145,7 @@ app/
   trust.js      data trust: what the monitor's data can be trusted for, with banners where spin or club data matter
   command.js    the Command center: what's happening, how it's moving, what needs to happen, the week's fairway, alerts
   shell.js      the Pin High shell: breadcrumb, player card in the rail, the current tab kept in view on narrow screens
+  hero.js       the Command center hero: range scene of the last two weeks' stock drives, the figures row with sparklines, the Path-to-260 ruler
   heads.js      finding headlines for the seven older views (design package §3), e.g. "43 yards to 260, and speed is most of the gap"
   lab.js        shared by the four lab views: every club's shots with tags, flight paths through GSPro's numbers, the night-range scene, the driver face
   flight.js     Ball flight

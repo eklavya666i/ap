@@ -32,6 +32,7 @@
     const launch = b ? Math.max(0, shot(bs2, b.launch, b.spin, std).total - now - strike) : 0;
     return {strike, launch, speed: Math.max(0, gap - strike - launch)};
   }
+  WB.levers = levers;
   function lastDate() {
     const im = ok('imports');
     const ds = (im || []).map((i) => i.date).filter((x) => /^\d{4}-\d{2}-\d{2}$/.test(x || '')).sort();

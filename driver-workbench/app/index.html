@@ -35,18 +35,8 @@
 <main class="wb">
 <div class="ph-crumb" data-only="analysis" data-draw="crumb" aria-label="Where you are"></div>
 <div class="ph-head" data-only="analysis" data-draw="viewhead"></div>
-<section id="week" data-only="analysis" data-view="command">
-<p class="wb-lede" id="tk-load">Loading <b data-draw="gname">—</b>’s weeks…</p>
-<p class="wb-lede" id="tk-none" hidden><b data-draw="gname">—</b> has no weeks yet. Drop a GSPro CSV on their card below, or log a week by hand.</p>
-<p class="wb-lede" id="tk-bad" hidden><b data-draw="gname">—</b>, week <b data-draw="tk" data-f="week">—</b>: club speed is <b data-draw="tk" data-f="club_speed">—</b> mph, but <b data-draw="tk" data-f="ball_speed">—</b> ÷ <b data-draw="tk" data-f="club_speed">—</b> gives a smash of <b data-draw="tk" data-f="smash_calc">—</b>, not the device’s <b data-draw="tk" data-f="smash_device">—</b>. Check the screen, or import the GSPro CSV, before trusting the rest.</p>
-<p class="wb-lede" id="tk-ok" hidden><b data-draw="gname">—</b>, week <b data-draw="tk" data-f="week">—</b>: <b data-draw="tk" data-f="club_speed">—</b> mph club speed and a smash of <b data-draw="tk" data-f="smash_calc">—</b>. Realistic over the next <b data-draw="pv" data-p="weeks">—</b> weeks: <b data-draw="tk" data-f="d_total">—</b> yards of total.</p>
-<span data-draw="tkstate"></span>
-<div class="wb-grid wb-kpis">
-<div class="wb-card"><div class="wb-lab">Club speed (mph)</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="club_speed"></div><div class="wb-sub" data-draw="kpisub" data-k="club_speed">—</div></div>
-<div class="wb-card"><div class="wb-lab">Ball speed (mph)</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="ball_speed"></div><div class="wb-sub" data-draw="kpisub" data-k="ball_speed">—</div></div>
-<div class="wb-card"><div class="wb-lab">Smash, ball ÷ club</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_calc"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_calc">—</div></div>
-<div class="wb-card"><div class="wb-lab">Smash on the device</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_device"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_device">—</div></div>
-</div>
+<section id="hero" data-only="analysis" data-view="command">
+<div data-draw="hero"></div>
 </section>
 <section id="station" data-only="ingest" hidden>
 <p class="wb-lede">Drop GSPro exports here on the GSPro PC. Analysis by player is on the iPad, or switch to Analysis above.</p>
@@ -130,6 +120,24 @@
 <section id="command" data-only="analysis" data-view="command">
 <h2>This week</h2>
 <div class="wb-cmd" data-draw="cmd"></div>
+</section>
+<section id="ruler" data-only="analysis" data-view="command">
+<h2>Path to 260</h2>
+<div class="wb-card ph-ruler" data-draw="ruler"></div>
+</section>
+<section id="week" data-only="analysis" data-view="command">
+<h2>Logged week check</h2>
+<p class="wb-lede" id="tk-load">Loading <b data-draw="gname">—</b>’s weeks…</p>
+<p class="wb-lede" id="tk-none" hidden><b data-draw="gname">—</b> has no weeks yet. Drop a GSPro CSV on their card below, or log a week by hand.</p>
+<p class="wb-lede" id="tk-bad" hidden><b data-draw="gname">—</b>, week <b data-draw="tk" data-f="week">—</b>: club speed is <b data-draw="tk" data-f="club_speed">—</b> mph, but <b data-draw="tk" data-f="ball_speed">—</b> ÷ <b data-draw="tk" data-f="club_speed">—</b> gives a smash of <b data-draw="tk" data-f="smash_calc">—</b>, not the device’s <b data-draw="tk" data-f="smash_device">—</b>. Check the screen, or import the GSPro CSV, before trusting the rest.</p>
+<p class="wb-lede" id="tk-ok" hidden><b data-draw="gname">—</b>, week <b data-draw="tk" data-f="week">—</b>: <b data-draw="tk" data-f="club_speed">—</b> mph club speed and a smash of <b data-draw="tk" data-f="smash_calc">—</b>. Realistic over the next <b data-draw="pv" data-p="weeks">—</b> weeks: <b data-draw="tk" data-f="d_total">—</b> yards of total.</p>
+<span data-draw="tkstate"></span>
+<div class="wb-grid wb-kpis">
+<div class="wb-card"><div class="wb-lab">Club speed (mph)</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="club_speed"></div><div class="wb-sub" data-draw="kpisub" data-k="club_speed">—</div></div>
+<div class="wb-card"><div class="wb-lab">Ball speed (mph)</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="ball_speed"></div><div class="wb-sub" data-draw="kpisub" data-k="ball_speed">—</div></div>
+<div class="wb-card"><div class="wb-lab">Smash, ball ÷ club</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_calc"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_calc">—</div></div>
+<div class="wb-card"><div class="wb-lab">Smash on the device</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_device"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_device">—</div></div>
+</div>
 </section>
 
 <section id="dashboard" data-only="analysis" data-view="command">
@@ -547,6 +555,7 @@
 <script src="drills.js"></script>
 <script src="patterns.js"></script>
 <script src="heads.js"></script>
+<script src="hero.js"></script>
 <script src="shell.js"></script>
 <script>dash.start();</script>
 </body>

@@ -34,6 +34,7 @@
       if (!weeks.length) return null;
       const top = weeks[weeks.length - 1].week, last2 = weeks.filter((w) => w.week > top - 2).flatMap((w) => w.drives);
       const med = median(last2.map((d) => d.total));
+      const prev2 = weeks.filter((w) => w.week > top - 4 && w.week <= top - 2).flatMap((w) => w.drives), prevMedian = median(prev2.map((d) => d.total));
       const ls = last2.filter((d) => d.total >= LONG && typeof d.offline === 'number' && Math.abs(d.offline) <= corridor / 2).length;
       const series = weeks.filter((w) => w.drives.length >= 5).map((w) => [w.week, w.median]);
       const slope = series.length >= 4 ? theilSen(series.slice(-8)) : null;
@@ -43,8 +44,8 @@
       const totalAt = (cs) => { const b = BF.best(cs * smT, cs, aoa, std); return (WB.fitShot || BF.shot)(cs * smT, b ? b.launch : 12, b ? b.spin : 2500, std).total; };
       let lo = 60, hi = 130;
       for (let i = 0; i < 18; i++) { const mid = (lo + hi) / 2; if (totalAt(mid) < GOAL) lo = mid; else hi = mid; }
-      return {median: med, n: last2.length, provisional: last2.length < MIN_N, gap: med === null ? null : GOAL - med, ls, lsN: last2.length, corridor, series, slope, eta, speedFor: hi, smT,
-        weeks: weeks.map((w) => ({week: w.week, median: w.median, n: w.drives.length}))};
+      return {median: med, prevMedian, prevN: prev2.length, n: last2.length, provisional: last2.length < MIN_N, gap: med === null ? null : GOAL - med, ls, lsN: last2.length, corridor, series, slope, eta, speedFor: hi, smT,
+        weeks: weeks.map((w) => ({week: w.week, median: w.median, n: w.drives.length, ratio: w.ratio}))};
     },
   });
 
