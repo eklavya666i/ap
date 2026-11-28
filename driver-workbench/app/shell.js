@@ -11,9 +11,9 @@
   /* On iPad and phone the rail is a sideways bar: keep the current view's tab in sight. */
   const showTab = () => { const b = document.querySelector('.ph-nav [aria-current=page]'); if (b && b.scrollIntoView && window.matchMedia && window.matchMedia('(max-width: 1100px)').matches) b.scrollIntoView({block: 'nearest', inline: 'center'}); };
 
-  /* Sunlight mode (design package §1): paper and ink for phones used outdoors, in the Round journal (and the Drill
-     Runner when it comes). On by itself on phones; the switch in the Round journal sets it on or off for this device. */
-  const SUN_VIEWS = ['rounds'], SUNKEY = 'ph-sun';
+  /* Sunlight mode (design package §1): paper and ink for phones used outdoors, in the Round journal and the Drill
+     studio, where the Drill Runner is. On by itself on phones; the switch in the Round journal sets it on or off for this device. */
+  const SUN_VIEWS = ['rounds', 'drills'], SUNKEY = 'ph-sun';
   let sunMem = null;
   const sunPref = () => { try { return localStorage.getItem(SUNKEY) || sunMem || 'auto'; } catch (e) { return sunMem || 'auto'; } };
   const narrow = () => !!(window.matchMedia && window.matchMedia('(max-width: 600px)').matches);

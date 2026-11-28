@@ -144,6 +144,7 @@
         weeks: (g.typed || []).map(function (t) { var o = Object.assign({}, t); var id = o.id; delete o.id; return {id: id, data: o}; }),
         sessions: (g.imports || []).map(function (x) { return {id: x.id, data: x._doc}; }),
         rounds: (g.rounds || []).map(function (x) { return {id: x.id, data: x.data}; }),
+        runs: (g.runs || []).map(function (x) { return {id: x.id, data: x.data}; }),
       };
     });
     var bl = datasets.backlog && datasets.backlog.data;
@@ -212,6 +213,7 @@
   WB.conditions = function () { var o = WB.cleanConditions(conditionsDoc || {}); o.assumed = !conditionsDoc; return o; };
 
   WB.roundsFor = function (gid) { var g = raw[gid]; return g ? g.rounds : null; };
+  WB.runsFor = function (gid) { var g = raw[gid]; return g ? g.runs : null; };
   WB.rawFor = function (gid) { var g = raw[gid]; return g ? {typed: g.typed, imports: g.imports} : null; };
   WB.golfer = function () { return golfers.filter(function (g) { return g.id === selected; })[0] || null; };
   WB.configLoaded = function () { return configLoaded; };
@@ -422,7 +424,7 @@
 
   function subscribeGolfer(db, gid) {
     if (subs[gid]) return;
-    raw[gid] = {typed: null, imports: null, rounds: null};
+    raw[gid] = {typed: null, imports: null, rounds: null, runs: null};
     var fail = function (k, what) {
       return function () { raw[gid][k] = []; note('db-note', true, 'Some ' + what + ' couldn’t be loaded. Reopen the workbench to try again.'); schedule(); };
     };
@@ -438,7 +440,11 @@
       raw[gid].rounds = snap.docs.filter(function (d) { return d.exists; }).map(function (d) { return {id: d.id, data: d.data()}; });
       schedule();
     }, fail('rounds', 'rounds'));
-    subs[gid] = [u1, u2, u3];
+    var u4 = db.collection('golfers/' + gid + '/runs').onSnapshot(function (snap) {
+      raw[gid].runs = snap.docs.filter(function (d) { return d.exists; }).map(function (d) { return {id: d.id, data: d.data()}; });
+      schedule();
+    }, fail('runs', 'drill runs'));
+    subs[gid] = [u1, u2, u3, u4];
   }
 
   async function boot() {

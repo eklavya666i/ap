@@ -596,3 +596,30 @@ html[data-sun=on] .ph-pills select{background-image:url("data:image/svg+xml,%3Cs
 html[data-sun=on] select option{background:#ffffff;color:#141b27}
 html[data-sun=on] .wb-kpis .wb-good,html[data-sun=on] .wb-good{color:#1e7a3e}
 html[data-sun=on] .wb-kpis .wb-badc,html[data-sun=on] .wb-badc{color:#b3261e}
+/* Drill Runner (design package §3 Drill studio) */
+.ph-run-plans{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
+.wb-chipbtn{font:600 14px var(--font-anthropic-sans);min-height:40px;padding:6px 14px;border-radius:999px;border:1px solid var(--ph-line2);background:var(--color-panel);color:var(--color-fg);cursor:pointer}
+.wb-chipbtn.on{background:var(--ph-sand);border-color:var(--ph-sand);color:var(--ph-sand-ink)}
+.ph-run-date{display:inline-flex;flex-direction:column;gap:4px;font-size:13px;color:var(--cds-text-secondary);margin-bottom:10px}
+.ph-run-blocks{display:grid;gap:10px}
+.ph-run-block{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(130px,100%),1fr));gap:8px;align-items:end;padding:10px 0;border-top:1px solid var(--color-border-line)}
+.ph-run-block>b{grid-column:1/-1;font-size:14px}
+.ph-run-block label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--cds-text-secondary)}
+.ph-run-block label:first-of-type{grid-column:span 2}
+.ph-runner{display:grid;gap:12px}
+.ph-run-block-name{font-weight:800;font-size:clamp(20px,2.4vw,26px);line-height:1.15}
+.ph-run-count{font-size:15px;color:var(--color-fg-muted);margin-top:4px}
+.ph-rt{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.ph-rt-label{font-size:13px;font-weight:600;color:var(--cds-text-secondary)}
+.ph-rt-time{font:800 44px/1 var(--fx);font-variant-numeric:tabular-nums}
+.ph-zones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ph-zone{min-height:64px;border-radius:14px;border:1px solid var(--ph-line2);background:var(--ph-raised);color:var(--color-fg);font:700 15px var(--font-anthropic-sans);cursor:pointer;text-transform:none}
+.ph-zone:active{background:var(--ph-sand);color:var(--ph-sand-ink)}
+.ph-zone:disabled,.ph-hit:disabled{opacity:.45;cursor:default}
+.ph-zone-note{margin:0}
+.ph-hit{min-height:56px;font-size:17px;width:100%}
+.ph-run-row{padding:10px 0;border-top:1px solid var(--color-border-line)}
+.ph-run-row p{margin:0 0 6px}
+.ph-run-mergeform{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.ph-run-mergeform label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--cds-text-secondary)}
+.ph-run-mergeform input{width:7em}

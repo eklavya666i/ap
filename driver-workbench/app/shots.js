@@ -13,6 +13,7 @@
   const DRILLS = ['Speed ladder', 'Centered strike (face spray)', 'Tee height and attack angle ladder', 'Start-line gate', 'Stock shape window', 'Fairway finder',
     'Long-drive benchmark', 'Wedge clock ladder', 'Random distance test', 'Carry book calibration', 'Flight window (stock vs knockdown)', 'Pressure combine'];
   const SWINGS = ['Full', '¾', '½', '¼'], TEES = ['Low', 'Normal', 'High'], INTENTS = ['Stock', 'Speed', 'Fade', 'Draw', 'High', 'Low', 'Start line', 'Strike'];
+  WB.TAGLISTS = {DRILLS, SWINGS, TEES, INTENTS};
   function tagsOf(s) {
     const t = s && s._doc && Array.isArray(s._doc.tags) ? s._doc.tags : [];
     return t.filter((x) => x && Number.isInteger(x.from) && Number.isInteger(x.to) && x.from >= 0 && x.to >= x.from && x.to < s.arows.length).slice(0, 200);

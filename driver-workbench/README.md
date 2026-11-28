@@ -76,10 +76,11 @@ On the import station, under **Golfer settings**:
 - **Swing and strike**: club delivery measured when the monitor sends it, otherwise inferred from start line and curve (±1.5°), the strike on a driver face from face-spray zones (a shot tag's target such as “Mid center”), delivery consistency, launch and spin, start line against curve.
 - **Partial shots**: the wedge yardage book by club and swing length from shot tags; untagged wedge shots get a length suggested from their share of the club's full-swing speed, marked as suggested.
 - **Drill studio**: whether each tagged drill moved its number (stock shots outside the drill blocks, two weeks before against the weeks after), prescriptions from the latest data, the tee-height ladder and the drill library.
+- **Drill Runner** (in the Drill studio, made for the phone or iPad at the range): pick a plan (centered strike, tee-height ladder, speed ladder, start-line gate, wedge clock ladder, stock warm-up, or blocks of your own: drill, swing length, tee, intent, shots), then tap after every shot, on its face-spray zone when there is one. It shows the block and shot, and the time since the last shot. The run is saved after every tap, with a copy on the device if the connection drops. Once that day's GSPro file is imported, **Merge into the session** turns each block into a tag on its shot range and each zone into its shot's target, which Swing and strike reads; if shots were hit before the run started, set the run's first shot. A merge can be taken off again.
 - **What's working and what isn't** (under Round journal): patterns across rounds from hole-by-hole scores and the 1–5 ratings: scoring by par type and by nine, round stats (fairways, greens, up and down, putts, three-putts, birdies, doubles) for all rounds against the last 3, ratings lately against before, the holes that cost the most on courses played twice or more, the latest things to work on, and the driver on the range (inside the fairway width) against fairways hit on the course.
 - **Look and layout** (design package v1.1 §1): slate and sand, Sofia Sans with Extra Condensed figures; a grouped icon rail (Overview, Analyze, Improve, Trust the numbers) with the player card on laptops, a sideways tab bar under 1,100 px; the trust chip and mode switch in the top bar; filter pills (golfer, dates, fairway width, carry, club) that scroll sideways; a breadcrumb and each view's finding as its headline.
 - **Pick the GSPro export folder** (import station): one button reads every GSPro CSV in the folder, newest first, and adds only sessions not saved yet; dropping the whole folder works too. The browser asks to confirm the folder each time, and the app keeps no access to it afterwards (no desktop permissions needed).
-- **Sunlight mode**: paper and ink for phones used outdoors (design package §1). It comes on by itself on phones in the Round journal; the switch there sets it on or off for that device.
+- **Sunlight mode**: paper and ink for phones used outdoors (design package §1). It comes on by itself on phones in the Round journal and the Drill studio; the switch in the Round journal sets it on or off for that device.
 - **Golf notes** (`notes/`): a small offline app for a golfer's own phone, served by this repository's GitHub Pages at `/ap/driver-workbench/notes/`. Notes, ratings and scorecard photos stay on the phone (IndexedDB) until Send to coach shares one JSON file; **Import notes from a phone** in Rounds adds them to that golfer's rounds. It needs no Claude account.
 - **Offline drafts**: round notes typed in the workbench are kept on the device as a draft; a round that can't be saved (no connection) waits on the device and is saved when the connection is back.
 - **Rounds**: notes from rounds and practice rounds, made for the phone: ratings for driving, approach, short game, putting and the mental game, what happened, what to work on, voice notes (Claude dictation where the device offers it, else the keyboard's mic) and a scorecard photo that Claude can read into hole-by-hole scores to check and save.
@@ -109,7 +110,8 @@ Database layout:
 | `golfers/{id}/sessions/{session}` | One GSPro session: date, week, file, driver label, all shots of all clubs (`shots_json`), a summary, a fingerprint for duplicates |
 | `golfers/{id}/raw/{session}` | The session's original CSV header and lines (`-p2`, `-p3`… when longer than 200,000 characters); never loaded by the analysis |
 | `golfers/{id}/weeks/w{NN}` | A week typed by hand: averages, conditions, notes |
-| `golfers/{id}/sessions/{session}` → `tags` | Optional list of shot ranges with drill, swing length, tee height, intent and target |
+| `golfers/{id}/sessions/{session}` → `tags` | Optional list of shot ranges with drill, swing length, tee height, intent and target; tags merged from a drill run also carry `src: "runner"` and the run's id in `run` |
+| `golfers/{id}/runs/{run}` | A Drill Runner run: date, plan, blocks (drill, swing, tee, intent, shots), one entry per shot (block, face-spray zone or none, seconds since the shot before), started, updated and ended times, done, and the session it was merged into with the first shot (`merged`) |
 | `golfers/{id}/rounds/{round}` | A round's notes: date, course, kind, score, ratings, what happened, what to work on, hole-by-hole scores, and the scorecard photo's asset id (the photo itself is an artifact asset, never in git) |
 | `backlog/{id}` | Backlog items: title, area, priority, status |
 
@@ -118,13 +120,13 @@ Database layout:
 - **Upgrades never touch the data.** Each upgrade publishes a new version of the same Claude artifact; its database stays as it is. Only deleting the artifact would erase it, so it is never deleted or replaced by a new artifact.
 - **Everything is kept at full detail.** Each session stores every club and every shot. From this version on it also keeps the session's original CSV lines (`golfers/{id}/raw/{session}`), so later features can read columns the app doesn't use yet, such as course, hole and round data.
 - **Older sessions can get their originals too.** Sessions saved before originals were kept show as already saved; dropping the same export folders again attaches the original lines to them, without duplicating anything.
-- **Backups.** On the import station, *Backup and restore* copies everything as one JSON file (golfers, typed weeks, sessions, backlog). Restoring adds only what is missing and never overwrites. Keep a recent backup and the GSPro export folders together.
+- **Backups.** On the import station, *Backup and restore* copies everything as one JSON file (golfers, typed weeks, sessions, rounds, drill runs, backlog). Restoring adds only what is missing and never overwrites. Keep a recent backup and the GSPro export folders together.
 
 Rules every upgrade follows (for whoever changes the code, including Claude):
 
 1. Never rename or remove a stored field, and never rewrite stored documents to a new shape. Add new fields as optional.
 2. Readers handle every older document shape. Today's differences: schema 1 sessions have no `schema`, `peak_unit` or `has_raw`; their peak height is in feet, and monitors' zero-filled club data counts as not measured.
-3. New documents carry `schema: 2` (raise it when the shape changes, and add the reader for it here).
+3. New sessions carry `schema: 2`; rounds and drill runs carry their own `schema: 1` (raise a collection's number when its shape changes, and add the reader for it here).
 4. Run `npm test` in `tests/` before publishing. It checks importing, sorting, attaching originals, backup and restore, and the analysis on sample data.
 
 ## Layout of this folder
@@ -154,6 +156,7 @@ app/
   swing.js      Swing and strike
   partials.js   Partial shots
   drills.js     Drill studio
+  runner.js     Drill Runner: block plans, shot and zone taps saved as you go, merging a run into the day's session as tags
 tests/
   workbench.test.js   end-to-end test in jsdom with an in-memory database
   sample-data/        synthetic GSPro range exports

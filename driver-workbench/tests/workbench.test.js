@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js', 'lab.js', 'flight.js', 'swing.js', 'partials.js', 'drills.js', 'patterns.js', 'heads.js', 'hero.js', 'shell.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js', 'lab.js', 'flight.js', 'swing.js', 'partials.js', 'drills.js', 'patterns.js', 'heads.js', 'hero.js', 'runner.js', 'shell.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -444,6 +444,40 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   await sleep(40);
   check(wasSun === 'off' && sunR && sunBag === 'off' && root.getAttribute('data-sun') === 'off' && sunBtn.textContent.includes('Off'), 'sunlight mode turns on in the Round journal and nowhere else');
   w.WB.setView('all');
+  // Drill Runner: start a plan, tap shots with their face-spray zones, undo, end, and merge into the day's session.
+  w.WB.setGolfer('a'); w.WB.setView('drills');
+  await sleep(150);
+  const rbox = doc.querySelector('[data-draw="runner"]');
+  [...rbox.querySelectorAll('.wb-chipbtn')].find((b) => b.textContent === 'Centered strike').click();
+  await sleep(60);
+  const rdate = rbox.querySelector('input[type=date]');
+  rdate.value = '2026-11-10'; rdate.dispatchEvent(new w.Event('change'));
+  doc.getElementById('run-start').click();
+  await sleep(120);
+  const zoneBtn = (z) => rbox.querySelector(`[data-zone="${z}"]`);
+  for (const z of ['Mid center', 'Mid center', 'Low toe']) { zoneBtn(z).click(); await sleep(30); }
+  rbox.querySelector('.ph-hit').click(); await sleep(30);
+  rbox.querySelector('.ph-hit').click(); await sleep(30);
+  [...rbox.querySelectorAll('button')].find((b) => b.textContent === 'Undo last shot').click();
+  await sleep(150);
+  const runKey = [...M.docs.keys()].find((k) => k.startsWith('golfers/a/runs/')), runDoc = runKey && M.docs.get(runKey);
+  check(runDoc && runDoc.date === '2026-11-10' && runDoc.shots.length === 4 && runDoc.shots.map((x) => x.zone || '').join(',') === 'Mid center,Mid center,Low toe,' && rbox.textContent.includes('Shot 5 of 10') && !rbox.textContent.includes('in the run'), 'the Drill Runner logs each shot with its face-spray zone');
+  [...rbox.querySelectorAll('button')].find((b) => b.textContent === 'End the run').click();
+  await sleep(200);
+  check(M.docs.get(runKey).done === true && rbox.textContent.includes('Finished runs') && rbox.querySelector('.ph-run-merge'), 'a finished run offers to merge into the day’s session');
+  rbox.querySelector('.ph-run-merge').click();
+  await sleep(250);
+  const fastKey = [...M.docs.keys()].find((k) => k.startsWith('golfers/a/sessions/') && M.docs.get(k).file === 'fast_2026-11-10.csv');
+  const ftags = (M.docs.get(fastKey).tags || []).filter((t) => t.src === 'runner');
+  check(ftags.some((t) => t.from === 0 && t.to === 3 && t.drill === 'Centered strike (face spray)') && ftags.filter((t) => t.target).map((t) => t.from + ':' + t.target).join(',') === '0:Mid center,1:Mid center,2:Low toe' && M.docs.get(runKey).merged && rbox.textContent.includes('Merged into'), 'merges the run into the session as block and zone tags');
+  doc.getElementById('run-start').click();
+  await sleep(120);
+  const nRuns = [...M.docs.keys()].filter((k) => k.startsWith('golfers/a/runs/')).length;
+  [...rbox.querySelectorAll('button')].find((b) => b.textContent === 'Cancel the run').click();
+  await sleep(150);
+  check(nRuns === 2 && [...M.docs.keys()].filter((k) => k.startsWith('golfers/a/runs/')).length === 1 && doc.getElementById('run-start'), 'a run with no shots can be cancelled without leaving an empty run');
+  w.WB.setGolfer('b'); w.WB.setView('all');
+  await sleep(150);
   w.WB.setView('all');
   await sleep(120);
 

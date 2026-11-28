@@ -1309,6 +1309,8 @@ dash.draw('bagrows', (el) => {
       const haveW = new Set((r.typed || []).map((t) => t.id)), haveS = new Set((r.imports || []).map((x) => x.id));
       const haveR = new Set((WB.roundsFor(gid) || []).map((x) => x.id));
       (Array.isArray(g.rounds) ? g.rounds : []).forEach((x) => { if (plain(x) && ID.test(String(x.id)) && plain(x.data) && typeof x.data.date === 'string' && !haveR.has(x.id)) jobs.push({path: `golfers/${gid}/rounds/${x.id}`, data: x.data}); });
+      const haveU = new Set((WB.runsFor(gid) || []).map((x) => x.id));
+      (Array.isArray(g.runs) ? g.runs : []).forEach((x) => { if (plain(x) && ID.test(String(x.id)) && plain(x.data) && Array.isArray(x.data.blocks) && !haveU.has(x.id)) jobs.push({path: `golfers/${gid}/runs/${x.id}`, data: x.data}); });
       (Array.isArray(g.weeks) ? g.weeks : []).forEach((w) => { if (plain(w) && ID.test(String(w.id)) && plain(w.data) && !haveW.has(w.id) && WB.num(w.data.week) !== null) jobs.push({path: `golfers/${gid}/weeks/${w.id}`, data: w.data}); });
       (Array.isArray(g.sessions) ? g.sessions : []).forEach((x) => { if (plain(x) && ID.test(String(x.id)) && plain(x.data) && typeof x.data.shots_json === 'string' && !haveS.has(x.id) && !(typeof x.data.fp === 'string' && known.has(x.data.fp))) jobs.push({path: `golfers/${gid}/sessions/${x.id}`, data: x.data}); });
     });
