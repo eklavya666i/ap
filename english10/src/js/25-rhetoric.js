@@ -35,7 +35,7 @@ const RHB = {devices: [], appeals: [], evidence: [], faulty: [], claim: [], proc
   for (const [b, q, c, why] of RHET.questions) RHB[b].push({id: nid("rh." + b), set: "rhet", kind: KIND[b], q, c, why});
 }
 const RHQ = {}; for (const list of Object.values(RHB)) for (const x of list) RHQ[x.id] = x;
-Object.assign(KIND_NAMES, {sheet: "Study sheet", device: "Devices", "rh-appeal": "Appeals", "rh-evidence": "Evidence types", "rh-faulty": "Faulty reasoning", "rh-claim": "Claims and rebuttals", "rh-process": "Analysis process", "rh-asp": "A Small Place, opening pages"});
+Object.assign(KIND_NAMES, {sheet: "Study sheet", device: "Devices", "rh-appeal": "Appeals", "rh-evidence": "Evidence types", "rh-faulty": "Faulty reasoning", "rh-claim": "Claims and rebuttals", "rh-process": "Analysis process", "rh-asp": "A Small Place, Part 1"});
 const RH_KIND_QUIZ = {sheet: "sheet", device: "devices", "rh-appeal": "appeals", "rh-evidence": "appeals", "rh-faulty": "reasoning", "rh-claim": "claims", "rh-process": "claims", "rh-asp": "asp1"};
 for (const c of RHET.cards) if (!ARG.debate.motions.includes(c.motion)) ARG.debate.motions.push(c.motion);
 const passageOf = id => {
@@ -48,7 +48,7 @@ const passageOf = id => {
 const RH_QUIZZES = [["sheet", "Study sheet quiz", "20 of the study-sheet terms, by definition and by example."], ["key", "Key terms", "Rhetoric, the appeals, claim, counterargument, rebuttal."], ["evidence", "Types of evidence", "Anecdote, data, facts, expert opinion."],
   ["style", "Language and style devices", "All 16 devices: parallelism to apostrophe."], ["faulty", "Faulty reasoning terms", "Bias and the fallacies on your sheet."], ["devices", "Device spotter", "15 sentences: name the device."],
   ["appeals", "Appeals and evidence", "Ethos, pathos or logos? Which type of evidence?"], ["reasoning", "Faulty reasoning finder", "12 arguments: name the flaw."], ["claims", "Claims, rebuttals and the process", "Claim or fact, counterarguments, SOAPSTone, the paragraph plan."],
-  ["asp1", "A Small Place: the opening pages", "The moments in pages 1-9 and what Kincaid does with them."]];
+  ["asp1", "A Small Place: Part 1", "The moments in pages 1-9 (Part 1) and what Kincaid does with them."]];
 const RH_SAMPLE = {s1: "ra-jfk", s2: "ra-henry"};
 function rhTest(which) {
   // "test": a new mix every time. "s1" and "s2": fixed sample tests drawn from opposite halves of every bank.
@@ -66,7 +66,7 @@ function rhQuiz(arg) {
   if (arg === "appeals") return {items: shuffle(shuffle(RHB.appeals).slice(0, 8).concat(shuffle(RHB.evidence).slice(0, 7))), title: "Appeals and evidence"};
   if (arg === "reasoning") return {items: shuffle(RHB.faulty), title: "Faulty reasoning finder"};
   if (arg === "claims") return {items: shuffle(RHB.claim.concat(RHB.proc)).slice(0, 15), title: "Claims, rebuttals and the process"};
-  if (arg === "asp1") return {items: shuffle(RHB.asp1), title: "A Small Place: the opening pages"};
+  if (arg === "asp1") return {items: shuffle(RHB.asp1), title: "A Small Place: Part 1"};
   if (arg === "test") return {items: rhTest("test"), title: "Unit 4 practice test", mode: "test", minutes: 45};
   if (RH_SAMPLE[arg]) return {items: rhTest(arg), title: `Sample test ${arg === "s1" ? "A" : "B"}, part 1`, mode: "test", minutes: 35, next: {href: `#/tw/${RH_SAMPLE[arg]}`, label: "Part 2: the timed paragraph"}};
   return null;
@@ -118,7 +118,7 @@ function rhHub() {
   <div class="card"><h3>Get ready</h3>${readyHTML()}</div>
   <h3>Learn</h3><div class="grid">${rhLink("#/rhetoric/sheet", "Study sheet", `All ${SHEET.length} terms from your class sheet and syntax list, with your teacher's definitions and examples.`, "Memorize")}
   ${rhLink("#/rhetoric/intro", "Unit notes", "Why rhetoric matters, how to analyze an argument, the appeals, evidence, bias, counterarguments and rebuttals.", "Read")}
-  ${rhLink("#/rhetoric/annotate", "Annotations: pages 1-9", `${RHET.asp1.length} moments in <i>A Small Place</i>: the devices, the appeal, the effect, the purpose and a sentence starter for each. ${annDone()} marked in your copy.`, "Open note")}</div>
+  ${rhLink("#/rhetoric/annotate", "Annotations: Part 1", `${RHET.asp1.length} moments in pages 1-9 of <i>A Small Place</i>, all of Part 1: the devices, the appeal, the effect, the purpose and a sentence starter for each. ${annDone()} marked in your copy.`, "Open note")}</div>
   <h3>Practice</h3><div class="grid">${rhLink("#/rap", "Paragraph plan", `The class graphic organizer, box by box, with live checks and an estimated score out of 24. ${S.raps.length} saved.`, "Write")}
   ${rhLink("#/rhetoric/build", "Sentence building", `Write a sentence with each device and the app checks it. ${syntaxDone()} of ${RHET.syntax.length} syntax devices built.`, "Build")}
   ${rhLink("#/rhetoric/build/analysis", "Analysis sentences", "Device, precise verb, effect on the reader, purpose: one sentence, checked.", "Build")}
@@ -147,7 +147,7 @@ function rhIntro() {
   <div class="row"><a class="btn" href="#/rhetoric/sheet">Study sheet</a><button class="btn ghost" data-act="quiz" data-arg="rhet:claims">Quiz: claims and the process</button></div>`;
 }
 const annColor = k => (RHET.organizer.colors.find(c => c[0] === k) || RHET.organizer.colors[0])[2];
-const annCard = (a, i) => `<div class="card ann" id="ann-${i + 1}" style="--c:${annColor(a.c)}"><div class="row" style="margin:0"><span class="pill">${i + 1}</span><h3 style="margin:0">${esc(a.title)}</h3>${a.later ? `<span class="chip tip">May be just after page 9</span>` : ""}<span class="sp"></span>
+const annCard = (a, i) => `<div class="card ann" id="ann-${i + 1}" style="--c:${annColor(a.c)}"><div class="row" style="margin:0"><span class="pill">${i + 1}</span><h3 style="margin:0">${esc(a.title)}</h3><span class="sp"></span>
   <label class="tog"><input type="checkbox" data-in="annmark" data-i="${i}"${S.rh.ann[i] ? " checked" : ""}> In my copy</label><label class="tog">Page <input type="number" min="1" max="999" inputmode="numeric" style="width:4.6em" data-in="annpg" data-i="${i}" value="${esc(S.rh.pg[i] || "")}"></label></div>
   <p><b>Find it:</b> ${esc(a.find)}</p><p>${esc(a.what)}</p>
   <div class="tags">${a.devices.map(d => `<span class="chip ac">${esc(d)}</span>`).join("")}<span class="chip"><span class="swatch" style="--c:${annColor(a.appeal.toLowerCase())}"></span>${esc(a.appeal)}</span></div>
@@ -159,15 +159,15 @@ function rhAnnotate(n) {
   if (n) AFTER = () => { const el = $("#ann-" + n); if (el) el.scrollIntoView({block: "start"}); };
   const idx = {}; RHET.asp1.forEach((a, i) => a.terms.forEach(t => (idx[t] = idx[t] || []).push(i)));
   const K = RHET.organizer.colors;
-  return `${rhCrumb}<h2>Annotations: <i>A Small Place</i>, pages 1-9</h2>
+  return `${rhCrumb}<h2>Annotations: <i>A Small Place</i>, Part 1 (pages 1-9)</h2>
   <p class="lead">For the open-note write and the debates. Each card says where to look in your copy, what Kincaid does, the devices and appeal, the effect, the purpose and a sentence starter. The book isn't quoted here: underline the words in your own copy, then tick the card and add the page.</p>
   <div class="cols"><div class="card"><h3>Class SOAPSTone</h3>${soapTable(RHET.soapAsp)}</div>
   <div class="card"><h3>Color key</h3><div class="tags">${K.map(([k, nm, c]) => `<span class="chip"><span class="swatch" style="--c:${c}"></span>${esc(nm)}</span>`).join("")}</div><p class="meta">Use the same colors in your copy so every mark says what it's for, and write a short comment next to each one.</p>
   <h4>Annotation steps</h4><ol class="tight">${RHET.organizer.annotate.map(x => `<li>${esc(x)}</li>`).join("")}</ol></div></div>
   ${RHET.asp1.map(annCard).join("")}
-  <div class="card"><h3>Find a term fast</h3><p class="meta">Where each study-sheet term shows up in these pages.</p><table class="tbl">${Object.values(RHET.order).flat().filter(t => idx[t]).map(t => `<tr><th>${esc(t)}</th><td>${idx[t].map(i => `<a href="#/rhetoric/annotate/${i + 1}">${esc(RHET.asp1[i].title)}</a>`).join(", ")}</td></tr>`).join("")}
+  <div class="card"><h3>Find a term fast</h3><p class="meta">Where each study-sheet term shows up in Part 1.</p><table class="tbl">${Object.values(RHET.order).flat().filter(t => idx[t]).map(t => `<tr><th>${esc(t)}</th><td>${idx[t].map(i => `<a href="#/rhetoric/annotate/${i + 1}">${esc(RHET.asp1[i].title)}</a>`).join(", ")}</td></tr>`).join("")}
   ${RHET.aspGaps.map(([t, x]) => `<tr><th>${esc(t)}</th><td class="quiet">${esc(x)}</td></tr>`).join("")}</table></div>
-  <div class="row"><button class="btn" data-act="quiz" data-arg="rhet:asp1">Quiz: the opening pages</button><a class="btn ghost" href="#/rap/new/asp">Plan a paragraph</a><a class="btn ghost" href="#/tw/ra-asp">Timed paragraph</a></div>`;
+  <div class="row"><button class="btn" data-act="quiz" data-arg="rhet:asp1">Quiz: Part 1</button><a class="btn ghost" href="#/rap/new/asp">Plan a paragraph</a><a class="btn ghost" href="#/tw/ra-asp">Timed paragraph</a></div>`;
 }
 function rhPassages() {
   const list = RHET.passages.concat(["douglass"].map(passageOf).filter(Boolean));

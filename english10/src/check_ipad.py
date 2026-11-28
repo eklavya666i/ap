@@ -512,7 +512,7 @@ async def main():
     need("Not yet" in R["rh_build_no"][0] and R["rh_build_no"][1] is False, f"sentence building rejects a non-example {R['rh_build_no']}")
     need(R["rh_build"][0] == 11 and R["rh_build"][1], f"sentence building {R['rh_build']}")
     need(R["rh_analysis"] == [4, 4] and R["rh_move"] == [5, 5, 1], f"analysis sentence {R['rh_analysis']} debate move {R['rh_move']}")
-    need(R["rh_ann_cards"] == 13 and R["rh_ann"] == [13, "3", True], f"annotations {R['rh_ann_cards']} {R['rh_ann']}")
+    need(R["rh_ann_cards"] == 15 and R["rh_ann"] == [15, "3", True], f"annotations {R['rh_ann_cards']} {R['rh_ann']}")
     need(R["rap_thesis"] == [5, 5] and R["rap_boxes"] == [4, 3], f"paragraph plan checks {R['rap_thesis']} {R['rap_boxes']}")
     need("24 / 24" in R["rap_grade"] and R["rap_saved"] == [1, 24, "Asyndeton", "#/rap/0", True] and R["rap_model"], f"paragraph plan score {R['rap_grade']} {R['rap_saved']} {R['rap_model']}")
     need(R["ra_start"][0] and R["ra_start"][1] >= 8 and R["ra_passage"], f"timed paragraph {R['ra_start']} {R['ra_passage']}")
