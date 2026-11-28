@@ -1,6 +1,6 @@
-# Driver Workbench
+# Pin High (formerly Driver Workbench)
 
-Weekly driver analysis for two golfers from GSPro shot exports. It is one app with two views:
+Golf performance analysis for two golfers from GSPro shot exports. Renamed Pin High on Nov 27, 2026; the folder, the database paths and the backup format keep the old `driver-workbench` id so nothing stored or installed breaks. It is one app with two views:
 
 - **Import station**: on the Windows PC that runs GSPro. Drop exports here.
 - **Analysis**: on the iPad, by player. Dashboards, consistency, a realistic outlook, topics, history and the backlog.
@@ -67,10 +67,16 @@ On the import station, under **Golfer settings**:
 - **Dashboard**: weekly trends for club speed, ball speed, smash, launch, spin and carry, with the spread of shots in each week and target windows; where drives land, with a ring holding about 86% of drives; shot shape and delivery (start direction, curve, face, path, attack angle, peak height, descent); golfers side by side.
 - **Whole bag**: every club from the saved sessions (latest week, last 4 or 12 weeks, or all history): carry with its spread, total, speeds, smash, launch, spin, peak height and offline spread, plus a gapping chart that flags gaps under 7 yards, over 18 (25 around the woods), or clubs that carry farther than the next one up.
 - **Club by club** (under Bag): each club's smash, launch, spin and descent against windows for the golfer's own speed, from the TrackMan LPGA Tour averages (spin scaled to the golfer's club speed; the driver uses the driver dashboard's windows), and carry against the tour carry scaled to the golfer's ball speed. Week by week: carry by club and week, or, with **Club** picked in the filters, that club's carry, ball speed, smash, launch, spin and descent by week against its windows. The Club filter also narrows a session's shot list in Shots.
+- **Compare two weeks** (under Progress): any two imported weeks side by side for the club picked in the filters (the driver when none is): speeds, smash, share at the target smash, launch, spin, carry, total, spreads and, for the driver, share in the fairway, each marked real when the change is at least twice its standard error, and better or worse (launch and spin by distance from the club's window). **Strike over time**: every shot's smash in the date range, in the order hit, against the target smash, with a running median and weeks A and B shaded.
 - **Consistency**: spread of each imported week, the share of shots at the target smash, and smash shot by shot.
 - **Check**: whether ball speed ÷ club speed matches the device's smash.
 - **Realistic look** and **Outlook**: carry and total from a ball-flight model calibrated to TrackMan data, step by step (strike, attack angle, speed), and the speed outlook with a range.
 - **Shots**: drill down from the golfer to a week, a session and one shot; the inspector shows every field, whether the shot counts, the line it came from in the GSPro file, and a side view of its flight.
+- **Ball flight**: the most common miss for a club from start line and curve, its shots against the rest as tracers over a night range (drawn through GSPro's launch, peak height, descent, carry and offline), side and top views, why it happens, and its weekly trend.
+- **Swing and strike**: club delivery measured when the monitor sends it, otherwise inferred from start line and curve (±1.5°), the strike on a driver face from face-spray zones (a shot tag's target such as “Mid center”), delivery consistency, launch and spin, start line against curve.
+- **Partial shots**: the wedge yardage book by club and swing length from shot tags; untagged wedge shots get a length suggested from their share of the club's full-swing speed, marked as suggested.
+- **Drill studio**: whether each tagged drill moved its number (stock shots outside the drill blocks, two weeks before against the weeks after), prescriptions from the latest data, the tee-height ladder and the drill library.
+- **What's working and what isn't** (under Round journal): patterns across rounds from hole-by-hole scores and the 1–5 ratings: scoring by par type and by nine, round stats (fairways, greens, up and down, putts, three-putts, birdies, doubles) for all rounds against the last 3, ratings lately against before, the holes that cost the most on courses played twice or more, the latest things to work on, and the driver on the range (inside the fairway width) against fairways hit on the course.
 - **Golf notes** (`notes/`): a small offline app for a golfer's own phone, served by this repository's GitHub Pages at `/ap/driver-workbench/notes/`. Notes, ratings and scorecard photos stay on the phone (IndexedDB) until Send to coach shares one JSON file; **Import notes from a phone** in Rounds adds them to that golfer's rounds. It needs no Claude account.
 - **Offline drafts**: round notes typed in the workbench are kept on the device as a draft; a round that can't be saved (no connection) waits on the device and is saved when the connection is back.
 - **Rounds**: notes from rounds and practice rounds, made for the phone: ratings for driving, approach, short game, putting and the mental game, what happened, what to work on, voice notes (Claude dictation where the device offers it, else the keyboard's mic) and a scorecard photo that Claude can read into hole-by-hole scores to check and save.
@@ -132,9 +138,16 @@ app/
   shots.js      drill-down from golfer to week, session and shot, with the shot inspector
   goals.js      the goal tracker: 260 and long-and-straight, restated at sea level, and the club speed 260 needs
   calib.js      Calibration lab: the spin check per club, and the flight model fitted to GSPro's carry (used by the what-ifs)
+  patterns.js   What's working and what isn't: patterns across rounds
+  compare.js    Compare two weeks (real-or-noise calls) and the strike view (smash by shot over time)
   clubs.js      Club by club: windows per club at the golfer's speed (TrackMan LPGA averages), week-by-week club trends, the Club filter
   trust.js      data trust: what the monitor's data can be trusted for, with banners where spin or club data matter
   command.js    the Command center: what's happening, how it's moving, what needs to happen, the week's fairway, alerts
+  lab.js        shared by the four lab views: every club's shots with tags, flight paths through GSPro's numbers, the night-range scene, the driver face
+  flight.js     Ball flight
+  swing.js      Swing and strike
+  partials.js   Partial shots
+  drills.js     Drill studio
 tests/
   workbench.test.js   end-to-end test in jsdom with an in-memory database
   sample-data/        synthetic GSPro range exports

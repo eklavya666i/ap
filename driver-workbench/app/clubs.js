@@ -168,29 +168,41 @@
     const up = BF.shot(bs, la, sp, {alt, temp: c.temp_f, turf: 'normal'}).carry, sea = BF.shot(bs, la, sp, {alt: 0, temp: c.temp_f, turf: 'normal'}).carry;
     return up > 0 && sea > 0 ? sea / up : 1;
   }
+  /* Every counted shot of one club (or of every club) in these sessions, by week, in the order hit. */
+  function collect(imports, key) {
+    const c0 = WB.conditions(), by = new Map();
+    imports.forEach((i) => {
+      if (!Number.isInteger(i.week)) return;
+      const ix = {};
+      i.cols.forEach((c, k) => { ix[c] = k + 1; });
+      const cd = i._doc && i._doc.conditions, alt = cd && isNum(cd.altitude_ft) ? cd.altitude_ft : c0.altitude_ft;
+      i.arows.forEach((r, k) => {
+        const info = clubInfo(r[0]);
+        if (!info || (key && info.key !== key)) return;
+        const get = (c) => (ix[c] === undefined || !isNum(r[ix[c]]) ? null : r[ix[c]]);
+        const s = {club: get('club_speed'), ball: get('ball_speed'), launch: get('launch'), spin: get('spin'), carry: get('carry'), total: get('total'), descent: get('descent'), offline: get('offline'), alt, date: i.date || '', sid: i.id || '', k};
+        if (!shotOk(s, info.cat)) return;
+        s.smash = isNum(s.club) && s.club > 0 && isNum(s.ball) ? s.ball / s.club : null;
+        const g = by.get(info.key) || {key: info.key, name: info.name, order: info.order, cat: info.cat, weeks: new Map()};
+        const wk = g.weeks.get(i.week) || [];
+        wk.push(s); g.weeks.set(i.week, wk); by.set(info.key, g);
+      });
+    });
+    by.forEach((g) => g.weeks.forEach((shots) => shots.sort((a, b) => a.date.localeCompare(b.date) || String(a.sid).localeCompare(String(b.sid)) || a.k - b.k)));
+    return by;
+  }
+  WB.clubShots = collect;
+  WB.seaRatio = seaRatio;
+  /* The smash a club aims for: the driver dashboard's target for the driver, else the tour's ball ÷ club speed. */
+  WB.clubTarget = (key) => { const rk = refKey({key}); return !rk ? null : rk === 'dr' ? Number(dash.params().smash_target) || 1.47 : r2(LPGA[rk].bs / LPGA[rk].cs); };
+  WB.clubName = (key) => { const l = dash.data('clublist'), c = l.status === 'ok' ? l.data.find((x) => x.key === key) : null; return c ? c.name : key === 'dr' ? 'Driver' : key; };
+
   dash.calc('clubweeks', {
     inputs: ['imports', 'clublist', 'clubtargets', 'windows'],
     fn: (imports, list, targets, wins) => {
-      const p = dash.params(), sea = p.cview === 'sea', c0 = WB.conditions();
+      const p = dash.params(), sea = p.cview === 'sea';
       const pick = p.club && p.club !== 'all' ? list.find((c) => c.key === p.club) || null : null;
-      const by = new Map();
-      imports.forEach((i) => {
-        if (!Number.isInteger(i.week)) return;
-        const ix = {};
-        i.cols.forEach((c, k) => { ix[c] = k + 1; });
-        const cd = i._doc && i._doc.conditions, alt = cd && isNum(cd.altitude_ft) ? cd.altitude_ft : c0.altitude_ft;
-        i.arows.forEach((r) => {
-          const info = clubInfo(r[0]);
-          if (!info || (pick && info.key !== pick.key)) return;
-          const get = (c) => (ix[c] === undefined || !isNum(r[ix[c]]) ? null : r[ix[c]]);
-          const s = {club: get('club_speed'), ball: get('ball_speed'), launch: get('launch'), spin: get('spin'), carry: get('carry'), total: get('total'), descent: get('descent'), alt};
-          if (!shotOk(s, info.cat)) return;
-          s.smash = isNum(s.club) && s.club > 0 && isNum(s.ball) ? s.ball / s.club : null;
-          const g = by.get(info.key) || {key: info.key, name: info.name, order: info.order, cat: info.cat, weeks: new Map()};
-          const wk = g.weeks.get(i.week) || [];
-          wk.push(s); g.weeks.set(i.week, wk); by.set(info.key, g);
-        });
-      });
+      const by = collect(imports, pick ? pick.key : null);
       if (pick) {
         const g = by.get(pick.key);
         const weeks = g ? [...g.weeks.entries()].sort((a, b) => a[0] - b[0]).map(([week, shots]) => {

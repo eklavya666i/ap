@@ -1,4 +1,4 @@
-/* Driver workbench runtime: a small reactive store and drawing registry (window.dash),
+/* Pin High (the Driver Workbench) runtime: a small reactive store and drawing registry (window.dash),
    plus the hookup to Claude's db, user and desktop capabilities (window.WB). */
 (function () {
   'use strict';
@@ -186,7 +186,7 @@
     document.querySelectorAll('[data-goto]').forEach(function (b) { if (b.getAttribute('data-goto') === view) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   }
   /* The analysis views of the dashboards spec; "all" shows every section on one page. */
-  var VIEWS = ['command', 'progress', 'driver', 'bag', 'calib', 'rounds', 'data', 'all'];
+  var VIEWS = ['command', 'progress', 'driver', 'flight', 'swing', 'bag', 'partials', 'drills', 'rounds', 'calib', 'data', 'all'];
   var view = VIEWS.indexOf(store('wb-view')) >= 0 ? store('wb-view') : 'command';
   WB.view = function () { return view; };
   WB.setView = function (v) { if (VIEWS.indexOf(v) < 0) return; view = v; store('wb-view', v); applyMode(); clearCache(); render(); };

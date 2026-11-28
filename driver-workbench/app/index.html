@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Driver Workbench</title>
+<title>Pin High</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Inter:wght@400;500;600&display=swap">
@@ -13,7 +13,7 @@
 <header class="wb-band" id="top">
 <div class="wb-band-in">
 <div class="wb-head-row">
-<h1 class="wb-title" data-only="analysis">Driver workbench</h1>
+<h1 class="wb-title" data-only="analysis">Pin High</h1>
 <h1 class="wb-title" data-only="ingest" hidden>Import station</h1>
 <div class="wb-head-actions"><div class="wb-segs wb-modes" data-draw="modeswitch" role="group" aria-label="View"></div><button type="button" id="install" class="wb-btn wb-btn-accent" hidden>Install as desktop app</button></div>
 </div>
@@ -33,7 +33,7 @@
 <div class="wb-card"><div class="wb-lab">Smash, ball ÷ club</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_calc"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_calc">—</div></div>
 <div class="wb-card"><div class="wb-lab">Smash on the device</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_device"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_device">—</div></div>
 </div>
-<nav class="wb-nav wb-views" aria-label="Views" data-only="analysis"><button type="button" data-goto="command">Command center</button><button type="button" data-goto="progress">Progress and forecast</button><button type="button" data-goto="driver">Driver lab</button><button type="button" data-goto="bag">Bag</button><button type="button" data-goto="calib">Calibration lab</button><button type="button" data-goto="rounds">Round journal</button><button type="button" data-goto="data">Data hub</button></nav>
+<nav class="wb-nav wb-views" aria-label="Views" data-only="analysis"><button type="button" data-goto="command">Command center</button><button type="button" data-goto="progress">Progress and forecast</button><button type="button" data-goto="driver">Driver lab</button><button type="button" data-goto="flight">Ball flight</button><button type="button" data-goto="swing">Swing and strike</button><button type="button" data-goto="bag">Bag</button><button type="button" data-goto="partials">Partial shots</button><button type="button" data-goto="drills">Drill studio</button><button type="button" data-goto="rounds">Round journal</button><button type="button" data-goto="calib">Calibration lab</button><button type="button" data-goto="data">Data hub</button></nav>
 </div>
 <div data-only="ingest" hidden>
 <p class="wb-lede">Drop GSPro exports here on the GSPro PC. Analysis by player is on the iPad, or switch to Analysis above.</p>
@@ -124,7 +124,7 @@
 <label>Fairway width<select data-param="corridor" data-num="1"><option value="20">20 yd</option><option value="25">25 yd</option><option value="30">30 yd</option><option value="35">35 yd</option><option value="40">40 yd</option></select></label>
 <label>Carry<select data-param="cview"><option value="hit">As hit in GSPro</option><option value="sea">At sea level</option></select></label>
 <label>Club<select id="club-pick" data-draw="clubpick"><option value="all">All clubs</option></select></label>
-<p class="wb-note">The golfer is picked at the top. Dates and Carry apply to every view. Club picks the club for Club by club (under Bag) and the shot list in Data hub; the driver views always show the driver. Imported files on the import station always lists everything.</p>
+<p class="wb-note">The golfer is picked at the top. Dates and Carry apply to every view. Club picks one club for Club by club (under Bag), Compare two weeks (under Progress; the driver when no club is picked) and the shot list in Data hub; the other driver views always show the driver. Imported files on the import station always lists everything.</p>
 </div>
 <section id="command" data-only="analysis" data-view="command">
 <h2>Command center</h2>
@@ -187,6 +187,27 @@
 <div class="wb-ctrend" data-draw="clubtrend"></div>
 </section>
 
+<section id="flight" data-only="analysis" data-view="flight">
+<h2>Ball flight</h2>
+<div class="lab" data-draw="flight"></div>
+</section>
+
+<section id="swing" data-only="analysis" data-view="swing">
+<p class="wb-msg wb-badc wb-trust-banner" data-draw="trustbanner" data-need="club"></p>
+<h2>Swing and strike</h2>
+<div class="lab" data-draw="swing"></div>
+</section>
+
+<section id="partials" data-only="analysis" data-view="partials">
+<h2>Partial shots</h2>
+<div class="lab" data-draw="partials"></div>
+</section>
+
+<section id="drills" data-only="analysis" data-view="drills">
+<h2>Drill studio</h2>
+<div class="lab" data-draw="drills"></div>
+</section>
+
 <section id="rounds" data-only="analysis" data-view="rounds">
 <h2>Rounds</h2>
 <p class="wb-lede">Notes from rounds and practice rounds for the golfer picked at the top: how each part went, what happened, what to work on, and a photo of the scorecard. Made for the phone, right after a round.</p>
@@ -220,6 +241,18 @@
 <div class="wb-actions wb-write"><label class="wb-btn" for="round-import">Import notes from a phone</label><input id="round-import" type="file" accept=".json,application/json" class="wb-vh"></div>
 <p class="wb-note">Golf notes for a golfer's own phone: open <b>eklavya666i.github.io/ap/driver-workbench/notes/</b> in Safari and choose Add to Home Screen. Notes stay on that phone until Send to coach; import the file here.</p>
 <div data-draw="rounds"></div>
+</section>
+
+<section id="patterns" data-only="analysis" data-view="rounds">
+<h2>What’s working and what isn’t</h2>
+<p class="wb-note">Patterns across <b data-draw="gname">—</b>’s rounds, from hole-by-hole scores where they were entered and the 1–5 ratings; range or lesson entries are left out. The date range above applies.</p>
+<div data-draw="patterns"></div>
+<details class="wb-details"><summary>How this is judged</summary><ul>
+<li><b>Working:</b> fairways hit 60% or more, greens in regulation 50% or more, up and down 40% or more, a three-putt a round or fewer, the best-scoring hole type, and the highest-rated area when it is 3.5 or more.</li>
+<li><b>Needs work:</b> fairways under 45%, greens under 30%, up and down under 20%, two or more three-putts or three or more doubles a round, the costliest hole type, and the lowest-rated area when it is 3 or less.</li>
+<li>Each needs enough holes to mean something: 10 fairways, 18 greens, 8 missed greens or 9 holes of a type.</li>
+<li><b>Range against course:</b> the share of drives in the last 4 weeks on the range that stay inside the fairway width picked at the top, against fairways hit on the course. A gap of 15 points or more is flagged.</li>
+</ul></details>
 </section>
 
 <section id="shots" data-only="analysis" data-view="data">
@@ -337,6 +370,20 @@
 <li class="wb-card wb-topic"><div class="wb-topic-head"><h3>8. On-course transfer</h3><span class="wb-chip none">Ongoing</span></div>
 <p><span class="wb-k">How:</span> track drives in rounds: fairways hit, carry over a known hazard, and total on firm against soft days.</p></li>
 </ol>
+</section>
+
+<section id="compare" data-only="analysis" data-view="progress">
+<h2>Compare two weeks</h2>
+<p class="wb-note">Any two imported weeks side by side for <b data-draw="gname">—</b>. A change counts as real when it is at least twice its standard error, so bigger than the shot-to-shot noise; five or more shots a week are needed. Launch and spin are better when they move toward the club’s window. <span data-draw="cmphead"></span></p>
+<div class="wb-controls"><label>Week A<select id="cmp-a" data-draw="cmpweek" data-which="a"></select></label><label>Week B<select id="cmp-b" data-draw="cmpweek" data-which="b"></select></label></div>
+<div class="wb-scroll"><table class="wb-table wb-cmp">
+<thead><tr><th class="wb-l">Reading</th><th data-draw="cmpcol" data-which="a">Week A</th><th data-draw="cmpcol" data-which="b">Week B</th><th>Change</th><th>Real?</th></tr></thead>
+<tbody data-draw="cmprows"></tbody>
+</table></div>
+<div class="wb-card" style="margin-top:var(--cds-gap-md)"><h3>Strike over time: smash by shot</h3>
+<p class="wb-note" data-draw="strikenote"></p>
+<div class="wb-chartbox" data-draw="strike"></div>
+<div class="wb-legend"><span><i data-draw="sw" data-i="0"></i>Reached the target</span><span><i class="wb-sw-ring"></i>Below it</span><span><i class="wb-sw-dash"></i>Target smash</span><span><i class="wb-sw-line" data-draw="sw" data-i="1"></i>Running median, 9 shots</span><span><i class="wb-sw-shade"></i>Weeks A and B</span></div></div>
 </section>
 
 <section id="history" data-only="analysis" data-view="progress">
@@ -489,6 +536,13 @@
 <script src="trust.js"></script>
 <script src="calib.js"></script>
 <script src="clubs.js"></script>
+<script src="compare.js"></script>
+<script src="lab.js"></script>
+<script src="flight.js"></script>
+<script src="swing.js"></script>
+<script src="partials.js"></script>
+<script src="drills.js"></script>
+<script src="patterns.js"></script>
 <script>dash.start();</script>
 </body>
 </html>
