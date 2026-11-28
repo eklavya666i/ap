@@ -565,3 +565,34 @@ h2{font-size:24px}
 .wb-folder .wb-btn{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:10px 18px;font-size:16px}
 .wb-folder .wb-note{margin:0}
 .wb-folder .wb-sub:empty{display:none}
+/* Sunlight mode (design package §1): paper and ink for phones used outdoors (Round journal, Drill Runner) */
+.ph-sunrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 12px}
+.ph-sunbtn{display:inline-flex;align-items:center;gap:8px;min-height:44px}
+.ph-sunst{font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;border:1px solid var(--ph-line2);color:var(--cds-text-secondary)}
+.ph-sunbtn[aria-pressed=true] .ph-sunst{background:var(--ph-sand);color:var(--ph-sand-ink);border-color:var(--ph-sand)}
+html[data-sun=on]{color-scheme:light;
+--bg:#f7f5f0;--color-bg:#ffffff;--color-fg:#141b27;--color-fg-muted:#3a4658;--color-panel:#ffffff;--color-border-line:#e2ddd2;
+--color-ok:#1e7a3e;--color-warn:#9a6400;--color-bad:#b3261e;--accent:#1b2433;
+--series-1:#257de0;--series-2:#f47230;--series-3:#00a37f;
+--cds-chart-grid:#ebe6db;--cds-chart-axis:#c9c2b4;--cds-chart-muted:#d6e4f5;--cds-chart-reference:#5a6678;
+--cds-text-secondary:#5a6678;--cds-surface-popover:#ffffff;--cds-border:#d2cbbd;--cds-shadow-popover:0 8px 24px rgba(20,27,39,.16);
+--ph-frame:#f7f5f0;--ph-raised:#ffffff;--ph-sel:#ece7dc;--ph-line2:#d2cbbd;--ph-sand:#1b2433;--ph-sand-ink:#ffffff;--ph-sand-hover:#2a3548}
+html[data-sun=on] body{background:#f7f5f0}
+html[data-sun=on] a{color:#1d5fb8}
+html[data-sun=on] .ph-rail{background:#ffffff;border-color:#e2ddd2}
+html[data-sun=on] .ph-brand{color:#141b27}
+html[data-sun=on] .ph-brand small,html[data-sun=on] .ph-ng{color:#5a6678}
+html[data-sun=on] .ph-nav button{color:#3a4658}
+html[data-sun=on] .ph-nav button .ic{color:#5a6678}
+html[data-sun=on] .ph-nav button:hover{background:#ece7dc;color:#141b27}
+html[data-sun=on] .ph-nav button[aria-current=page]{background:#1b2433;color:#ffffff}
+html[data-sun=on] .ph-nav button[aria-current=page] .ic{color:#ffffff}
+html[data-sun=on] .ph-foot{border-color:#e2ddd2;color:#5a6678}
+html[data-sun=on] .ph-who{color:#141b27}
+html[data-sun=on] .ph-bar{background:#ffffff;border-color:#e2ddd2}
+html[data-sun=on] .ph-trust .wb-chip{background:#ffffff}
+html[data-sun=on] .wb-card{background:#ffffff;border-color:#e2ddd2;border-top-color:#d2cbbd;box-shadow:0 1px 2px rgba(20,27,39,.06)}
+html[data-sun=on] .ph-pills select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%235a6678' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E")}
+html[data-sun=on] select option{background:#ffffff;color:#141b27}
+html[data-sun=on] .wb-kpis .wb-good,html[data-sun=on] .wb-good{color:#1e7a3e}
+html[data-sun=on] .wb-kpis .wb-badc,html[data-sun=on] .wb-badc{color:#b3261e}

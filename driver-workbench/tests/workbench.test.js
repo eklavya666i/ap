@@ -428,6 +428,22 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   const hero = doc.querySelector('[data-draw="hero"]'), rul = doc.querySelector('[data-draw="ruler"]');
   const nTr = hero.querySelectorAll('.lab-tracer').length;
   check(nTr > 0 && nTr <= 40 && /Median standard total/.test(hero.textContent) && hero.querySelectorAll('.ph-fig').length === 5 && hero.querySelectorAll('.ph-spark').length === 5 && rul.querySelector('.ph-rseg.now') && rul.querySelector('.ph-rflag') && rul.querySelectorAll('.ph-rlegend li').length === 3, 'the Command center leads with the range scene, figures row and Path-to-260 ruler');
+  // Sunlight mode: the Round journal's switch turns the light screen on for this device; other views stay dark.
+  w.WB.setView('rounds');
+  await sleep(80);
+  const sunBtn = doc.getElementById('sun-toggle'), root = doc.documentElement, wasSun = root.getAttribute('data-sun');
+  sunBtn.click();
+  await sleep(40);
+  const sunR = root.getAttribute('data-sun') === 'on' && sunBtn.getAttribute('aria-pressed') === 'true' && doc.querySelector('meta[name="theme-color"]').getAttribute('content') === '#f7f5f0';
+  w.WB.setView('bag');
+  await sleep(80);
+  const sunBag = root.getAttribute('data-sun');
+  w.WB.setView('rounds');
+  await sleep(80);
+  sunBtn.click();
+  await sleep(40);
+  check(wasSun === 'off' && sunR && sunBag === 'off' && root.getAttribute('data-sun') === 'off' && sunBtn.textContent.includes('Off'), 'sunlight mode turns on in the Round journal and nowhere else');
+  w.WB.setView('all');
   w.WB.setView('all');
   await sleep(120);
 

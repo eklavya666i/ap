@@ -11,8 +11,31 @@
   /* On iPad and phone the rail is a sideways bar: keep the current view's tab in sight. */
   const showTab = () => { const b = document.querySelector('.ph-nav [aria-current=page]'); if (b && b.scrollIntoView && window.matchMedia && window.matchMedia('(max-width: 1100px)').matches) b.scrollIntoView({block: 'nearest', inline: 'center'}); };
 
+  /* Sunlight mode (design package §1): paper and ink for phones used outdoors, in the Round journal (and the Drill
+     Runner when it comes). On by itself on phones; the switch in the Round journal sets it on or off for this device. */
+  const SUN_VIEWS = ['rounds'], SUNKEY = 'ph-sun';
+  let sunMem = null;
+  const sunPref = () => { try { return localStorage.getItem(SUNKEY) || sunMem || 'auto'; } catch (e) { return sunMem || 'auto'; } };
+  const narrow = () => !!(window.matchMedia && window.matchMedia('(max-width: 600px)').matches);
+  const sunOn = () => { const p = sunPref(); return SUN_VIEWS.indexOf(WB.view()) >= 0 && (p === 'on' || (p === 'auto' && narrow())); };
+  function applySun() {
+    const on = sunOn(), root = document.documentElement;
+    if (root.getAttribute('data-sun') !== (on ? 'on' : 'off')) root.setAttribute('data-sun', on ? 'on' : 'off');
+    const m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', on ? '#f7f5f0' : '#0f1520');
+    const b = document.getElementById('sun-toggle');
+    if (b) { b.setAttribute('aria-pressed', on ? 'true' : 'false'); const st = b.querySelector('.ph-sunst'); if (st) st.textContent = on ? 'On' : 'Off'; }
+  }
+  WB.sunOn = sunOn;
+  (function () {
+    const b = document.getElementById('sun-toggle');
+    if (b) b.addEventListener('click', () => { const next = sunOn() ? 'off' : 'on'; sunMem = next; try { localStorage.setItem(SUNKEY, next); } catch (e) { /* kept in memory */ } applySun(); });
+    if (window.matchMedia) { const mq = window.matchMedia('(max-width: 600px)'); if (mq.addEventListener) mq.addEventListener('change', applySun); }
+  })();
+
   let lastView = null;
   dash.draw('crumb', (box) => {
+    applySun();
     if (WB.view() !== lastView) { lastView = WB.view(); setTimeout(showTab, 30); }
     box.replaceChildren();
     const g = WB.golfer(), p = dash.params();
