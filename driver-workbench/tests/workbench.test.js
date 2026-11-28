@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js', 'lab.js', 'flight.js', 'swing.js', 'partials.js', 'drills.js', 'patterns.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js', 'lab.js', 'flight.js', 'swing.js', 'partials.js', 'drills.js', 'patterns.js', 'heads.js', 'hero.js', 'shell.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -124,6 +124,21 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   check(P.state.sessions[0].dup && doc.getElementById('csvsave').disabled, 'skips a session that is already saved');
   doc.getElementById('csvcancel').click();
   await sleep(30);
+
+  // Pick the GSPro export folder: only its CSV files are read, newest first, and saved sessions are skipped.
+  const ff = (n, t, when) => Object.assign(file(n, t), {lastModified: Date.parse(when)});
+  const picked = [ff('fast_2026-11-10.csv', FILES['fast_2026-11-10.csv'], '2026-11-10T18:00:00'), ff('slow_2026-11-25.csv', FILES['slow_2026-11-25.csv'], '2026-11-25T18:00:00'),
+    ff('GSPro.lnk', 'x', '2026-11-26T18:00:00'), ff('.DS_Store', 'x', '2026-11-26T18:00:00'), ff('notes.txt', 'x', '2026-11-26T18:00:00')];
+  check(P.folderFiles(picked).csv.map((f) => f.name).join(',') === 'slow_2026-11-25.csv,fast_2026-11-10.csv' && P.folderFiles(picked).other === 3, 'keeps only the folder’s CSV files, newest first');
+  P.startFolder(picked, 'GSPro exports');
+  await sleep(150);
+  const fl = doc.querySelector('[data-draw="folderlast"]');
+  check(P.state.files.length === 2 && P.state.sessions.length >= 2 && P.state.sessions.every((x) => x.dup) && doc.getElementById('csvsave').disabled && /^Last picked: GSPro exports, .*2 CSV files\.$/.test(fl.textContent), 'picks the export folder and skips sessions already saved');
+  doc.getElementById('csvcancel').click();
+  await sleep(30);
+  P.startFolder([ff('notes.txt', 'x', '2026-11-26T18:00:00')], 'Downloads');
+  await sleep(60);
+  check(/No GSPro CSV files in Downloads/.test(fl.textContent) && fl.classList.contains('wb-badc') && !P.state.files.length, 'says so when the folder has no GSPro CSV files');
 
   // A session saved before originals were kept: same file dropped again attaches the original, adds no session.
   const fastPath = saved.find((k) => M.docs.get(k).file === 'fast_2026-11-10.csv');
@@ -393,6 +408,26 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   }
   const pf = doc.querySelector('[data-draw="partials"]');
   check(/½/.test(pf.textContent) && pf.querySelector('.lab-cov'), 'Partial shots reads the swing-length tag');
+  // Every older view leads with its computed finding (design package §3); lab views carry their own.
+  const HEAD = {command: /yards to 260|260 is reached/, progress: /(Up|Down|Level) .*260|the trend needs four weeks/, driver: /^260 needs about \d+ mph of ball speed; .+ is at \d+$/, bag: /overlap: \d+ yards|carry hole|Every carry gap|^Only the /, calib: /spin reads|Spin reads inside/, rounds: /cost the most|rated lowest|No rounds|logged/, data: /^[\d,]+ shots stored; [\d,]+ flagged and kept out of the stats$/};
+  const heads = [];
+  for (const v of Object.keys(HEAD)) {
+    w.WB.setView(v);
+    await sleep(120);
+    const h = doc.querySelector('[data-draw="viewhead"] .ph-h');
+    heads.push(v + ': ' + (h ? h.textContent : '(none)'));
+    if (!h || !HEAD[v].test(h.textContent)) console.log('HEAD', v, h && h.textContent);
+  }
+  w.WB.setView('flight');
+  await sleep(120);
+  const labHead = doc.querySelector('[data-draw="viewhead"]');
+  check(heads.every((t, i) => HEAD[Object.keys(HEAD)[i]].test(t.slice(t.indexOf(': ') + 2))) && labHead.querySelector('.ph-vh-sr') && !labHead.querySelector('.ph-h') && doc.querySelector('[data-draw="crumb"]').textContent.includes('Ball flight'), 'each view leads with its finding headline');
+  w.WB.setView('all');
+  // Command center hero: the range scene with the hero figure, the figures row and the Path-to-260 ruler.
+  await sleep(100);
+  const hero = doc.querySelector('[data-draw="hero"]'), rul = doc.querySelector('[data-draw="ruler"]');
+  const nTr = hero.querySelectorAll('.lab-tracer').length;
+  check(nTr > 0 && nTr <= 40 && /Median standard total/.test(hero.textContent) && hero.querySelectorAll('.ph-fig').length === 5 && hero.querySelectorAll('.ph-spark').length === 5 && rul.querySelector('.ph-rseg.now') && rul.querySelector('.ph-rflag') && rul.querySelectorAll('.ph-rlegend li').length === 3, 'the Command center leads with the range scene, figures row and Path-to-260 ruler');
   w.WB.setView('all');
   await sleep(120);
 

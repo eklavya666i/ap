@@ -111,6 +111,20 @@
     return {good, bad};
   }
 
+  /* The Round journal headline (design package §3). Issue tags per hole come later; until then the costliest hole type,
+     else the lowest-rated area. */
+  WB.roundFinding = (g) => {
+    const rounds = roundsOf(g);
+    if (rounds === null) return null;
+    if (!rounds.length) return {title: 'No rounds in this date range yet', sub: 'Save a round below, with hole-by-hole scores where you can, or import notes from a phone.'};
+    const withHoles = rounds.filter((r) => holesOf(r).length);
+    const ty = byType(rounds).filter((t) => /^Par/.test(t.label) && t.n >= 9).sort((a, b) => b.v - a.v);
+    if (ty.length >= 2 && ty[0].v - ty[ty.length - 1].v >= 0.2) return {title: `${ty[0].label} cost the most: ${sg1(ty[0].v)} strokes a hole across ${withHoles.length} round${withHoles.length === 1 ? '' : 's'}`, sub: `${ty[ty.length - 1].label} score best at ${sg1(ty[ty.length - 1].v)} a hole. Issue tags per hole will show which part of the game costs the strokes.`};
+    const rr = ratings(rounds).filter((a) => isNum(a.recent)).sort((a, b) => a.recent - b.recent);
+    if (rr.length && rr[0].recent <= 3) return {title: `${rr[0].label} is rated lowest: ${rr[0].recent.toFixed(1)} of 5 over the last ${Math.min(RECENT_R, rounds.length)} rounds`, sub: rr.length > 1 ? `${rr[rr.length - 1].label} is rated highest at ${rr[rr.length - 1].recent.toFixed(1)}.` : ''};
+    return {title: `${rounds.length} round${rounds.length === 1 ? '' : 's'} logged; nothing stands out yet`, sub: 'Hole-by-hole scores and ratings bring out the patterns.'};
+  };
+
   dash.draw('patterns', (box) => {
     box.replaceChildren();
     const g = WB.golfer();

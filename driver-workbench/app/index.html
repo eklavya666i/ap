@@ -6,43 +6,42 @@
 <title>Pin High</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;500;600;700;800&family=Sofia+Sans+Extra+Condensed:wght@700;800&display=swap">
+<meta name="theme-color" content="#0f1520">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="wb-band" id="top">
-<div class="wb-band-in">
-<div class="wb-head-row">
-<h1 class="wb-title" data-only="analysis">Pin High</h1>
-<h1 class="wb-title" data-only="ingest" hidden>Import station</h1>
+<svg class="ph-sprite" width="0" height="0" aria-hidden="true"><defs><symbol id="i-flag" viewBox="0 0 24 24"><path d="M7 21.2V3.4"/><path d="M7.4 3.9l10 3.3-10 3.3"/><path d="M3 21c2.2-1.1 4.9-1.6 7.6-1.6 2.6 0 5 .5 7 1.4"/></symbol><symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17.5l5.6-5.6 4 4L20.5 8"/><path d="M14.5 8h6v6"/></symbol><symbol id="i-driver" viewBox="0 0 24 24"><path d="M16.2 2.6l-4.6 11"/><path d="M11.4 13.4c-3.8.1-7.6 1.6-8.1 4.1-.4 2.1 1.7 3.3 4.5 3.3h9.7c2.2 0 3.6-1.2 3.6-3 0-2.7-4.2-4.6-9.7-4.4z"/><path d="M7.2 17.9h9.4"/></symbol><symbol id="i-iron" viewBox="0 0 24 24"><path d="M15.6 2.6l-3.3 11.2"/><path d="M12.3 13.8L5 17.2c-1.3.6-1 2.5.4 2.7l8 1.1c1.2.2 2.1-.7 2-1.9l-.4-4.3c-.1-1-1.6-1.5-2.7-1z"/></symbol><symbol id="i-flight" viewBox="0 0 24 24"><path d="M2.5 20.5h19"/><path d="M3.5 19.5C6.2 9 13.6 5.4 19.4 13.1"/><circle cx="20" cy="15.7" r="1.9"/></symbol><symbol id="i-face" viewBox="0 0 24 24"><path d="M4 8c0-1.5 1.2-2.6 2.7-2.5l11 .9c1.4.1 2.3 1.3 2.3 2.7v6c0 1.4-1 2.6-2.3 2.7l-11 .9C5.2 18.8 4 17.6 4 16.1z"/><path d="M7.5 10.3h9M7.5 13.6h9"/><circle cx="13.6" cy="12" r="1.7" fill="currentColor" stroke="none"/></symbol><symbol id="i-bag" viewBox="0 0 24 24"><path d="M7 9.5h9a1 1 0 0 1 1 1v9a2.5 2.5 0 0 1-2.5 2.5h-6A2.5 2.5 0 0 1 6 19.5v-9a1 1 0 0 1 1-1z"/><path d="M9 9.5V4.6M11.5 9.5V3.2M14 9.5V5.8"/><path d="M9 4.6l-1.6-1.1M11.5 3.2l1.7-.8M14 5.8l1.6-1.2"/><path d="M17 12c1.8.2 2.5 1.6 2.5 3.4S18.8 18.6 17 18.8"/></symbol><symbol id="i-partial" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 12V3.5A8.5 8.5 0 1 1 3.5 12z" fill="currentColor" fill-opacity=".22"/><path d="M12 12h-8.5"/></symbol><symbol id="i-reticle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 2.5v4.2M12 17.3v4.2M2.5 12h4.2M17.3 12h4.2"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></symbol><symbol id="i-cone" viewBox="0 0 24 24"><path d="M10.4 3.6h3.2l4.6 15.6H5.8z"/><path d="M8.7 10.2h6.6M7.3 14.8h9.4"/><path d="M3.5 19.2h17"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2.8" width="6" height="11.2" rx="3"/><path d="M5.6 11.4a6.4 6.4 0 0 0 12.8 0"/><path d="M12 17.8v3.4M8.6 21.2h6.8"/></symbol><symbol id="i-data" viewBox="0 0 24 24"><ellipse cx="12" cy="5.6" rx="7" ry="2.6"/><path d="M5 5.6v12.8c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V5.6"/><path d="M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/></symbol><symbol id="i-ask" viewBox="0 0 24 24"><path d="M11 3.2c.6 4.4 2.9 6.7 7.3 7.3-4.4.6-6.7 2.9-7.3 7.3-.6-4.4-2.9-6.7-7.3-7.3 4.4-.6 6.7-2.9 7.3-7.3z"/><path d="M18.8 15.2c.2 1.6 1 2.4 2.6 2.6-1.6.2-2.4 1-2.6 2.6-.2-1.6-1-2.4-2.6-2.6 1.6-.2 2.4-1 2.6-2.6z"/></symbol><symbol id="i-live" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M8 8a5.7 5.7 0 0 0 0 8M16 8a5.7 5.7 0 0 1 0 8M5.2 5.2a9.6 9.6 0 0 0 0 13.6M18.8 5.2a9.6 9.6 0 0 1 0 13.6"/></symbol><symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 2.8v5.6c0 4.4-2.9 8.1-7 9.6-4.1-1.5-7-5.2-7-9.6V5.8z"/><path d="M9 12l2.2 2.2 3.9-4.1"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 4.2a2 2 0 0 1 3.4 0l7.4 13a2 2 0 0 1-1.7 3H4.6a2 2 0 0 1-1.7-3z"/><path d="M12 9.5v4.2"/><circle cx="12" cy="16.8" r=".95" fill="currentColor" stroke="none"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M8.4 12.3l2.5 2.5 4.8-5.1"/></symbol><symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r=".95" fill="currentColor" stroke="none"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5.5M6.5 11L12 5.5l5.5 5.5"/></symbol><symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v13.5M6.5 13l5.5 5.5 5.5-5.5"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.4v13.2c0 .8.9 1.3 1.6.8l9.4-6.6c.6-.4.6-1.2 0-1.6L9.6 4.6C8.9 4.1 8 4.6 8 5.4z"/></symbol><symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol><symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5.2a4 4 0 0 1-8 0z"/><path d="M8 6H5.4a2.6 2.6 0 0 0 2.9 3.7M16 6h2.6a2.6 2.6 0 0 1-2.9 3.7"/><path d="M12 13.2v3.6M8.5 20.5h7M9.5 16.8h5v3.7h-5z"/></symbol><symbol id="i-hole" viewBox="0 0 24 24"><path d="M5 20.5c1.6-4.3 4.4-7.4 8.2-10.1"/><circle cx="16.6" cy="7.4" r="3.6"/><path d="M16.6 7.4V2.9l2.6 1-2.6 1"/><path d="M3.3 19.4h3.4v2.1H3.3z"/></symbol><symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 9h10.5a2.8 2.8 0 1 0-2.8-2.8"/><path d="M3 13h15a2.8 2.8 0 1 1-2.8 2.8"/><path d="M3 17h6.5"/></symbol><symbol id="i-alt" viewBox="0 0 24 24"><path d="M2.5 19.5l6.6-11 3.6 5.8 2.4-3.6 6.4 8.8z"/><path d="M7.6 11l1.5 1.2 1.4-1.1"/></symbol><symbol id="i-temp" viewBox="0 0 24 24"><path d="M10 13.6V5a2 2 0 0 1 4 0v8.6a4 4 0 1 1-4 0z"/><path d="M12 9.2v6.3"/></symbol><symbol id="i-speed" viewBox="0 0 24 24"><path d="M3.8 16.5a8.2 8.2 0 1 1 16.4 0"/><path d="M12 16.5l4.6-5.2"/><circle cx="12" cy="16.5" r="1.4" fill="currentColor" stroke="none"/><path d="M3.8 16.5h1.8M18.4 16.5h1.8M12 8.3v1.8"/></symbol><symbol id="i-spin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.8"/><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M18 3.4v3.3h-3.3"/></symbol><symbol id="i-launch" viewBox="0 0 24 24"><path d="M3.5 20h17"/><path d="M4.8 20L18.6 8.4"/><path d="M14.2 8.1l4.4.3-.7 4.3"/><path d="M10.4 20a5.6 5.6 0 0 0-1.5-3.8"/></symbol><symbol id="i-tee" viewBox="0 0 24 24"><circle cx="12" cy="6.6" r="3.4"/><path d="M8.3 11h7.4l-2.4 2.3v6.4L12 21.4l-1.3-1.7v-6.4z"/></symbol><symbol id="i-laser" viewBox="0 0 24 24"><rect x="3" y="8.2" width="14" height="9.3" rx="2.6"/><circle cx="12.6" cy="12.8" r="2.3"/><path d="M17 12.8h4.5M5.6 8.2V6.4h4.2v1.8"/></symbol><symbol id="i-tempo" viewBox="0 0 24 24"><path d="M7 20.5h10L14.3 4h-4.6z"/><path d="M12 16.6l4.2-9"/><circle cx="14.4" cy="11.4" r="1.2" fill="currentColor" stroke="none"/></symbol><symbol id="i-mood" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M8.6 14.2c.9 1.3 2.1 2 3.4 2s2.5-.7 3.4-2"/><circle cx="9.1" cy="10" r=".95" fill="currentColor" stroke="none"/><circle cx="14.9" cy="10" r=".95" fill="currentColor" stroke="none"/></symbol><symbol id="i-player" viewBox="0 0 24 24"><circle cx="12" cy="7.6" r="3.6"/><path d="M5 20.6c.8-3.9 3.6-6.2 7-6.2s6.2 2.3 7 6.2"/></symbol><symbol id="i-plan" viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="16.5" rx="2.2"/><path d="M9 4.5V3h6v1.5"/><path d="M8.6 10h6.8M8.6 13.6h6.8M8.6 17.2h3.8"/></symbol><symbol id="i-import" viewBox="0 0 24 24"><path d="M12 3.5v11M7.6 10.1l4.4 4.4 4.4-4.4"/><path d="M4 15.5v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol><symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3.5l9 4.4-9 4.4-9-4.4z"/><path d="M3 12.2l9 4.4 9-4.4"/><path d="M3 16.4l9 4.4 9-4.4"/></symbol><symbol id="i-table" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 4.5v15"/></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 3.5v16.5h16.5"/><path d="M7.5 15.5l3.6-4.4 3 2.6 5-6.2"/></symbol><symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="12" height="12" rx="2.2"/><path d="M15.5 8.5V5.7a2.2 2.2 0 0 0-2.2-2.2H5.7a2.2 2.2 0 0 0-2.2 2.2v7.6a2.2 2.2 0 0 0 2.2 2.2h2.8"/></symbol><symbol id="i-undo" viewBox="0 0 24 24"><path d="M8.5 5L4 9.5 8.5 14"/><path d="M4 9.5h10.6a5.4 5.4 0 0 1 0 10.8H11"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9.5M17.5 7H20M4 17h3M11 17h9"/><circle cx="15.5" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol><symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 18.5h3"/></symbol><symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="9.3" cy="9" r=".9" fill="currentColor" stroke="none"/><circle cx="12.6" cy="7.9" r=".9" fill="currentColor" stroke="none"/><circle cx="11" cy="11.6" r=".9" fill="currentColor" stroke="none"/><circle cx="14.6" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="8.2" cy="13.1" r=".9" fill="currentColor" stroke="none"/><circle cx="12.8" cy="14.6" r=".9" fill="currentColor" stroke="none"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.4V12l3.1 2.1"/></symbol><symbol id="i-card" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.2"/><path d="M3.5 10h17M8.2 5v14M12.6 5v14M17 5v14"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol><symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3L10.4 13.6"/><path d="M21 3l-6.6 18-4-7.4-7.4-4z"/></symbol><symbol id="i-sync" viewBox="0 0 24 24"><path d="M20 11.5A8 8 0 0 0 6.2 6.4L4 8.6"/><path d="M4 4v4.6h4.6"/><path d="M4 12.5a8 8 0 0 0 13.8 5.1l2.2-2.2"/><path d="M20 20v-4.6h-4.6"/></symbol><symbol id="i-pulse" viewBox="0 0 24 24"><path d="M2.5 12.5h4.2l2.4-6.2 4.4 12.4 2.6-6.2h5.4"/></symbol><symbol id="i-corridor" viewBox="0 0 24 24"><path d="M7 21L9.4 3M17 21L14.6 3"/><path d="M12 19.5v-2M12 14v-2M12 8.5v-2" /><path d="M5 21h14"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.6"/><path d="M16 16l4.6 4.6"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol></defs></svg>
+<div class="ph-app">
+<aside class="ph-rail" data-only="analysis" aria-label="Pin High">
+<div class="ph-brand"><svg class="bm" viewBox="0 0 40 40" width="34" height="34" style="width:34px;height:34px" aria-hidden="true"><defs><linearGradient id="phbm1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4e7cc"/><stop offset="1" stop-color="#cdb486"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#phbm1)"/><path d="M6 31.2h28" stroke="#141b27" stroke-opacity=".3" stroke-width="2" stroke-linecap="round"/><path d="M8.5 30C11.5 12.5 21.5 9.5 25.6 27.4" fill="none" stroke="#141b27" stroke-width="3" stroke-linecap="round"/><circle cx="26.7" cy="28.3" r="2.9" fill="#ffffff" stroke="#141b27" stroke-width="1.6"/><path d="M31.6 31.2V13.6" stroke="#141b27" stroke-width="2" stroke-linecap="round"/><path d="M32.2 13.4l4.6 1.7-4.6 1.7z" fill="#141b27"/></svg><span class="ph-bt">Pin High<small>GSPro performance lab</small></span></div>
+<nav class="ph-nav wb-views" aria-label="Views"><p class="ph-ng">Overview</p><button type="button" data-goto="command"><svg class="ic" aria-hidden="true"><use href="#i-flag"/></svg><span>Command center</span></button><button type="button" data-goto="progress"><svg class="ic" aria-hidden="true"><use href="#i-trend"/></svg><span>Progress and forecast</span></button><p class="ph-ng">Analyze</p><button type="button" data-goto="driver"><svg class="ic" aria-hidden="true"><use href="#i-driver"/></svg><span>Driver lab</span></button><button type="button" data-goto="flight"><svg class="ic" aria-hidden="true"><use href="#i-flight"/></svg><span>Ball flight</span></button><button type="button" data-goto="swing"><svg class="ic" aria-hidden="true"><use href="#i-face"/></svg><span>Swing and strike</span></button><button type="button" data-goto="bag"><svg class="ic" aria-hidden="true"><use href="#i-bag"/></svg><span>Bag</span></button><button type="button" data-goto="partials"><svg class="ic" aria-hidden="true"><use href="#i-partial"/></svg><span>Partial shots</span></button><p class="ph-ng">Improve</p><button type="button" data-goto="drills"><svg class="ic" aria-hidden="true"><use href="#i-cone"/></svg><span>Drill studio</span></button><button type="button" data-goto="rounds"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg><span>Round journal</span></button><p class="ph-ng">Trust the numbers</p><button type="button" data-goto="calib"><svg class="ic" aria-hidden="true"><use href="#i-reticle"/></svg><span>Calibration lab</span></button><button type="button" data-goto="data"><svg class="ic" aria-hidden="true"><use href="#i-data"/></svg><span>Data hub</span></button></nav>
+<div class="ph-foot" data-draw="playercard"></div>
+</aside>
+<div class="ph-deck">
+<header class="ph-bar" id="top">
+<div class="ph-brand ph-brand-bar" data-only="ingest" hidden><svg class="bm" viewBox="0 0 40 40" width="30" height="30" style="width:30px;height:30px" aria-hidden="true"><defs><linearGradient id="phbm2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4e7cc"/><stop offset="1" stop-color="#cdb486"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#phbm2)"/><path d="M6 31.2h28" stroke="#141b27" stroke-opacity=".3" stroke-width="2" stroke-linecap="round"/><path d="M8.5 30C11.5 12.5 21.5 9.5 25.6 27.4" fill="none" stroke="#141b27" stroke-width="3" stroke-linecap="round"/><circle cx="26.7" cy="28.3" r="2.9" fill="#ffffff" stroke="#141b27" stroke-width="1.6"/><path d="M31.6 31.2V13.6" stroke="#141b27" stroke-width="2" stroke-linecap="round"/><path d="M32.2 13.4l4.6 1.7-4.6 1.7z" fill="#141b27"/></svg><span class="ph-bt">Pin High<small>Import station</small></span></div>
+<p class="wb-trust ph-trust" data-draw="trust" data-only="analysis" aria-label="What the monitor data can be trusted for"></p>
 <div class="wb-head-actions"><div class="wb-segs wb-modes" data-draw="modeswitch" role="group" aria-label="View"></div><button type="button" id="install" class="wb-btn wb-btn-accent" hidden>Install as desktop app</button></div>
-</div>
-<div data-only="analysis">
-<div class="wb-golfers">
-<div data-draw="golferbar" class="wb-segs" role="group" aria-label="Golfer"></div>
-
-</div>
-<p class="wb-lede" id="tk-load">Loading <b data-draw="gname">—</b>’s weeks…</p>
-<p class="wb-lede" id="tk-none" hidden><b data-draw="gname">—</b> has no weeks yet. Drop a GSPro CSV on their card below, or log a week by hand.</p>
-<p class="wb-lede" id="tk-bad" hidden><b data-draw="gname">—</b>, week <b data-draw="tk" data-f="week">—</b>: club speed is <b data-draw="tk" data-f="club_speed">—</b> mph, but <b data-draw="tk" data-f="ball_speed">—</b> ÷ <b data-draw="tk" data-f="club_speed">—</b> gives a smash of <b data-draw="tk" data-f="smash_calc">—</b>, not the device’s <b data-draw="tk" data-f="smash_device">—</b>. Check the screen, or import the GSPro CSV, before trusting the rest.</p>
-<p class="wb-lede" id="tk-ok" hidden><b data-draw="gname">—</b>, week <b data-draw="tk" data-f="week">—</b>: <b data-draw="tk" data-f="club_speed">—</b> mph club speed and a smash of <b data-draw="tk" data-f="smash_calc">—</b>. Realistic over the next <b data-draw="pv" data-p="weeks">—</b> weeks: <b data-draw="tk" data-f="d_total">—</b> yards of total.</p>
-<span data-draw="tkstate"></span>
-<div class="wb-grid wb-kpis">
-<div class="wb-card"><div class="wb-lab">Club speed (mph)</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="club_speed"></div><div class="wb-sub" data-draw="kpisub" data-k="club_speed">—</div></div>
-<div class="wb-card"><div class="wb-lab">Ball speed (mph)</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="ball_speed"></div><div class="wb-sub" data-draw="kpisub" data-k="ball_speed">—</div></div>
-<div class="wb-card"><div class="wb-lab">Smash, ball ÷ club</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_calc"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_calc">—</div></div>
-<div class="wb-card"><div class="wb-lab">Smash on the device</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_device"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_device">—</div></div>
-</div>
-<nav class="wb-nav wb-views" aria-label="Views" data-only="analysis"><button type="button" data-goto="command">Command center</button><button type="button" data-goto="progress">Progress and forecast</button><button type="button" data-goto="driver">Driver lab</button><button type="button" data-goto="flight">Ball flight</button><button type="button" data-goto="swing">Swing and strike</button><button type="button" data-goto="bag">Bag</button><button type="button" data-goto="partials">Partial shots</button><button type="button" data-goto="drills">Drill studio</button><button type="button" data-goto="rounds">Round journal</button><button type="button" data-goto="calib">Calibration lab</button><button type="button" data-goto="data">Data hub</button></nav>
-</div>
-<div data-only="ingest" hidden>
-<p class="wb-lede">Drop GSPro exports here on the GSPro PC. Analysis by player is on the iPad, or switch to Analysis above.</p>
-<div class="wb-grid wb-kpis" data-draw="ingeststatus"></div>
-</div>
-</div>
 </header>
-
+<div class="ph-pills wb-filters" data-only="analysis" role="group" aria-label="Filters for every view">
+<div data-draw="golferbar" class="wb-segs ph-golfer" role="group" aria-label="Golfer"></div>
+<label><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg><span class="ph-pl">Dates</span><select data-param="range"><option value="all">All weeks</option><option value="2">Last 2 weeks</option><option value="4">Last 4 weeks</option><option value="12">Last 12 weeks</option><option value="26">Last 26 weeks</option></select></label>
+<label><svg class="ic" aria-hidden="true"><use href="#i-corridor"/></svg><span class="ph-pl">Fairway width</span><select data-param="corridor" data-num="1"><option value="20">20 yd</option><option value="25">25 yd</option><option value="30">30 yd</option><option value="35">35 yd</option><option value="40">40 yd</option></select></label>
+<label><svg class="ic" aria-hidden="true"><use href="#i-alt"/></svg><span class="ph-pl">Carry</span><select data-param="cview"><option value="hit">As hit in GSPro</option><option value="sea">At sea level</option></select></label>
+<label><svg class="ic" aria-hidden="true"><use href="#i-bag"/></svg><span class="ph-pl">Club</span><select id="club-pick" data-draw="clubpick"><option value="all">All clubs</option></select></label>
+</div>
+<details class="ph-fnote" data-only="analysis"><summary>How the filters apply</summary><p class="wb-note">The golfer is picked at the top. Dates and Carry apply to every view. Club picks one club for Club by club (under Bag), Compare two weeks (under Progress; the driver when no club is picked) and the shot list in Data hub; the other driver views always show the driver. Imported files on the import station always lists everything.</p></details>
 <main class="wb">
+<div class="ph-crumb" data-only="analysis" data-draw="crumb" aria-label="Where you are"></div>
+<div class="ph-head" data-only="analysis" data-draw="viewhead"></div>
+<section id="hero" data-only="analysis" data-view="command">
+<div data-draw="hero"></div>
+</section>
+<section id="station" data-only="ingest" hidden>
+<p class="wb-lede">After a session on the GSPro PC, press <b>Pick the GSPro export folder</b> below, or drop the exports here. Analysis by player is on the iPad, or switch to Analysis above.</p>
+<div class="wb-grid wb-kpis" data-draw="ingeststatus"></div>
+</section>
 <p class="wb-banner" id="db-note" hidden></p>
 <p class="wb-banner" id="ro-note" hidden>Read-only: only the owner can add files or change weeks.</p>
 
@@ -50,9 +49,15 @@
 <h2>Add GSPro files</h2>
 <ol class="wb-steps">
 <li>In GSPro, export the shot data (Practice Range: the clipboard icon at the top left, then Export CSV). Older exports work too, any number at once.</li>
-<li>Drop the files on <b>Sort by club speed</b>, or on a golfer’s card when you know whose they are. Files are split into sessions by date; a session where both golfers hit is split by club speed.</li>
-<li>Check the preview and save. Sessions already saved are skipped, so dropping a folder twice is safe; sessions saved before original files were kept get theirs attached. Files are read on this computer and stored with their shot numbers, private to your Claude account.</li>
+<li>Press <b>Pick the GSPro export folder</b> and choose the folder GSPro saves exports to, or drop files or the whole folder on <b>Sort by club speed</b> (or on a golfer’s card when you know whose they are). Files are split into sessions by date; a session where both golfers hit is split by club speed.</li>
+<li>Check the preview and save. Sessions already saved are skipped, so picking the same folder after every session is safe; sessions saved before original files were kept get theirs attached. Files are read on this computer and stored with their shot numbers, private to your Claude account.</li>
 </ol>
+<div class="wb-folder wb-write">
+<button type="button" class="wb-btn wb-btn-main" id="folder-btn"><svg class="ic" aria-hidden="true"><use href="#i-import"/></svg> Pick the GSPro export folder</button>
+<input type="file" id="folder-pick" webkitdirectory multiple class="wb-visually-hidden" aria-label="GSPro export folder" tabindex="-1">
+<p class="wb-note">Reads every GSPro CSV in the folder, newest first, and adds only sessions that aren’t saved yet. Your browser asks you to confirm the folder; the files are read on this computer, and the app sees the folder only at the moment you pick it. It keeps no access afterwards.</p>
+<p class="wb-sub" data-draw="folderlast"></p>
+</div>
 <div class="wb-drops" data-draw="dropcards"></div>
 <span data-draw="pvstate"></span>
 <div class="wb-card wb-preview" id="import-preview" hidden>
@@ -118,17 +123,27 @@
 </table></div>
 </section>
 
-<p class="wb-trust" data-draw="trust" data-only="analysis" aria-label="What the monitor data can be trusted for"></p>
-<div class="wb-card wb-filters" data-only="analysis" role="group" aria-label="Filters for every view">
-<label>Dates<select data-param="range"><option value="all">All weeks</option><option value="2">Last 2 weeks</option><option value="4">Last 4 weeks</option><option value="12">Last 12 weeks</option><option value="26">Last 26 weeks</option></select></label>
-<label>Fairway width<select data-param="corridor" data-num="1"><option value="20">20 yd</option><option value="25">25 yd</option><option value="30">30 yd</option><option value="35">35 yd</option><option value="40">40 yd</option></select></label>
-<label>Carry<select data-param="cview"><option value="hit">As hit in GSPro</option><option value="sea">At sea level</option></select></label>
-<label>Club<select id="club-pick" data-draw="clubpick"><option value="all">All clubs</option></select></label>
-<p class="wb-note">The golfer is picked at the top. Dates and Carry apply to every view. Club picks one club for Club by club (under Bag), Compare two weeks (under Progress; the driver when no club is picked) and the shot list in Data hub; the other driver views always show the driver. Imported files on the import station always lists everything.</p>
-</div>
 <section id="command" data-only="analysis" data-view="command">
-<h2>Command center</h2>
+<h2>This week</h2>
 <div class="wb-cmd" data-draw="cmd"></div>
+</section>
+<section id="ruler" data-only="analysis" data-view="command">
+<h2>Path to 260</h2>
+<div class="wb-card ph-ruler" data-draw="ruler"></div>
+</section>
+<section id="week" data-only="analysis" data-view="command">
+<h2>Logged week check</h2>
+<p class="wb-lede" id="tk-load">Loading <b data-draw="gname">—</b>’s weeks…</p>
+<p class="wb-lede" id="tk-none" hidden><b data-draw="gname">—</b> has no weeks yet. Drop a GSPro CSV on their card below, or log a week by hand.</p>
+<p class="wb-lede" id="tk-bad" hidden><b data-draw="gname">—</b>, week <b data-draw="tk" data-f="week">—</b>: club speed is <b data-draw="tk" data-f="club_speed">—</b> mph, but <b data-draw="tk" data-f="ball_speed">—</b> ÷ <b data-draw="tk" data-f="club_speed">—</b> gives a smash of <b data-draw="tk" data-f="smash_calc">—</b>, not the device’s <b data-draw="tk" data-f="smash_device">—</b>. Check the screen, or import the GSPro CSV, before trusting the rest.</p>
+<p class="wb-lede" id="tk-ok" hidden><b data-draw="gname">—</b>, week <b data-draw="tk" data-f="week">—</b>: <b data-draw="tk" data-f="club_speed">—</b> mph club speed and a smash of <b data-draw="tk" data-f="smash_calc">—</b>. Realistic over the next <b data-draw="pv" data-p="weeks">—</b> weeks: <b data-draw="tk" data-f="d_total">—</b> yards of total.</p>
+<span data-draw="tkstate"></span>
+<div class="wb-grid wb-kpis">
+<div class="wb-card"><div class="wb-lab">Club speed (mph)</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="club_speed"></div><div class="wb-sub" data-draw="kpisub" data-k="club_speed">—</div></div>
+<div class="wb-card"><div class="wb-lab">Ball speed (mph)</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="ball_speed"></div><div class="wb-sub" data-draw="kpisub" data-k="ball_speed">—</div></div>
+<div class="wb-card"><div class="wb-lab">Smash, ball ÷ club</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_calc"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_calc">—</div></div>
+<div class="wb-card"><div class="wb-lab">Smash on the device</div><div class="wb-num dash-skeleton" data-draw="kpi" data-k="smash_device"></div><div class="wb-sub" data-draw="kpisub" data-k="smash_device">—</div></div>
+</div>
 </section>
 
 <section id="dashboard" data-only="analysis" data-view="command">
@@ -523,6 +538,8 @@
 </ul>
 </details>
 </main>
+</div>
+</div>
 <script type="application/json" id="bench">[{"ref": "earlier", "label": "Earlier shot (your screenshot)", "club_speed": 94, "ball_speed": 136.3, "smash": 1.45, "attack": null, "launch": 11.5, "spin": 2525, "carry": null, "source": "Your screenshot, Nov 26 2026 (launch and spin used when a week has none)", "url": null}, {"ref": "lpga_2019", "label": "LPGA Tour average", "club_speed": 94, "ball_speed": 140, "smash": 1.48, "attack": 3.0, "launch": 13.2, "spin": 2611, "carry": 218, "source": "TrackMan Tour averages", "url": "https://support.trackmangolf.com/hc/en-us/article_attachments/7349801987483"}, {"ref": "lpga_2024", "label": "LPGA Tour average, newer", "club_speed": 96, "ball_speed": 143, "smash": 1.49, "attack": null, "launch": 12.6, "spin": 2506, "carry": 223, "source": "TrackMan via Golf Monthly; launch from TrackMan's launch-angle page", "url": "https://golfmonthly.com/features/the-game/how-far-lpga-tour-players-hit-every-club-in-the-bag"}, {"ref": "tm_level_94", "label": "TrackMan optimizer, 94 mph, level attack", "club_speed": 94, "ball_speed": 137, "smash": 1.46, "attack": 0, "launch": null, "spin": null, "carry": null, "source": "TrackMan ball-speed page (dynamic loft 15.6° on its dynamic-loft page)", "url": "https://www.trackman.com/blog/ball-speed"}, {"ref": "tour_smash", "label": "PGA and LPGA Tour smash", "club_speed": null, "ball_speed": null, "smash": 1.49, "attack": null, "launch": null, "spin": null, "carry": null, "source": "TrackMan smash-factor page", "url": "https://www.trackman.com/blog/smash-factor"}, {"ref": "f_scratch", "label": "Female amateur, scratch or better", "club_speed": null, "ball_speed": null, "smash": 1.46, "attack": null, "launch": null, "spin": null, "carry": null, "source": "TrackMan Combine averages", "url": "https://www.trackman.com/blog/golf/smash-factor"}, {"ref": "f_5hcp", "label": "Female amateur, 5 handicap", "club_speed": null, "ball_speed": null, "smash": 1.45, "attack": null, "launch": null, "spin": null, "carry": null, "source": "TrackMan Combine averages", "url": "https://www.trackman.com/blog/golf/smash-factor"}, {"ref": "m_scratch", "label": "Male amateur, scratch or better", "club_speed": null, "ball_speed": null, "smash": 1.49, "attack": null, "launch": null, "spin": null, "carry": null, "source": "TrackMan Combine averages", "url": "https://www.trackman.com/blog/golf/smash-factor"}, {"ref": "m_avg", "label": "Male amateur, average (14.5)", "club_speed": null, "ball_speed": null, "smash": 1.44, "attack": null, "launch": null, "spin": null, "carry": null, "source": "TrackMan Combine averages", "url": "https://www.trackman.com/blog/golf/smash-factor"}, {"ref": "shotscope_avg", "label": "Amateur average (Shot Scope)", "club_speed": 95.6, "ball_speed": 133.8, "smash": 1.4, "attack": null, "launch": null, "spin": null, "carry": 228, "source": "Shot Scope launch-monitor data via Golfshake", "url": "https://www.golfshake.com/news/view/23188/This_is_how_far_average_golfers_hit_the_ball.html"}]</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script src="model.js"></script>
@@ -543,6 +560,9 @@
 <script src="partials.js"></script>
 <script src="drills.js"></script>
 <script src="patterns.js"></script>
+<script src="heads.js"></script>
+<script src="hero.js"></script>
+<script src="shell.js"></script>
 <script>dash.start();</script>
 </body>
 </html>

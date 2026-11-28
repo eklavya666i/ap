@@ -360,6 +360,63 @@
   }
   function startText(text) { start('auto', null, [{name: 'Pasted text', lastModified: Date.now(), size: text.length, text: () => Promise.resolve(text)}]); }
 
+  /* A whole folder (picked or dropped): its CSV files only, newest first, so the newest exports are read when a folder
+     holds more than MAX_FILES; sessions already saved are skipped as usual. The app keeps no access to the folder. */
+  const LAST = 'wb-folder-last';
+  let lastMem = null;
+  function folderFiles(list) {
+    const all = Array.from(list || []).filter((f) => f && typeof f.name === 'string');
+    const csv = all.filter((f) => /\.(csv|tsv)$/i.test(f.name) && !/^[.~]/.test(f.name) && f.size !== 0);
+    csv.sort((a, b) => (b.lastModified || 0) - (a.lastModified || 0));
+    return {csv, other: all.length - csv.length};
+  }
+  function startFolder(list, folder, mode, gid) {
+    const {csv, other} = folderFiles(list);
+    const rec = {folder: String(folder || 'the folder').slice(0, 80), at: Date.now(), csv: csv.length, other};
+    lastMem = rec;
+    try { localStorage.setItem(LAST, JSON.stringify(rec)); } catch (e) { /* storage can be off; the in-memory copy serves */ }
+    dash.redraw('folderlast');
+    if (!csv.length) return;
+    start(mode || 'auto', gid || null, csv);
+  }
+  /* Files from a drop: a dropped folder is walked (4 levels) for its files. Entries must be taken during the drop event. */
+  function dropped(dt) {
+    const items = dt && dt.items ? Array.from(dt.items) : [];
+    const entries = items.map((it) => (it.kind === 'file' && typeof it.webkitGetAsEntry === 'function' ? it.webkitGetAsEntry() : null)).filter(Boolean);
+    const files = Array.from((dt && dt.files) || []);
+    if (!entries.some((en) => en.isDirectory)) return Promise.resolve({files, folder: null});
+    const out = [];
+    const walk = (en, depth) => {
+      if (en.isFile) return new Promise((res) => en.file((f) => { out.push(f); res(); }, () => res()));
+      if (!en.isDirectory || depth > 4) return Promise.resolve();
+      const rd = en.createReader();
+      const batch = () => new Promise((res) => rd.readEntries(res, () => res([]))).then((list) => (list.length ? list.reduce((p, c) => p.then(() => walk(c, depth + 1)), Promise.resolve()).then(batch) : null));
+      return batch();
+    };
+    return entries.reduce((p, en) => p.then(() => walk(en, 0)), Promise.resolve()).then(() => ({files: out, folder: (entries.find((en) => en.isDirectory) || {}).name || null}));
+  }
+  function takeDrop(dt, mode, gid) {
+    dropped(dt).then(({files, folder}) => (folder ? startFolder(files, folder, mode, gid) : start(mode, gid, files)));
+  }
+  dash.draw('folderlast', (el) => {
+    let rec = lastMem;
+    if (!rec) { try { rec = JSON.parse(localStorage.getItem(LAST) || 'null'); } catch (e) { rec = null; } }
+    el.classList.toggle('wb-badc', !!(rec && rec.at && !rec.csv));
+    el.textContent = !rec || !rec.at ? '' : rec.csv ? `Last picked: ${rec.folder}, ${new Date(rec.at).toLocaleString('en-US', {month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})}, ${rec.csv} CSV file${rec.csv === 1 ? '' : 's'}.`
+      : `No GSPro CSV files in ${rec.folder}${rec.other ? ` (${rec.other} other file${rec.other === 1 ? '' : 's'})` : ''}. In GSPro, Export CSV saves them there; then pick the folder again.`;
+  });
+  (function () {
+    const btn = document.getElementById('folder-btn'), inp = document.getElementById('folder-pick');
+    if (!btn || !inp) return;
+    btn.addEventListener('click', () => { if (WB.canWrite !== false && !S.busy) inp.click(); });
+    inp.addEventListener('change', () => {
+      const files = Array.from(inp.files || []);
+      const rel = files.length && files[0].webkitRelativePath ? files[0].webkitRelativePath.split('/')[0] : '';
+      inp.value = '';
+      if (files.length) startFolder(files, rel || 'the folder');
+    });
+  })();
+
   function tile(grid, lab, val) {
     const c = document.createElement('div');
     const l = document.createElement('div'); l.className = 'wb-lab'; l.textContent = lab;
@@ -411,7 +468,7 @@
       card.append(t, s, inp);
       card.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); card.classList.add('over'); if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy'; });
       card.addEventListener('dragleave', () => card.classList.remove('over'));
-      card.addEventListener('drop', (e) => { e.preventDefault(); e.stopPropagation(); card.classList.remove('over'); document.documentElement.classList.remove('wb-dragging'); go(e.dataTransfer && e.dataTransfer.files); });
+      card.addEventListener('drop', (e) => { e.preventDefault(); e.stopPropagation(); card.classList.remove('over'); document.documentElement.classList.remove('wb-dragging'); takeDrop(e.dataTransfer, cd.g === 'auto' ? 'auto' : 'card', cd.g === 'auto' ? null : cd.g); });
       card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inp.click(); } });
       el.append(card);
     });
@@ -639,7 +696,7 @@
     refresh();
   }
 
-  WB.csv = {parse, standardize, toNum, normHeader, clubRatio, split2, start, startText, save, plan, state: S};
+  WB.csv = {parse, standardize, toNum, normHeader, clubRatio, split2, start, startText, startFolder, folderFiles, save, plan, state: S};
 
   const rebuild = () => { const keep = S.choice; build(); S.choice = keep; dash.redraw('importpreview'); };
   const cl = $('csvclub');
@@ -668,6 +725,6 @@
     depth = 0;
     document.documentElement.classList.remove('wb-dragging');
     if (WB.mode() !== 'ingest') WB.setMode('ingest');
-    start('auto', null, e.dataTransfer.files);
+    takeDrop(e.dataTransfer, 'auto', null);
   });
 })();
