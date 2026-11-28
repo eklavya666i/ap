@@ -48,7 +48,7 @@ function checkResults(src) {
   const chips = areasFor(src.type).map(a => `<span class="chip ${r.areas[a]}">${r.areas[a] === "ok" ? "✓" : r.areas[a] === "fix" ? "✗" : "•"} ${AREA_NAMES[a]}</span>`).join("");
   const order = r.findings.map((f, i) => ({f, i})).sort((x, y) => (x.f.sev === "fix" ? 0 : 1) - (y.f.sev === "fix" ? 0 : 1));
   const route = src.a ? `a/${src.a.id}` : src.w ? `tw/${S.writes.indexOf(src.w)}` : `t/${src.type}`;
-  return `<div id="ckres"><div class="card"><h3>What the checker found</h3>
+  return `<div id="ckres">${raGradeCard(src)}<div class="card"><h3>What the checker found</h3>
   <p class="meta">${r.stats.words} words · ${r.stats.paras} paragraph${r.stats.paras === 1 ? "" : "s"} · ${r.stats.sents} sentences (about ${r.stats.avg} words each)${src.type !== "narrative" ? ` · ${r.stats.quotes} quotation${r.stats.quotes === 1 ? "" : "s"} · ${r.stats.cites} citation${r.stats.cites === 1 ? "" : "s"}` : ""}</p>
   <div class="areas">${chips}</div>
   ${r.goods.length ? `<ul class="tight goods">${r.goods.map(g => `<li>${esc(g)}</li>`).join("")}</ul>` : ""}

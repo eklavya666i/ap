@@ -1,6 +1,6 @@
 // ---------- Router, events, install note, backup and restore, offline copy
 const TABS = [["today", "Today"], ["learn", "Learn"], ["write", "Write"], ["check", "Check"], ["test", "Test"], ["coach", "Coach"], ["me", "Me"]];
-const TAB_OF = {unit: "learn", ch: "learn", terms: "learn", lesson: "learn", soap: "write", debate: "write", asg: "write", guide: "write", quotes: "write", seminar: "write", drills: "write", drill: "write", rubric: "check", claude: "check", run: "test", tw: "test", advice: "coach", ailog: "coach", review: "today", settings: "me", parent: "me"};
+const TAB_OF = {rhetoric: "learn", rap: "write", unit: "learn", ch: "learn", terms: "learn", lesson: "learn", soap: "write", debate: "write", asg: "write", guide: "write", quotes: "write", seminar: "write", drills: "write", drill: "write", rubric: "check", claude: "check", run: "test", tw: "test", advice: "coach", ailog: "coach", review: "today", settings: "me", parent: "me"};
 function route() {
   const parts = (location.hash.replace(/^#\/?/, "") || "today").split("/").map(decodeURIComponent);
   return V[parts[0]] ? parts : ["today"];
@@ -91,7 +91,7 @@ window.addEventListener("hashchange", () => { render(); window.scrollTo(0, 0); }
 document.addEventListener("visibilitychange", () => { if (document.hidden) save(); });
 goals(); settleStreak(); checkBadges();
 render();
-window.E10 = {get S() { return S; }, get SES() { return SES; }, get CK() { return CK; }, Checker, render, startQuiz, recs};
+window.E10 = {get S() { return S; }, get SES() { return SES; }, get CK() { return CK; }, Checker, RhetCheck, RHET, render, startQuiz, recs, rhQuiz, RHB, SHEET};
 
 // ---------- Offline copy. A new version takes over between screens, never mid-quiz or mid-write (from SAT Daily).
 const canReload = () => !(SES && !SES.done) && !S.tw && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || "");

@@ -51,20 +51,27 @@ const ARG_KINDS = ["claim", "evidence", "reasoning", "sources", "counter", "fall
 
 // ---------- Saved progress (key eng10h.v1)
 const fresh = () => ({
-  v: 1, syl: 2, upd: 0, name: "", days: {}, xp: 0,
+  v: 1, syl: 3, upd: 0, name: "", days: {}, xp: 0,
   read: {f451: 0, asp: 0}, peek: {}, readLog: [], soaps: [], debates: [],
   qs: {}, miss: {}, fixed: 0, quizzes: [],
   cards: {}, newDay: null, newCount: 0,
   drills: {}, asg: [], quotes: [], sem: [], rub: [], checks: [], writes: [], tw: null, ai: [], drafts: {}, seen: {},
+  rh: {ann: {}, pg: {}, sent: {}, ana: [], moves: []}, raps: [],
   badges: {}, goals: null, streak: {freezes: 0, used: [], lastRun: 0},
-  set: {unit: 3, sound: true, calm: false, big: false, pin: null}, bk: null
+  set: {unit: 4, sound: true, calm: false, big: false, pin: null}, bk: null
 });
 let S = fresh();
 // Progress saved before the November 2026 syllabus update used the old unit numbers (1 Astonishing Color, 2 A Small
 // Place, 3 argument, 4 Lord of the Flies and lenses, 5 Night, 6 book clubs, 7 Macbeth). Map them to Ira's syllabus, and
 // drop misses and stats for the retired Lord of the Flies and lens questions so My misses only lists questions that exist.
+// syl 3 (November 27, 2026): Ira's class is on Unit 4, Intro to Rhetoric with A Small Place, so the Fahrenheit 451
+// default moves there.
 function migrate(j) {
-  if (j.syl >= 2) return j;
+  if (!(j.syl >= 2)) migrate2(j);
+  if (j.syl < 3) { if (j.set && j.set.unit === 3) j.set.unit = 4; j.syl = 3; }
+  return j;
+}
+function migrate2(j) {
   const M = {1: 2, 2: 4, 3: 5, 4: 3, 5: 6, 6: 7, 7: 9};
   if (j.set && M[j.set.unit]) j.set.unit = M[j.set.unit];
   for (const q of j.quizzes || []) if (q.kind === "unit" && M[q.unit]) q.unit = M[q.unit];
@@ -76,12 +83,11 @@ function migrate(j) {
   if (j.drafts && j.drafts.lastType === "lens") j.drafts.lastType = "lit";
   if (j.drafts && j.drafts.semBook === "lotf") delete j.drafts.semBook;
   j.syl = 2;
-  return j;
 }
 function loadState(j) {
   migrate(j);
   S = Object.assign(fresh(), j);
-  for (const k of ["set", "streak", "read", "seen", "peek", "drafts", "qs", "miss", "cards", "drills", "badges"]) S[k] = Object.assign(fresh()[k], j[k] || {});
+  for (const k of ["set", "streak", "read", "seen", "peek", "drafts", "qs", "miss", "cards", "drills", "badges", "rh"]) S[k] = Object.assign(fresh()[k], j[k] || {});
 }
 try { const j = JSON.parse(localStorage.getItem(LS) || "null"); if (j && j.v === 1) loadState(j); } catch (e) {}
 function save() { S.upd = Date.now(); try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
@@ -181,6 +187,13 @@ BADGES.push({id: "lessons", fam: "Learning", name: "Workshop graduate", rule: "O
 BADGES.push({id: "soap3", fam: "Writing", name: "SOAPSTone pro", rule: "Complete 3 SOAPSTone analyses", test: () => S.soaps.length >= 3});
 BADGES.push({id: "debate1", fam: "Habits", name: "Ready to debate", rule: "Prepare a debate case", test: () => S.debates.length >= 1});
 BADGES.push({id: "seminar3", fam: "Habits", name: "Seminar ready", rule: "Prepare for 3 seminars", test: () => S.sem.length >= 3});
+const rhBest = subs => S.quizzes.filter(q => q.kind === "rhet" && subs.includes(q.sub)).reduce((m, q) => Math.max(m, q.n ? q.right / q.n : 0), 0);
+BADGES.push({id: "rh-sheet", fam: "Rhetoric", name: "Sheet sharp", rule: "90% or better on the study sheet quiz", test: () => rhBest(["sheet"]) >= 0.9});
+BADGES.push({id: "rh-devices", fam: "Rhetoric", name: "Device spotter", rule: "90% or better on the device spotter", test: () => rhBest(["devices"]) >= 0.9});
+BADGES.push({id: "rh-test", fam: "Rhetoric", name: "Test ready", rule: "80% or better on the rhetoric practice test or a sample test", test: () => rhBest(["test", "s1", "s2"]) >= 0.8});
+BADGES.push({id: "rh-para", fam: "Rhetoric", name: "Paragraph planner", rule: "A paragraph plan scoring an estimated 20 of 24 or better", test: () => S.raps.some(r => r.grade && r.grade.total >= 20)});
+BADGES.push({id: "rh-build", fam: "Rhetoric", name: "Sentence builder", rule: "Build all 11 devices on your syntax list", test: () => RHET.syntax.every(t => (S.rh.sent[t] || {}).ok === true)});
+BADGES.push({id: "rh-annot", fam: "Rhetoric", name: "Close annotator", rule: "Mark all the pages 1-9 moments in your copy", test: () => RHET.asp1.every((a, i) => S.rh.ann[i])});
 const badge = id => BADGES.find(b => b.id === id);
 function checkBadges() {
   for (const b of BADGES) if (!S.badges[b.id] && b.test && b.test()) { S.badges[b.id] = today(); save(); celebrate("badge", b); }
@@ -198,8 +211,9 @@ function allCards() {
   for (const f of ARG.fallacies) add(ARGU, {id: "f:" + slug(f.name), kind: "Fallacy", front: f.name, back: f.d, extra: "Example: " + f.ex});
   const first = groups[S.set.unit] ? [S.set.unit] : [];
   const out = [...first, ...Object.keys(groups).map(Number).filter(u => !first.includes(u))].flatMap(u => groups[u]);
-  const order = {write: 0, lit: 1, narr: 2, arg: 3, drama: 4};
-  for (const t of TERMS.slice().sort((a, b) => order[a.g] - order[b.g])) out.push({id: "t:" + slug(t.t), kind: TERM_GROUPS[t.g], front: t.t, back: t.d, extra: t.ex});
+  const order = {write: 0, lit: 1, narr: 2, arg: 3, drama: 4}, sheetFirst = S.set.unit === ASP.unit;   // in the rhetoric unit, study-sheet terms come first
+  const rank = t => sheetFirst && t.sheet ? -1 : order[t.g];
+  for (const t of TERMS.slice().sort((a, b) => rank(a) - rank(b))) out.push({id: "t:" + slug(t.t), kind: TERM_GROUPS[t.g], front: t.t, back: t.d, extra: t.ex});
   return out;
 }
 function dueCards() {

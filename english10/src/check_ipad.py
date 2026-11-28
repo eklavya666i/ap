@@ -2,8 +2,9 @@
 Adapted from Math 6's check_ipad.py. Covers: first visit (offline copy saved), every screen with no errors, setup,
 spoiler gating, a perfect reading check, misses and fixing them, the timed unit test, a full assignment (plan, prompt
 decoder, thesis checks, outline that survives a reload, evidence, draft, draft checker with highlights, rubric, Claude
-hand-off and the AI log), the Quote Log, drills, review cards, seminar prep, a timed write, A Small Place, the argument
-workshop, network off, share-sheet backup and restore, progress saved under the old unit numbers, World History
+hand-off and the AI log), the Quote Log, drills, review cards, seminar prep, a timed write, A Small Place, the rhetoric
+unit (study-sheet quizzes, the practice and sample tests, sentence building, analysis sentences, debate moves,
+annotations, the paragraph plan and its score, a timed paragraph graded on Check), the argument workshop, network off, share-sheet backup and restore, progress saved under the old unit numbers, World History
 installed first (its worker must leave /english10/ alone), and five iPad sizes.
 Run: python3 check_ipad.py   (needs Playwright and Chrome). The test server starts and stops with the script."""
 import asyncio, json, subprocess, sys, time
@@ -31,7 +32,13 @@ ROUTES = ["today", "learn", "unit/1", "unit/2", "unit/3", "unit/3/characters", "
           "guide/narrative", "quotes", "quotes/new/f451/1/0", "quotes/new/asp/1/0", "quotes/new/3/1", "seminar", "drills", "drill/mla2",
           "drill/w-embed", "drill/w-symbol", "check", "check/t/argument", "check/t/lit", "rubric/t/lit", "claude/t/lit", "test", "tw/lit-foil",
           "tw/arg-service", "coach", "advice/teacher", "advice/heavy", "advice/ai", "ailog", "review", "me", "settings", "parent",
-          "lesson/claims", "lesson/fallacies", "lesson/debate", "soap", "soap/new/asp", "debate", "debate/new/0"]
+          "lesson/claims", "lesson/fallacies", "lesson/debate", "soap", "soap/new/asp", "debate", "debate/new/0",
+          "rhetoric", "rhetoric/sheet", "rhetoric/intro", "rhetoric/annotate", "rhetoric/annotate/5", "rhetoric/passages", "rhetoric/passage/jfk",
+          "rhetoric/passage/douglass", "rhetoric/build", "rhetoric/build/analysis", "rhetoric/build/debate", "rhetoric/build/devices/anaphora",
+          "rhetoric/debate", "rhetoric/tests", "rhetoric/scores", "rap", "rap/new/asp", "rap/new/jfk", "rap/new/other", "rap/model", "tw/ra-asp", "tw/ra-jfk",
+          "soap/new/lincoln", "debate/new/7"]
+# Progress saved under syllabus 2, when the default unit was 3 (Fahrenheit 451): moves to Unit 4; any other unit stays
+SYL2_STATES = [({"v": 1, "syl": 2, "name": "Ira", "read": {"f451": 2, "asp": 0}, "set": {"unit": 3}}, 4), ({"v": 1, "syl": 2, "name": "Ira", "read": {"f451": 2, "asp": 0}, "set": {"unit": 5}}, 5)]
 # Progress saved before the syllabus update: old unit 4 (Lord of the Flies), a lens essay, and misses on retired questions
 OLD_STATE = {"v": 1, "name": "Ira", "days": {}, "xp": 120, "read": {"lotf": 5, "asp": 1}, "set": {"unit": 4, "sound": True},
              "miss": {"lotf.3.2": {"n": 1}, "lens.marx.1": {"n": 1}, "who.c.ralph": {"n": 1}, "asp.1.2": {"n": 1}},
@@ -88,6 +95,7 @@ async def main():
             await pg.select_option("select[data-in=readto][data-b=f451]", "3"); await pg.wait_for_timeout(150)
             await tap("[data-act=setupdone]")
             R["setup"] = await S("[S.name, S.read.f451, !!S.seen.setup, S.set.unit]")
+            R["today_u4"] = ["Intro to Rhetoric" in await pg.inner_text("#view"), await pg.locator("#view .card .btn").count() > 0]
             # Spoilers stay hidden past section 3
             await go("ch/f451/6")
             R["sec6_locked"] = "Show it anyway" in await pg.inner_text("#view") and "flamethrower" not in await pg.inner_text("#view")
@@ -252,6 +260,105 @@ async def main():
             await go("test")
             R["unit4_test"] = await perfect('[data-act=quiz][data-arg="unit:4"]')
 
+            # Unit 4, Intro to Rhetoric: the toolkit, study-sheet quizzes, tests, sentence building, annotations, the paragraph plan
+            await go("unit/4")
+            R["u4_toolkit"] = await pg.locator('#view a.card[href="#/rhetoric"]').count()
+            await go("rhetoric")
+            R["rh_hub"] = [await pg.locator("#view .steps li").count(), await pg.locator("#view a.card").count()]
+            await go("rhetoric/sheet")
+            R["rh_sheet"] = [await pg.locator("#view .list li").count(), "Not the punctuation mark" in await pg.inner_text("#view")]
+            await go("rhetoric/tests")
+            R["rh_sheet_quiz"] = await perfect('[data-act=quiz][data-arg="rhet:sheet"]')
+            R["rh_sheet_badge"] = await S("!!S.badges['rh-sheet']")
+            await go("rhetoric/tests"); R["rh_style"] = await perfect('[data-act=quiz][data-arg="rhet:style"]')
+            await go("rhetoric/tests"); R["rh_devices"] = await perfect('[data-act=quiz][data-arg="rhet:devices"]')
+            await go("rhetoric/tests"); R["rh_asp1"] = await perfect('[data-act=quiz][data-arg="rhet:asp1"]')
+            await go("rhetoric/tests"); R["rh_evidence"] = await perfect('[data-act=quiz][data-arg="rhet:evidence"]')
+            R["rh_badges"] = await S("[!!S.badges['rh-devices'], S.quizzes.filter(q => q.kind === 'rhet').map(q => q.sub).join(',')]")
+            # The practice test: 40 questions, 45 minutes, scored at the end
+            await go("rhetoric/tests"); await tap('[data-act=quiz][data-arg="rhet:test"]')
+            R["rh_test_timer"] = await pg.inner_text("#timer")
+            await go("rhetoric/tests"); R["rh_test"] = await perfect('[data-act=quiz][data-arg="rhet:test"]')
+            R["rh_test_badge"] = await S("!!S.badges['rh-test']")
+            # Sample tests: the same questions every time, A and B share none, part 1 leads to the timed paragraph
+            ids = []
+            for s_ in ["s1", "s1", "s2"]:
+                await go("rhetoric/tests"); await tap(f'[data-act=quiz][data-arg="rhet:{s_}"]')
+                ids.append(await pg.evaluate("E10.SES.items.map(it => it.id).sort().join(',')"))
+                await pg.evaluate("E10.SES.done = true"); await go("rhetoric/tests")
+            R["rh_samples"] = [ids[0] == ids[1], len(set(ids[0].split(",")) & set(ids[2].split(","))), len(ids[0].split(","))]
+            await go("rhetoric/tests"); R["rh_s1"] = await perfect('[data-act=quiz][data-arg="rhet:s1"]')
+            R["rh_s1_next"] = await pg.get_attribute('#view a.btn[href="#/tw/ra-jfk"]', "href")
+            # A miss on a rhetoric question comes back in My misses
+            await go("rhetoric/tests"); await tap('[data-act=quiz][data-arg="rhet:reasoning"]')
+            wrong = await pg.evaluate("E10.SES.items[0].choices.findIndex(c => !c.ok)")
+            await tap(f'[data-act=pick][data-arg="{wrong}"]')
+            await go("test"); await tap('[data-act=quiz][data-arg="miss"]')
+            R["rh_miss"] = await pg.evaluate("E10.SES.items.some(it => it.id.startsWith('rh.fal.'))")
+            # Sentence building: the model sentence passes, a non-example doesn't, a check-it-yourself device asks
+            await go("rhetoric/build")
+            await pg.fill('textarea[data-in=bsent][data-k="Epistrophe"]', "We went to the beach and then we ate lunch."); await tap('[data-act=bcheck][data-arg="Epistrophe"]')
+            R["rh_build_no"] = [await pg.inner_text("#bst-epistrophe"), await S("S.rh.sent.Epistrophe.ok")]
+            built = []
+            for t in await pg.evaluate("E10.RHET.syntax"):
+                model = await pg.evaluate(f"E10.RHET.build.find(b => b.t === {json.dumps(t)}).model")
+                await pg.fill(f'textarea[data-in=bsent][data-k="{t}"]', model); await pg.wait_for_timeout(50)
+                await tap(f'[data-act=bcheck][data-arg="{t}"]')
+                if await pg.locator(f'[data-act=bself][data-arg="{t}|1"]').count(): await tap(f'[data-act=bself][data-arg="{t}|1"]'); built.append(t + "?")
+                else: built.append(t)
+            R["rh_build"] = [await S("E10.RHET.syntax.filter(t => (S.rh.sent[t] || {}).ok === true).length"), await S("!!S.badges['rh-build']"), built]
+            await go("rhetoric/build/analysis")
+            await pg.fill('textarea[data-in=anaf][data-k="t"]', "Kincaid's repeated rhetorical questions expose the government's neglect, making readers suspicious of the leaders to show how tourism hides corruption.")
+            await tap("[data-act=anacheck]")
+            R["rh_analysis"] = [await pg.locator("#anares .y").count(), await pg.locator("#anares li").count()]
+            await go("rhetoric/build/debate")
+            await pg.fill('textarea[data-in=movef][data-k="counter"]', "Some argue that tourism helps Antigua because it creates jobs for local people.")
+            await pg.fill('textarea[data-in=movef][data-k="reb"]', "However, many of those jobs pay little, and most of the profit leaves the island, so the benefits are smaller than they look.")
+            await tap("[data-act=movecheck]")
+            R["rh_move"] = [await pg.locator("#moveres .y").count(), await pg.locator("#moveres li").count(), await S("S.rh.moves.length")]
+            # Annotations: thirteen cards, ticked and paged in her copy
+            await go("rhetoric/annotate")
+            R["rh_ann_cards"] = await pg.locator("#view .card.ann").count()
+            await pg.fill('input[data-in=annpg][data-i="0"]', "3"); await pg.wait_for_timeout(500)
+            for i in range(R["rh_ann_cards"]):
+                await pg.locator(f'input[data-in=annmark][data-i="{i}"]').check(); await pg.wait_for_timeout(30)
+            R["rh_ann"] = await S("[Object.keys(S.rh.ann).length, S.rh.pg[0], !!S.badges['rh-annot']]")
+            # The paragraph plan on the model speech: live checks, the outline put together, the score, saving
+            await go("rap/new/jfk")
+            M = await pg.evaluate("E10.RHET.model")
+            await pg.fill('textarea[data-in=rapf][data-k="thesis"]', M["thesis"]); await pg.wait_for_timeout(80)
+            R["rap_thesis"] = [await pg.locator("#rapck-thesis .y").count(), await pg.locator("#rapck-thesis li").count()]
+            for k in ["claim", "ev1", "re1", "ev2", "re2", "concl"]:
+                await pg.fill(f'textarea[data-in=rapf][data-k="{k}"]', M[k]); await pg.wait_for_timeout(40)
+            R["rap_boxes"] = [await pg.locator("#rapck-re1 .y").count(), await pg.locator("#rapck-ev1 .y").count()]
+            await tap('[data-act=rapdev][data-arg="Asyndeton"]')
+            await tap("[data-act=rapjoin]")
+            await tap("[data-act=rapgrade]")
+            R["rap_grade"] = (await pg.inner_text("#rapgrade"))[:80]
+            await tap("[data-act=rapsave]")
+            R["rap_saved"] = [await S("S.raps.length"), await S("S.raps[0].grade.total"), await S("S.raps[0].dev.join(',')"), await pg.evaluate("location.hash"), await S("!!S.badges['rh-para']")]
+            await go("rap/model")
+            R["rap_model"] = "24 / 24" in await pg.inner_text("#view")
+            # A timed paragraph on the speech, then the paragraph-plan score on Check
+            await go("tw/ra-jfk")
+            R["ra_start"] = ["appears when the clock starts" in await pg.inner_text("#view"), await pg.locator("#twmin option").count()]
+            await tap("[data-act=twstart]")
+            R["ra_passage"] = "Let the word go forth" in await pg.inner_text("#view")
+            await pg.fill("textarea[data-in=twtext]", " ".join([M["claim"], M["ev1"], M["re1"], M["ev2"], M["re2"], M["concl"]]))
+            await pg.wait_for_timeout(500); await tap("[data-act=twfinish]")
+            await tap("[data-act=runcheck]")
+            R["ra_check"] = [await pg.evaluate("location.hash"), "Estimated score: paragraph plan" in await pg.inner_text("#view"), "24 / 24" in await pg.inner_text("#view")]
+            await go("rhetoric/scores")
+            sc = await pg.inner_text("#view")
+            R["rh_scores"] = ["Sample test A, part 1" in sc, "Unit 4 practice test" in sc, "24/24" in sc]
+            await go("test")
+            R["test_rh_card"] = await pg.locator('#view [data-arg="rhet:s2"]').count()
+            await go("coach")
+            R["coach_u4"] = await pg.locator(".card.hi .list li").count()
+            await go("rhetoric"); await pg.screenshot(path=str(OUT / "rhetoric.png"), full_page=True)
+            await go("rhetoric/annotate"); await pg.screenshot(path=str(OUT / "annotate.png"), full_page=True)
+            await go("rap/0"); await pg.screenshot(path=str(OUT / "rap.png"), full_page=True)
+
             # Unit 5: the argument workshop, the fallacy finder, a debate case, the unit test
             await go("unit/5"); await tap('[data-act=setunit][data-arg="5"]')
             R["u5_stat"] = await pg.inner_text("#stats")
@@ -313,6 +420,12 @@ async def main():
             for r in ["today", "check/a/old1", "check/tw/0", "check", "test", "coach", "seminar", "me", "quotes"]:
                 await go(r, 120)
             R["migrated_errors"] = errs[n0:]
+            R["syl2"] = []
+            for st, want in SYL2_STATES:
+                await pg.goto(f"http://127.0.0.1:{PORT}/blank.html"); await pg.wait_for_timeout(150)
+                await pg.evaluate(f"localStorage.setItem('eng10h.v1', {json.dumps(json.dumps(st))})")
+                await pg.goto(URL); await pg.wait_for_timeout(400)
+                R["syl2"].append([await S("S.set.unit"), want, await S("S.syl"), await S("typeof S.rh.sent")])
             await b.close()
 
             # World History installed first must not take over /english10/
@@ -330,7 +443,7 @@ async def main():
                 c = await b.new_context(**ipad(w, h), color_scheme="dark" if tag == "ipad-portrait" else "light"); q = await c.new_page()
                 await q.goto(URL); await q.wait_for_timeout(300)
                 over = []
-                for r in ["today", "learn", "unit/3", "ch/f451/1", "write", "guide/lit", "check", "rubric/t/lit", "test", "coach", "me"]:
+                for r in ["today", "learn", "unit/3", "ch/f451/1", "write", "guide/lit", "check", "rubric/t/lit", "test", "coach", "me", "rhetoric", "rhetoric/annotate", "rhetoric/build", "rap/new/asp", "rap/model", "rhetoric/tests"]:
                     await q.evaluate(f"location.hash = '#/{r}'"); await q.wait_for_timeout(80)
                     if await q.evaluate("document.documentElement.scrollWidth > innerWidth + 1"): over.append(r)
                 R["sizes"][tag] = over
@@ -349,7 +462,8 @@ async def main():
     need(R["manifest"] == "English 10H", "manifest")
     need(not R["routes_bad"], f"screens with errors: {R['routes_bad']}")
     need(R["learn"] == [10, True, True], f"learn page {R['learn']}")
-    need(R["setup_unit"] == "3" and R["setup"] == ["Ira", 3, True, 3], f"setup {R['setup_unit']} {R['setup']}")
+    need(R["setup_unit"] == "4" and R["setup"] == ["Ira", 3, True, 4], f"setup {R['setup_unit']} {R['setup']}")
+    need(R["today_u4"] == [True, True], f"Today's rhetoric card {R['today_u4']}")
     need(R["sec6_locked"] and R["hidden_characters"] >= 3, "spoilers not hidden")
     need(R["craft"][0] == 4 and R["craft"][1], f"craft tab gating {R['craft']}")
     need("8 of 8" in R["ch1_result"] and R["ch1_badge"], f"reading check {R['ch1_result'][:200]}")
@@ -367,14 +481,15 @@ async def main():
     need(R["claude"][:4] == [True, True, True, True] and R["claude"][4] == 1 and R["ailog"], f"claude {R['claude']}")
     need(R["drill_mc"] and R["drill_write"], "drills")
     need(R["review_first_f451"] in ("Character", "Symbol"), f"review cards start with the current unit: {R['review_first_f451']}")
-    need(R["cards"] == 3 and R["seminar"] == [1, "f451"], f"cards {R['cards']} seminar {R['seminar']}")
+    need(R["cards"] == 3 and R["seminar"] == [1, "asp"], f"cards {R['cards']} seminar {R['seminar']}")
     need(R["finished_badge"], "finishing the book earns its badge")
     need(R["tw_timer"].startswith("44:") or R["tw_timer"].startswith("45:"), f"timed write timer {R['tw_timer']}")
     need(R["tw_done"][0] == "#/check/tw/0" and R["tw_done"][1] == 1 and R["tw_done"][2] is None, f"timed write {R['tw_done']}")
     need(R["coach_recs"] >= 1, "coach recommendations")
     need(R["offline"], "offline reload")
     need(R["backup"] == [True, "Ira"] and R["restored"] == ["Ira", 2, 2], f"backup {R['backup']} restore {R['restored']}")
-    need(R["migrated"] == [3, "asp.1.2", "lit", "", "lit", 4, "lit", 2] and not R["migrated_errors"], f"migration {R['migrated']} {R['migrated_errors']}")
+    need(R["migrated"] == [4, "asp.1.2", "lit", "", "lit", 4, "lit", 3] and not R["migrated_errors"], f"migration {R['migrated']} {R['migrated_errors']}")
+    need(all(x[0] == x[1] and x[2] == 3 and x[3] == "object" for x in R["syl2"]), f"syllabus-2 migration {R['syl2']}")
     need(R["after_world_history"] == "English 10H", f"World History's worker served /english10/: {R['after_world_history']}")
     for tag, over in R["sizes"].items(): need(not over, f"{tag}: wider than the screen on {over}")
     need(R["u4_tabs"] == ["Sections", "Voices", "Motifs", "Themes", "Rhetoric", "Context"], f"unit 4 tabs {R['u4_tabs']}")
@@ -385,6 +500,24 @@ async def main():
     need(R["asp_quote"] == ["asp", 1, "you"], f"A Small Place quote {R['asp_quote']}")
     need(R["asp_thesis"][0] == R["asp_thesis"][1] and R["asp_thesis"][1] >= 6, f"A Small Place thesis {R['asp_thesis']}")
     need(R["unit4_test"][0] == R["unit4_test"][1] and R["unit4_test"][0] >= 25, f"unit 4 test {R['unit4_test']}")
+    need(R["u4_toolkit"] == 1 and R["rh_hub"][0] == 6 and R["rh_hub"][1] >= 10, f"rhetoric hub {R['u4_toolkit']} {R['rh_hub']}")
+    need(R["rh_sheet"] == [34, True], f"study sheet {R['rh_sheet']}")
+    need(R["rh_sheet_quiz"] == [20, 20] and R["rh_sheet_badge"], f"study sheet quiz {R['rh_sheet_quiz']}")
+    need(R["rh_style"] == [16, 16] and R["rh_devices"] == [15, 15] and R["rh_asp1"][0] == R["rh_asp1"][1] >= 15 and R["rh_evidence"] == [4, 4], f"rhetoric quizzes {R['rh_style']} {R['rh_devices']} {R['rh_asp1']} {R['rh_evidence']}")
+    need(R["rh_badges"][0] and R["rh_badges"][1] == "sheet,style,devices,asp1,evidence", f"rhetoric quiz records {R['rh_badges']}")
+    need(R["rh_test_timer"].startswith("44:") or R["rh_test_timer"].startswith("45:"), f"practice test timer {R['rh_test_timer']}")
+    need(R["rh_test"] == [40, 40] and R["rh_test_badge"], f"practice test {R['rh_test']}")
+    need(R["rh_samples"] == [True, 0, 30] and R["rh_s1"] == [30, 30] and R["rh_s1_next"] == "#/tw/ra-jfk", f"sample tests {R['rh_samples']} {R['rh_s1']} {R['rh_s1_next']}")
+    need(R["rh_miss"], "a missed rhetoric question comes back in My misses")
+    need("Not yet" in R["rh_build_no"][0] and R["rh_build_no"][1] is False, f"sentence building rejects a non-example {R['rh_build_no']}")
+    need(R["rh_build"][0] == 11 and R["rh_build"][1], f"sentence building {R['rh_build']}")
+    need(R["rh_analysis"] == [4, 4] and R["rh_move"] == [5, 5, 1], f"analysis sentence {R['rh_analysis']} debate move {R['rh_move']}")
+    need(R["rh_ann_cards"] == 13 and R["rh_ann"] == [13, "3", True], f"annotations {R['rh_ann_cards']} {R['rh_ann']}")
+    need(R["rap_thesis"] == [5, 5] and R["rap_boxes"] == [4, 3], f"paragraph plan checks {R['rap_thesis']} {R['rap_boxes']}")
+    need("24 / 24" in R["rap_grade"] and R["rap_saved"] == [1, 24, "Asyndeton", "#/rap/0", True] and R["rap_model"], f"paragraph plan score {R['rap_grade']} {R['rap_saved']} {R['rap_model']}")
+    need(R["ra_start"][0] and R["ra_start"][1] >= 8 and R["ra_passage"], f"timed paragraph {R['ra_start']} {R['ra_passage']}")
+    need(R["ra_check"][1] and R["ra_check"][2] and R["ra_check"][0].startswith("#/check/tw/"), f"timed paragraph graded on Check {R['ra_check']}")
+    need(R["rh_scores"] == [True, True, True] and R["test_rh_card"] == 1 and R["coach_u4"] >= 1, f"scores {R['rh_scores']} test card {R['test_rh_card']} coach {R['coach_u4']}")
     need("lessons" in R["u5_stat"], f"unit 5 header {R['u5_stat']}")
     need(R["lesson"] == [True, True, "#/unit/5"] and R["fallacy_cards"] == 14, f"lessons {R['lesson']} fallacies {R['fallacy_cards']}")
     need(R["fallacy_finder"][0] == 15 and R["fallacy_finder"][1] == 15 and R["fallacy_badge"], f"fallacy finder {R['fallacy_finder']}")

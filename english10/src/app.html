@@ -127,6 +127,10 @@ mark.on{background:var(--hl)}
 .tcheck{list-style:none;padding:0;margin:8px 0 0}.tcheck li{display:flex;gap:8px;align-items:flex-start;padding:3px 0}
 .tcheck .y{color:var(--ok);font-weight:800}.tcheck .x{color:var(--pen);font-weight:800}
 .tcheck .h{display:block;font-size:13.5px;color:var(--soft)}
+.ann{border-left:6px solid var(--c,var(--accent))}
+.swatch{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--c,var(--accent));flex:0 0 auto}
+span.check{display:inline-flex;align-items:center;justify-content:center;cursor:default}
+.tbl td.score{white-space:nowrap;color:var(--accent);letter-spacing:1px}
 .rub{width:100%;border-collapse:separate;border-spacing:6px;margin-top:6px}
 .rub th{text-align:left;font-size:14px;vertical-align:top;padding:6px 4px;min-width:110px}
 .rub td{vertical-align:top}
@@ -144,6 +148,7 @@ mark.on{background:var(--hl)}
 .steps li{display:flex;gap:12px;align-items:center;min-height:52px;border-bottom:1px solid var(--line)}
 .steps li:last-child{border-bottom:0}
 .steps .d{font-size:13px;color:var(--soft);min-width:6.5em}
+.steps .t,.steps .rs{flex:1}
 .steps .done .t{text-decoration:line-through;color:var(--soft)}
 .steps .today{background:var(--accentbg);border-radius:8px}
 .check{width:28px;height:28px;flex:0 0 auto;border-radius:8px;border:2px solid var(--accent);background:transparent;cursor:pointer;font-weight:800;color:var(--onaccent)}

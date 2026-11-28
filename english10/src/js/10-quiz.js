@@ -36,17 +36,19 @@ function itemById(id) {
   const m = id.match(/^term\.(.+)\.([dte])$/); if (m && TERM[m[1]]) return termItem(TERM[m[1]], m[2]);
   const w = id.match(/^who\.([a-z0-9]+)\.([cs])\.(.+)$/); if (w && BOOKS[w[1]]) return whoItem(w[2], w[3], w[1]);
   const f = id.match(/^fal\.(.+)$/); if (f) { const x = ARG.fallacies.find(y => slug(y.name) === f[1]); return x ? fallacyItem(x) : null; }
+  if (id.startsWith("rh.")) return rhItemById(id);
   return null;
 }
 const mkItem = x => ({id: x.id, q: x.q, why: x.why, kind: x.kind, ch: x.ch || 0, set: x.set, choices: shuffle(x.c.map((t, i) => ({t, ok: i === 0})))});
 
 function startQuiz(kind, arg, arg2) {
-  let items = [], title = "", mode = "practice", minutes = 0, book = BOOK0, ch = 0;
+  let items = [], title = "", mode = "practice", minutes = 0, book = BOOK0, ch = 0, next = null;
   if (kind === "ch") { if (arg2) { book = bookOf(arg); ch = Number(arg2); } else ch = Number(arg); items = RQ.filter(q => q.book === book && q.ch === ch); title = `Reading check · ${W(book).ch} ${ch} · ${BOOKS[book].title}`; }
   else if (kind === "mix") { book = bookOf(arg); items = shuffle(RQ.filter(q => q.book === book && canSee(q.ch, book))).slice(0, 15); title = `Mixed review · ${BOOKS[book].title}`; }
   else if (kind === "terms") { items = termItems(15); title = "Terms quiz"; }
   else if (kind === "who") { book = bookOf(arg); items = whoItems(12, book); title = `Who and what · ${BOOKS[book].title}`; }
   else if (kind === "arg") { items = shuffle(AQ.filter(q => !arg || q.src === arg)).slice(0, 15); const src = ARG.sources.find(x => x.id === arg), L = ARG.lessons.find(x => x.id === arg); title = src ? `Source practice · ${src.author}` : L ? `Lesson quiz · ${L.title}` : "Argument quiz"; }
+  else if (kind === "rhet") { const r = rhQuiz(arg); if (!r) return false; items = r.items; title = r.title; mode = r.mode || "practice"; minutes = r.minutes || 0; next = r.next || null; }
   else if (kind === "fallacies") { items = shuffle(ARG.fallacies.map(fallacyItem).concat(AQ.filter(q => q.kind === "fallacy"))).slice(0, 15); title = "Fallacy finder"; }
   else if (kind === "unit") {
     // 30 questions in 40 minutes. A book unit: up to 20 reading checks from the sections read, then terms for the unit's skills.
@@ -54,15 +56,16 @@ function startQuiz(kind, arg, arg2) {
     mode = "test"; minutes = 40; title = `Unit ${U.u} test`;
     if (U.workshop) items = shuffle(AQ).slice(0, 24).concat(shuffle(ARG.fallacies).slice(0, 6).map(fallacyItem));
     else {
-      const b = U.book, r = shuffle(RQ.filter(q => q.book === b && canSee(q.ch, b))).slice(0, 20), groups = b === "asp" ? ["arg"] : ["lit", "narr"];
-      items = r.concat(shuffle(TERMS.filter(t => groups.includes(t.g))).slice(0, 30 - r.length).map((t, i) => termItem(t, "dte"[i % 3])));
+      const b = U.book, r = shuffle(RQ.filter(q => q.book === b && canSee(q.ch, b))).slice(0, 20);
+      items = r.concat(b === "asp" ? sheetMix(shuffle(SHEET).slice(0, 30 - r.length))   // A Small Place: the class study sheet
+        : shuffle(TERMS.filter(t => ["lit", "narr"].includes(t.g))).slice(0, 30 - r.length).map((t, i) => termItem(t, "dte"[i % 3])));
     }
     items = shuffle(items);
   }
   else if (kind === "miss") { items = Object.keys(S.miss).map(itemById).filter(Boolean).slice(0, 15); title = "My misses"; }
   else if (kind === "retry" && SES) { items = SES.items.filter((it, i) => !(it.choices[SES.picks[i]] || {}).ok).map(it => itemById(it.id)).filter(Boolean); title = "Retry missed"; }
   if (!items.length) { toast(kind === "miss" ? "No misses to fix. Nice." : "Nothing to quiz yet: read a chapter first."); return false; }
-  SES = {kind, arg, title, mode, items: items.map(mkItem), i: 0, picks: [], t0: Date.now(), end: minutes ? Date.now() + minutes * 60000 : 0, done: false, ch, book};
+  SES = {kind, arg, title, mode, items: items.map(mkItem), i: 0, picks: [], t0: Date.now(), end: minutes ? Date.now() + minutes * 60000 : 0, done: false, ch, book, next};
   if (location.hash === "#/run") render(); else location.hash = "#/run";
   return true;
 }
@@ -101,11 +104,11 @@ function finishQuiz() {
   SES.done = true; clearInterval(TICK);
   const n = SES.items.length, right = SES.items.filter((it, i) => (it.choices[SES.picks[i]] || {}).ok).length;
   SES.right = right; SES.ms = Date.now() - SES.t0;
-  S.quizzes.push({d: today(), kind: SES.kind, ch: SES.ch, book: SES.book, unit: SES.kind === "unit" ? Number(SES.arg) || S.set.unit : undefined, title: SES.title, n, right, ms: SES.ms});
+  S.quizzes.push({d: today(), kind: SES.kind, ch: SES.ch, book: SES.book, unit: SES.kind === "unit" ? Number(SES.arg) || S.set.unit : undefined, sub: SES.kind === "rhet" ? SES.arg : undefined, title: SES.title, n, right, ms: SES.ms});
   if (S.quizzes.length > 400) S.quizzes.splice(0, S.quizzes.length - 400);
-  addXP((SES.kind === "unit" ? 50 : 20) + (right === n ? 20 : 0));
+  addXP((SES.kind === "unit" || SES.mode === "test" ? 50 : 20) + (right === n ? 20 : 0));
   if (["ch", "mix", "unit", "miss", "retry"].includes(SES.kind)) goalTick("rcheck");
-  if (["terms", "who", "unit", "arg", "fallacies"].includes(SES.kind)) goalTick("quiz");
+  if (["terms", "who", "unit", "arg", "fallacies", "rhet"].includes(SES.kind)) goalTick("quiz");
   if (right === n) celebrate("perfect");
   checkBadges(); save(); render(); window.scrollTo(0, 0);
 }
@@ -155,6 +158,6 @@ function quizResults() {
   <div class="card ${right === n ? "okc" : ""}"><h2>${esc(SES.title)}</h2><p class="big">${right} of ${n} · ${pct(right, n)}%</p>
   <p class="meta">${mmss(SES.ms / 1000)} · ${right === n ? "Perfect. Every answer right." : missed === 1 ? "One to review below." : `${missed} to review below; they're saved in My misses.`}</p>
   <div class="bars">${Object.entries(byKind).map(([k, [a, b]]) => `<span>${esc(KIND_NAMES[k] || k)}</span><span class="bar"><i style="width:${pct(a, b)}%"></i></span><span>${a}/${b}</span>`).join("")}</div>
-  <div class="row">${missed ? `<button class="btn" data-act="qretry">Retry the ${missed} missed</button>` : ""}<a class="btn ghost" href="#/test">Back to Test</a>${chNext}</div></div>
+  <div class="row">${SES.next ? `<a class="btn" href="${SES.next.href}">${esc(SES.next.label)}</a>` : ""}${missed ? `<button class="btn${SES.next ? " ghost" : ""}" data-act="qretry">Retry the ${missed} missed</button>` : ""}<a class="btn ghost" href="${SES.kind === "rhet" ? "#/rhetoric/tests" : "#/test"}">${SES.kind === "rhet" ? "Back to rhetoric tests" : "Back to Test"}</a>${chNext}</div></div>
   <ul class="rlist">${rows}</ul>`;
 }

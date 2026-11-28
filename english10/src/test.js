@@ -76,7 +76,7 @@ for (const d of DRILLS) {
 const wp = DRILLS.find(d => d.id === "w-present"); ok(wp.absent.every(w => !new RegExp(`\\b${w}\\b`).test(wp.model)), "present-tense model has none of the past verbs");
 for (const p of PROMPTS) {
   const max = {f451: 7, asp: 4, "": 0}[p.book];
-  ok(max !== undefined && (p.book ? p.upto >= 1 && p.upto <= max : p.upto === 0) && ESSAYS.some(e => e.id === p.type) && p.min >= 30, `prompt ${p.id}`);
+  ok(max !== undefined && (p.book ? (p.upto >= 1 || p.open) && p.upto <= max : p.upto === 0) && ESSAYS.some(e => e.id === p.type) && p.min >= (p.para ? 15 : 30), `prompt ${p.id}`);
 }
 ok(PROMPTS.filter(p => p.book === "f451").length >= 5, "five or more Fahrenheit 451 timed writes");
 ok(!JSON.stringify([DRILLS, PROMPTS, ESSAYS]).match(/Golding|Ralph|Piggy|conch|Lord of the Flies|lens/i), "no Lord of the Flies or lens content in writing");
@@ -113,6 +113,72 @@ let lr2 = 0; const both = ASP.questions.concat(ARG.questions);
 for (const q of both) if (q[3][0].length > Math.max(...q[3].slice(1).map(x => x.length))) lr2++;
 console.log(`Units 4 and 5: right answer longest in ${lr2}/${both.length}`);
 ok(lr2 / both.length >= 0.1 && lr2 / both.length <= 0.45, "units 4 and 5: answer length gives nothing away");
+
+// ---- Intro to Rhetoric (Unit 4): Ira's class study sheet, the banks, the annotations, the passages and the rhetoric checks
+const {RHET} = require("./content/rhetoric.js"), {RhetCheck: R} = require("./lib/rhetcheck.js");
+const TT = Object.fromEntries(TERMS.map(t => [t.t, t])), sheetOrder = Object.values(RHET.order).flat();
+ok(sheetOrder.length === 34 && distinct(sheetOrder) && sheetOrder.every(t => TT[t] && TT[t].sheet), "34 study-sheet terms, all in the glossary");
+ok(Object.entries(RHET.order).every(([g, list]) => list.every(t => TT[t].sheet === g)) && TERMS.filter(t => t.sheet).length === 34, "each sheet term sits in its sheet group");
+ok(RHET.order.key.length === 7 && RHET.order.evidence.length === 4 && RHET.order.style.length === 16 && RHET.order.faulty.length === 7, "sheet groups: 7 key, 4 evidence, 16 style, 7 faulty");
+ok(RHET.syntax.length === 11 && RHET.syntax.every(t => RHET.order.style.includes(t)), "the 11 syntax-list devices are on the style list");
+ok(TT.Juxtaposition.extra && TT.Apostrophe.extra && /Not the punctuation/.test(TT.Apostrophe.d), "the two syntax terms the sheet doesn't define are marked");
+ok(RHET.build.length === 16 && new Set(RHET.build.map(b => b.t)).size === 16 && RHET.build.every(b => RHET.order.style.includes(b.t) && b.task && b.model && b.tip), "a sentence-building task for every style device");
+const roots = t => t.toLowerCase().split(/[\s/()-]+/).filter(w => w.length >= 4).map(w => w.slice(0, 4)), gives = (t, ex) => roots(t).some(r => new RegExp(`\\b${r}`, "i").test(ex));
+ok(RHET.devices.length >= 45, "45+ device items");
+for (const [t, ex, wrong, why] of RHET.devices) {
+  ok(RHET.order.style.includes(t) && wrong.length === 3 && distinct([t, ...wrong]) && wrong.every(w => RHET.order.style.includes(w)) && why.length > 20, `device item: ${ex}`);
+  ok(!gives(t, ex), `the example doesn't name its device: ${ex}`);
+  ok(R.device(t, ex).ok !== false, `the device check accepts the bank's ${t} example: ${ex}`);
+}
+for (const t of RHET.order.style) ok(RHET.devices.filter(d => d[0] === t).length >= 2, `two or more items for ${t}`);
+for (const [t, ex, why] of RHET.appeals) ok(["Ethos", "Pathos", "Logos"].includes(t) && why, `appeal item: ${ex}`);
+for (const [t, ex, why] of RHET.evidence) ok(RHET.order.evidence.includes(t) && !gives(t, ex) && why, `evidence item: ${ex}`);
+for (const [t, ex, why] of RHET.faulty) ok(RHET.order.faulty.includes(t) && t !== "Logical fallacy" && !gives(t, ex) && why, `faulty reasoning item: ${ex}`);
+for (const t of ["Ethos", "Pathos", "Logos"]) ok(RHET.appeals.filter(a => a[0] === t).length >= 3, `three or more ${t} items`);
+for (const [b, q, c, why] of RHET.questions) ok(["claim", "proc", "asp1"].includes(b) && c.length === 4 && distinct(c) && c.every(x => x.trim()) && why.length > 15, `rhetoric question: ${q}`);
+let lr3 = 0; for (const q of RHET.questions) if (q[2][0].length > Math.max(...q[2].slice(1).map(x => x.length))) lr3++;
+console.log(`Rhetoric questions: right answer longest in ${lr3}/${RHET.questions.length}`);
+ok(lr3 / RHET.questions.length >= 0.1 && lr3 / RHET.questions.length <= 0.45, "rhetoric questions: answer length gives nothing away");
+// A Small Place is under copyright: the annotation cards and questions describe moments and quote none of the book
+const asp1 = RHET.asp1, colors = RHET.organizer.colors.map(c => c[0]);
+ok(asp1.length >= 12 && asp1.every(a => a.title && a.find && a.what && a.devices.length && a.terms.length && ["Ethos", "Pathos", "Logos"].includes(a.appeal) && colors.includes(a.c) && a.effect && a.purpose && a.starter.includes("___") && a.debate), "annotation cards are complete");
+ok(asp1.every(a => a.terms.every(t => TT[t] && TT[t].sheet)), "annotation cards tag study-sheet terms");
+for (const a of asp1) ok(![a.find, a.what, a.effect, a.purpose, a.starter, a.debate].some(x => /["“”]/.test(x)), `no quotation marks on the ${a.title} card`);
+for (const [b, q, c, why] of RHET.questions.filter(x => x[0] === "asp1")) ok(![q, ...c, why].some(x => /["“”]/.test(x)), `no quotation marks: ${q}`);
+ok(sheetOrder.every(t => asp1.some(a => a.terms.includes(t)) || RHET.aspGaps.some(g => g[0] === t)), "every sheet term is found in pages 1-9 or explained");
+ok(Object.values(RHET.soapAsp).every(x => x.length > 5) && Object.keys(RHET.soapAsp).join() === "sp,oc,au,pu,su,to", "the class SOAPSTone");
+// Passages: public domain (before 1929, or a U.S. president's official address), and the model quotes its passage exactly
+for (const P of RHET.passages) ok(P.text.length && P.cite && P.occasion && (P.year < 1929 || ["jfk", "fdr"].includes(P.id)) && P.devices.every(d => TT[d]), `passage ${P.id}`);
+const M = RHET.model, MP = RHET.passages.find(P => P.id === M.passage), mtext = MP.text.join(" ");
+for (const q of [M.ev1, M.ev2].flatMap(e => [...e.matchAll(/"([^"]+)"/g)].map(m => m[1]))) ok(mtext.includes(q), `the model quotes the speech exactly: ${q}`);
+for (const p of PROMPTS.filter(x => x.passage)) ok(RHET.passages.some(P => P.id === p.passage) || ARG.sources.some(x => x.id === p.passage), `prompt ${p.id} passage exists`);
+ok(PROMPTS.filter(p => p.para).length >= 6 && PROMPTS.some(p => p.id === "ra-asp" && p.open), "one-paragraph timed writes, including the open-note one");
+ok(RHET.cards.length >= 4 && RHET.cards.every(c => c.pro.length >= 3 && c.con.length >= 3 && c.avoid.length), "debate cards");
+ok(RHET.organizer.steps.length === 5 && RHET.organizer.guiding.length === 5 && RHET.organizer.annotate.length === 7 && RHET.organizer.colors.length === 5, "the class paragraph plan and annotation steps");
+// The checks
+const negatives = [["Anaphora", "We went to the beach and then we ate lunch at the hotel."], ["Epistrophe", "The town changed, the people moved and the stores closed."], ["Asyndeton", "I bought apples, pears, and plums at the market."],
+  ["Polysyndeton", "We swam and then we ate dinner at home."], ["Litotes", "The test was very hard for everyone in class."], ["Rhetorical question", "Why is the sky blue? Because of how light scatters."],
+  ["Hypophora", "Why does the island have so few doctors?"], ["Repetition", "The island is beautiful and the water is clear."], ["Analogy", "The island looked beautiful from the plane today."], ["Antithesis", "The island looked beautiful from the plane today."]];
+for (const [t, x] of negatives) ok(R.device(t, x).ok === false, `the ${t} check rejects: ${x}`);
+for (const b of RHET.build) ok(R.device(b.t, b.model).ok !== false, `the ${b.t} model passes its check`);
+const mpara = [M.claim, M.ev1, M.re1, M.ev2, M.re2, M.concl].join(" "), mg = R.grade(mpara, {author: "Kennedy"});
+ok(mg.total >= 22 && mg.rows.length === 6, `the model paragraph scores high (${mg.total}/24)`);
+ok(R.thesis(M.claim, {author: "Kennedy"}).ok && R.evidence(M.ev1).ok && R.evidence(M.ev2).ok && R.reasoning(M.re1).ok && R.reasoning(M.re2).ok, "every box of the model plan passes its own check");
+ok(R.thesis(M.thesis, {author: "Kennedy"}).ok && !R.thesis("Kennedy gave a speech in 1961.", {author: "Kennedy"}).ok, "thesis check: purpose and method");
+const weakRA = "Kennedy gave a speech. I think it was good. He used repetition. You can tell he wanted people to help. This quote shows he is serious. In conclusion the speech has a lot of things in it that are good and important for people.";
+const wg = R.grade(weakRA, {author: "Kennedy"});
+ok(wg.total <= 11, `a weak paragraph scores low (${wg.total}/24)`);
+const midRA = `Kennedy uses antithesis to urge Americans to serve their country. He tells them to "ask not what your country can do for you" (Kennedy). This line makes the audience think about what they owe. It is very memorable and people still quote it.`;
+const mg2 = R.grade(midRA, {author: "Kennedy"});
+ok(mg2.total > wg.total && mg2.total < mg.total, `a middling paragraph lands between (${mg2.total}/24)`);
+ok(R.grade("Too short to grade.", {}).short, "too short to grade");
+ok(R.analysis("Kincaid's repeated rhetorical questions expose the government's neglect, making readers suspicious of the leaders to show how tourism hides corruption.").ok && !R.analysis("Kincaid uses words in her book a lot.").ok, "analysis sentence check");
+const goodMove = R.debateMove("Some argue that tourism helps Antigua because it creates jobs for local people.", "However, many of those jobs pay little, and most of the profit leaves the island, so the benefits are smaller than they look.");
+ok(goodMove.ok && !R.debateMove("Tourism is good.", "No.").ok, "debate move check");
+ok(R.debateMove("Critics claim the book is unfair to tourists who mean well.", "You're just too young to understand the book, so your opinion doesn't count.").fallacies.some(f => f[0] === "Ad hominem"), "the debate check flags an ad hominem");
+ok(R.fallacyScan("Either we build the resort or the island will collapse.").some(f => f[0] === "Either/or fallacy"), "the debate check flags an either/or");
+ok(R.reasoning("The repetition builds suspense. It makes readers suspicious of the government, which supports her claim.").ok && !R.reasoning("This quote shows she is mad.").ok, "reasoning box check");
+ok(R.evidence('He promises to "pay any price, bear any burden" (Kennedy).').ok && !R.evidence('"pay any price, bear any burden"').ok, "evidence box check");
 
 // ---- Coach
 ok(distinct(ADVICE.map(a => a.id)) && ADVICE.every(a => a.body.length >= 2), "advice");

@@ -11,14 +11,17 @@ The plan and status live in the Ira AP project doc `claude/english10h-app.md`.
   - `f451.js` Fahrenheit 451 (Unit 3): context, 7 section guides across the three parts, each with a craft focus, plus characters, symbols, themes, quote tags and 56 reading checks. Original study text only: the novel is under copyright, so the guide quotes none of it; Ira logs her own quotations with page numbers.
   - `asp.js` A Small Place (Unit 4): context, 4 section guides with a rhetorical move each, voices, motifs, themes, 32 questions. Same no-quotation rule.
   - `argument.js` the argument workshop (Unit 5): 8 lessons, 14 fallacies, 3 public-domain speeches and 2 labeled practice sources, debate motions and format, 55 questions
-  - `terms.js` 95 glossary terms with examples (terms quizzes and review cards are built from it)
-  - `writing.js` 5 essay guides with rubrics and public-domain model paragraphs, 28 drills, 14 timed-write prompts
+  - `terms.js` 112 glossary terms with examples (terms quizzes and review cards are built from it). The 34 marked `sheet` are Ira's class rhetoric study sheet, with her teacher's definitions and examples.
+  - `rhetoric.js` Unit 4's Intro to Rhetoric: the study sheet's order, the class notes, the class SOAPSTone of A Small Place, the paragraph plan and annotation steps, quiz banks (47 device sentences, appeals, evidence, faulty reasoning, 36 questions), 13 annotation cards for pages 1-9 (described, never quoted), 5 public-domain practice speeches, sentence-building tasks, debate cards and a model paragraph plan on Kennedy's inaugural
+  - `writing.js` 5 essay guides with rubrics and public-domain model paragraphs, 28 drills, 20 timed-write prompts (6 are one-paragraph rhetorical analysis writes)
   - `coach.js` advice cards, seminar help, teacher email templates, content notes (with the 988 line), the AI-honesty line
 - `lib/checker.js`: the offline draft checker (thesis, evidence, citations, commentary, organization, style, MLA, plus argument, rhetorical, synthesis and narrative rules). It marks spots; it never rewrites.
+- `lib/rhetcheck.js`: the rhetoric checks: does a sentence use a device (or ask Ira to check it herself), is an analysis sentence complete, does a debate move have a fair counterargument and a reasoned rebuttal with no fallacy, the paragraph plan's boxes, and an estimated score out of 24 for one rhetorical analysis paragraph (claim, evidence, reasoning, vocabulary, organization, conventions).
 - `js/NN-name.js`: the app, run in number order:
   - `00-core.js` state (and the move from the old unit numbers), dates, streak, XP and levels, daily goals, badges, review cards
   - `10-quiz.js` reading checks, mixed review, terms, who-and-what, argument and fallacy quizzes, timed unit tests, My misses
   - `20-learn.js` Learn: units by semester, book guides with spoiler gating (sections, people, symbols, themes, craft or rhetoric, context), the argument workshop, glossary
+  - `25-rhetoric.js` Unit 4's rhetoric toolkit: the study sheet, notes, annotations, sentence building, debate moves, passages, the paragraph plan and its score, quizzes, the practice and sample tests, scores
   - `30-write.js` Write: assignments with day plans, the prompt decoder, thesis and outline builders, essay guides, Quote Log, seminar prep, drills, SOAPSTone, debate prep
   - `40-check.js` Check: the checker with highlights, rubric self-scoring, the Claude feedback hand-off and its AI-use log
   - `50-test.js` Test hub and timed writes
@@ -35,8 +38,9 @@ npm install
 node test.js           # every section guide, question, term, essay guide and drill; the checker on good and weak writing
 node build.js          # rebuild; the offline cache version changes automatically
 python3 check_ipad.py  # iPad checks in headless Chrome: every screen, setup, spoilers, quizzes, a whole assignment from plan to
-                       # Claude hand-off, drills, cards, seminar, a timed write, offline, backup and restore, progress saved under
-                       # the old unit numbers, World History first, five iPad sizes and Split View (needs Playwright and Chrome;
+                       # Claude hand-off, drills, cards, seminar, a timed write, the rhetoric unit end to end (quizzes, tests,
+                       # sentence building, annotations, the paragraph plan, a timed paragraph), offline, backup and restore, progress
+                       # saved under older unit numbers, World History first, five iPad sizes and Split View (needs Playwright and Chrome;
                        # the test server starts and stops with it)
 python3 make_icons.py  # redraw the icons
 ```

@@ -32,6 +32,7 @@ V.today = () => {
   <div class="card"><h3>Do these next</h3><ul class="list">${R.map(recHTML).join("")}</ul><div class="row"><a class="btn ghost sm" href="#/coach">More in Coach</a></div></div>
   <div class="cols">
   <div class="card"><h3>Due this week</h3>${soon.length ? `<ul class="list">${soon.map(a => { const ns = nextStep(a); return `<li><a class="go" href="#/asg/${a.id}"><span class="t"><b>${esc(a.title)}</b><br><span class="s">${dueWords(a.due)}${ns ? " · next: " + esc(ns[1].toLowerCase()) : ""}</span></span></a>${daysTo(a.due) <= 1 ? `<span class="chip fix">soon</span>` : ""}</li>`; }).join("")}</ul>` : `<p class="meta">Nothing due in the next 7 days.</p>`}<div class="row"><a class="btn ghost sm" href="#/asg/new">+ Add assignment</a></div></div>
+  ${U.u === ASP.unit ? todayRhet() : ""}
   <div class="card"><h3>${U.workshop ? "Workshop" : U.writing ? "Writing unit" : "Reading"}</h3>${B ? `<p class="meta"><i>${esc(B.title)}</i></p><div class="row" style="margin:0">${readSelect(b)}</div>
     <div class="row">${r < B.chapters_n ? `<a class="btn sm" href="${chHref(b, r + 1)}">${W(b).ch} ${r + 1}: before you read</a>` : ""}${r ? `<button class="btn ghost sm" data-act="quiz" data-arg="ch:${b}:${r}">${W(b).ch} ${r} check</button>` : ""}</div>`
     : U.workshop ? `<p class="meta">${seenL} of ${ARG.lessons.length} argument lessons opened.</p><div class="row">${nextL ? `<a class="btn sm" href="#/lesson/${nextL.id}">Next: ${esc(nextL.title)}</a>` : `<a class="btn sm" href="#/debate">Debate prep</a>`}<button class="btn ghost sm" data-act="quiz" data-arg="fallacies">Fallacy finder</button></div>`
@@ -43,6 +44,13 @@ V.today = () => {
   <div class="card"><h3>Streak: ${streak()} day${streak() === 1 ? "" : "s"}</h3><p class="meta">A day counts when you finish all three goals or study 10 minutes.${S.streak.freezes ? ` ${S.streak.freezes} streak freeze${S.streak.freezes > 1 ? "s" : ""} saved.` : ""}</p>${calHTML()}</div>
   </div>`;
 };
+
+function todayRhet() {
+  const n = rhReady().find(r => !r.done), go = r => r.arg ? `<button class="btn sm" data-act="quiz" data-arg="${r.arg}">${esc(r.go)}</button>` : `<a class="btn sm" href="${r.href}">${esc(r.go)}</a>`;
+  return `<div class="card"><h3>Intro to Rhetoric</h3><p class="meta">${rhCount()} of 6 ready steps done for the in-class write and debates.</p>
+  ${n ? `<p><b>Next: ${esc(n.label)}</b><br><span class="meta">${esc(n.detail)}</span></p><div class="row">${go(n)}<a class="btn ghost sm" href="#/rhetoric">Toolkit</a></div>`
+    : `<p class="meta">Every step done. Stay sharp with a sample test.</p><div class="row"><button class="btn sm" data-act="quiz" data-arg="rhet:s2">Sample test B</button><a class="btn ghost sm" href="#/rhetoric">Toolkit</a></div>`}</div>`;
+}
 
 // ---------- Review cards
 let REV = null;

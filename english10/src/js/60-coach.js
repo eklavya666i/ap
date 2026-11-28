@@ -38,6 +38,10 @@ function recs() {
     if (!S.quizzes.some(q => q.kind === "fallacies")) add(54, "Try the fallacy finder", "Spotting fallacies is quick points on argument quizzes and in debate.", null, "Start", "fallacies");
     if (!S.debates.length) add(44, "Prep a debate case", "Build three arguments and answers to the other side's best two.", "#/debate/new", "Debate prep");
   }
+  if (U.u === ASP.unit) {   // the rhetoric unit: the next ready steps
+    const pri = {sheet: 68, annotate: 64, build: 62, rap: 59, test: 53, debate: 45};
+    for (const r of rhReady().filter(x => !x.done)) add(pri[r.k], r.label, /[.)]$/.test(r.detail) ? r.detail : r.detail + ".", r.href || null, r.go, r.arg);
+  }
   const misses = Object.keys(S.miss).length; if (misses >= 5) add(55, `Clear My misses (${misses})`, "Questions you missed come back until you get them right.", null, "Start", "miss");
   const cards = dueCards().due.length; if (cards >= 10) add(52, `Review ${cards} cards`, "They're due today; about one minute per ten cards.", "#/review", "Review");
   const rows = Object.entries(rowAverages()).filter(([, b]) => b.n >= 2).map(([kk, b]) => [kk, b.sum / b.n, b.name]).sort((a, b) => a[1] - b[1]);
@@ -47,7 +51,7 @@ function recs() {
   const topArea = Object.entries(areaCount).sort((a, b) => b[1] - a[1])[0];
   if (topArea && topArea[1] >= 2) { const d = DRILL[ROW_DRILL[topArea[0]]]; add(57, `Fix ${AREA_NAMES[topArea[0]].toLowerCase()} in your drafts`, `The checker flagged it in ${topArea[1]} of your last ${recentChecks.length} checks.`, d ? `#/drill/${d.id}` : "#/drills", "Drill"); }
   const mixFor = kk => `mix:${kk === "rhetoric" ? "asp" : kk === "craft" ? "f451" : (B || BOOKS[BOOK0]).id}`;
-  for (const [kk, [ok, n]] of Object.entries(kindAccuracy())) if (n >= 6 && ok / n < 0.7) add(56, `Practice ${(KIND_NAMES[kk] || kk).toLowerCase()} questions`, `You're at ${pct(ok, n)}% on them.`, null, "Practice", kk === "term" ? "terms" : kk === "fallacy" ? "fallacies" : ARG_KINDS.includes(kk) ? "arg" : kk === "who" ? `who:${(B || BOOKS[BOOK0]).id}` : mixFor(kk));
+  for (const [kk, [ok, n]] of Object.entries(kindAccuracy())) if (n >= 6 && ok / n < 0.7) add(56, `Practice ${(KIND_NAMES[kk] || kk).toLowerCase()} questions`, `You're at ${pct(ok, n)}% on them.`, null, "Practice", RH_KIND_QUIZ[kk] ? "rhet:" + RH_KIND_QUIZ[kk] : kk === "term" ? "terms" : kk === "fallacy" ? "fallacies" : ARG_KINDS.includes(kk) ? "arg" : kk === "who" ? `who:${(B || BOOKS[BOOK0]).id}` : mixFor(kk));
   if (U.writing && !S.asg.some(a => a.type === U.essay && !a.done)) add(42, `Plan your ${(ESSAY(U.essay) || {name: "essay"}).name.toLowerCase()}`, "Add it in Write with its due date and the app plans the days.", "#/asg/new", "Add it");
   if (!S.writes.length && ["lit", "argument", "rhetorical"].includes(U.essay)) add(40, "Try a timed write", "Practice under the clock before the in-class one.", "#/test", "Test");
   if (!out.length) add(10, "Log a quotation from your last chapter", "Evidence collected now saves time on every essay.", "#/quotes", "Quote Log");

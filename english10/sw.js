@@ -1,6 +1,6 @@
 /* English 10H: keeps a full copy of the app on the device so it works offline.
    The version changes with every build, which replaces the old copy the next time the app opens online. */
-const CACHE = 'eng10h-d2a184ccab9e';
+const CACHE = 'eng10h-451b6a1857f3';
 const FILES = ["./","index.html","manifest.webmanifest","icon-180.png","icon-192.png","icon-512.png","icon-maskable-512.png"];
 
 /* Safari will not use a redirected response for a page served from a service worker, so store a clean copy. */

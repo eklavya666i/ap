@@ -13,11 +13,14 @@ V.test = () => {
     ...books.map(B => [`who:${B.id}`, `Who and what: ${B.title}`, `${W(B.id).people} and ${W(B.id).symbols.toLowerCase()} from their descriptions.`, readTo(B.id) >= 1]),
     ...COURSE.units.filter(U => U.book || U.workshop).map(U => [`unit:${U.u}`, `Unit ${U.u} test`, `${U.book ? BOOKS[U.book].title : U.title}: 30 questions in 40 minutes, scored at the end.`, true]),
     ["miss", `My misses (${misses})`, "Every question you've missed. Get it right to clear it.", misses > 0]];
-  const prompts = PROMPTS.map(p => { const ok = promptOpen(p), b = p.book; return `<li class="${ok ? "" : "locked"}"><a class="go" href="${ok ? `#/tw/${p.id}` : chHref(b, Math.min(BOOKS[b].chapters_n, readTo(b) + 1))}"><span class="t">${esc(p.text)}<br><span class="s">${esc(ESSAY(p.type).name)} · ${p.min} minutes${ok ? "" : ` · after ${W(b).ch.toLowerCase()} ${p.upto} of ${esc(BOOKS[b].title)}`}</span></span></a></li>`; }).join("");
+  const prompts = PROMPTS.map(p => { const ok = promptOpen(p), b = p.book; return `<li class="${ok ? "" : "locked"}"><a class="go" href="${ok ? `#/tw/${p.id}` : chHref(b, Math.min(BOOKS[b].chapters_n, readTo(b) + 1))}"><span class="t">${esc(p.text)}<br><span class="s">${esc(ESSAY(p.type).name)}${p.para ? " paragraph" : ""} · ${p.min} minutes${ok ? "" : ` · after ${W(b).ch.toLowerCase()} ${p.upto} of ${esc(BOOKS[b].title)}`}</span></span></a></li>`; }).join("");
   const recent = S.quizzes.slice(-8).reverse();
   return `<h2>Test</h2><p class="lead">Reading checks for every section, quizzes on terms and argument, timed unit tests, and timed writes under real conditions.</p>
   <div class="card"><h3>Reading checks</h3><p class="meta">Tap a section. Colors show your best score: green 7 or 8, light green 6, amber 4 or 5, red below 4. Grey ones stay locked until you mark them read.</p>
   ${books.map(B => `<h4><i>${esc(B.title)}</i></h4><div class="heat">${heatRow(B.id)}</div>`).join("")}</div>
+  <div class="card${S.set.unit === ASP.unit ? " hi" : ""}"><div class="row" style="margin:0"><h3 style="margin:0">Unit ${ASP.unit}: Intro to Rhetoric</h3><span class="sp"></span><a class="btn sm ghost" href="#/rhetoric/tests">All rhetoric quizzes and tests</a></div>
+  <p class="meta">The study sheet, devices, appeals, faulty reasoning and <i>A Small Place</i>, plus a timed practice test and two sample tests that end with a timed paragraph.</p>
+  <div class="row"><button class="btn sm" data-act="quiz" data-arg="rhet:sheet">Study sheet quiz</button><button class="btn sm ghost" data-act="quiz" data-arg="rhet:devices">Device spotter</button><button class="btn sm ghost" data-act="quiz" data-arg="rhet:test">Practice test</button><button class="btn sm ghost" data-act="quiz" data-arg="rhet:s1">Sample test A</button><button class="btn sm ghost" data-act="quiz" data-arg="rhet:s2">Sample test B</button></div></div>
   <div class="grid">${quick.map(([k, t, d, ok]) => `<div class="card"><h3>${esc(t)}</h3><p class="meta">${esc(d)}</p><div class="row"><button class="btn sm${ok ? "" : " ghost"}" data-act="quiz" data-arg="${k}"${ok ? "" : " disabled"}>Start</button></div></div>`).join("")}</div>
   <div class="card"><h3>Timed writes</h3><p class="meta">Plan for five minutes, write, then check it and score it with the rubric.</p><ul class="list">${prompts}</ul>
   ${S.tw ? `<div class="row"><a class="btn" href="#/tw/${S.tw.id}">Resume your timed write</a></div>` : ""}</div>
@@ -53,21 +56,23 @@ function twTimer() {
 }
 V.tw = id => {
   const p = PROMPTS.find(x => x.id === id); if (!p) return V.test();
+  const P = p.passage ? passageOf(p.passage) : null;
   if (!S.tw || S.tw.id !== id) {
-    return `<p class="crumb"><a href="#/test">‹ Test</a></p><div class="card"><span class="pill">${esc(ESSAY(p.type).name)}</span><h2 style="margin-top:8px">Timed write</h2><p class="prose">${esc(p.text)}</p>
-    <label class="tog">Minutes <select id="twmin">${[30, 40, 45, 50, 60].map(m => `<option${m === p.min ? " selected" : ""}>${m}</option>`).join("")}</select></label>
-    <h4>How to use the time</h4><ul class="tight">${TIMED_TIPS.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
+    return `<p class="crumb"><a href="${p.para ? "#/rhetoric/tests" : "#/test"}">‹ ${p.para ? "Rhetoric tests" : "Test"}</a></p><div class="card"><span class="pill">${esc(ESSAY(p.type).name)}${p.para ? " paragraph" : ""}</span><h2 style="margin-top:8px">Timed write</h2><p class="prose">${esc(p.text)}</p>
+    ${p.open ? `<p class="meta"><b>Open note:</b> use your own annotated copy of pages 1-9, and cite pages like (Kincaid 4). Your <a href="#/rhetoric/annotate">annotation cards</a> count as notes too.</p>` : ""}${P ? `<p class="meta">The passage (${esc(P.author)}, ${esc(P.title)}) appears when the clock starts, as it would in class.</p>` : ""}
+    <label class="tog">Minutes <select id="twmin">${[...new Set([15, 20, 25, 30, 40, 45, 50, 60, p.min])].sort((a, b) => a - b).map(m => `<option${m === p.min ? " selected" : ""}>${m}</option>`).join("")}</select></label>
+    <h4>How to use the time</h4><ul class="tight">${(p.para ? RHET.paraTips : TIMED_TIPS).map(t => `<li>${esc(t)}</li>`).join("")}</ul>
     ${S.tw ? `<p class="meta">You have another timed write in progress; starting this one replaces it.</p>` : ""}
-    <div class="row"><button class="btn" data-act="twstart" data-arg="${p.id}">Start the clock</button><a class="btn ghost" href="#/guide/${p.type}">Review the guide first</a></div></div>`;
+    <div class="row"><button class="btn" data-act="twstart" data-arg="${p.id}">Start the clock</button><a class="btn ghost" href="${p.para ? "#/rap/model" : `#/guide/${p.type}`}">${p.para ? "See the model paragraph plan" : "Review the guide first"}</a></div></div>`;
   }
   AFTER = twTimer;
   const t = S.tw;
   return `<div class="tesbar"><b>Timed write</b><span class="sp"></span><span class="timer" id="twtimer"></span><button class="btn sm" data-act="twfinish">Finish</button><button class="btn ghost sm" data-act="twquit">Stop</button></div>
   <div class="card note" id="twover" hidden><b>Time's up.</b> Finish your sentence, then tap Finish. Overtime is noted, not penalized.</div>
-  <div class="card"><p class="prose" style="margin:0">${esc(t.prompt)}</p></div>
-  <details class="card"${t.text ? "" : " open"}><summary>Five-minute plan</summary>
-  <label class="f">Thesis<input type="text" data-in="twplan" data-k="t" value="${esc(t.plan.t)}"></label>
-  <label class="f">Body claim 1 and its evidence<input type="text" data-in="twplan" data-k="c1" value="${esc(t.plan.c1)}"></label>
-  <label class="f">Body claim 2 and its evidence<input type="text" data-in="twplan" data-k="c2" value="${esc(t.plan.c2)}"></label></details>
+  <div class="card"><p class="prose" style="margin:0">${esc(t.prompt)}</p></div>${P ? passageHTML(P, true) : ""}
+  <details class="card"${t.text ? "" : " open"}><summary>${p.para ? "Paragraph plan" : "Five-minute plan"}</summary>
+  <label class="f">${p.para ? "Claim (topic sentence)" : "Thesis"}<input type="text" data-in="twplan" data-k="t" value="${esc(t.plan.t)}"></label>
+  <label class="f">${p.para ? "Evidence 1 and what it does to the reader" : "Body claim 1 and its evidence"}<input type="text" data-in="twplan" data-k="c1" value="${esc(t.plan.c1)}"></label>
+  <label class="f">${p.para ? "Evidence 2 and what it does to the reader" : "Body claim 2 and its evidence"}<input type="text" data-in="twplan" data-k="c2" value="${esc(t.plan.c2)}"></label></details>
   <div class="card"><textarea class="draft" data-in="twtext" placeholder="Write here">${esc(t.text)}</textarea><div class="wc" id="twwc">${wcount(t.text)} words</div></div>`;
 };

@@ -55,11 +55,11 @@ const MANIFEST = JSON.stringify({
   ]
 }, null, 1);
 
-const CONTENT = ["course.js", "f451.js", "asp.js", "argument.js", "terms.js", "writing.js", "coach.js"];
+const CONTENT = ["course.js", "f451.js", "asp.js", "argument.js", "terms.js", "rhetoric.js", "writing.js", "coach.js"];
 const appFiles = fs.readdirSync(here("js")).filter(f => /^\d\d-[\w-]+\.js$/.test(f)).sort();
 const base = fs.readFileSync(here("app.html"), "utf8")
   .replace("/*__CONTENT__*/", () => CONTENT.map(f => `// ===== content/${f}\n` + strip("content/" + f)).join("\n"))
-  .replace("/*__LIB__*/", () => strip("lib/checker.js"))
+  .replace("/*__LIB__*/", () => strip("lib/checker.js") + "\n" + strip("lib/rhetcheck.js"))
   .replace("/*__APP__*/", () => appFiles.map(f => `// ===== js/${f}\n` + fs.readFileSync(here("js/" + f), "utf8")).join("\n"));
 if (/\/\*__(CONTENT|LIB|APP)__/.test(base)) throw new Error("placeholder left");
 

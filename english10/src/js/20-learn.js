@@ -46,7 +46,7 @@ function bookUnit(U, B, tab) {
   <div class="card unit" style="--u:${U.color}"><span class="pill" style="background:${U.color};color:#fff">Unit ${U.u} · ${esc(U.title)}</span>
   <h2 style="margin-top:8px"><i>${esc(B.title)}</i></h2><p class="meta">${esc(B.author)} · ${B.year}${U.product ? ` · Product: ${esc(U.product)}` : ""}</p>
   <div class="row">${readSelect(b)}${S.set.unit === U.u ? "" : curUnitBtn(U)}</div></div>
-  ${note ? `<div class="card note"><b>Content note.</b> ${esc(note)}</div>` : ""}
+  ${note ? `<div class="card note"><b>Content note.</b> ${esc(note)}</div>` : ""}${b === "asp" ? rhUnitCard() : ""}
   <div class="ltabs">${TABS.map(([k, t]) => `<a href="#/unit/${U.u}/${k}"${k === tab ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</div>${body(B)}`;
 }
 function bestCheck(ch, b = BOOK0) { const q = S.quizzes.filter(x => x.kind === "ch" && x.book === b && x.ch === ch); return q.length ? Math.max(...q.map(x => x.right)) : null; }
@@ -87,8 +87,8 @@ function unitCraft(B) {
 const SOAP_FIELDS = [["sp", "Speaker", "Who is speaking, and what do we know about them that matters?"], ["oc", "Occasion", "The time, place and event that prompted the text (its exigence)."], ["au", "Audience", "Who the text is written for; there may be more than one."], ["pu", "Purpose", "What the writer wants the audience to think, feel or do."], ["su", "Subject", "The topic, in a phrase."], ["to", "Tone", "The writer's attitude, in precise words: bitter, mocking, reverent..."]];
 const ASP_SOAP = {sp: "Jamaica Kincaid, born in colonial Antigua, who left as a teenager and writes as a native daughter with open anger.", oc: "Antigua in the 1980s: newly independent, living on tourism, with a government she sees as corrupt.", au: "Mainly white North American and European readers, the people most likely to visit Antigua as tourists.", pu: "To make readers see the history, poverty and corruption behind the vacation, and their own part in it.", su: "Tourism, colonialism and corruption in Antigua.", to: "Sarcastic and accusatory, bitter about the English, tender and lyrical by the end."};
 function unitRhetoric(B) {
-  return `<div class="card"><h3>SOAPSTone for <i>${esc(B.title)}</i></h3><p class="meta">A model analysis. Try your own first in the SOAPSTone tool, then compare.</p>
-  <table class="tbl">${SOAP_FIELDS.map(([k, t]) => `<tr><th>${t}</th><td>${esc(ASP_SOAP[k])}</td></tr>`).join("")}</table>
+  return `<div class="card"><h3>SOAPSTone for <i>${esc(B.title)}</i></h3><p class="meta">Your class version. Try your own first in the SOAPSTone tool, then compare.</p>
+  ${soapTable(RHET.soapAsp)}<details><summary>Going deeper</summary>${soapTable(ASP_SOAP)}</details>
   <div class="row"><a class="btn ghost sm" href="#/soap">SOAPSTone tool</a><a class="btn ghost sm" href="#/guide/rhetorical">Rhetorical analysis guide</a></div></div>
   <div class="card"><h3>Kincaid's moves, section by section</h3>${focusList(B)}</div>${deviceChips(B)}`;
 }

@@ -40,7 +40,9 @@ V.write = () => {
   <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/drills"><h3>Writing drills</h3><p class="meta">${DRILLS.length} short drills: citations, embedding, commentary, thesis, counterclaims.</p></a>
   <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/seminar"><h3>Seminar prep</h3><p class="meta">Questions at three levels, quotations and sentence starters.</p></a>
   <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/soap"><h3>SOAPSTone</h3><p class="meta">Pin down a text's rhetorical situation before you analyze it. ${S.soaps.length} saved.</p></a>
-  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/debate"><h3>Debate prep</h3><p class="meta">Your case, their best arguments and your answers. ${S.debates.length} saved.</p></a></div>`;
+  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/debate"><h3>Debate prep</h3><p class="meta">Your case, their best arguments and your answers. ${S.debates.length} saved.</p></a>
+  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/rap"><h3>Paragraph plan</h3><p class="meta">The class rhetorical analysis organizer, with live checks and an estimated score out of 24. ${S.raps.length} saved.</p></a>
+  <a class="card" style="display:block;text-decoration:none;color:inherit" href="#/rhetoric/build"><h3>Sentence building</h3><p class="meta">Write sentences with each rhetorical device and get them checked. ${syntaxDone()} of ${RHET.syntax.length} syntax devices built.</p></a></div>`;
 };
 
 // ---------- New assignment
@@ -309,7 +311,7 @@ ACT.dpick = a => { if (!DR || DR.pick != null) return; DR.pick = Number(a); cons
 ACT.dshow = () => { if (!DR) return; if (wcount(DR.text) < 5) { toast("Write your version first"); return; } DR.shown = true; drillDone(DR.id, true); render(); };
 
 // ---------- SOAPSTone tool (any text: the class books, the argument unit's speeches, an article)
-const soapSeed = id => { const x = ARG.sources.find(y => y.id === id); if (x) return {title: `${x.author}, "${x.title}" (${x.year})`}; const B = BOOKS[id]; return B ? {title: `${B.author}, ${B.title} (${B.year})`} : {title: ""}; };
+const soapSeed = id => { const x = ARG.sources.find(y => y.id === id) || RHET.passages.find(y => y.id === id); if (x) return {title: `${x.author}, "${x.title}" (${x.year})`}; const B = BOOKS[id]; return B ? {title: `${B.author}, ${B.title} (${B.year})`} : {title: ""}; };
 V.soap = (mode, id) => {
   if (mode === "new" || !S.soaps.length) {
     const d = S.drafts.soap && (!id || S.drafts.soap.seed === id) ? S.drafts.soap : (S.drafts.soap = {seed: id || "", title: soapSeed(id).title});
