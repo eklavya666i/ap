@@ -12,7 +12,7 @@ function d3File() {
   throw new Error('d3 not found: run npm install in tests/ first');
 }
 html = html.replace(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/d3\/[^"]+"><\/script>/, () => '<script>' + fs.readFileSync(d3File(), 'utf8') + '</script>');
-for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js', 'lab.js', 'flight.js', 'swing.js', 'partials.js', 'drills.js', 'patterns.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
+for (const f of ['model.js', 'runtime.js', 'app.js', 'import.js', 'rounds.js', 'shots.js', 'command.js', 'goals.js', 'trust.js', 'calib.js', 'clubs.js', 'compare.js', 'lab.js', 'flight.js', 'swing.js', 'partials.js', 'drills.js', 'patterns.js', 'heads.js', 'shell.js']) html = html.replace(`<script src="${f}"></script>`, () => '<script>' + fs.readFileSync(path.join(APP, f), 'utf8') + '</script>');
 html = html.replace('<link rel="stylesheet" href="style.css">', () => '<style>' + fs.readFileSync(path.join(APP, 'style.css'), 'utf8') + '</style>');
 
 // In-memory database with live listeners, shaped like the artifact db capability.
@@ -393,6 +393,21 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   }
   const pf = doc.querySelector('[data-draw="partials"]');
   check(/½/.test(pf.textContent) && pf.querySelector('.lab-cov'), 'Partial shots reads the swing-length tag');
+  // Every older view leads with its computed finding (design package §3); lab views carry their own.
+  const HEAD = {command: /yards to 260|260 is reached/, progress: /(Up|Down|Level) .*260|the trend needs four weeks/, driver: /^260 needs about \d+ mph of ball speed; .+ is at \d+$/, bag: /overlap: \d+ yards|carry hole|Every carry gap|^Only the /, calib: /spin reads|Spin reads inside/, rounds: /cost the most|rated lowest|No rounds|logged/, data: /^[\d,]+ shots stored; [\d,]+ flagged and kept out of the stats$/};
+  const heads = [];
+  for (const v of Object.keys(HEAD)) {
+    w.WB.setView(v);
+    await sleep(120);
+    const h = doc.querySelector('[data-draw="viewhead"] .ph-h');
+    heads.push(v + ': ' + (h ? h.textContent : '(none)'));
+    if (!h || !HEAD[v].test(h.textContent)) console.log('HEAD', v, h && h.textContent);
+  }
+  w.WB.setView('flight');
+  await sleep(120);
+  const labHead = doc.querySelector('[data-draw="viewhead"]');
+  check(heads.every((t, i) => HEAD[Object.keys(HEAD)[i]].test(t.slice(t.indexOf(': ') + 2))) && labHead.querySelector('.ph-vh-sr') && !labHead.querySelector('.ph-h') && doc.querySelector('[data-draw="crumb"]').textContent.includes('Ball flight'), 'each view leads with its finding headline');
+  w.WB.setView('all');
   w.WB.setView('all');
   await sleep(120);
 
