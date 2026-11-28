@@ -125,6 +125,21 @@ const check = (ok, what) => { console.log((ok ? 'ok   ' : 'FAIL ') + what); if (
   doc.getElementById('csvcancel').click();
   await sleep(30);
 
+  // Pick the GSPro export folder: only its CSV files are read, newest first, and saved sessions are skipped.
+  const ff = (n, t, when) => Object.assign(file(n, t), {lastModified: Date.parse(when)});
+  const picked = [ff('fast_2026-11-10.csv', FILES['fast_2026-11-10.csv'], '2026-11-10T18:00:00'), ff('slow_2026-11-25.csv', FILES['slow_2026-11-25.csv'], '2026-11-25T18:00:00'),
+    ff('GSPro.lnk', 'x', '2026-11-26T18:00:00'), ff('.DS_Store', 'x', '2026-11-26T18:00:00'), ff('notes.txt', 'x', '2026-11-26T18:00:00')];
+  check(P.folderFiles(picked).csv.map((f) => f.name).join(',') === 'slow_2026-11-25.csv,fast_2026-11-10.csv' && P.folderFiles(picked).other === 3, 'keeps only the folder’s CSV files, newest first');
+  P.startFolder(picked, 'GSPro exports');
+  await sleep(150);
+  const fl = doc.querySelector('[data-draw="folderlast"]');
+  check(P.state.files.length === 2 && P.state.sessions.length >= 2 && P.state.sessions.every((x) => x.dup) && doc.getElementById('csvsave').disabled && /^Last picked: GSPro exports, .*2 CSV files\.$/.test(fl.textContent), 'picks the export folder and skips sessions already saved');
+  doc.getElementById('csvcancel').click();
+  await sleep(30);
+  P.startFolder([ff('notes.txt', 'x', '2026-11-26T18:00:00')], 'Downloads');
+  await sleep(60);
+  check(/No GSPro CSV files in Downloads/.test(fl.textContent) && fl.classList.contains('wb-badc') && !P.state.files.length, 'says so when the folder has no GSPro CSV files');
+
   // A session saved before originals were kept: same file dropped again attaches the original, adds no session.
   const fastPath = saved.find((k) => M.docs.get(k).file === 'fast_2026-11-10.csv');
   const legacy = Object.assign({}, M.docs.get(fastPath));

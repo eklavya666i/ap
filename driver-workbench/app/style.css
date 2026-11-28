@@ -560,3 +560,8 @@ h2{font-size:24px}
 .ph-figs{grid-template-columns:repeat(2,minmax(0,1fr))}
 .ph-rscale span:nth-child(even){display:none}
 }
+/* Pick the GSPro export folder */
+.wb-folder{margin:6px 0 16px;display:grid;gap:6px;justify-items:start}
+.wb-folder .wb-btn{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:10px 18px;font-size:16px}
+.wb-folder .wb-note{margin:0}
+.wb-folder .wb-sub:empty{display:none}

@@ -39,7 +39,7 @@
 <div data-draw="hero"></div>
 </section>
 <section id="station" data-only="ingest" hidden>
-<p class="wb-lede">Drop GSPro exports here on the GSPro PC. Analysis by player is on the iPad, or switch to Analysis above.</p>
+<p class="wb-lede">After a session on the GSPro PC, press <b>Pick the GSPro export folder</b> below, or drop the exports here. Analysis by player is on the iPad, or switch to Analysis above.</p>
 <div class="wb-grid wb-kpis" data-draw="ingeststatus"></div>
 </section>
 <p class="wb-banner" id="db-note" hidden></p>
@@ -49,9 +49,15 @@
 <h2>Add GSPro files</h2>
 <ol class="wb-steps">
 <li>In GSPro, export the shot data (Practice Range: the clipboard icon at the top left, then Export CSV). Older exports work too, any number at once.</li>
-<li>Drop the files on <b>Sort by club speed</b>, or on a golfer’s card when you know whose they are. Files are split into sessions by date; a session where both golfers hit is split by club speed.</li>
-<li>Check the preview and save. Sessions already saved are skipped, so dropping a folder twice is safe; sessions saved before original files were kept get theirs attached. Files are read on this computer and stored with their shot numbers, private to your Claude account.</li>
+<li>Press <b>Pick the GSPro export folder</b> and choose the folder GSPro saves exports to, or drop files or the whole folder on <b>Sort by club speed</b> (or on a golfer’s card when you know whose they are). Files are split into sessions by date; a session where both golfers hit is split by club speed.</li>
+<li>Check the preview and save. Sessions already saved are skipped, so picking the same folder after every session is safe; sessions saved before original files were kept get theirs attached. Files are read on this computer and stored with their shot numbers, private to your Claude account.</li>
 </ol>
+<div class="wb-folder wb-write">
+<button type="button" class="wb-btn wb-btn-main" id="folder-btn"><svg class="ic" aria-hidden="true"><use href="#i-import"/></svg> Pick the GSPro export folder</button>
+<input type="file" id="folder-pick" webkitdirectory multiple class="wb-visually-hidden" aria-label="GSPro export folder" tabindex="-1">
+<p class="wb-note">Reads every GSPro CSV in the folder, newest first, and adds only sessions that aren’t saved yet. Your browser asks you to confirm the folder; the files are read on this computer, and the app sees the folder only at the moment you pick it. It keeps no access afterwards.</p>
+<p class="wb-sub" data-draw="folderlast"></p>
+</div>
 <div class="wb-drops" data-draw="dropcards"></div>
 <span data-draw="pvstate"></span>
 <div class="wb-card wb-preview" id="import-preview" hidden>
